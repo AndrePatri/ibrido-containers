@@ -1,15 +1,27 @@
 #!/bin/bash
 
+# Default image name
+DEFAULT_IMAGE_NAME="mycudagldocker/mycudagl:2204-cudagl-basic"
+
 # Default container name
 DEFAULT_CONTAINER_NAME="mycudagl-2204-cudagl-basic"
 
-# Check if an argument is provided for the container name
+# Check if an argument is provided for the image name
 if [ -z "$1" ]; then
+    # If no image name is provided, use the default
+    IMAGE_NAME="$DEFAULT_IMAGE_NAME"
+else
+    # If an image name is provided, use it
+    IMAGE_NAME="$1"
+fi
+
+# Check if an argument is provided for the container name
+if [ -z "$2" ]; then
     # If no container name is provided, use the default
     CONTAINER_NAME="$DEFAULT_CONTAINER_NAME"
 else
     # If a container name is provided, use it
-    CONTAINER_NAME="$1"
+    CONTAINER_NAME="$2"
 fi
 
 # Check if the container exists
@@ -19,8 +31,7 @@ if [ $? -ne 0 ]; then # if the previous command failed
     docker create --gpus all -it \
          --mount type=bind,source="$HOME",target=/home/host \
          --name "$CONTAINER_NAME" \
-         -p 9422:9422 \
-         crizzard/lr-gym:2204-cudagl-basic \
+         ${IMAGE_NAME} \
          bash
 fi
 
