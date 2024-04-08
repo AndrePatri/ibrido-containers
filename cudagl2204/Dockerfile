@@ -1,4 +1,5 @@
-FROM cudagl:12.3.1-devel-ubuntu22.04
+FROM crizzard/lr-gym:2204-cudagl-basic
+# FROM nvidia/cudagl:11.3.0-devel-ubuntu20.04
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get install -y \
