@@ -13,10 +13,10 @@ channels:
 dependencies: 
   - python=3.10
   - pip
-  - pytorch == 2.0.1
-  # - cuda-toolkit=11.7
+  - pytorch=2.*.*=py3.10_cuda*_cudnn*
+  - cuda-toolkit
   - casadi_kin_dyn
-  # - pinocchio=2.6.20
+  - pinocchio=2.6.20
   - compilers 
   - cmake
   - make
@@ -29,15 +29,11 @@ dependencies:
   - ros-humble-xacro
   - empy 
   - python-devtools
-  - perf_sleep
   - pyqt
   - pyqtgraph
   - poetry
-  # - control_cluster_bridge
-  # - omni_robo_gym
   - pip:
     - flit
-    # - nvidia-cublas-cu11==11.11.3.6
     - protobuf
     - matplotlib
     - scipy
