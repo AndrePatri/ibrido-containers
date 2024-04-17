@@ -13,7 +13,7 @@ channels:
 dependencies: 
   - python=3.10
   - pip
-  - pytorch=2.*.*=py3.10_cuda*_cudnn*
+  - pytorch=2.2.*=py3.10_cuda*_cudnn*
   - cuda-toolkit
   - casadi_kin_dyn
   - pinocchio=2.6.20
