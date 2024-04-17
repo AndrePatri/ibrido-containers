@@ -16,7 +16,7 @@ dependencies:
   - torchvision
   - torchaudio
   - pytorch-cuda=12.1
-  - cuda-toolkit
+  # - cuda-toolkit
   - casadi_kin_dyn
   - pinocchio=2.6.20
   - compilers 
@@ -34,6 +34,7 @@ dependencies:
   - pyqt
   - pyqtgraph
   - poetry
+  - perf_sleep
   - pip:
     - flit
     - protobuf

@@ -11,15 +11,15 @@ if [ $? -ne 0 ]; then # if the previous command failed
         -e "ACCEPT_EULA=Y" \
         -e "PRIVACY_CONSENT=N" \
         --entrypoint bash \
-        -v ~/docker/isaac-sim/cache/kit:/root/.local/share/ov/pkg/isaac_sim-2023.1.1/kit/cache:rw \
-        -v ~/docker/isaac-sim/cache/ov:/root/.cache/ov:rw \
-        -v ~/docker/isaac-sim/cache/pip:/root/.cache/pip:rw \
-        -v ~/docker/isaac-sim/cache/glcache:/root/.cache/nvidia/GLCache:rw \
-        -v ~/docker/isaac-sim/cache/computecache:/root/.nv/ComputeCache:rw \
-        -v ~/docker/isaac-sim/logs:/root/.nvidia-omniverse/logs:rw \
-        -v ~/docker/isaac-sim/data:/root/.local/share/ov/data:rw \
-        -v ~/docker/isaac-sim/documents:/root/Documents:rw \
-        --mount type=bind,source="$HOME/RL_ws",target="/root/RL_ws"\
+        -v ~/docker/lrhc-docker/isaac-sim/cache/kit:/root/.local/share/ov/pkg/isaac_sim-2023.1.1/kit/cache:rw \
+        -v ~/docker/lrhc-docker/isaac-sim/cache/ov:/root/.cache/ov:rw \
+        -v ~/docker/lrhc-docker/isaac-sim/cache/pip:/root/.cache/pip:rw \
+        -v ~/docker/lrhc-docker/isaac-sim/cache/glcache:/root/.cache/nvidia/GLCache:rw \
+        -v ~/docker/lrhc-docker/isaac-sim/cache/computecache:/root/.nv/ComputeCache:rw \
+        -v ~/docker/lrhc-docker/isaac-sim/logs:/root/.nvidia-omniverse/logs:rw \
+        -v ~/docker/lrhc-docker/isaac-sim/data:/root/.local/share/ov/data:rw \
+        -v ~/docker/lrhc-docker/isaac-sim/documents:/root/Documents:rw \
+        -v ~/docker/lrhc-docker/RL_ws:/root/RL_ws:rw \
         --name "$CONTAINER_NAME" \
         ${IMAGE_NAME} 
 fi
