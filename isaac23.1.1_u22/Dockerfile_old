@@ -50,7 +50,7 @@ SHELL ["/usr/local/bin/_dockerfile_shell.sh"]
 RUN micromamba env create -y -f /root/mamba_env.yml 
 ##
 
-# ros2 
+# ros2-base
 RUN echo 'Etc/UTC' > /etc/timezone && \
     apt-get update && \
     apt-get install -q -y --no-install-recommends tzdata && \
@@ -85,14 +85,17 @@ RUN colcon mixin add default \
     colcon metadata add default \
       https://raw.githubusercontent.com/colcon/colcon-metadata-repository/master/index.yaml && \
     colcon metadata update
-
-# additional setup
-COPY setup_docker.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/setup_docker.sh
-RUN /usr/local/bin/setup_docker.sh
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-humble-ros-base \
     && rm -rf /var/lib/apt/lists/*
+
+# additional setup
+COPY setup_docker.sh /usr/local/bin/
+COPY nucleus.py /root/
+
+RUN chmod +x /usr/local/bin/setup_docker.sh
+RUN /usr/local/bin/setup_docker.sh
+
 
 WORKDIR /root
 
