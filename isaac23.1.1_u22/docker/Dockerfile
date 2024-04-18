@@ -15,9 +15,11 @@ RUN apt-get update && apt-get install -y \
     libboost-all-dev\
 	dirmngr gnupg2 \
 	build-essential \
+    clang \
 	byobu \
 	wget \
 	htop \
+    nvtop \
 	apt-utils \
 	software-properties-common \
 	nano \
