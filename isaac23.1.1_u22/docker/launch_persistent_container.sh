@@ -10,6 +10,8 @@ if [ $? -ne 0 ]; then # if the previous command failed
     docker create --gpus all -it \
         -e "ACCEPT_EULA=Y" \
         -e "PRIVACY_CONSENT=N" \
+        -e DISPLAY=$DISPLAY \
+        -v /tmp/.X11-unix:/tmp/.X11-unix \
         --entrypoint bash \
         -v ~/docker/lrhc-docker/isaac-sim/cache/kit:/root/.local/share/ov/pkg/isaac_sim-2023.1.1/kit/cache:rw \
         -v ~/docker/lrhc-docker/isaac-sim/cache/ov:/root/.cache/ov:rw \
