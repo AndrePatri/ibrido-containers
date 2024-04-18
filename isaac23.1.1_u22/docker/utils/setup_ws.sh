@@ -1,10 +1,16 @@
 #!/bin/bash
 
+source /usr/local/bin/_activate_current_env.sh # enable mamba for this shell
+micromamba activate LRHControlMambaEnv # this has to be active to properly install packages
+source /opt/ros/humble/setup.bash # ros2 setup
+
 WS_BASEDIR=$HOME/RL_ws/hhcm
 
+# clean ws if already initialized
 rm -rf $WS_BASEDIR/build && mkdir $WS_BASEDIR/build
 rm -rf $WS_BASEDIR/install && mkdir $WS_BASEDIR/install
 
+# build cmake packages
 mkdir -p $WS_BASEDIR/build/SharsorIPCpp
 cd $WS_BASEDIR/build/SharsorIPCpp
 cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON ../../src/SharsorIPCpp/SharsorIPCpp
@@ -35,8 +41,8 @@ cd $WS_BASEDIR/build/kyon_srdf
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/RL_ws/hhcm/install" ../../src/iit-kyon-ros-pkg/kyon_srdf
 make -j8 install
 
+# pip installations
 cd $WS_BASEDIR/src  
-
 pip install -e CoClusterBridge 
 pip install -e OmniRoboGym
 pip install -e LRHControl
@@ -58,7 +64,10 @@ echo '    git branch 2> /dev/null | sed -e "/^[^*]/d" -e "s/* \(.*\)/ (\1)/"' >>
 echo '}' >> /root/.bashrc && \
 echo 'export PS1="\u@\h \[\033[32m\]\w\[\033[33m\]$(parse_git_branch)\[\033[00m\] $ "' >> /root/.bashrc
 
+wandb login --relogin # login to wandb
+
 source /root/.bashrc
+
 
 
 

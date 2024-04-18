@@ -97,14 +97,15 @@ RUN echo 'set -g default-shell /bin/bash' >>/root/.byobu/.tmux.conf
 RUN echo 'set -g default-command /bin/bash' >>/root/.byobu/.tmux.conf
 
 # post-build setup
-# COPY utils/post_build_setup.sh /root/post_build_setup.sh
-# RUN chmod +x /root/post_build_setup.sh
-# ENTRYPOINT ["/root/post_build_setup.sh"]
 
 COPY utils/setup_ws.sh /root/setup_ws.sh
 RUN chmod +x /root/setup_ws.sh
 
 COPY utils/create_mamba_env.sh /root/create_mamba_env.sh
 RUN chmod +x /root/create_mamba_env.sh
+
+COPY utils/post_build_setup.sh /root/post_build_setup.sh
+RUN chmod +x /root/post_build_setup.sh
+# ENTRYPOINT ["/root/post_build_setup.sh"]
 
 WORKDIR /root
