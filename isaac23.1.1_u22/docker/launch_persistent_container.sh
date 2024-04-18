@@ -20,6 +20,7 @@ if [ $? -ne 0 ]; then # if the previous command failed
         -v ~/docker/lrhc-docker/isaac-sim/data:/root/.local/share/ov/data:rw \
         -v ~/docker/lrhc-docker/isaac-sim/documents:/root/Documents:rw \
         -v ~/docker/lrhc-docker/RL_ws:/root/RL_ws:rw \
+        -v ~/docker/lrhc-docker/results:/root/results:rw \
         --name "$CONTAINER_NAME" \
         ${IMAGE_NAME} 
 fi
