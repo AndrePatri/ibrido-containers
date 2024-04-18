@@ -86,6 +86,7 @@ RUN colcon mixin add default \
     colcon metadata update
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-humble-ros-base \
+    ros-humble-rviz2 \
     && rm -rf /var/lib/apt/lists/*
 
 # isaaac
