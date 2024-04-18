@@ -98,6 +98,7 @@ RUN echo 'set -g default-shell /bin/bash' >>/root/.byobu/.tmux.conf
 RUN echo 'set -g default-command /bin/bash' >>/root/.byobu/.tmux.conf
 
 # post-build setup
+COPY files/setup.bash /root/RL_ws/hhcm/
 
 COPY utils/setup_ws.sh /root/setup_ws.sh
 RUN chmod +x /root/setup_ws.sh
