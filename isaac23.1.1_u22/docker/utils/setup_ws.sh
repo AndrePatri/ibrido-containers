@@ -6,6 +6,8 @@ source /opt/ros/humble/setup.bash # ros2 setup
 
 WS_BASEDIR=$HOME/RL_ws/hhcm
 
+cp /root/setup.bash $WS_BASEDIR/
+
 # clean ws if already initialized
 rm -rf $WS_BASEDIR/build && mkdir $WS_BASEDIR/build
 rm -rf $WS_BASEDIR/install && mkdir $WS_BASEDIR/install
