@@ -44,7 +44,7 @@ RUN echo "alias mamba='micromamba'" >> ~/.bashrc
 RUN /usr/local/bin/_dockerfile_initialize_user_accounts.sh && \
     /usr/local/bin/_dockerfile_setup_root_prefix.sh
 SHELL ["/usr/local/bin/_dockerfile_shell.sh"]
-COPY mamba_env.yml /root 
+COPY files/mamba_env.yml /root 
 
 # RUN conda env create -y -f /root/mamba_env.yml # doesn't work because because during build docker cannot access GPU
 
@@ -88,7 +88,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # isaaac
-COPY nucleus.py /root/
+COPY files/nucleus.py /root/
 RUN cp ~/nucleus.py /isaac-sim/exts/omni.isaac.core/omni/isaac/core/utils/nucleus.py
 
 # Byobu Fix for launching BASH instead of SH
@@ -97,14 +97,14 @@ RUN echo 'set -g default-shell /bin/bash' >>/root/.byobu/.tmux.conf
 RUN echo 'set -g default-command /bin/bash' >>/root/.byobu/.tmux.conf
 
 # post-build setup
-COPY post_build_setup.sh /root/post_build_setup.sh
-RUN chmod +x /root/post_build_setup.sh
-ENTRYPOINT ["/root/post_build_setup.sh"]
+# COPY utils/post_build_setup.sh /root/post_build_setup.sh
+# RUN chmod +x /root/post_build_setup.sh
+# ENTRYPOINT ["/root/post_build_setup.sh"]
 
-COPY setup_ws.sh /root/setup_ws.sh
+COPY utils/setup_ws.sh /root/setup_ws.sh
 RUN chmod +x /root/setup_ws.sh
 
-COPY create_mamba_env.sh /root/create_mamba_env.sh
+COPY utils/create_mamba_env.sh /root/create_mamba_env.sh
 RUN chmod +x /root/create_mamba_env.sh
 
 WORKDIR /root
