@@ -35,6 +35,7 @@ dependencies:
   - empy 
   - pyqt
   - pyqtgraph
+  - pyside2
   - perf_sleep
   - pip:
     - flit
