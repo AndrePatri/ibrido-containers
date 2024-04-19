@@ -7,4 +7,3 @@ export PYTHONPATH=/root/RL_ws/hhcm/install/lib/python2.7/dist-packages:/root/RL_
 export ROS_PACKAGE_PATH=/root/RL_ws/hhcm/ros_src:/root/RL_ws/hhcm/install/share:/root/RL_ws/hhcm/install/lib:$ROS_PACKAGE_PATH
 export AMENT_PREFIX_PATH=/root/RL_ws/hhcm/install:$AMENT_PREFIX_PATH
 export PKG_CONFIG_PATH=/root/RL_ws/hhcm/install/lib/pkgconfig:$PKG_CONFIG_PATH
-export HHCM_FOREST_PATH=/root/RL_ws/hhcm:$HHCM_FOREST_PATH
