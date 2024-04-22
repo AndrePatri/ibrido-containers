@@ -137,7 +137,7 @@ execute_command "cd ${WORKING_DIR}"
 source_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_GUI.py --cores {} --ns {}"
+prepare_command "reset && python launch_GUI.py --ns {}"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -163,7 +163,7 @@ execute_command "source $WS_ROOT/setup.bash"
 source_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --ns {} --cores {} --dt {}"
+prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --ns {}"
 
 # tab 1
 new_tab
@@ -175,7 +175,7 @@ execute_command "cd ${WORKING_DIR}"
 execute_command "source /opt/ros/humble/setup.bash"
 source_mamba_env
 clear_terminal
-prepare_command "reset && python3 launch_rhcviz.py --ns {} --dpath {} --nodes_perc 10 --cores {}"
+prepare_command "reset && python3 launch_rhcviz.py --ns {} --dpath {}"
 
 # tab2
 new_tab
