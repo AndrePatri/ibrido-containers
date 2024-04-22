@@ -10,7 +10,7 @@ BYOBU_WS_NAME="lrhc_ws"
 WS_ROOT="$HOME/lrhc_ws"
 WORKING_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
 MAMBAENVNAME="lrhcontrol"
-N_FILES=14336 # to allow more open files (for semaphores/mutexes etc..)
+N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
 
 # Array of directories
 directories=(
