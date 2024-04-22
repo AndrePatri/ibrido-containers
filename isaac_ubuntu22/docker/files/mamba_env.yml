@@ -1,4 +1,4 @@
-name: LRHControlMambaEnv
+name: lrhcontrol
 
 channels: 
   - defaults

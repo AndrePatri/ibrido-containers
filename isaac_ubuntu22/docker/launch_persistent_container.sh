@@ -21,7 +21,7 @@ if [ $? -ne 0 ]; then # if the previous command failed
         -v ~/docker/lrhc-docker/isaac-sim/logs:/root/.nvidia-omniverse/logs:rw \
         -v ~/docker/lrhc-docker/isaac-sim/data:/root/.local/share/ov/data:rw \
         -v ~/docker/lrhc-docker/isaac-sim/documents:/root/Documents:rw \
-        -v ~/docker/lrhc-docker/RL_ws:/root/RL_ws:rw \
+        -v ~/docker/lrhc-docker/lrhc_ws:/root/lrhc_ws:rw \
         -v ~/docker/lrhc-docker/training_data:/root/training_data:rw \
         -v ~/docker/lrhc-docker/aux_data:/root/aux_data:rw \
         -v ~/docker/lrhc-docker/conda:/opt/conda:rw \

@@ -47,7 +47,7 @@ RUN /usr/local/bin/_dockerfile_initialize_user_accounts.sh && \
 SHELL ["/usr/local/bin/_dockerfile_shell.sh"]
 COPY files/mamba_env.yml /root 
 
-# RUN conda env create -y -f /root/mamba_env.yml # doesn't work because because during build docker cannot access GPU
+# RUN conda env create -y -f /root/mamba_env.yml # doesn't work properly because because during build docker cannot access GPU
 
 # ros2-base
 RUN echo 'Etc/UTC' > /etc/timezone && \
@@ -89,7 +89,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-humble-rviz2 \
     && rm -rf /var/lib/apt/lists/*
 
-# isaaac
+# isaac hack
 COPY files/nucleus.py /root/
 RUN cp ~/nucleus.py /isaac-sim/exts/omni.isaac.core/omni/isaac/core/utils/nucleus.py
 
@@ -100,13 +100,12 @@ RUN echo 'set -g default-command /bin/bash' >>/root/.byobu/.tmux.conf
 
 # post-build setup
 COPY files/setup.bash /root/setup.bash
-
+COPY files/launch_byobu_ws.sh /root/launch_byobu_ws.sh
+RUN chmod +x /root/launch_byobu_ws.sh
 COPY utils/setup_ws.sh /root/setup_ws.sh
 RUN chmod +x /root/setup_ws.sh
-
 COPY utils/create_mamba_env.sh /root/create_mamba_env.sh
 RUN chmod +x /root/create_mamba_env.sh
-
 COPY utils/post_build_setup.sh /root/post_build_setup.sh
 RUN chmod +x /root/post_build_setup.sh
 # ENTRYPOINT ["/root/post_build_setup.sh"]
