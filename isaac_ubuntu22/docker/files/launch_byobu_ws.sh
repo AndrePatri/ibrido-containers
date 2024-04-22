@@ -58,7 +58,7 @@ attach_to_session() {
 
 }
 
-source_mamba_env() {
+activate_mamba_env() {
 
     execute_command "mamba activate ${MAMBAENVNAME}"
 
@@ -116,7 +116,7 @@ byobu new-session -d -s ${BYOBU_WS_NAME} -c ${WORKING_DIR} -n ${BYOBU_WS_NAME} #
 
 # tab 0
 execute_command "cd ${WORKING_DIR}"
-source_mamba_env
+activate_mamba_env
 #execute_command "source ~/.local/share/ov/pkg/isaac_sim-2023.1.1/setup_conda_env.sh"
 execute_command "source /isaac-sim/setup_conda_env.sh"
 execute_command "source $WS_ROOT/setup.bash"
@@ -126,7 +126,7 @@ prepare_command "reset && python launch_sim_env.py --headless --remote_stepping 
 
 split_v
 execute_command "cd ${WORKING_DIR}"
-source_mamba_env
+activate_mamba_env
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally
 clear_terminal
@@ -134,14 +134,14 @@ prepare_command "reset && python launch_control_cluster.py --enable_debug --ns {
 
 split_h
 execute_command "cd ${WORKING_DIR}"
-source_mamba_env
+activate_mamba_env
 increase_file_limits_locally
 clear_terminal
 prepare_command "reset && python launch_GUI.py --ns {}"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
-source_mamba_env
+activate_mamba_env
 increase_file_limits_locally
 clear_terminal
 prepare_command "reset && python launch_keyboard_cmds.py --ns {}"
@@ -150,7 +150,7 @@ go_to_pane 0
 
 split_h
 execute_command "cd ${WORKING_DIR}"
-source_mamba_env
+activate_mamba_env
 increase_file_limits_locally
 clear_terminal
 prepare_command "reset && python launch_train_env.py --ns {} --run_name {} --drop_dir $HOME/results --comment "" "
@@ -160,7 +160,7 @@ execute_command "cd ${WORKING_DIR}"
 # execute_command "source /opt/ros/noetic/setup.bash"
 execute_command "source /opt/ros/humble/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
-source_mamba_env
+activate_mamba_env
 increase_file_limits_locally
 clear_terminal
 prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --ns {}"
@@ -172,8 +172,8 @@ execute_command "cd ${WORKING_DIR}"
 split_h
 execute_command "cd ${WORKING_DIR}"
 # execute_command "source /opt/ros/noetic/setup.bash"
+activate_mamba_env
 execute_command "source /opt/ros/humble/setup.bash"
-source_mamba_env
 clear_terminal
 prepare_command "reset && python3 launch_rhcviz.py --ns {} --dpath {}"
 
