@@ -12,6 +12,7 @@ if [ $? -ne 0 ]; then # if the previous command failed
         -e "PRIVACY_CONSENT=N" \
         -e DISPLAY=$DISPLAY \
         -v /tmp/.X11-unix:/tmp/.X11-unix \
+        --shm-size=1gb\
         --entrypoint bash \
         -v ~/docker/lrhc-docker/isaac-sim/cache/kit:/root/.local/share/ov/pkg/isaac_sim-2023.1.1/kit/cache:rw \
         -v ~/docker/lrhc-docker/isaac-sim/cache/ov:/root/.cache/ov:rw \
