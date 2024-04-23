@@ -153,7 +153,7 @@ execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_train_env.py --ns {} --run_name {} --drop_dir $HOME/training_data --comment "" "
+prepare_command "reset && python launch_train_env.py --ns {} --run_name {} --drop_dir $HOME/training_data --dump_checkpoints --comment "" "
 
 split_h
 execute_command "cd ${WORKING_DIR}"
