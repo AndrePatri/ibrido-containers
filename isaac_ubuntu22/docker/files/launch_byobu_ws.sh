@@ -163,7 +163,7 @@ execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --ns {}"
+prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --with_agent_refs --ns {}"
 
 # tab 1
 new_tab
