@@ -16,3 +16,6 @@ You can now spawn the lrhc_ws [Byobu](https://www.byobu.org/) workspace by launc
 
 ### Singularity
 TBD
+
+### Acknowledgements
+Thanks to [c-rizz](https://github.com/c-rizz) for the technical support in setting up the container.
