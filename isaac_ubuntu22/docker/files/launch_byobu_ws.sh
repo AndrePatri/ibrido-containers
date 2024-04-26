@@ -6,10 +6,10 @@ export GTK_IM_MODULE=ibus
 export QT_IM_MODULE=ibus
 
 SLEEP_FOR=0.1
-BYOBU_WS_NAME="lrhc_ws"
-WS_ROOT="$HOME/lrhc_ws"
+BYOBU_WS_NAME="ibrido_ws"
+WS_ROOT="$HOME/ibrido_ws"
 WORKING_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
-MAMBAENVNAME="lrhcontrol"
+MAMBAENVNAME="ibrido"
 N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
 
 # Array of directories

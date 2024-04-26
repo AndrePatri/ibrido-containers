@@ -1,14 +1,15 @@
 #!/bin/bash
 set -e # exiting if any cmd fails
 
-WS_SRC=$HOME/docker/lrhc-docker/lrhc_ws/src
+WS_SRC=$HOME/docker/ibrido-docker/ibrido_ws/src
 
-mkdir -p $HOME/docker/lrhc-docker/aux_data
-mkdir -p $HOME/docker/lrhc-docker/conda
-mkdir -p $HOME/docker/lrhc-docker/isaac-sim
+mkdir -p $HOME/docker/ibrido-docker/aux_data
+mkdir -p $HOME/docker/ibrido-docker/conda
+mkdir -p $HOME/docker/ibrido-docker/isaac-sim
 mkdir -p $WS_SRC
 
 cd $WS_SRC
+git clone -b  git@github.com:AndrePatri/IBRIDO.git
 git clone -b isaac2023.1.1_dev git@github.com:AndrePatri/LRHControl.git
 git clone -b devel git@github.com:AndrePatri/CoClusterBridge.git
 git clone -b devel git@github.com:AndrePatri/SharsorIPCpp.git

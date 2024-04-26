@@ -1,4 +1,4 @@
-## Container utilities for [LRHControl](https://github.com/AndrePatri/LRHControl) rapid deployment
+## Container utilities for [IBRIDO](https://github.com/AndrePatri/IBRIDO) rapid deployment
 
 ### Docker 
 
@@ -10,9 +10,9 @@ Before being able to run the `isaac_ubuntu22/docker/build_docker.sh` script (whi
 
 Running `isaac_ubuntu22/docker/build_docker.sh` will build the base image, which is basically an image with [micromamba](https://github.com/mamba-org/micromamba-releases), [IsaacSim](https://developer.nvidia.com/isaac/sim) and [rso2-humble-base](https://docs.ros.org/en/humble/index.html).
 
-After the build process has completed, you can run the `isaac_ubuntu22/docker/launch_persistent_container.sh` script and then, from the just opened bash shell, the `post_build_setup.sh` script. This will create the necessary mamba environment (cannot be done at build time due to [this issue](https://github.com/NVIDIA/nvidia-container-toolkit/issues/221)) and build/install the echosystem packages in the created `lrhcontrol` micromamba environment. You will additionally be asked to login to [wandb](https://wandb.ai) (used for remote debugging).
+After the build process has completed, you can run the `isaac_ubuntu22/docker/launch_persistent_container.sh` script and then, from the just opened bash shell, the `post_build_setup.sh` script. This will create the necessary mamba environment (cannot be done at build time due to [this issue](https://github.com/NVIDIA/nvidia-container-toolkit/issues/221)) and build/install the echosystem packages in the created `ibrido` micromamba environment. You will additionally be asked to login to [wandb](https://wandb.ai) (used for remote debugging).
 
-You can now spawn the lrhc_ws [Byobu](https://www.byobu.org/) workspace by launching `launch_byobu_ws.sh`. From the workspace you can rapidly run all the main components of the echosystem. During a "minimal" training, you would just need to run the 3 already configured commands for the simulation environment, the control cluster and, finally, the training environment. Please note that the first time it may take a while due to IsaacSim's ray tracking shaders compilation and the RHC cluster having to codegenerate some symbolic function.
+You can now spawn the ibrido_ws [Byobu](https://www.byobu.org/) workspace by launching `launch_byobu_ws.sh`. From the workspace you can rapidly run all the main components of the echosystem. During a "minimal" training, you would just need to run the 3 already configured commands for the simulation environment, the control cluster and, finally, the training environment. Please note that the first time it may take a while due to IsaacSim's ray tracking shaders compilation and the RHC cluster having to codegenerate some symbolic function.
 
 ### Singularity
 TBD

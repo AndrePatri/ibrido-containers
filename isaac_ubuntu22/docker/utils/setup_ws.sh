@@ -4,10 +4,10 @@ set -e # exiting if any cmd fails
 echo "Setting up workspace..."
 
 source /usr/local/bin/_activate_current_env.sh # enable mamba for this shell
-micromamba activate lrhcontrol # this has to be active to properly install packages
+micromamba activate ibrido # this has to be active to properly install packages
 source /opt/ros/humble/setup.bash # ros2 setup
 
-WS_BASEDIR=$HOME/lrhc_ws
+WS_BASEDIR=$HOME/ibrido_ws
 
 cp /root/setup.bash $WS_BASEDIR/
 
@@ -33,17 +33,17 @@ make -j8 install
 
 mkdir -p $WS_BASEDIR/build/centauro_urdf
 cd $WS_BASEDIR/build/centauro_urdf
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/lrhc_ws/install" ../../src/iit-centauro-ros-pkg/centauro_urdf
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/iit-centauro-ros-pkg/centauro_urdf
 make -j8 install
 
 mkdir -p $WS_BASEDIR/build/kyon_urdf
 cd $WS_BASEDIR/build/kyon_urdf
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/lrhc_ws/install" ../../src/iit-kyon-ros-pkg/kyon_urdf
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/iit-kyon-ros-pkg/kyon_urdf
 make -j8 install
 
 mkdir -p $WS_BASEDIR/build/kyon_srdf
 cd $WS_BASEDIR/build/kyon_srdf
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/lrhc_ws/install" ../../src/iit-kyon-ros-pkg/kyon_srdf
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/iit-kyon-ros-pkg/kyon_srdf
 make -j8 install
 
 # pip installations
