@@ -8,7 +8,7 @@ You can setup you workspace by running `isaac_ubuntu22/docker/create_ws.sh`. Thi
 
 Before being able to run the `isaac_ubuntu22/docker/build_docker.sh` script (which builds the base image used by LRHControl), you need follow the instructions at [Omniverse's Isaac sim image](https://docs.omniverse.nvidia.com/isaacsim/latest/installation/install_container.html) and at [isaac-sim container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/isaac-sim), to get access to IsaacSim's container image. 
 
-Running `isaac_ubuntu22/docker/build_docker.sh` will build the base image, which is basically an image with [micromamba](https://github.com/mamba-org/micromamba-releases), [IsaacSim](https://developer.nvidia.com/isaac/sim) and [rso2-humble-base](https://docs.ros.org/en/humble/index.html).
+Running `isaac_ubuntu22/docker/build_docker.sh` will build the base image, which is basically an image with [micromamba](https://github.com/mamba-org/micromamba-releases), [IsaacSim](https://developer.nvidia.com/isaac/sim) and [ros2-humble-base](https://docs.ros.org/en/humble/index.html).
 
 After the build process has completed, you can run the `isaac_ubuntu22/docker/launch_persistent_container.sh` script and then, from the just opened bash shell, the `post_build_setup.sh` script. This will create the necessary mamba environment (cannot be done at build time due to [this issue](https://github.com/NVIDIA/nvidia-container-toolkit/issues/221)) and build/install the echosystem packages in the created `ibrido` micromamba environment. You will additionally be asked to login to [wandb](https://wandb.ai) (used for remote debugging).
 
