@@ -9,7 +9,7 @@ mkdir -p $HOME/docker/ibrido-docker/isaac-sim
 mkdir -p $WS_SRC
 
 cd $WS_SRC
-git clone -b  git@github.com:AndrePatri/IBRIDO.git
+git clone -b main git@github.com:AndrePatri/IBRIDO.git
 git clone -b isaac2023.1.1_dev git@github.com:AndrePatri/LRHControl.git
 git clone -b devel git@github.com:AndrePatri/CoClusterBridge.git
 git clone -b devel git@github.com:AndrePatri/SharsorIPCpp.git
