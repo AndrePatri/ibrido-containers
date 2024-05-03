@@ -15,7 +15,7 @@ git clone -b devel git@github.com:AndrePatri/CoClusterBridge.git
 git clone -b devel git@github.com:AndrePatri/SharsorIPCpp.git
 git clone -b isaac2023.1.1_dev git@github.com:AndrePatri/OmniRoboGym.git
 git clone -b ros2_humble git@github.com:AndrePatri/RHCViz.git
-git clone -b devel git@github.com:AndrePatri/phase_manager.git
+git clone -b new_architecture git@github.com:AndrePatri/phase_manager.git
 git clone -b andrepatri_dev git@github.com:AndrePatri/unitree_ros.git
 git clone -b andrepatri_devel git@github.com:ADVRHumanoids/horizon.git
 git clone -b isaac2023.1.1_dev git@github.com:ADVRHumanoids/KyonRLStepping.git
