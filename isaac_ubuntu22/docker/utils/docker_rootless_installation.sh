@@ -17,7 +17,7 @@ sudo docker run hello-world
 sudo apt-get install -y dbus-user-session
 sudo systemctl disable --now docker.service docker.socket
 sudo apt-get  install  -y uidmap
-/usr/bin/dockerd-rootless-setuptool.sh install
+/usr/bin/dockerd-rootless-setuptool.sh install --force
 systemctl --user start docker 
 docker context use rootless
 docker run hello-world
