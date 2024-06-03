@@ -1,4 +1,5 @@
-FROM nvcr.io/nvidia/isaac-sim:2023.1.1
+# FROM nvcr.io/nvidia/isaac-sim:2023.1.1
+FROM nvcr.io/nvidia/isaac-sim:4.0.0
 
 # preventing prompts that require user interaction during the package installation process.
 ENV DEBIAN_FRONTEND noninteractive 
@@ -91,7 +92,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # isaac hack
 COPY files/nucleus.py /root/
-RUN cp ~/nucleus.py /isaac-sim/exts/omni.isaac.core/omni/isaac/core/utils/nucleus.py
+# RUN cp ~/nucleus.py /isaac-sim/exts/omni.isaac.nucleus/omni/isaac/nucleus/nucleus.py
+RUN cp ~/nucleus4.0.0.py /isaac-sim/exts/omni.isaac.nucleus/omni/isaac/nucleus/nucleus.py
 
 # Byobu Fix for launching BASH instead of SH
 RUN mkdir -p /root/.byobu/
