@@ -91,7 +91,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # isaac hack
-COPY files/nucleus.py /root/
+COPY files/nucleus4.0.0.py /root/
 # RUN cp ~/nucleus.py /isaac-sim/exts/omni.isaac.nucleus/omni/isaac/nucleus/nucleus.py
 RUN cp ~/nucleus4.0.0.py /isaac-sim/exts/omni.isaac.nucleus/omni/isaac/nucleus/nucleus.py
 
