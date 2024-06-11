@@ -1,0 +1,116 @@
+Bootstrap: docker
+From:nvcr.io/nvidia/isaac-sim:4.0.0
+
+%labels
+    AUTHOR AndrePatri (andrepatrics@gmail.com)
+
+%environment
+    export DEBIAN_FRONTEND=noninteractive
+    export LANG=C.UTF-8
+    export LC_ALL=C.UTF-8
+    export PATH=$PATH:/root/.local/bin
+    export MAMBA_USER=mambauser
+    export MAMBA_ROOT_PREFIX="/opt/conda"
+    export MAMBA_EXE="/bin/micromamba"
+    export ROS_DISTRO=humble
+
+%post
+    # Setting up environment
+    echo "Setting up environment"
+
+    echo "ACCEPT_EULA=Y" >> ~/.bashrc # for allowing running isaac kit
+
+    apt-get update && apt-get install -y \
+        ca-certificates python3 python3-venv python-is-python3 \
+        git wget sudo vim iputils-ping ssh rsync \
+        libboost-all-dev \
+        dirmngr gnupg2 \
+        build-essential \
+        byobu \
+        wget \
+        htop \
+        nvtop \
+        apt-utils \
+        software-properties-common \
+        nano \
+        cmake \
+        cmake-curses-gui \
+        curl \
+        ffmpeg && rm -rf /var/lib/apt/lists/*
+
+    apt-get update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata && rm -rf /var/lib/apt/lists/*
+
+    # Micromamba setup
+    echo "Setting up Micromamba"
+    mkdir -p /opt/conda/bin
+    wget -qO- https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj -C /opt/conda/bin --strip-components=1 bin/micromamba
+    echo "alias mamba='/opt/conda/bin/micromamba'" >> ~/.bashrc
+    
+    # ROS 2 base setup
+    echo "Setting up ROS 2 base"
+    echo 'Etc/UTC' > /etc/timezone
+    apt-get update && apt-get install -q -y --no-install-recommends tzdata && rm -rf /var/lib/apt/lists/*
+
+    apt-get update && apt-get install -q -y --no-install-recommends \
+        dirmngr \
+        gnupg2 && rm -rf /var/lib/apt/lists/*
+
+    set -eux; \
+        key='C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654'; \
+        export GNUPGHOME="$(mktemp -d)"; \
+        gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
+        mkdir -p /usr/share/keyrings; \
+        gpg --batch --export "$key" > /usr/share/keyrings/ros2-latest-archive-keyring.gpg; \
+        gpgconf --kill all; \
+        rm -rf "$GNUPGHOME"
+
+    echo "deb [ signed-by=/usr/share/keyrings/ros2-latest-archive-keyring.gpg ] http://packages.ros.org/ros2/ubuntu jammy main" > /etc/apt/sources.list.d/ros2-latest.list
+
+    apt-get update && apt-get install --no-install-recommends -y \
+        build-essential \
+        git \
+        python3-colcon-common-extensions \
+        python3-colcon-mixin \
+        python3-rosdep \
+        python3-vcstool && rm -rf /var/lib/apt/lists/*
+
+    rosdep init && \
+      rosdep update --rosdistro $ROS_DISTRO
+
+    colcon mixin add default \
+        https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml && \
+      colcon mixin update && \
+      colcon metadata add default \
+        https://raw.githubusercontent.com/colcon/colcon-metadata-repository/master/index.yaml && \
+      colcon metadata update
+
+    apt-get update && apt-get install -y --no-install-recommends \
+        ros-humble-ros-base \
+        ros-humble-rviz2 && rm -rf /var/lib/apt/lists/*
+
+    # Byobu Fix for launching BASH instead of SH
+    echo "Fixing Byobu to launch BASH"
+    mkdir -p /root/.byobu/
+    echo 'set -g default-shell /bin/bash' >> /root/.byobu/.tmux.conf
+    echo 'set -g default-command /bin/bash' >> /root/.byobu/.tmux.conf
+
+    # Copying necessary files and scripts
+    echo "Copying necessary files and scripts"
+
+    cp files/mamba_env.yml /root/
+    cp files/setup.bash /root/
+    cp files/launch_byobu_ws.sh /root/
+    cp utils/setup_ws.sh /root/
+    cp utils/create_mamba_env.sh /root/
+    cp utils/post_build_setup.sh /root/
+
+    chmod +x /root/launch_byobu_ws.sh
+    chmod +x /root/setup_ws.sh
+    chmod +x /root/create_mamba_env.sh
+    chmod +x /root/post_build_setup.sh
+
+%runscript
+    exec /bin/bash "$@"
+
+%startscript
+    exec /bin/bash /root/post_build_setup.sh

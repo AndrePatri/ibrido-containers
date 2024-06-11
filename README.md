@@ -16,6 +16,7 @@ You can now spawn the ibrido_ws [Byobu](https://www.byobu.org/) workspace by lau
 
 ### Singularity
 Install Singularity > 4.1 and make sure to have installed a [squashfs-tools](https://github.com/plougher/squashfs-tools/releases/tag/4.6.1) version >=4.6.
+Also, to be able to pull isaac's docker image, you need to `export SINGULARITY_DOCKER_USERNAME="\$oauthtoken"` and `export SINGULARITY_DOCKER_PASSWORD="${you_nvidia_token}"`.
 
 ### Acknowledgements
 Thanks to [c-rizz](https://github.com/c-rizz) for the technical support in setting up the container.

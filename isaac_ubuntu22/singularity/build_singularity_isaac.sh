@@ -1,5 +1,5 @@
 #!/bin/bash
 
-#singularity registry login --username \$oauthtoken docker://nvcr.io
-# build singularity container based on Dockerfile
-singularity build --oci ./ibrido_isaac.oci.sif ./DockerfileIsaac4
+sudo singularity registry login --username \$oauthtoken docker://nvcr.io
+sudo singularity build ./ibrido_isaac.sif ./u22_isaac
+
