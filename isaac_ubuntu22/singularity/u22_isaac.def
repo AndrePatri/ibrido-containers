@@ -43,7 +43,7 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     # Micromamba setup
     echo "Setting up Micromamba"
     mkdir -p /opt/conda/bin
-    wget -qO- https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj -C /opt/conda/bin --strip-components=1 bin/micromamba
+    curl -Ls https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj -C /opt/conda/bin --strip-components=1 bin/micromamba
     echo "alias mamba='/opt/conda/bin/micromamba'" >> ~/.bashrc
     
     # ROS 2 base setup
