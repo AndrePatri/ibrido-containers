@@ -3,22 +3,30 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
 
 %labels
     AUTHOR AndrePatri (andrepatrics@gmail.com)
+    Version v0.0.1
+
+%help
+    This is the Singularity container associated with the IBRIDO framework.
+
+%files
+    ./files/mamba_env.yml /root
+    ./files/setup.bash /root
+    ./files/launch_byobu_ws.sh /root
+    ./utils/setup_ws.sh /root
+    ./utils/create_mamba_env.sh /root
+    ./utils/post_build_setup.sh /root
 
 %environment
     export DEBIAN_FRONTEND=noninteractive
     export LANG=C.UTF-8
     export LC_ALL=C.UTF-8
     export PATH=$PATH:/root/.local/bin
-    export MAMBA_USER=mambauser
-    export MAMBA_ROOT_PREFIX="/opt/conda"
-    export MAMBA_EXE="/bin/micromamba"
     export ROS_DISTRO=humble
+    export ACCEPT_EULA=Y
 
 %post
-    # Setting up environment
-    echo "Setting up environment"
 
-    echo "ACCEPT_EULA=Y" >> ~/.bashrc # for allowing running isaac kit
+    echo "export ACCEPT_EULA=Y" >> ~/.bashrc # for allowing running isaac kit
 
     apt-get update && apt-get install -y \
         ca-certificates python3 python3-venv python-is-python3 \
@@ -74,6 +82,7 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
         python3-rosdep \
         python3-vcstool && rm -rf /var/lib/apt/lists/*
 
+    ROS_DISTRO='humble'
     rosdep init && \
       rosdep update --rosdistro $ROS_DISTRO
 
@@ -94,20 +103,15 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     echo 'set -g default-shell /bin/bash' >> /root/.byobu/.tmux.conf
     echo 'set -g default-command /bin/bash' >> /root/.byobu/.tmux.conf
 
-    # Copying necessary files and scripts
-    echo "Copying necessary files and scripts"
-
-    cp files/mamba_env.yml /root/
-    cp files/setup.bash /root/
-    cp files/launch_byobu_ws.sh /root/
-    cp utils/setup_ws.sh /root/
-    cp utils/create_mamba_env.sh /root/
-    cp utils/post_build_setup.sh /root/
-
+    echo "Setting up utility scripts"
     chmod +x /root/launch_byobu_ws.sh
     chmod +x /root/setup_ws.sh
     chmod +x /root/create_mamba_env.sh
     chmod +x /root/post_build_setup.sh
+
+%test
+    echo 'Testing MicroMamba is present...'
+    mamba 
 
 %runscript
     exec /bin/bash "$@"
