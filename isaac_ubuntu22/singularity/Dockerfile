@@ -1,4 +1,5 @@
 FROM crizzard/lr-gym:2204-cudagl-basic
+# FROM nvcr.io/nvidia/isaac-sim:4.0.0
 
 # preventing prompts that require user interaction during the package installation process.
 ENV DEBIAN_FRONTEND noninteractive 
@@ -12,11 +13,13 @@ ENV PATH $PATH:/root/.local/bin
 RUN apt-get update && apt-get install -y \
 	ca-certificates python3 python3-venv python-is-python3 \
         git wget sudo vim iputils-ping ssh rsync \
+    libboost-all-dev\
 	dirmngr gnupg2 \
 	build-essential \
 	byobu \
 	wget \
 	htop \
+    nvtop \
 	apt-utils \
 	software-properties-common \
 	nano \
@@ -43,9 +46,9 @@ RUN echo "alias mamba='micromamba'" >> ~/.bashrc
 RUN /usr/local/bin/_dockerfile_initialize_user_accounts.sh && \
     /usr/local/bin/_dockerfile_setup_root_prefix.sh
 SHELL ["/usr/local/bin/_dockerfile_shell.sh"]
-COPY mamba_env.yml /root 
+COPY files/mamba_env.yml /root 
 
-# RUN conda env create -y -f /root/mamba_env.yml # doesn't work because because during build docker cannot access GPU
+# RUN conda env create -y -f /root/mamba_env.yml # doesn't work properly because because during build docker cannot access GPU
 
 # ros2-base
 RUN echo 'Etc/UTC' > /etc/timezone && \
@@ -84,16 +87,24 @@ RUN colcon mixin add default \
     colcon metadata update
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-humble-ros-base \
+    ros-humble-rviz2 \
     && rm -rf /var/lib/apt/lists/*
 
-# isaaac
-RUN mkdir -p /isaac-sim
-COPY nucleus.py /root/
-COPY --from=nvcr.io/nvidia/isaac-sim:2023.1.1 /isaac-sim /isaac-sim
+# Byobu Fix for launching BASH instead of SH
+RUN mkdir -p /root/.byobu/
+RUN echo 'set -g default-shell /bin/bash' >>/root/.byobu/.tmux.conf
+RUN echo 'set -g default-command /bin/bash' >>/root/.byobu/.tmux.conf
 
 # post-build setup
-COPY post_build_setup.sh /root/post_build_setup.sh
+COPY files/setup.bash /root/setup.bash
+COPY files/launch_byobu_ws.sh /root/launch_byobu_ws.sh
+RUN chmod +x /root/launch_byobu_ws.sh
+COPY utils/setup_ws.sh /root/setup_ws.sh
+RUN chmod +x /root/setup_ws.sh
+COPY utils/create_mamba_env.sh /root/create_mamba_env.sh
+RUN chmod +x /root/create_mamba_env.sh
+COPY utils/post_build_setup.sh /root/post_build_setup.sh
 RUN chmod +x /root/post_build_setup.sh
-ENTRYPOINT ["/root/post_build_setup.sh"]
+# ENTRYPOINT ["/root/post_build_setup.sh"]
 
 WORKDIR /root

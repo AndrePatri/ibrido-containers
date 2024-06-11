@@ -1,5 +1,4 @@
 #!/bin/bash
 
-cd "$(dirname "$0")"
-mkdir ../build
-singularity build ../build/cudagl2204.sif cudagl2204.def
+# build singularity container based on Dockerfile
+singularity build --oci ./ibrido.oci.sif ./Dockerfile
