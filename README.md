@@ -15,7 +15,7 @@ After the build process has completed, you can run the `isaac_ubuntu22/docker/la
 You can now spawn the ibrido_ws [Byobu](https://www.byobu.org/) workspace by launching `launch_byobu_ws.sh`. From the workspace you can rapidly run all the main components of the echosystem. During a "minimal" training, you would just need to run the 3 already configured commands for the simulation environment, the control cluster and, finally, the training environment. Please note that the first time it may take a while due to IsaacSim's ray tracking shaders compilation and the RHC cluster having to codegenerate some symbolic function.
 
 ### Singularity
-TBD
+Install Singularity > 4.1 and make sure to have installed a [squashfs-tools](https://github.com/plougher/squashfs-tools/releases/tag/4.6.1) version >=4.6.
 
 ### Acknowledgements
 Thanks to [c-rizz](https://github.com/c-rizz) for the technical support in setting up the container.
