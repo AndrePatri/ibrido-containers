@@ -3,9 +3,11 @@
 # get script directory
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-singularity run --oci ./ibrido_isaac.oci.sif
+source $SCRIPT_DIR/files/.env.base
 
-singularity exec \
+sudo singularity shell \
+    -B /tmp/.X11-unix:/tmp/.X11-unix \
+    -B /etc/localtime:/etc/localtime:ro \
     -B ~/docker/ibrido-docker/isaac-sim/cache/kit:/isaac-sim/kit/cache:rw \
     -B ~/docker/ibrido-docker/isaac-sim/cache/ov:/root/.cache/ov:rw \
     -B ~/docker/ibrido-docker/isaac-sim/cache/pip:/root/.cache/pip:rw \
@@ -18,5 +20,12 @@ singularity exec \
     -B ~/docker/ibrido-docker/training_data:/root/training_data:rw \
     -B ~/docker/ibrido-docker/aux_data:/root/aux_data:rw \
     -B ~/docker/ibrido-docker/conda:/opt/conda:rw \
-    --oci --nv --writable --containall .sif \
-    bash -c "export /isaac-sim/python.sh"
+    --oci --nv ibrido_isaac.oci.sif
+
+# singularity run --oci ./ibrido.oci.sif
+# singularity shell \
+#     -B ~/docker/ibrido-docker/ibrido_ws:/root/ibrido_ws:rw \
+#     -B ~/docker/ibrido-docker/training_data:/root/training_data:rw \
+#     -B ~/docker/ibrido-docker/aux_data:/root/aux_data:rw \
+#     -B ~/docker/ibrido-docker/conda:/opt/conda:rw \
+#     --oci --nv ibrido.oci.sif
