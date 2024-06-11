@@ -3,7 +3,7 @@
 # get script directory
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-singularity shell \
+singularity exec \
     -B /tmp/.X11-unix:/tmp/.X11-unix \
     -B /etc/localtime:/etc/localtime:ro \
     -B ~/docker/ibrido-docker/isaac-sim/cache/kit:/isaac-sim/kit/cache:rw \
@@ -19,7 +19,7 @@ singularity shell \
     -B ~/docker/ibrido-docker/aux_data:/root/aux_data:rw \
     -B ~/docker/ibrido-docker/conda:/opt/conda:rw \
     --no-home \
-    --nv ibrido_isaac.sif
+    --nv ibrido_isaac.sif bash 
 
 # singularity run \
 #     -B /tmp/.X11-unix:/tmp/.X11-unix \
