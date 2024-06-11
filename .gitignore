@@ -2,5 +2,7 @@ lr_gym.sif
 build/
 .vscode
 isaac_ubuntu22/singularity/ibrido.oci.sif
+isaac_ubuntu22/singularity/ibrido.sif
 isaac_ubuntu22/singularity/ibrido_isaac.oci.sif
+isaac_ubuntu22/singularity/ibrido_isaac.sif
 

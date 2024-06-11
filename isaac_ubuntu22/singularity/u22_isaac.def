@@ -110,8 +110,9 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     chmod +x /root/post_build_setup.sh
 
 %test
+    source ~/.bashrc
     echo 'Testing MicroMamba is present...'
-    mamba 
+    mamba --version
 
 %runscript
     exec /bin/bash "$@"
