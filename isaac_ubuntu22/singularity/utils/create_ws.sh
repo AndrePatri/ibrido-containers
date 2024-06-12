@@ -5,7 +5,16 @@ WS_SRC=$HOME/docker/ibrido-docker/ibrido_ws/src
 
 mkdir -p $HOME/docker/ibrido-docker/aux_data
 mkdir -p $HOME/docker/ibrido-docker/conda
-mkdir -p $HOME/docker/ibrido-docker/isaac-sim
+mkdir -p $HOME/docker/ibrido-docker/conda_hidden
+mkdir -p $HOME/docker/ibrido-docker/cache/pip
+mkdir -p $HOME/docker/ibrido-docker/cache/isaac-sim/kit
+mkdir -p $HOME/docker/ibrido-docker/cache/isaac-sim/ov
+mkdir -p $HOME/docker/ibrido-docker/cache/isaac-sim/glcache
+mkdir -p $HOME/docker/ibrido-docker/cache/isaac-sim/computecache
+mkdir -p $HOME/docker/ibrido-docker/documents/isaac-sim
+mkdir -p $HOME/docker/ibrido-docker/logs/isaac-sim
+mkdir -p $HOME/docker/ibrido-docker/data/isaac-sim
+
 mkdir -p $WS_SRC
 
 cd $WS_SRC

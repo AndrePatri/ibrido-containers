@@ -10,11 +10,13 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
 
 %files
     ./files/mamba_env.yml /root
-    ./files/setup.bash /root
+    ./files/setup.bash /roothttps://micromamba..net
     ./files/launch_byobu_ws.sh /root
     ./utils/setup_ws.sh /root
     ./utils/create_mamba_env.sh /root
     ./utils/post_build_setup.sh /root
+    ./utils/post_build_setup.sh /root
+    ./utils/mamba_utils/bin/_activate_current_env.sh /usr/bin
 
 %environment
     export DEBIAN_FRONTEND=noninteractive
@@ -23,8 +25,9 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     export PATH=$PATH:/root/.local/bin
     export ROS_DISTRO=humble
     export ACCEPT_EULA=Y
-    alias mamba='/usr/bin/micromamba'
     export MAMBA_ROOT_PREFIX='/opt/conda'
+    export MAMBA_USER='mambauser'
+    export ENV_NAME='ibrido'
 
 %post
 
@@ -50,11 +53,11 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
 
     # Micromamba setup
     echo "Setting up Micromamba"
-    curl -Ls https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj -C /usr/bin --strip-components=1 bin/micromamba
-    echo "alias mamba='/usr/bin/micromamba'" >> ~/.bashrc
+    curl -Ls https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj -C /usr/local/bin/ --strip-components=1 bin/micromamba
+    echo "alias mamba='/usr/local/bin/micromamba'" >> ~/.bashrc
     MAMBA_ROOT_PREFIX='/opt/conda'
     echo "export MAMBA_ROOT_PREFIX=\"${MAMBA_ROOT_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
-    micromamba shell init --shell bash --root-prefix=${MAMBA_ROOT_PREFIX}
+    /usr/local/bin/micromamba env create -y --log-level off -f /root/mamba_env.yml
 
     # ROS 2 base setup
     echo "Setting up ROS 2 base"
@@ -113,7 +116,7 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
 
 %test
     echo 'Testing if MicroMamba is present...'
-    /usr/bin/micromamba --version
+    /usr/local/bin/micromamba --version
 
 %runscript
     exec /bin/bash "$@"
