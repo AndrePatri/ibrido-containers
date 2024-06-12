@@ -24,6 +24,7 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     export ROS_DISTRO=humble
     export ACCEPT_EULA=Y
     alias mamba='/usr/bin/micromamba'
+    export MAMBA_ROOT_PREFIX='/opt/conda'
 
 %post
 
@@ -50,7 +51,11 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     # Micromamba setup
     echo "Setting up Micromamba"
     curl -Ls https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj -C /usr/bin --strip-components=1 bin/micromamba
-    
+    echo "alias mamba='/usr/bin/micromamba'" >> ~/.bashrc
+    MAMBA_ROOT_PREFIX='/opt/conda'
+    echo "export MAMBA_ROOT_PREFIX=\"${MAMBA_ROOT_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
+    micromamba shell init --shell bash --root-prefix=${MAMBA_ROOT_PREFIX}
+
     # ROS 2 base setup
     echo "Setting up ROS 2 base"
     echo 'Etc/UTC' > /etc/timezone

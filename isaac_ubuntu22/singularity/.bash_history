@@ -8,3 +8,8 @@ ls
 cd /root/
 ls
 exit
+echo $HOME
+cd /root/
+l
+ls
+exit
