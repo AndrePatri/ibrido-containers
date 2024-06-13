@@ -123,7 +123,7 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     echo 'set -g default-command /bin/bash' >> ${HOME}/.byobu/.tmux.conf
 
     # create a .netrc file to be used for example by Wandb
-    touch $HOME/.netrc
+#    touch $HOME/.netrc
 
 %test
     echo 'Testing if MicroMamba is present...'

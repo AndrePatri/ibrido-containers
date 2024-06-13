@@ -9,6 +9,8 @@ mkdir -p ${IBRIDO_PREFIX}/aux_data
 mkdir -p ${IBRIDO_PREFIX}/conda
 mkdir -p ${IBRIDO_PREFIX}/conda_hidden/.conda
 mkdir -p ${IBRIDO_PREFIX}/.cache/wandb
+mkdir -p ${IBRIDO_PREFIX}/network/
+touch ${IBRIDO_PREFIX}/network/.netrc
 
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/cache/kit
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/cache/ov
