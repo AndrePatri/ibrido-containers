@@ -12,13 +12,12 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
 #    ./files/launch_byobu_ws.sh ${HOME}/.local/bin
 
 %environment
-    export HOME='/root'
+    
     export DEBIAN_FRONTEND=noninteractive
     export LANG=C.UTF-8
     export LC_ALL=C.UTF-8
     export ROS_DISTRO=humble
     export ACCEPT_EULA=Y
-    export IBRIDO_SINGULARITY_ROOT="${HOME}/ibrido_ws/src/ibrido-docker/isaac_ubuntu22/singularity"
     export MAMBA_ENV_NAME='ibrido'
     export MAMBA_ENV_FPATH='${IBRIDO_SINGULARITY_ROOT}/files/mamba_env.yml'
     export UTILS_SCRIPTPATH='${IBRIDO_SINGULARITY_ROOT}/utils'
@@ -28,7 +27,28 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
 #    export SINGULARITY_MEMORY_SWAP=
 
 %post
+    # writing some composite singularity env. variables
+    HOME='/root'
+    IBRIDO_SINGULARITY_ROOT="${HOME}/ibrido_ws/src/ibrido-docker/isaac_ubuntu22/singularity"
+    MAMBA_ENV_NAME='ibrido'
+    MAMBA_ENV_FPATH='${IBRIDO_SINGULARITY_ROOT}/files/mamba_env.yml'
+    MAMBA_EXE_PREFIX='/usr/local/bin'
+    MAMBA_EXE='${MAMBA_EXE_PREFIX}/micromamba'
+    MAMBA_ROOT_PREFIX='/opt/conda'
+    UTILS_SCRIPTPATH='${IBRIDO_SINGULARITY_ROOT}/utils'
+    PATH=$PATH:${HOME}/.local/bin
+    PATH=$PATH:${HOME}/'${UTILS_SCRIPTPATH}'
 
+    echo "export HOME=\"${HOME}\"" >> $SINGULARITY_ENVIRONMENT
+    echo "export IBRIDO_SINGULARITY_ROOT=\"${IBRIDO_SINGULARITY_ROOT}\"" >> $SINGULARITY_ENVIRONMENT
+    echo "export MAMBA_ENV_NAME=\"${MAMBA_ENV_NAME}\"" >> $SINGULARITY_ENVIRONMENT
+    echo "export MAMBA_ENV_FPATH=\"${MAMBA_ENV_FPATH}\"" >> $SINGULARITY_ENVIRONMENT
+    echo "export UTILS_SCRIPTPATH=\"${UTILS_SCRIPTPATH}\"" >> $SINGULARITY_ENVIRONMENT
+    echo "export PATH=\"${PATH}\"" >> $SINGULARITY_ENVIRONMENT
+    echo "export MAMBA_EXE_PREFIX=\"${MAMBA_EXE_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
+    echo "export MAMBA_EXE=\"${MAMBA_EXE}\"" >> $SINGULARITY_ENVIRONMENT
+    echo "export MAMBA_ROOT_PREFIX=\"${MAMBA_ROOT_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
+    
     apt-get update && apt-get install -y \
         ca-certificates python3 python3-venv python-is-python3 \
         git wget sudo vim iputils-ping ssh rsync \
@@ -51,15 +71,7 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
 
     # Micromamba setup
     echo "Setting up Micromamba"
-    MAMBA_EXE_PREFIX='/usr/local/bin'
     curl -Ls https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj -C ${MAMBA_EXE_PREFIX}/ --strip-components=1 bin/micromamba
-    MAMBA_EXE='${MAMBA_EXE_PREFIX}/micromamba'
-
-    MAMBA_ROOT_PREFIX='/opt/conda'
-
-    echo "export MAMBA_EXE_PREFIX=\"${MAMBA_EXE_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
-    echo "export MAMBA_EXE=\"${MAMBA_EXE}\"" >> $SINGULARITY_ENVIRONMENT
-    echo "export MAMBA_ROOT_PREFIX=\"${MAMBA_ROOT_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
     
     # ROS 2 base setup
     echo "Setting up ROS 2 base"
