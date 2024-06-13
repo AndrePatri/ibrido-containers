@@ -13,6 +13,7 @@ singularity exec \
     -B ${IBRIDO_PREFIX}/conda_hidden/.conda:/root/.conda:rw \
     -B ${IBRIDO_PREFIX}/.cache/wandb:/root/.cache/wandb:rw \
     -B ${IBRIDO_PREFIX}/network/.netrc:/root/.netrc:rw \
+    -B ${IBRIDO_PREFIX}/.byobu:/root/.byobu:rw \
     -B ${IBRIDO_PREFIX}/isaac-sim/cache/kit:/isaac-sim/kit/cache:rw \
     -B ${IBRIDO_PREFIX}/isaac-sim/exts:/isaac-sim/kit/exts/:rw \
     -B ${IBRIDO_PREFIX}/isaac-sim/logs:/isaac-sim/kit/logs:rw \

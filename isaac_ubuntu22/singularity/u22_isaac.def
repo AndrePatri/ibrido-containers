@@ -116,12 +116,6 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
         ros-humble-ros-base \
         ros-humble-rviz2 && rm -rf /var/lib/apt/lists/*
 
-    # Byobu Fix for launching BASH instead of SH
-    echo "Fixing Byobu to launch BASH"
-    mkdir -p ${HOME}/.byobu/
-    echo 'set -g default-shell /bin/bash' >> ${HOME}/.byobu/.tmux.conf
-    echo 'set -g default-command /bin/bash' >> ${HOME}/.byobu/.tmux.conf
-
     # create a .netrc file to be used for example by Wandb
 #    touch $HOME/.netrc
 
