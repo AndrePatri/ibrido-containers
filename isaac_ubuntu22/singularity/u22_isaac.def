@@ -9,8 +9,7 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     This is the Singularity container associated with the IBRIDO framework.
 
 %files
-    ./files/mamba_env.yml /root
-    ./files/setup.bash /roothttps://micromamba..net
+    ./files/setup.bash /root
     ./files/launch_byobu_ws.sh /root
     ./utils/setup_ws.sh /root
     ./utils/create_mamba_env.sh /root
@@ -26,7 +25,9 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     export ROS_DISTRO=humble
     export ACCEPT_EULA=Y
     export ENV_NAME='ibrido'
-    
+    export SINGULARITY_HOME='/root'
+#    export SINGULARITY_MEMORY=
+#    export SINGULARITY_MEMORY_SWAP=
 %post
 
     apt-get update && apt-get install -y \
@@ -54,7 +55,6 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     MAMBA_EXE_PREFIX='/usr/local/bin'
     curl -Ls https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj -C ${MAMBA_EXE_PREFIX}/ --strip-components=1 bin/micromamba
     MAMBA_EXE='${MAMBA_EXE_PREFIX}/micromamba'
-    echo "alias mamba='${MAMBA_EXE}'" >> ~/.bashrc
 
     MAMBA_ROOT_PREFIX='/opt/conda'
 
@@ -117,13 +117,9 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     chmod +x /root/create_mamba_env.sh
     chmod +x /root/post_build_setup.sh
 
-    # creating some dirs necessary for isaac sim
-    mkdir -p /isaac-sim/nv_shadercache
-    mkdir -p /isaac-sim/shadercache
-
 %test
     echo 'Testing if MicroMamba is present...'
-    /usr/local/bin/micromamba --version
+    ${MAMBA_EXE} --version
 
 %runscript
     exec /bin/bash "$@"

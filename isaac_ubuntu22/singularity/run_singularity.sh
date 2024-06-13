@@ -24,10 +24,13 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 #     --no-home \
 #     --nv ibrido_container_isaac.sif bash
 
-sudo singularity exec \
+singularity exec \
     -B /tmp/.X11-unix:/tmp/.X11-unix\
     -B /etc/localtime:/etc/localtime:ro \
+    -B ${IBRIDO_PREFIX}/aux_data:/root/aux_data:rw \
     -B ${IBRIDO_PREFIX}/ibrido_ws:/root/ibrido_ws:rw \
+    -B ${IBRIDO_PREFIX}/conda:/opt/conda:rw \
+    -B ${IBRIDO_PREFIX}/conda_hidden/.conda:/root/.conda:rw \
     -B ${IBRIDO_PREFIX}/isaac-sim/cache/kit:/isaac-sim/kit/cache:rw \
     -B ${IBRIDO_PREFIX}/isaac-sim/exts:/isaac-sim/kit/exts/:rw \
     -B ${IBRIDO_PREFIX}/isaac-sim/logs:/isaac-sim/kit/logs:rw \
@@ -40,7 +43,7 @@ sudo singularity exec \
     -B ${IBRIDO_PREFIX}/isaac-sim/cache/computecache:/root/.nv/ComputeCache:rw \
     -B ${IBRIDO_PREFIX}/isaac-sim/logs:/root/.nvidia-omniverse/logs:rw \
     -B ${IBRIDO_PREFIX}/isaac-sim/documents:/root/Documents:rw \
-    --no-home \
+    --no-mount home,cwd \
     --nv ibrido_container_isaac.sif bash
 
     # -B ${IBRIDO_PREFIX}/isaac-sim/data:/root/.local/share/ov/data:rw \
