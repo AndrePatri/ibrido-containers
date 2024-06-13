@@ -18,11 +18,6 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     export LC_ALL=C.UTF-8
     export ROS_DISTRO=humble
     export ACCEPT_EULA=Y
-    export MAMBA_ENV_NAME='ibrido'
-    export MAMBA_ENV_FPATH='${IBRIDO_SINGULARITY_ROOT}/files/mamba_env.yml'
-    export UTILS_SCRIPTPATH='${IBRIDO_SINGULARITY_ROOT}/utils'
-    export PATH=$PATH:${HOME}/.local/bin
-    export PATH=$PATH:${HOME}/'${UTILS_SCRIPTPATH}'
 #    export SINGULARITY_MEMORY=
 #    export SINGULARITY_MEMORY_SWAP=
 
@@ -30,14 +25,17 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     # writing some composite singularity env. variables
     HOME='/root'
     IBRIDO_SINGULARITY_ROOT="${HOME}/ibrido_ws/src/ibrido-docker/isaac_ubuntu22/singularity"
+    UTILS_SCRIPTPATH='${IBRIDO_SINGULARITY_ROOT}/utils'
+    FILES_SCRIPTPATH='${IBRIDO_SINGULARITY_ROOT}/files'
     MAMBA_ENV_NAME='ibrido'
     MAMBA_ENV_FPATH='${IBRIDO_SINGULARITY_ROOT}/files/mamba_env.yml'
     MAMBA_EXE_PREFIX='/usr/local/bin'
     MAMBA_EXE='${MAMBA_EXE_PREFIX}/micromamba'
     MAMBA_ROOT_PREFIX='/opt/conda'
-    UTILS_SCRIPTPATH='${IBRIDO_SINGULARITY_ROOT}/utils'
+    MAMBA_UTILS_PREFIX='${IBRIDO_SINGULARITY_ROOT}/utils/mamba_utils/bin'
     PATH=$PATH:${HOME}/.local/bin
-    PATH=$PATH:${HOME}/'${UTILS_SCRIPTPATH}'
+    PATH=$PATH:'${UTILS_SCRIPTPATH}'
+    PATH=$PATH:'${MAMBA_UTILS_PREFIX}'
 
     echo "export HOME=\"${HOME}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export IBRIDO_SINGULARITY_ROOT=\"${IBRIDO_SINGULARITY_ROOT}\"" >> $SINGULARITY_ENVIRONMENT
@@ -48,7 +46,9 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     echo "export MAMBA_EXE_PREFIX=\"${MAMBA_EXE_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_EXE=\"${MAMBA_EXE}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_ROOT_PREFIX=\"${MAMBA_ROOT_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
-    
+    echo "export MAMBA_UTILS_PREFIX=\"${MAMBA_UTILS_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
+    echo "export FILES_SCRIPTPATH=\"${FILES_SCRIPTPATH}\"" >> $SINGULARITY_ENVIRONMENT
+
     apt-get update && apt-get install -y \
         ca-certificates python3 python3-venv python-is-python3 \
         git wget sudo vim iputils-ping ssh rsync \
@@ -121,6 +121,9 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     mkdir -p ${HOME}/.byobu/
     echo 'set -g default-shell /bin/bash' >> ${HOME}/.byobu/.tmux.conf
     echo 'set -g default-command /bin/bash' >> ${HOME}/.byobu/.tmux.conf
+
+    # create a .netrc file to be used for example by Wandb
+    touch $HOME/.netrc
 
 %test
     echo 'Testing if MicroMamba is present...'

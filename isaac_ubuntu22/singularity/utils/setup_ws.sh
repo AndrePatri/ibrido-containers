@@ -5,11 +5,11 @@ echo "Setting up workspace..."
 
 WS_BASEDIR=$HOME/ibrido_ws
 
-source ${MAMBA_EXE_PREFIX}/_activate_current_env.sh # enable mamba for this shell
-micromamba activate ibrido # this has to be active to properly install packages
+source ${MAMBA_UTILS_PREFIX}/_activate_current_env.sh # enable mamba for this shell
+micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install packages
 source /opt/ros/humble/setup.bash # ros2 setup
 
-cp /root/setup.bash $WS_BASEDIR/
+cp ${FILES_SCRIPTPATH}/setup.bash $WS_BASEDIR/
 
 # clean ws if already initialized
 rm -rf $WS_BASEDIR/build && mkdir $WS_BASEDIR/build

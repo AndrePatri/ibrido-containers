@@ -8,7 +8,6 @@ mkdir -p ${IBRIDO_PREFIX}/training_data
 mkdir -p ${IBRIDO_PREFIX}/aux_data
 mkdir -p ${IBRIDO_PREFIX}/conda
 mkdir -p ${IBRIDO_PREFIX}/conda_hidden/.conda
-mkdir -p ${IBRIDO_PREFIX}/.cache/
 mkdir -p ${IBRIDO_PREFIX}/.cache/wandb
 
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/cache/kit
@@ -20,6 +19,7 @@ mkdir -p ${IBRIDO_PREFIX}/isaac-sim/cache/computecache
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/logs
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/exts
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/data
+mkdir -p ${IBRIDO_PREFIX}/isaac-sim/apps
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/documents
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/local
 mkdir -p $WS_SRC
