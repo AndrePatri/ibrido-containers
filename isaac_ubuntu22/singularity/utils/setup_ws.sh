@@ -3,11 +3,11 @@ set -e # exiting if any cmd fails
 
 echo "Setting up workspace..."
 
-source /usr/local/bin/_activate_current_env.sh # enable mamba for this shell
+WS_BASEDIR=$HOME/ibrido_ws
+
+source ${MAMBA_EXE_PREFIX}/_activate_current_env.sh # enable mamba for this shell
 micromamba activate ibrido # this has to be active to properly install packages
 source /opt/ros/humble/setup.bash # ros2 setup
-
-WS_BASEDIR=$HOME/ibrido_ws
 
 cp /root/setup.bash $WS_BASEDIR/
 

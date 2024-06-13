@@ -8,26 +8,25 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
 %help
     This is the Singularity container associated with the IBRIDO framework.
 
-%files
-    ./files/setup.bash /root
-    ./files/launch_byobu_ws.sh /root
-    ./utils/setup_ws.sh /root
-    ./utils/create_mamba_env.sh /root
-    ./utils/post_build_setup.sh /root
-    ./utils/post_build_setup.sh /root
-    ./utils/mamba_utils/bin/_activate_current_env.sh /usr/local/bin
+#%files
+#    ./files/launch_byobu_ws.sh ${HOME}/.local/bin
 
 %environment
+    export HOME='/root'
     export DEBIAN_FRONTEND=noninteractive
     export LANG=C.UTF-8
     export LC_ALL=C.UTF-8
-    export PATH=$PATH:/root/.local/bin
     export ROS_DISTRO=humble
     export ACCEPT_EULA=Y
-    export ENV_NAME='ibrido'
-    export SINGULARITY_HOME='/root'
+    export IBRIDO_SINGULARITY_ROOT="${HOME}/ibrido_ws/src/ibrido-docker/isaac_ubuntu22/singularity"
+    export MAMBA_ENV_NAME='ibrido'
+    export MAMBA_ENV_FPATH='${IBRIDO_SINGULARITY_ROOT}/files/mamba_env.yml'
+    export UTILS_SCRIPTPATH='${IBRIDO_SINGULARITY_ROOT}/utils'
+    export PATH=$PATH:${HOME}/.local/bin
+    export PATH=$PATH:${HOME}/'${UTILS_SCRIPTPATH}'
 #    export SINGULARITY_MEMORY=
 #    export SINGULARITY_MEMORY_SWAP=
+
 %post
 
     apt-get update && apt-get install -y \
@@ -107,15 +106,9 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
 
     # Byobu Fix for launching BASH instead of SH
     echo "Fixing Byobu to launch BASH"
-    mkdir -p /root/.byobu/
-    echo 'set -g default-shell /bin/bash' >> /root/.byobu/.tmux.conf
-    echo 'set -g default-command /bin/bash' >> /root/.byobu/.tmux.conf
-
-    echo "Setting up utility scripts"
-    chmod +x /root/launch_byobu_ws.sh
-    chmod +x /root/setup_ws.sh
-    chmod +x /root/create_mamba_env.sh
-    chmod +x /root/post_build_setup.sh
+    mkdir -p ${HOME}/.byobu/
+    echo 'set -g default-shell /bin/bash' >> ${HOME}/.byobu/.tmux.conf
+    echo 'set -g default-command /bin/bash' >> ${HOME}/.byobu/.tmux.conf
 
 %test
     echo 'Testing if MicroMamba is present...'
@@ -125,5 +118,4 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     exec /bin/bash "$@"
 
 %startscript
-    exec /bin/bash /root/post_build_setup.sh
-#    exec /bin/bash /root/post_build_setup.sh
+    exec /bin/bash "$@"
