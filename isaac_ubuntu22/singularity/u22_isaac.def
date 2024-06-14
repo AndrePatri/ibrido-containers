@@ -123,10 +123,6 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
 %test
     echo 'Testing if MicroMamba is present...'
     ${MAMBA_EXE} --version
-    echo 'Checking some env variables'
-    echo 'Home folder is at ${HOME}'
-    echo 'IBRIDO_SINGULARITY_ROOT: ${IBRIDO_SINGULARITY_ROOT}'
-    echo 'PATH: ${PATH}'
 
 %runscript
     exec /bin/bash "$@"
