@@ -13,13 +13,16 @@ mkdir -p ${IBRIDO_PREFIX}/network/
 touch ${IBRIDO_PREFIX}/network/.netrc
 mkdir -p ${IBRIDO_PREFIX}/.byobu
 
-mkdir -p ${IBRIDO_PREFIX}/isaac-sim/cache/kit
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/cache/ov
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/cache/pip
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/cache/warp
+mkdir -p ${IBRIDO_PREFIX}/isaac-sim/cache/kit
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/cache/glcache
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/cache/computecache
+mkdir -p ${IBRIDO_PREFIX}/isaac-sim/cache/extcache
+mkdir -p ${IBRIDO_PREFIX}/isaac-sim/cache/nv_shadercache
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/logs
+mkdir -p ${IBRIDO_PREFIX}/isaac-sim/kitlogs/Isaac-Sim
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/exts
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/data
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/apps
