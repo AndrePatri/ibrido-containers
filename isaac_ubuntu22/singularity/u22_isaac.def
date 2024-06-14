@@ -18,6 +18,7 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     export LC_ALL=C.UTF-8
     export ROS_DISTRO=humble
     export ACCEPT_EULA=Y
+    export force_color_prompt=Y
 #    export SINGULARITY_MEMORY=
 #    export SINGULARITY_MEMORY_SWAP=
 
@@ -116,12 +117,16 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
         ros-humble-ros-base \
         ros-humble-rviz2 && rm -rf /var/lib/apt/lists/*
 
-    # create a .netrc file to be used for example by Wandb
-#    touch $HOME/.netrc
+    # give access to /isaac-sim folder to anybody (root only by default)
+    chmod --recursive 777 /isaac-sim
 
 %test
     echo 'Testing if MicroMamba is present...'
     ${MAMBA_EXE} --version
+    echo 'Checking some env variables'
+    echo 'Home folder is at ${HOME}'
+    echo 'IBRIDO_SINGULARITY_ROOT: ${IBRIDO_SINGULARITY_ROOT}'
+    echo 'PATH: ${PATH}'
 
 %runscript
     exec /bin/bash "$@"
