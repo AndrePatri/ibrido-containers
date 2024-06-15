@@ -25,7 +25,7 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
 %post
     # writing some composite singularity env. variables
     HOME='/root'
-    IBRIDO_SINGULARITY_ROOT="${HOME}/ibrido_ws/src/ibrido-docker/isaac_ubuntu22/singularity"
+    IBRIDO_SINGULARITY_ROOT="${HOME}/ibrido_ws/src/ibrido-containers/isaac_ubuntu22/singularity"
     UTILS_SCRIPTPATH='${IBRIDO_SINGULARITY_ROOT}/utils'
     FILES_SCRIPTPATH='${IBRIDO_SINGULARITY_ROOT}/files'
     MAMBA_ENV_NAME='ibrido'
@@ -118,6 +118,7 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
         ros-humble-rviz2 && rm -rf /var/lib/apt/lists/*
 
     # give access to /isaac-sim folder to anybody (root only by default)
+    echo 'Changing /isaac-sim ownership so that it can be used by any user...'
     chmod --recursive 777 /isaac-sim
 
 %test

@@ -4,10 +4,9 @@ IBRIDO_PREFIX=$HOME/docker/ibrido-singularity
 # get script directory
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-sudo singularity exec \
+singularity exec \
     -B /tmp/.X11-unix:/tmp/.X11-unix\
     -B /etc/localtime:/etc/localtime:ro \
-    -B ${IBRIDO_PREFIX}/isaac-sim/isaac-sim:/root/isaac-sim:rw \
     -B ${IBRIDO_PREFIX}/aux_data:/root/aux_data:rw \
     -B ${IBRIDO_PREFIX}/training_data:/root/training_data:rw \
     -B ${IBRIDO_PREFIX}/ibrido_ws:/root/ibrido_ws:rw \
