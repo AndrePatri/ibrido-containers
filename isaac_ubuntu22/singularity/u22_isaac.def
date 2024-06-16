@@ -55,7 +55,7 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     echo "export MAMBA_EXE=\"${MAMBA_EXE}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_ROOT_PREFIX=\"${MAMBA_ROOT_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
     
-    WANDB_KEY={{ variable }}
+    WANDB_KEY={{ wandb_key }}
     echo "export WANDB_KEY=\"${WANDB_KEY}\"" >> $SINGULARITY_ENVIRONMENT
     
     apt-get update && apt-get install -y \
