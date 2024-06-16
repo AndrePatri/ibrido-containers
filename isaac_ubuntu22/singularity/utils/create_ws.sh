@@ -1,9 +1,14 @@
 #!/bin/bash
 set -e # exiting if any cmd fails
 
-IBRIDO_PREFIX=$HOME/docker/ibrido-singularity
+IBRIDO_PREFIX=$HOME/containers/ibrido-singularity
 WS_SRC=${IBRIDO_PREFIX}/ibrido_ws/src
 
+echo 'Creating all directories...'
+
+mkdir -p $WS_SRC
+
+# auxiliary dirs to be mounted/binded
 mkdir -p ${IBRIDO_PREFIX}/training_data
 mkdir -p ${IBRIDO_PREFIX}/aux_data
 mkdir -p ${IBRIDO_PREFIX}/conda
@@ -13,6 +18,7 @@ mkdir -p ${IBRIDO_PREFIX}/network/
 touch ${IBRIDO_PREFIX}/network/.netrc
 mkdir -p ${IBRIDO_PREFIX}/.byobu
 
+# isaac-sim specific
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/cache/ov
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/cache/pip
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/cache/warp
@@ -28,10 +34,11 @@ mkdir -p ${IBRIDO_PREFIX}/isaac-sim/data
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/apps
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/documents
 mkdir -p ${IBRIDO_PREFIX}/isaac-sim/local
-mkdir -p $WS_SRC
+
+echo 'Done.'
 
 cd $WS_SRC
-echo 'Cloning all repos (if not already there) of the echosystem...'
+echo 'Cloning all repos into workspace (if not already there)...'
 git clone -q -b main git@github.com:AndrePatri/IBRIDO.git &
 git clone -q -b isaac4.0.0 git@github.com:AndrePatri/LRHControl.git &
 git clone -q -b devel git@github.com:AndrePatri/CoClusterBridge.git &
@@ -47,4 +54,3 @@ git clone -q -b big_wheels_v2.10_optional_find_ros2 git@github.com:ADVRHumanoids
 git clone -q -b optional_find_ros2 git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git &
 wait
 echo 'Done.'
-

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IBRIDO_PREFIX=$HOME/docker/ibrido-singularity
+IBRIDO_PREFIX=$HOME/containers/ibrido-singularity
 # get script directory
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 

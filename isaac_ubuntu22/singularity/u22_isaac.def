@@ -23,6 +23,9 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
 #    export SINGULARITY_MEMORY=
 #    export SINGULARITY_MEMORY_SWAP=
 
+#%setup
+#    ./utils/create_ws.sh
+
 %post
     # writing some composite singularity env. variables
     HOME='/root'
