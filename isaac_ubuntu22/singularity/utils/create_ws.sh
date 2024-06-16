@@ -17,6 +17,8 @@ echo 'Done.'
 echo 'Creating all files...'
 for item in "${IBRIDO_BFILES_SRC[@]}"; do
     echo "--> $item"
+    dir_path=$(dirname "$item")
+    mkdir -p $dir_path # create if doesn't exist
     touch $item
 done
 echo 'Done.'
