@@ -4,7 +4,7 @@ set -e # exiting if any cmd fails
 echo "Running post-build steps. It may take a while...."
  
 /usr/local/bin/create_mamba_env.sh 
-/usr/local/binsetup_ws.sh
+/usr/local/bin/setup_ws.sh
 
 # Byobu Fix for launching BASH instead of SH
 echo "Fixing Byobu to launch BASH"
