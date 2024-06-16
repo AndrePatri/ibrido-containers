@@ -8,9 +8,9 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
 %help
     This is the Singularity container associated with the IBRIDO framework.
 
-%files # copy isaac kits
-    ./files/omni.isaac.sim.python.omnirobogym.headless.kit /isaac-sim/apps/
-    ./files/omni.isaac.sim.python.omnirobogym.kit /isaac-sim/apps
+%files # copy to root FS 
+    ./files/omni.isaac.sim.python.omnirobogym.headless.kit /
+    ./files/omni.isaac.sim.python.omnirobogym.kit /
 
 %environment
     
@@ -24,6 +24,11 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
 #    export SINGULARITY_MEMORY_SWAP=
 
 %post
+
+    # copy kit files to isaac
+    cp /omni.isaac.sim.python.omnirobogym.headless.kit /isaac-sim/apps/
+    cp /omni.isaac.sim.python.omnirobogym.kit /isaac-sim/apps/
+
     # writing some composite singularity env. variables
     HOME='/root'
     IBRIDO_SINGULARITY_ROOT="${HOME}/ibrido_ws/src/ibrido-containers/isaac_ubuntu22/singularity"

@@ -25,14 +25,7 @@ singularity exec \
     -B ${IBRIDO_PREFIX}/isaac-sim/documents:/root/Documents:rw \
     -B ${IBRIDO_PREFIX}/isaac-sim/cache/nv_shadercache:/isaac-sim/kit/exts/omni.gpu_foundation/cache/nv_shadercache:rw \
     -B ${IBRIDO_PREFIX}/isaac-sim/cache/kit:/isaac-sim/kit/cache:rw \
+    -B ${IBRIDO_PREFIX}/isaac-sim/data:/isaac-sim/kit/data:rw \
     -B ${IBRIDO_PREFIX}/isaac-sim/kitlogs/Isaac-Sim:/isaac-sim/kit/logs/Kit/Isaac-Sim:rw \
     --no-mount home,cwd \
     --nv ibrido_isaac.sif bash
-
-    # 
-    # -B ${IBRIDO_PREFIX}/isaac-sim/logs:/isaac-sim/kit/logs:rw \
-    # -B ${IBRIDO_PREFIX}/isaac-sim/data:/isaac-sim/kit/data:rw \
-    # -B ${IBRIDO_PREFIX}/isaac-sim/cache/extcache:/isaac-sim/kit/exts/omni.gpu_foundation/cache:rw \
-    # -B ${IBRIDO_PREFIX}/isaac-sim/apps:/isaac-sim/apps:rw \
-    # -B ${IBRIDO_PREFIX}/isaac-sim/exts:/isaac-sim/kit/exts/:rw \
-    # -B ${IBRIDO_PREFIX}/isaac-sim/data:/root/.local/share/ov/data:rw \
