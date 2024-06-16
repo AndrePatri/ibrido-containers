@@ -11,6 +11,13 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
 %files # copy isaac kits
     ./files/omni.isaac.sim.python.omnirobogym.headless.kit /isaac-sim/apps/
     ./files/omni.isaac.sim.python.omnirobogym.kit /isaac-sim/apps
+    ./files/bind_list.sh /usr/local/bin
+    ./files/mamba_env.yml /root
+    ./utils/create_mamba_env.sh /usr/local/bin
+    ./utils/mamba_utils/bin/_activate_current_env.sh /usr/local/bin
+    ./utils/setup_ws.sh /usr/local/bin
+    ./utils/post_build_setup.sh /usr/local/bin
+    ./utils/launch_byobu_ws.sh /usr/local/bin
 
 %environment
     
@@ -29,30 +36,21 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
 %post
     # writing some composite singularity env. variables
     HOME='/root'
-    IBRIDO_SINGULARITY_ROOT="${HOME}/ibrido_ws/src/ibrido-containers/isaac_ubuntu22/singularity"
-    UTILS_SCRIPTPATH='${IBRIDO_SINGULARITY_ROOT}/utils'
-    FILES_SCRIPTPATH='${IBRIDO_SINGULARITY_ROOT}/files'
     MAMBA_ENV_NAME='ibrido'
-    MAMBA_ENV_FPATH='${IBRIDO_SINGULARITY_ROOT}/files/mamba_env.yml'
     MAMBA_EXE_PREFIX='/usr/local/bin'
     MAMBA_EXE='${MAMBA_EXE_PREFIX}/micromamba'
     MAMBA_ROOT_PREFIX='/opt/conda'
-    MAMBA_UTILS_PREFIX='${IBRIDO_SINGULARITY_ROOT}/utils/mamba_utils/bin'
+    MAMBA_ENV_FPATH='${MAMBA_ROOT_PREFIX}/mamba_env.yml'
+
     PATH=$PATH:${HOME}/.local/bin
-    PATH=$PATH:'${UTILS_SCRIPTPATH}'
-    PATH=$PATH:'${MAMBA_UTILS_PREFIX}'
 
     echo "export HOME=\"${HOME}\"" >> $SINGULARITY_ENVIRONMENT
-    echo "export IBRIDO_SINGULARITY_ROOT=\"${IBRIDO_SINGULARITY_ROOT}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_ENV_NAME=\"${MAMBA_ENV_NAME}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_ENV_FPATH=\"${MAMBA_ENV_FPATH}\"" >> $SINGULARITY_ENVIRONMENT
-    echo "export UTILS_SCRIPTPATH=\"${UTILS_SCRIPTPATH}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export PATH=\"${PATH}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_EXE_PREFIX=\"${MAMBA_EXE_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_EXE=\"${MAMBA_EXE}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_ROOT_PREFIX=\"${MAMBA_ROOT_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
-    echo "export MAMBA_UTILS_PREFIX=\"${MAMBA_UTILS_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
-    echo "export FILES_SCRIPTPATH=\"${FILES_SCRIPTPATH}\"" >> $SINGULARITY_ENVIRONMENT
 
     apt-get update && apt-get install -y \
         ca-certificates python3 python3-venv python-is-python3 \

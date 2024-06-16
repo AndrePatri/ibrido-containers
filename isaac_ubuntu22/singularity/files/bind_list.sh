@@ -5,14 +5,16 @@ THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # some definitions
 SING_CONTAINER_DIR="$(dirname "$THIS_DIR")"
 IBRIDO_PREFIX=$HOME/containers/ibrido-singularity
-IBRIDO_WS_SRC=${IBRIDO_PREFIX}/ibrido_ws/src
+IBRIDO_WS_PREFIX=${IBRIDO_PREFIX}/ibrido_ws/
+IBRIDO_WS_SRC=${IBRIDO_WS_PREFIX}/src
+IBRIDO_CONDA=${IBRIDO_PREFIX}/conda
 
 # defining directories to be binded at runtime
 IBRIDO_BDIRS=(
     "${IBRIDO_PREFIX}/aux_data:/root/aux_data:rw"
     "${IBRIDO_PREFIX}/training_data:/root/training_data:rw"
-    "${IBRIDO_PREFIX}/ibrido_ws:/root/ibrido_ws:rw"
-    "${IBRIDO_PREFIX}/conda:/opt/conda:rw"
+    "${IBRIDO_WS_PREFIX}:/root/ibrido_ws:rw"
+    "${IBRIDO_CONDA}:/opt/conda:rw"
     "${IBRIDO_PREFIX}/conda_hidden/.conda:/root/.conda:rw"
     "${IBRIDO_PREFIX}/.cache/wandb:/root/.cache/wandb:rw"
     "${IBRIDO_PREFIX}/network/.netrc:/root/.netrc:rw"

@@ -3,6 +3,6 @@ set -e # exiting if any cmd fails
 
 echo "Activating micromamba and creating ${MAMBA_ENV_NAME} environment..."
 
-source ${MAMBA_UTILS_PREFIX}/_activate_current_env.sh # enable mamba for this shell
+source _activate_current_env.sh # enable mamba for this shell
 
 micromamba env create -y --log-level error -f ${MAMBA_ENV_FPATH}

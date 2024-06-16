@@ -23,4 +23,9 @@ for ((i = 0; i < ${#IBRIDO_GITDIRS[@]}; i++)); do
     git clone -q -b $branch $src &
 done
 wait
+
+# copying some utility files
+cp ${root_folder}/files/setup.bash $IBRIDO_WS_PREFIX/
+cp ${root_folder}/files/mamba_env.yml $IBRIDO_CONDA/
+
 echo 'Done.'
