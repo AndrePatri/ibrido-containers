@@ -4,7 +4,7 @@ source "${SCRIPT_DIR}/files/bind_list.sh"
 
 # convert bind dirs to comma-separated list
 IFS=',' # Set the internal field separator to a comma
-binddirs="${IBRIDO_BDIRS[*]}"
+binddirs="${IBRIDO_B_ALL[*]}"
 unset IFS # Reset the internal field separator
 
 singularity exec \

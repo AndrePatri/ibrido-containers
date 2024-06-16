@@ -14,6 +14,13 @@ for item in "${IBRIDO_BDIRS_SRC[@]}"; do
 done
 echo 'Done.'
 
+echo 'Creating all files...'
+for item in "${IBRIDO_BFILES_SRC[@]}"; do
+    echo "--> $item"
+    touch $item
+done
+echo 'Done.'
+
 echo 'Cloning repos...'
 cd $IBRIDO_WS_SRC
 for ((i = 0; i < ${#IBRIDO_GITDIRS[@]}; i++)); do

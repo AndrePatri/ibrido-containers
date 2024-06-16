@@ -9,6 +9,10 @@ IBRIDO_WS_PREFIX=${IBRIDO_PREFIX}/ibrido_ws/
 IBRIDO_WS_SRC=${IBRIDO_WS_PREFIX}/src
 IBRIDO_CONDA=${IBRIDO_PREFIX}/conda
 
+# defining files to be binded at runtime
+IBRIDO_BFILES=(
+    "${IBRIDO_PREFIX}/network/.netrc:/root/.netrc:rw"
+)
 # defining directories to be binded at runtime
 IBRIDO_BDIRS=(
     "${IBRIDO_PREFIX}/aux_data:/root/aux_data:rw"
@@ -17,7 +21,6 @@ IBRIDO_BDIRS=(
     "${IBRIDO_CONDA}:/opt/conda:rw"
     "${IBRIDO_PREFIX}/conda_hidden/.conda:/root/.conda:rw"
     "${IBRIDO_PREFIX}/.cache/wandb:/root/.cache/wandb:rw"
-    "${IBRIDO_PREFIX}/network/.netrc:/root/.netrc:rw"
     "${IBRIDO_PREFIX}/.byobu:/root/.byobu:rw"
 )
 
@@ -53,8 +56,9 @@ IBRIDO_GITDIRS=(
     "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*optional_find_ros2"
 )
 
-# Concatenate the arrays
+# Concatenate
 IBRIDO_BDIRS=("${IBRIDO_BDIRS[@]}" "${ISAAC_BDIRS[@]}")
+IBRIDO_B_ALL=("${IBRIDO_BDIRS[@]}" "${IBRIDO_BFILES[@]}")
 
 IBRIDO_BDIRS_SRC=()
 # just extract binding SRC
@@ -62,6 +66,14 @@ for entry in "${IBRIDO_BDIRS[@]}"; do
     # Use parameter expansion to extract substring before the first colon
     filtered_entry="${entry%%:*}"
     IBRIDO_BDIRS_SRC+=("$filtered_entry")
+done
+
+IBRIDO_BFILES_SRC=()
+# extracting bind files
+for entry in "${IBRIDO_BFILES[@]}"; do
+    # Use parameter expansion to extract substring before the first colon
+    filtered_entry="${entry%%:*}"
+    IBRIDO_BFILES_SRC+=("$filtered_entry")
 done
 
 # extract git repo info
@@ -75,3 +87,5 @@ for entry in "${IBRIDO_GITDIRS[@]}"; do
     IBRIDO_GIT_SRC+=("$src")
     IBRIDO_GIT_BRCH+=("$branch")
 done
+
+
