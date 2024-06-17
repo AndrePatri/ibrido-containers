@@ -1,4 +1,11 @@
 #!/bin/bash
+
+#PBS -l select=1:ncpus=20:mpiprocs=20=1:ngpus
+#PBS -l walltime=00:30:00
+#PBS -j oe
+#PBS -N ibrido_build
+#PBS -q gpu_a100
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source "${SCRIPT_DIR}/files/bind_list.sh"
 
