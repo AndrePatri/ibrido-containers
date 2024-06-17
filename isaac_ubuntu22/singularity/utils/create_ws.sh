@@ -35,9 +35,10 @@ wait
 
 # copying some utility files
 cp ${root_folder}/files/setup.bash $IBRIDO_WS_PREFIX/
-cp ${root_folder}/utils/launch_byobu_ws.sh $IBRIDO_WS_PREFIX/
-cp ${root_folder}/utils/warmup_isaac.sh $IBRIDO_WS_PREFIX/
-cp ${root_folder}/utils/warmup_isaac.py $IBRIDO_WS_PREFIX/
 cp ${root_folder}/files/mamba_env.yml $IBRIDO_CONDA/
+
+# cp ${root_folder}/utils/launch_byobu_ws.sh $IBRIDO_WS_PREFIX/
+# cp ${root_folder}/utils/warmup_isaac.sh $IBRIDO_WS_PREFIX/
+# cp ${root_folder}/utils/warmup_isaac.py $IBRIDO_WS_PREFIX/
 
 echo 'Done.'

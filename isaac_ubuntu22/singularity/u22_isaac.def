@@ -16,7 +16,6 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     ./files/omni.isaac.sim.python.omnirobogym.kit /isaac-sim/apps
     ./files/nucleus4.0.0.py /isaac-sim/exts/omni.isaac.nucleus/omni/isaac/nucleus/nucleus.py
     ./files/bind_list.sh /usr/local/bin
-    ./files/mamba_env.yml /root
     ./utils/create_mamba_env.sh /usr/local/bin
     ./utils/warmup_isaac.py /usr/local/bin
     ./utils/warmup_isaac.sh /usr/local/bin
