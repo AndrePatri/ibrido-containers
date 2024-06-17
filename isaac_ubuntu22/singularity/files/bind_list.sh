@@ -26,6 +26,7 @@ IBRIDO_BDIRS=(
     "${IBRIDO_PREFIX}/.cache/wandb:/root/.cache/wandb:rw"
     "${IBRIDO_PREFIX}/.byobu:/root/.byobu:rw"
     "${IBRIDO_PREFIX}/.ros:/root/.ros:rw"
+    "${IBRIDO_PREFIX}/.rviz2:/root/.rviz2:rw"
 )
 
 ISAAC_BDIRS=(
