@@ -61,7 +61,7 @@ attach_to_session() {
 
 activate_mamba_env() {
 
-    execute_command "eval \"$(micromamba shell hook --shell bash)\""
+    execute_command "eval \"\$(micromamba shell hook --shell bash)\""
     execute_command "micromamba activate ${MAMBAENVNAME}"
 
 }
