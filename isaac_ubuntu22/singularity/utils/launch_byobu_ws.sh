@@ -6,7 +6,7 @@ export GTK_IM_MODULE=ibus
 export QT_IM_MODULE=ibus
 
 SLEEP_FOR=0.1
-BYOBU_WS_NAME="ibrido_byobu_ws"
+BYOBU_WS_NAME="ibrido"
 WS_ROOT="$HOME/ibrido_ws"
 WORKING_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
 WORKING_DIR2="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
@@ -123,7 +123,7 @@ activate_mamba_env
 execute_command "source /isaac-sim/setup_conda_env.sh"
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally 
-clear_terminal
+# clear_terminal
 prepare_command "reset && python launch_sim_env.py --headless --remote_stepping --robot_name {} --robot_pkg_name {} --num_envs {}"
 
 split_v

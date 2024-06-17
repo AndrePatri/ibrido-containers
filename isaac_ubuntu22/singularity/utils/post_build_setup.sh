@@ -12,4 +12,4 @@ echo 'set -g default-shell /bin/bash' >> ${HOME}/.byobu/.tmux.conf
 echo 'set -g default-command /bin/bash' >> ${HOME}/.byobu/.tmux.conf
 
 echo 'Warming up IsaacSim ...'
-/isaac-sim/omni.isaac.sim.warmup.sh
+/usr/local/bin/warmup_isaac.sh

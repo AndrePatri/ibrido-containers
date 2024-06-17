@@ -1,10 +1,11 @@
 [package]
-title = "Isaac Sim Python"
-description = "A trimmed down app for use with python samples"
-version = "2023.1.1"
+title = "IBRIDO Omniverse kit"
+description = ""
+version = "4.0.0"
 
-# That makes it browsable in UI with "experience" filter
-keywords = ["experience", "app", "usd"]
+[settings]
+app.name = "Isaac-Sim"
+app.version = "4.0.0"
 
 [dependencies]
 # The Main UI App
@@ -413,7 +414,7 @@ privacy.externalBuild = true
 ################################
 app.versionFile = "${app}/../VERSION"
 app.name = "Isaac-Sim"
-app.version = "2023.1.1"
+app.version = "4.0.0"
 
 # hide NonToggleable Exts
 exts."omni.kit.window.extensions".hideNonToggleableExts = true
@@ -423,41 +424,6 @@ exts."omni.kit.window.extensions".showFeatureOnly = false
 ################################
 # app.hangDetector.enabled = false
 # app.hangDetector.timeout = 120
-
-
-# Browsers
-exts."omni.kit.browser.material".folders = [
-        "Base::http://omniverse-content-production.s3-us-west-2.amazonaws.com/Materials/Base",
-        "vMaterials::http://omniverse-content-production.s3.us-west-2.amazonaws.com/Materials/vMaterials_2/",
-        "Twinbru Fabrics::https://twinbru.s3.eu-west-1.amazonaws.com/omniverse/Twinbru Fabrics/"
-]
-
-exts."omni.kit.window.environment".folders = [
-    "https://omniverse-content-production.s3.us-west-2.amazonaws.com/Assets/Skies/2022_1/Skies",
-    "http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Scenes/Templates",
-]
-
-exts."omni.kit.browser.sample".folders = [ "http://omniverse-content-production.s3-us-west-2.amazonaws.com//Samples" ]
-
-exts."omni.kit.browser.asset".folders = [
-        "http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Vegetation",
-		"http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/ArchVis/Commercial",
-		"http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/ArchVis/Industrial",
-		"http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/ArchVis/Residential",
-		"http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Equipment",
-		"http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Safety",
-		"http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Shipping",
-		"http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Storage",
-    ]
-
-exts."omni.kit.browser.texture".folders = [
-        "http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Vegetation",
- ]
-
-# Content Browser
-###############################
-[settings.exts."omni.kit.window.content_browser"]
-enable_thumbnail_generation_images = false # temp fix to avoid leaking python processes
 
 # Extensions
 ###############################

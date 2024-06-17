@@ -1,14 +1,7 @@
 [package]
-title = "Isaac Sim Python - Headless Gym"
-description = "A simplifed app for running Gym examples headlessly from Python"
-version = "2023.1.1"
-
-# That makes it browsable in UI with "experience" filter
-keywords = ["experience", "app", "usd"]
-
-[settings]
-app.name = "Isaac-Sim"
-app.version = "2023.1.1"
+title = "IBRIDO Omniverse headless kit"
+description = ""
+version = "4.0.0"
 
 [dependencies]
 "omni.kit.window.title" = {}
@@ -65,16 +58,6 @@ hideUi = false
 _iconSize = 256
 iconPath = "${app}/../exts/omni.isaac.app.setup/data/nvidia-omniverse-isaacsim.ico"
 
-# width = 1700
-# height = 900
-# x = -1
-# y = -1
-
-# Fonts
-[setting.app.font]
-file = "${fonts}/OpenSans-SemiBold.ttf"
-size = 16
-
 # [setting.app.runLoops]
 # main.rateLimitEnabled = false
 # main.rateLimitFrequency = 60
@@ -84,7 +67,6 @@ size = 16
 [settings.exts.'omni.kit.window.extensions']
 # List extensions here we want to show as featured when extension manager is opened
 featuredExts = []
-
 
 [settings]
 # MGPU is always on, you can turn it from the settings, and force this off to save even more resource if you
@@ -109,80 +91,10 @@ persistent.renderer.startupMessageDisplayed = true
 ################################
 app.versionFile = "${app}/../VERSION"
 app.name = "Isaac-Sim"
-app.version = "2023.1.0"
-
-# hide NonToggleable Exts
-exts."omni.kit.window.extensions".hideNonToggleableExts = true
-exts."omni.kit.window.extensions".showFeatureOnly = false
-
-# Hang Detector
-################################
-# app.hangDetector.enabled = false
-# app.hangDetector.timeout = 120
-
-
-# Browsers
-exts."omni.kit.browser.material".folders = [
-        "Base::http://omniverse-content-production.s3-us-west-2.amazonaws.com/Materials/Base",
-        "vMaterials::http://omniverse-content-production.s3.us-west-2.amazonaws.com/Materials/vMaterials_2/",
-        "Twinbru Fabrics::https://twinbru.s3.eu-west-1.amazonaws.com/omniverse/Twinbru Fabrics/"
-]
-
-exts."omni.kit.window.environment".folders = [
-    "https://omniverse-content-production.s3.us-west-2.amazonaws.com/Assets/Skies/2022_1/Skies",
-    "http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Scenes/Templates",
-]
-
-exts."omni.kit.browser.sample".folders = [ "http://omniverse-content-production.s3-us-west-2.amazonaws.com//Samples" ]
-
-exts."omni.kit.browser.asset".folders = [
-        "http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Vegetation",
-		"http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/ArchVis/Commercial",
-		"http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/ArchVis/Industrial",
-		"http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/ArchVis/Residential",
-		"http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Equipment",
-		"http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Safety",
-		"http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Shipping",
-		"http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Storage",
-    ]
-
-exts."omni.kit.browser.texture".folders = [
-        "http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Vegetation",
- ]
-
+app.version = "4.0.0"
 
 # set the default ros bridge to disable on startup
 isaac.startup.ros_bridge_extension = ""
-
-# Extensions
-###############################
-[settings.exts."omni.kit.registry.nucleus"]
-registries = [
-  { name = "kit/default", url = "https://ovextensionsprod.blob.core.windows.net/exts/kit/prod/shared" },
-  { name = "kit/sdk", url = "https://ovextensionsprod.blob.core.windows.net/exts/kit/prod/sdk/${kit_version_short}/${kit_git_hash}" },
-  { name = "kit/community", url = "https://dw290v42wisod.cloudfront.net/exts/kit/community" },
-]
-
-[settings.app.extensions]
-skipPublishVerification = false
-registryEnabled = true
-
-[settings.exts."omni.kit.window.modifier.titlebar"]
-titleFormatString = "  Isaac Sim  {version:${app}/../SHORT_VERSION,font_color=0x909090,font_size=16} {separator} {file, board=true}"
-showFileFullPath = true
-icon.file = "${app}/../exts/omni.isaac.app.setup/data/nvidia-omniverse-isaacsim.ico"
-icon.size = 256
-defaultFont.name = "Arial"
-defaultFont.size = 16
-defaultFont.color = 0xD0D0D0
-separator.color = 0x00B976
-separator.width = 1
-windowBorder.color = 0x0F0F0F
-windowBorder.width = 2
-colors.caption = 0x0F0F0F
-colors.client = 0x0F0F0F
-respondOnMouseUp = true
-changeWindowRegion = true
 
 [settings.crashreporter.data]
 experience = "Isaac Sim"
@@ -242,10 +154,6 @@ physics.visualizationDisplayJoints = false
 omni.replicator.captureOnPlay = true
 omnihydra.useSceneGraphInstancing = true
 renderer.startupMessageDisplayed = true # hides the IOMMU popup window
-
-# Make Detail panel visible by default
-app.omniverse.content_browser.options_menu.show_details = true
-app.omniverse.filepicker.options_menu.show_details = true
 
 [settings.physics]
 updateToUsd = false

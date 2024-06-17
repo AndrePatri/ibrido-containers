@@ -12,7 +12,6 @@ init=false # whether to initialize/create the workspace
 wandb_key=""
 
 # Parse command line options
-# Parse command line options
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         -s|--use_sudo) use_sudo=true ;;

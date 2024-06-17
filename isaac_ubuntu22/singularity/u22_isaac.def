@@ -18,6 +18,8 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     ./files/bind_list.sh /usr/local/bin
     ./files/mamba_env.yml /root
     ./utils/create_mamba_env.sh /usr/local/bin
+    ./utils/warmup_isaac.py /usr/local/bin
+    ./utils/warmup_isaac.sh /usr/local/bin
     ./utils/mamba_utils/bin/_activate_current_env.sh /usr/local/bin
     ./utils/setup_ws.sh /usr/local/bin
     ./utils/post_build_setup.sh /usr/local/bin
