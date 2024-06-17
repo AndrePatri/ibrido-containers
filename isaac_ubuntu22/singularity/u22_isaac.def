@@ -23,6 +23,7 @@ From:nvcr.io/nvidia/isaac-sim:4.0.0
     ./utils/setup_ws.sh /usr/local/bin
     ./utils/post_build_setup.sh /usr/local/bin
     ./utils/launch_byobu_ws.sh /usr/local/bin
+    ./utils/launch_training.sh /usr/local/bin
 
 %environment
     

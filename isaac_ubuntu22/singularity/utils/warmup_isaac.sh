@@ -3,6 +3,4 @@ ISAAC_ROOT="/isaac-sim"
 
 set +e # Workaround post-install script failure
 
-echo "Warming up IsaacSim shader cache..."
 "$ISAAC_ROOT/python.sh" "/usr/local/bin/warmup_isaac.py"
-echo "Done."
