@@ -25,6 +25,7 @@ IBRIDO_BDIRS=(
     "${IBRIDO_PREFIX}/conda_hidden/.conda:/root/.conda:rw"
     "${IBRIDO_PREFIX}/.cache/wandb:/root/.cache/wandb:rw"
     "${IBRIDO_PREFIX}/.byobu:/root/.byobu:rw"
+    "${IBRIDO_PREFIX}/.ros:/root/.ros:rw"
 )
 
 ISAAC_BDIRS=(
