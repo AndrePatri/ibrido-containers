@@ -54,7 +54,7 @@ if $use_sudo; then
         -B /etc/localtime:/etc/localtime:ro \
         --bind $binddirs\
         --no-mount home,cwd \
-        --nv ibrido_isaac.sif launch_training.sh \
+        --nv $SCRIPT_DIR/ibrido_isaac.sif launch_training.sh \
             --robot_name $RB_NAME \
             --robot_pkg_name $RB_PNAME \
             --num_envs $N_ENVS \
@@ -69,7 +69,7 @@ else
         -B /etc/localtime:/etc/localtime:ro \
         --bind $binddirs\
         --no-mount home,cwd \
-        --nv ibrido_isaac.sif launch_training.sh \
+        --nv $SCRIPT_DIR/ibrido_isaac.sif launch_training.sh \
             --robot_name $RB_NAME \
             --robot_pkg_name $RB_PNAME \
             --num_envs $N_ENVS \

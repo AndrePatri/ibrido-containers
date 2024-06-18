@@ -35,6 +35,8 @@ fi
 eval "$(micromamba shell hook --shell bash)"
 micromamba activate ${MAMBA_ENV_NAME}
 
+wandb login --relogin $WANDB_KEY # login to wandb
+
 source /isaac-sim/setup_conda_env.sh
 source $HOME/ibrido_ws/setup.bash
 

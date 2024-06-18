@@ -6,14 +6,13 @@ source "${SCRIPT_DIR}/files/bind_list.sh"
 
 # Function to print usage
 usage() {
-    echo "Usage: $0 [--build|-b] [--use_sudo|-s] [--init|-i] [--do_setup|-stp] [--wandb_key|-w <key>] [--ngc_key|-ngc <key>]"
+    echo "Usage: $0 [--build|-b] [--use_sudo|-s] [--init|-i] [--do_setup|-stp] [--ngc_key|-ngc <key>]"
     exit 1
 }
 build_container=false
 use_sudo=false # whether to use superuser privileges
 init=false # whether to initialize/create the workspace
 do_setup=false # whether to perform the post-build setup steps
-wandb_key=""
 ngc_key=""
 
 # Parse command line options
@@ -23,15 +22,6 @@ while [[ "$#" -gt 0 ]]; do
         -s|--use_sudo) use_sudo=true ;;
         -i|--init) init=true ;;
         -stp|--do_setup) do_setup=true ;;
-        -w|--wandb_key) 
-            if [[ -n "$2" && "$2" != "-"* ]]; then
-                wandb_key=$2
-                shift
-            else
-                echo "Error: --wandb_key requires a non-empty argument."
-                usage
-            fi
-            ;;
         -ngc|--ngc_key) 
             if [[ -n "$2" && "$2" != "-"* ]]; then
                 ngc_key=$2
@@ -78,7 +68,6 @@ if $do_setup; then
     binddirs="${IBRIDO_B_ALL[*]}"
     unset IFS # Reset the internal field separator
     singularity exec \
-        --env "WANDB_KEY=$wandb_key"\
         -B /tmp/.X11-unix:/tmp/.X11-unix\
         -B /etc/localtime:/etc/localtime:ro \
         --bind $binddirs\

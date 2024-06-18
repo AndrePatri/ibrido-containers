@@ -61,8 +61,6 @@ pip install --no-deps -e horizon
 # copying script to launch byobu
 #cp $WS_BASEDIR/src/LRHControl/lrhc_control/scripts/launch_byobu_ws.sh /root/
 
-wandb login --relogin $WANDB_KEY # login to wandb
-
 source /root/.bashrc
 
 
