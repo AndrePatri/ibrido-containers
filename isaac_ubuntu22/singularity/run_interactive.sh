@@ -1,6 +1,5 @@
 #!/bin/bash
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-source "${SCRIPT_DIR}/files/bind_list.sh"
+source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
 
 # Function to print usage
 usage() {

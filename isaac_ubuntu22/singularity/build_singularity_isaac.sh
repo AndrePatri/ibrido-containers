@@ -1,8 +1,7 @@
 #!/bin/bash
 set -e # exiting if any cmd fails
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-source "${SCRIPT_DIR}/files/bind_list.sh"
+source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
 
 # Function to print usage
 usage() {
@@ -43,11 +42,11 @@ if $build_container; then
     if $use_sudo; then
         sudo singularity registry login --username \$oauthtoken --password $ngc_key docker://nvcr.io  # run with sudo if singularity build --fakeroot
         echo '--> Starting building of IBRIDO singularity container (sudo)...'
-        sudo singularity build $SCRIPT_DIR/ibrido_isaac.sif $SCRIPT_DIR/u22_isaac.def # either --fakeroot or sudo are necessary
+        sudo singularity build $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $IBRIDO_CONTAINERS_PREFIX/u22_isaac.def # either --fakeroot or sudo are necessary
     else
         singularity registry login --username \$oauthtoken --password $ngc_key docker://nvcr.io  # run with sudo if singularity build --fakeroot
         echo '--> Starting building of IBRIDO singularity container (fakeroot)...'
-        singularity build --fakeroot $SCRIPT_DIR/ibrido_isaac.sif $SCRIPT_DIR/u22_isaac.def # either --fakeroot or sudo are necessary
+        singularity build --fakeroot $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $IBRIDO_CONTAINERS_PREFIX/u22_isaac.def # either --fakeroot or sudo are necessary
 
     fi
     echo 'Done.'
@@ -56,7 +55,7 @@ fi
 # ws initialization
 if $init; then
     echo '--> Initializing workspace...'
-    ${SCRIPT_DIR}/utils/create_ws.sh
+    ${IBRIDO_CONTAINERS_PREFIX}/utils/create_ws.sh
     echo 'Done.'
 fi
 
@@ -72,7 +71,7 @@ if $do_setup; then
         -B /etc/localtime:/etc/localtime:ro \
         --bind $binddirs\
         --no-mount home,cwd \
-        --nv $SCRIPT_DIR/ibrido_isaac.sif post_build_setup.sh
+        --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif post_build_setup.sh
     echo 'Done. You can now either launch the container with run_interactive.sh or start the training with execute.sh'
 fi
 

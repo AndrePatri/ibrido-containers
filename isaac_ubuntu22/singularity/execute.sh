@@ -1,9 +1,8 @@
 #!/bin/bash
 set -e # exiting if any cmd fails
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-source "${SCRIPT_DIR}/files/bind_list.sh"
-source "${SCRIPT_DIR}/files/training_cfg.sh"
+source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
+source "${IBRIDO_CONTAINERS_PREFIX}/files/training_cfg.sh"
 
 # Function to print usage
 usage() {
@@ -54,7 +53,7 @@ if $use_sudo; then
         -B /etc/localtime:/etc/localtime:ro \
         --bind $binddirs\
         --no-mount home,cwd \
-        --nv $SCRIPT_DIR/ibrido_isaac.sif launch_training.sh \
+        --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif launch_training.sh \
             --robot_pkg_name $RB_PNAME \
             --num_envs $N_ENVS \
             --ulim_n $ULIM_N \
@@ -68,7 +67,7 @@ else
         -B /etc/localtime:/etc/localtime:ro \
         --bind $binddirs\
         --no-mount home,cwd \
-        --nv $SCRIPT_DIR/ibrido_isaac.sif launch_training.sh \
+        --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif launch_training.sh \
             --robot_pkg_name $RB_PNAME \
             --num_envs $N_ENVS \
             --ulim_n $ULIM_N \
