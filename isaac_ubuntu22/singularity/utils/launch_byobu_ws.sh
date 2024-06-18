@@ -146,7 +146,7 @@ execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_keyboard_cmds.py --ns {}"
+prepare_command "reset && python launch_rhc_keybrd_cmds.py --ns {}"
 
 go_to_pane 0 
 
