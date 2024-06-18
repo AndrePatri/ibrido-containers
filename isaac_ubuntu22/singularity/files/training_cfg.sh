@@ -1,7 +1,7 @@
 #!/bin/bash
 
 RB_PNAME="kyon"
-SHM_NS="kyon0"
+SHM_NS="ibrido"
 N_ENVS=128
 ULIM_N=28672
 RNAME="LinVelTrack"
