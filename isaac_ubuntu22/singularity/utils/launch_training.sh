@@ -42,10 +42,10 @@ wandb login --relogin $WANDB_KEY # login to wandb
 source /isaac-sim/setup_conda_env.sh
 source $HOME/ibrido_ws/setup.bash
 
-ulimit -n $ulim_n
+#ulimit -n $ulim_n
 
-reset && python $DIR1/launch_sim_env.py --headless --remote_stepping --robot_name $ns --robot_pkg_name $robot_pkg_name --num_envs $num_envs &
-reset && python $DIR2/launch_control_cluster.py --ns $ns --size $num_envs & 
-reset && python $DIR1/launch_train_env.py --ns $ns --run_name $run_name --drop_dir $HOME/training_data --dump_checkpoints --comment $comment --seed $seed &
+python $DIR1/launch_sim_env.py --headless --remote_stepping --robot_name $ns --robot_pkg_name $robot_pkg_name --num_envs $num_envs &
+python $DIR2/launch_control_cluster.py --ns $ns --size $num_envs & 
+python $DIR1/launch_train_env.py --ns $ns --run_name $run_name --drop_dir $HOME/training_data --dump_checkpoints --comment $comment --seed $seed &
 
 wait # wait for all to exit
