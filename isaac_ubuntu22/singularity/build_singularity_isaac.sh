@@ -1,18 +1,20 @@
 #!/bin/bash
+set -e # exiting if any cmd fails
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source "${SCRIPT_DIR}/files/bind_list.sh"
 
 # Function to print usage
 usage() {
-    echo "Usage: $0 [--build|-b] [--use_sudo|-s] [--init|-i] [--do_setup|-stp] [--wandb_key|-w <key>]"
+    echo "Usage: $0 [--build|-b] [--use_sudo|-s] [--init|-i] [--do_setup|-stp] [--wandb_key|-w <key>] [--ngc_key|-ngc <key>]"
     exit 1
 }
-build_container=true
+build_container=false
 use_sudo=false # whether to use superuser privileges
-init=true # whether to initialize/create the workspace
-do_setup=true # whether to perform the post-build setup steps
+init=false # whether to initialize/create the workspace
+do_setup=false # whether to perform the post-build setup steps
 wandb_key=""
+ngc_key=""
 
 # Parse command line options
 while [[ "$#" -gt 0 ]]; do
@@ -30,6 +32,15 @@ while [[ "$#" -gt 0 ]]; do
                 usage
             fi
             ;;
+        -ngc|--ngc_key) 
+            if [[ -n "$2" && "$2" != "-"* ]]; then
+                ngc_key=$2
+                shift
+            else
+                echo "Error: --ngc_key requires a non-empty argument."
+                usage
+            fi
+            ;;
         -h|--help) usage ;;
         *) echo "Unknown parameter passed: $1"; usage ;;
     esac
@@ -40,13 +51,13 @@ if $build_container; then
     echo '--> Building IBRIDO container...'
     echo '--> Insert your generated NVIDIA NGC password/token to pull IsaacSim (see https://catalog.ngc.nvidia.com/orgs/nvidia/containers/isaac-sim)'
     if $use_sudo; then
-        sudo singularity registry login --username \$oauthtoken docker://nvcr.io # run with sudo if singularity build --fakeroot
+        sudo singularity registry login --username \$oauthtoken --password $ngc_key docker://nvcr.io  # run with sudo if singularity build --fakeroot
         echo '--> Starting building of IBRIDO singularity container (sudo)...'
-        sudo singularity build $SCRIPT_DIR/ibrido_isaac.sif $SCRIPT_DIR//u22_isaac.def # either --fakeroot or sudo are necessary
+        sudo singularity build $SCRIPT_DIR/ibrido_isaac.sif $SCRIPT_DIR/u22_isaac.def # either --fakeroot or sudo are necessary
     else
-        singularity registry login --username \$oauthtoken docker://nvcr.io # run with sudo if singularity build --fakeroot
+        singularity registry login --username \$oauthtoken --password $ngc_key docker://nvcr.io  # run with sudo if singularity build --fakeroot
         echo '--> Starting building of IBRIDO singularity container (fakeroot)...'
-        singularity build --fakeroot $SCRIPT_DIR//ibrido_isaac.sif $SCRIPT_DIR//u22_isaac.def # either --fakeroot or sudo are necessary
+        singularity build --fakeroot $SCRIPT_DIR/ibrido_isaac.sif $SCRIPT_DIR/u22_isaac.def # either --fakeroot or sudo are necessary
 
     fi
     echo 'Done.'
@@ -72,7 +83,7 @@ if $do_setup; then
         -B /etc/localtime:/etc/localtime:ro \
         --bind $binddirs\
         --no-mount home,cwd \
-        --nv $SCRIPT_DIR//ibrido_isaac.sif post_build_setup.sh
+        --nv $SCRIPT_DIR/ibrido_isaac.sif post_build_setup.sh
     echo 'Done. You can now either launch the container with run_interactive.sh or start the training with execute.sh'
 fi
 
