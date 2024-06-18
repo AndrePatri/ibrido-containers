@@ -55,7 +55,6 @@ if $use_sudo; then
         --bind $binddirs\
         --no-mount home,cwd \
         --nv $SCRIPT_DIR/ibrido_isaac.sif launch_training.sh \
-            --robot_name $RB_NAME \
             --robot_pkg_name $RB_PNAME \
             --num_envs $N_ENVS \
             --ulim_n $ULIM_N \
@@ -70,7 +69,6 @@ else
         --bind $binddirs\
         --no-mount home,cwd \
         --nv $SCRIPT_DIR/ibrido_isaac.sif launch_training.sh \
-            --robot_name $RB_NAME \
             --robot_pkg_name $RB_PNAME \
             --num_envs $N_ENVS \
             --ulim_n $ULIM_N \
