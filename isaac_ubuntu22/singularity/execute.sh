@@ -6,12 +6,13 @@ source "${IBRIDO_CONTAINERS_PREFIX}/files/training_cfg.sh"
 
 # Function to print usage
 usage() {
-    echo "Usage: $0 [--use_sudo|-s] [--wandb_key|-w <key>] [--comment|-c <key>]"
+    echo "Usage: $0 [--use_sudo|-s] [--set_ulim|-ulim] [--wandb_key|-w <key>] [--comment|-c <key>]"
     exit 1
 }
 use_sudo=false # whether to use superuser privileges
 wandb_key=""
 comment=""
+set_ulim=false
 
 # Parse command line options
 while [[ "$#" -gt 0 ]]; do
@@ -35,6 +36,7 @@ while [[ "$#" -gt 0 ]]; do
                 usage
             fi
             ;;
+        -ulim|--set_ulim) set_ulim=true ;;
         -h|--help) usage ;;
         *) echo "Unknown parameter passed: $1"; usage ;;
     esac
@@ -56,10 +58,12 @@ if $use_sudo; then
         --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif launch_training.sh \
             --robot_pkg_name $RB_PNAME \
             --num_envs $N_ENVS \
+            --set_ulim $set_ulim\
             --ulim_n $ULIM_N \
             --ns $SHM_NS \
             --run_name $RNAME \
-            --comment $comment 
+            --comment $comment \
+            --seed $SEED
 else
     singularity exec \
         --env "WANDB_KEY=$wandb_key"\
@@ -70,9 +74,11 @@ else
         --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif launch_training.sh \
             --robot_pkg_name $RB_PNAME \
             --num_envs $N_ENVS \
+            --set_ulim $set_ulim\
             --ulim_n $ULIM_N \
             --ns $SHM_NS \
             --run_name $RNAME \
-            --comment $comment 
+            --comment $comment \
+            --seed $SEED
 fi
 

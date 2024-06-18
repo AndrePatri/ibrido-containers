@@ -3,7 +3,7 @@
 #PBS -l walltime=00:40:00
 #PBS -j oe
 #PBS -N ibrido_build
-#PBS -q gpu_a100
+#PBS -q a100f
 
 module load go-1.19.4/apptainer-1.1.8
 
