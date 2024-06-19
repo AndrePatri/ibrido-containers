@@ -64,7 +64,8 @@ if $use_sudo; then
                 --ns $SHM_NS \
                 --run_name $RNAME \
                 --comment $comment \
-                --seed $SEED
+                --seed $SEED \
+                --timeout_ms $TIMEOUT_MS
     else
         sudo singularity exec \
             --env "WANDB_KEY=$wandb_key"\
@@ -79,7 +80,8 @@ if $use_sudo; then
                 --ns $SHM_NS \
                 --run_name $RNAME \
                 --comment $comment \
-                --seed $SEED
+                --seed $SEED \
+                --timeout_ms $TIMEOUT_MS
     fi
 else
     if $set_ulim; then
@@ -97,7 +99,8 @@ else
                 --ns $SHM_NS \
                 --run_name $RNAME \
                 --comment $comment \
-                --seed $SEED
+                --seed $SEED \
+                --timeout_ms $TIMEOUT_MS
     else
         singularity exec \
             --env "WANDB_KEY=$wandb_key"\
@@ -112,7 +115,8 @@ else
                 --ns $SHM_NS \
                 --run_name $RNAME \
                 --comment $comment \
-                --seed $SEED
+                --seed $SEED \
+                --timeout_ms $TIMEOUT_MS
     fi
 fi
 
