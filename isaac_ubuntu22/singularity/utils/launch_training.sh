@@ -5,7 +5,8 @@ DIR2="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
 
 usage() {
   echo "Usage: $0 --robot_pkg_name PKG_NAME [--num_envs NUM] [--set_ulim|-ulim] [--ulim_n ULIM_N] \
-    [--ns] [--run_name RUN_NAME] [--comment COMMENT] [--seed SEED] [--timeout_ms TIMEOUT]"
+    [--ns] [--run_name RUN_NAME] [--comment COMMENT] [--seed SEED] [--timeout_ms TIMEOUT] \
+    [--codegen_override CG_OVERRIDE]"
   exit 1
 }
 num_envs=128
@@ -16,6 +17,7 @@ seed=0
 ns="ibrido"
 run_name=""
 comment=""
+codegen_override=""
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
@@ -28,6 +30,7 @@ while [[ "$#" -gt 0 ]]; do
     --seed) seed="$2"; shift ;;
     --run_name) run_name="$2"; shift ;;
     --comment) comment="$2"; shift ;;
+    --codegen_override) codegen_override="$2"; shift ;;
     *) echo "Unknown parameter passed: $1"; usage ;;
   esac
   shift
@@ -52,7 +55,7 @@ if $set_ulim; then
 fi
 
 python $DIR1/launch_sim_env.py --headless --remote_stepping --robot_name $ns --robot_pkg_name $robot_pkg_name --num_envs $num_envs --timeout_ms $timeout_ms&
-python $DIR2/launch_control_cluster.py --ns $ns --size $num_envs --timeout_ms $timeout_ms& 
+python $DIR2/launch_control_cluster.py --ns $ns --size $num_envs --timeout_ms $timeout_ms --codegen_override_dir $codegen_override & 
 python $DIR1/launch_train_env.py --ns $ns --run_name $run_name --drop_dir $HOME/training_data --dump_checkpoints --comment $comment --seed $seed --timeout_ms $timeout_ms&
 
 wait # wait for all to exit

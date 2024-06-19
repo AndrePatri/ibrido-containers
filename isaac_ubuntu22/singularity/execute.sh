@@ -69,7 +69,7 @@ if $use_sudo; then
                 --comment $comment \
                 --seed $SEED \
                 --timeout_ms $TIMEOUT_MS \
-                --codegen_override_dir $CODEGEN_OVERRIDE_BDIR
+                --codegen_override $CODEGEN_OVERRIDE_BDIR
     else
         sudo singularity exec \
             --env "WANDB_KEY=$wandb_key"\
@@ -86,7 +86,7 @@ if $use_sudo; then
                 --comment $comment \
                 --seed $SEED \
                 --timeout_ms $TIMEOUT_MS \
-                --codegen_override_dir $CODEGEN_OVERRIDE_BDIR
+                --codegen_override $CODEGEN_OVERRIDE_BDIR
     fi
 else
     if $set_ulim; then
@@ -106,7 +106,7 @@ else
                 --comment $comment \
                 --seed $SEED \
                 --timeout_ms $TIMEOUT_MS \
-                --codegen_override_dir $CODEGEN_OVERRIDE_BDIR
+                --codegen_override $CODEGEN_OVERRIDE_BDIR
     else
         singularity exec \
             --env "WANDB_KEY=$wandb_key"\
@@ -123,7 +123,7 @@ else
                 --comment $comment \
                 --seed $SEED \
                 --timeout_ms $TIMEOUT_MS \
-                --codegen_override_dir $CODEGEN_OVERRIDE_BDIR
+                --codegen_override $CODEGEN_OVERRIDE_BDIR
     fi
 fi
 
