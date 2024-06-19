@@ -114,7 +114,7 @@ else
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
                 --robot_pkg_name $RB_PNAME \
                 --num_envs $N_ENVS \
-                --set_ulim $set_ulim\
+                --ulim_n $ULIM_N \
                 --ns $SHM_NS \
                 --run_name $RNAME \
                 --comment $comment \
