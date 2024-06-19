@@ -49,36 +49,70 @@ binddirs="${IBRIDO_B_ALL[*]}"
 unset IFS # Reset the internal field separator
 
 if $use_sudo; then
-    sudo singularity exec \
-        --env "WANDB_KEY=$wandb_key"\
-        -B /tmp/.X11-unix:/tmp/.X11-unix\
-        -B /etc/localtime:/etc/localtime:ro \
-        --bind $binddirs\
-        --no-mount home,cwd \
-        --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif launch_training.sh \
-            --robot_pkg_name $RB_PNAME \
-            --num_envs $N_ENVS \
-            --set_ulim $set_ulim\
-            --ulim_n $ULIM_N \
-            --ns $SHM_NS \
-            --run_name $RNAME \
-            --comment $comment \
-            --seed $SEED
+    if $set_ulim; then
+        sudo singularity exec \
+            --env "WANDB_KEY=$wandb_key"\
+            -B /tmp/.X11-unix:/tmp/.X11-unix\
+            -B /etc/localtime:/etc/localtime:ro \
+            --bind $binddirs\
+            --no-mount home,cwd \
+            --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif launch_training.sh \
+                --robot_pkg_name $RB_PNAME \
+                --num_envs $N_ENVS \
+                --set_ulim \
+                --ulim_n $ULIM_N \
+                --ns $SHM_NS \
+                --run_name $RNAME \
+                --comment $comment \
+                --seed $SEED
+    else
+        sudo singularity exec \
+            --env "WANDB_KEY=$wandb_key"\
+            -B /tmp/.X11-unix:/tmp/.X11-unix\
+            -B /etc/localtime:/etc/localtime:ro \
+            --bind $binddirs\
+            --no-mount home,cwd \
+            --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif launch_training.sh \
+                --robot_pkg_name $RB_PNAME \
+                --num_envs $N_ENVS \
+                --ulim_n $ULIM_N \
+                --ns $SHM_NS \
+                --run_name $RNAME \
+                --comment $comment \
+                --seed $SEED
+    fi
 else
-    singularity exec \
-        --env "WANDB_KEY=$wandb_key"\
-        -B /tmp/.X11-unix:/tmp/.X11-unix\
-        -B /etc/localtime:/etc/localtime:ro \
-        --bind $binddirs\
-        --no-mount home,cwd \
-        --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif launch_training.sh \
-            --robot_pkg_name $RB_PNAME \
-            --num_envs $N_ENVS \
-            --set_ulim $set_ulim\
-            --ulim_n $ULIM_N \
-            --ns $SHM_NS \
-            --run_name $RNAME \
-            --comment $comment \
-            --seed $SEED
+    if $set_ulim; then
+        singularity exec \
+            --env "WANDB_KEY=$wandb_key"\
+            -B /tmp/.X11-unix:/tmp/.X11-unix\
+            -B /etc/localtime:/etc/localtime:ro \
+            --bind $binddirs\
+            --no-mount home,cwd \
+            --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif launch_training.sh \
+                --robot_pkg_name $RB_PNAME \
+                --num_envs $N_ENVS \
+                --set_ulim\
+                --ulim_n $ULIM_N \
+                --ns $SHM_NS \
+                --run_name $RNAME \
+                --comment $comment \
+                --seed $SEED
+    else
+        singularity exec \
+            --env "WANDB_KEY=$wandb_key"\
+            -B /tmp/.X11-unix:/tmp/.X11-unix\
+            -B /etc/localtime:/etc/localtime:ro \
+            --bind $binddirs\
+            --no-mount home,cwd \
+            --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif launch_training.sh \
+                --robot_pkg_name $RB_PNAME \
+                --num_envs $N_ENVS \
+                --set_ulim $set_ulim\
+                --ns $SHM_NS \
+                --run_name $RNAME \
+                --comment $comment \
+                --seed $SEED
+    fi
 fi
 

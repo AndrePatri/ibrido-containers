@@ -18,6 +18,7 @@ IBRIDO_BFILES=(
 )
 # defining directories to be binded at runtime
 IBRIDO_BDIRS=(
+    "/dev/input:/dev/input:rw"
     "${IBRIDO_PREFIX}/tmp:/tmp:rw"
     "${IBRIDO_PREFIX}/aux_data:/root/aux_data:rw"
     "${IBRIDO_PREFIX}/training_data:/root/training_data:rw"
