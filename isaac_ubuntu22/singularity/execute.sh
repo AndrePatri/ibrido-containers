@@ -48,6 +48,9 @@ IFS=',' # Set the internal field separator to a comma
 binddirs="${IBRIDO_B_ALL[*]}"
 unset IFS # Reset the internal field separator
 
+training_script="/root/ibrido_ws/launch_training.sh"
+# training_script="launch_training.sh"
+
 if $use_sudo; then
     if $set_ulim; then
         sudo singularity exec \
@@ -56,7 +59,7 @@ if $use_sudo; then
             -B /etc/localtime:/etc/localtime:ro \
             --bind $binddirs\
             --no-mount home,cwd \
-            --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif launch_training.sh \
+            --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
                 --robot_pkg_name $RB_PNAME \
                 --num_envs $N_ENVS \
                 --set_ulim \
@@ -73,7 +76,7 @@ if $use_sudo; then
             -B /etc/localtime:/etc/localtime:ro \
             --bind $binddirs\
             --no-mount home,cwd \
-            --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif launch_training.sh \
+            --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
                 --robot_pkg_name $RB_PNAME \
                 --num_envs $N_ENVS \
                 --ulim_n $ULIM_N \
@@ -91,7 +94,7 @@ else
             -B /etc/localtime:/etc/localtime:ro \
             --bind $binddirs\
             --no-mount home,cwd \
-            --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif launch_training.sh \
+            --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
                 --robot_pkg_name $RB_PNAME \
                 --num_envs $N_ENVS \
                 --set_ulim\
@@ -108,7 +111,7 @@ else
             -B /etc/localtime:/etc/localtime:ro \
             --bind $binddirs\
             --no-mount home,cwd \
-            --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif launch_training.sh \
+            --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
                 --robot_pkg_name $RB_PNAME \
                 --num_envs $N_ENVS \
                 --set_ulim $set_ulim\
