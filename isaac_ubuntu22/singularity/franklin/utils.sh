@@ -57,7 +57,7 @@ function send_signal() {
     ssh -t "$exec_host" "
         # Find the PIDs of the scripts matching the pattern
         pids=\$(pgrep -f '${script_pattern}')
-        echo "Retrieved PIDS: \$pids"
+        echo "Matching PIDS: \$pids"
         if [ -z \"\$pids\" ]; then
             echo 'No processes found matching pattern \"${script_pattern}\"'
             exit 1
@@ -65,9 +65,7 @@ function send_signal() {
 
         # Loop through each PID and send the specified signal
         for pid in \$pids; do
-            echo 'Sending signal ${signal} to process with PID: \$pid'
-            kill -${signal} \$pid
-            echo 'Done.'
+            kill -s ${signal} \$pid
         done
 
         # Open a bash shell
@@ -75,3 +73,64 @@ function send_signal() {
     "
 }
 alias send_signal="send_signal"
+
+get_walltime() {
+    # Check if PBS_JOBID environment variable is set
+    if [ -z "$PBS_JOBID" ]; then
+        echo "Error: PBS_JOBID environment variable is not set."
+        return 1
+    fi
+
+    # Run the qstat command and parse the JSON output using jq
+    walltime=$(qstat -f "$PBS_JOBID" -F json | jq -r '.Jobs[].Resource_List.walltime')
+
+    # Check if jq command was successful
+    if [ $? -ne 0 ]; then
+        echo "Error: Unable to parse the JSON output."
+        return 1
+    fi
+
+    echo "$walltime"
+}
+alias get_walltime="get_walltime"
+
+send_signal_from_within() {
+    # Check if PBS_JOBID and script_pattern are provided
+
+    local script_pattern=$1
+    local signal=${2:-SIGINT}  # Default to SIGINT if no signal is provided
+
+    # Extract the job ID before the first dot
+    local job_id=$(echo "$PBS_JOBID" | cut -d'.' -f1)
+    echo "Preparing to send signal from within job $job_id"
+
+    # Find the PIDs of the scripts matching the pattern
+    pids=$(pgrep -f "$script_pattern")
+    echo "Matching PIDs: $pids"
+    if [ -z "$pids" ]; then
+        echo "No processes found matching pattern \"$script_pattern\""
+        return 1
+    fi
+
+    # Loop through each PID and send the specified signal
+    for pid in $pids; do
+        kill -s "$signal" "$pid"
+    done
+}
+alias send_signal_from_within="send_signal_from_within"
+
+# Convert h:m:s to seconds
+time_to_seconds() {
+    local time=$1
+    local h=$(echo $time | cut -d':' -f1)
+    local m=$(echo $time | cut -d':' -f2)
+    local s=$(echo $time | cut -d':' -f3)
+    echo $((10#$h*3600 + 10#$m*60 + 10#$s))
+}
+
+# Convert minutes to seconds
+minutes_to_seconds() {
+    local minutes=$1
+    echo $((minutes * 60))
+}
+alias minutes_to_seconds="minutes_to_seconds"

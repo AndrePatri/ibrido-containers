@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e # exiting if any cmd fails
+# set -e # exiting if any cmd fails
 
 source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
 source "${IBRIDO_CONTAINERS_PREFIX}/files/training_cfg.sh"
