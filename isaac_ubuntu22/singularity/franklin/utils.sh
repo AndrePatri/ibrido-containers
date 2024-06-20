@@ -34,4 +34,4 @@ function launch_bash_session() {
     echo "Launching bash session on host: $exec_host"
     ssh -t $exec_host bash
 }
-alias bash_session="bash_session"
+alias bash_session="launch_bash_session"
