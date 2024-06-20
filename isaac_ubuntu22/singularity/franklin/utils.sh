@@ -54,17 +54,21 @@ function send_signal() {
         return 1
     fi
 
-    ssh -t $exec_host "
-        # Find the PID of the script matching the pattern
-        pid=\$(pgrep -f \"python .*${script_pattern}\")
-
-        # If the PID is found, send the specified signal
-        if [ -n \"\$pid\" ]; then
-            echo 'Sending signal ${signal} to process matching pattern \"$script_pattern\" (PID: '\$pid')'
-            kill -${signal} \$pid
-        else
-            echo 'Process matching pattern \"$script_pattern\" not found'
+    ssh -t "$exec_host" "
+        # Find the PIDs of the scripts matching the pattern
+        pids=\$(pgrep -f '${script_pattern}')
+        echo "Retrieved PIDS: \$pids"
+        if [ -z \"\$pids\" ]; then
+            echo 'No processes found matching pattern \"${script_pattern}\"'
+            exit 1
         fi
+
+        # Loop through each PID and send the specified signal
+        for pid in \$pids; do
+            echo 'Sending signal ${signal} to process with PID: \$pid'
+            kill -${signal} \$pid
+            echo 'Done.'
+        done
 
         # Open a bash shell
         bash
