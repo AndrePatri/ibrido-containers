@@ -36,6 +36,7 @@ dependencies:
   - pyqtgraph
   - pyside2
   - perf_sleep
+  - catkin_pkg=1.0.0
   - pip:
     - flit
     - h5py
