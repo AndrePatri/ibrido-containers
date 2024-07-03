@@ -61,6 +61,7 @@ if $use_sudo; then
             --no-mount home,cwd \
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
                 --robot_pkg_name $RB_PNAME \
+                --robot_pkg_pref_path $RB_PPREFNAME \
                 --num_envs $N_ENVS \
                 --set_ulim \
                 --ulim_n $ULIM_N \
@@ -79,6 +80,7 @@ if $use_sudo; then
             --no-mount home,cwd \
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
                 --robot_pkg_name $RB_PNAME \
+                --robot_pkg_pref_path $RB_PPREFNAME \
                 --num_envs $N_ENVS \
                 --ulim_n $ULIM_N \
                 --ns $SHM_NS \
@@ -98,6 +100,7 @@ else
             --no-mount home,cwd \
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
                 --robot_pkg_name $RB_PNAME \
+                --robot_pkg_pref_path $RB_PPREFNAME \
                 --num_envs $N_ENVS \
                 --set_ulim\
                 --ulim_n $ULIM_N \
@@ -116,6 +119,7 @@ else
             --no-mount home,cwd \
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
                 --robot_pkg_name $RB_PNAME \
+                --robot_pkg_pref_path $RB_PPREFNAME \
                 --num_envs $N_ENVS \
                 --ulim_n $ULIM_N \
                 --ns $SHM_NS \

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 RB_PNAME="kyon"
+RB_PPREFNAME="${HOME}/ibrido_ws/src/iit-kyon-ros-pkg"
 SHM_NS="IBRIDO"
 N_ENVS=128
 RNAME="LinVelTrack"
