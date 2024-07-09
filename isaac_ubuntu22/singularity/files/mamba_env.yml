@@ -49,5 +49,6 @@ dependencies:
     - urdf_parser_py
     - psutil
     - gymnasium
+    - gymnasium[mujoco]
     - tensorboard
     - wandb
