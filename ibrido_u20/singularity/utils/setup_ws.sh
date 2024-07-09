@@ -7,7 +7,7 @@ WS_BASEDIR=$HOME/ibrido_ws
 
 source /usr/local/bin/_activate_current_env.sh # enable mamba for this shell
 micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install packages
-source /opt/ros/humble/setup.bash # ros2 setup
+source /opt/ros/noetic/setup.bash # ros2 setup
 
 # clean ws if already initialized
 rm -rf $WS_BASEDIR/build && mkdir $WS_BASEDIR/build
