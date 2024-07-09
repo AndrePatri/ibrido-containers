@@ -30,7 +30,7 @@ dependencies:
   - pinocchio=2.6.20
   - quaternion
   - yaml-cpp
-  - ros-humble-xacro
+  - ros-noetic-xacro
   - empy 
   - pyqt
   - pyqtgraph
