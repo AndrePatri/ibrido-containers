@@ -2,8 +2,8 @@
 
 # IMAGE_NAME="ibrido:isaac2023.1.1"
 # CONTAINER_NAME="ibrido_isaac2023.1.1"
-IMAGE_NAME="ibrido:isaac4.0.0"
-CONTAINER_NAME="ibrido_isaac4.0.0"
+IMAGE_NAME="ibrido:ibrido_u22.0.0"
+CONTAINER_NAME="ibrido_u22.0.0"
 
 # Check if the container exists
 docker container inspect "$CONTAINER_NAME" > /dev/null 2>&1
