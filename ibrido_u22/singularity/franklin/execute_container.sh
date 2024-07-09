@@ -7,7 +7,6 @@
 
 module load go-1.19.4/apptainer-1.1.8
 
-export IBRIDO_CONTAINERS_PREFIX=""
 export PBS_JOBID="${PBS_JOBID}"
 
 $IBRIDO_CONTAINERS_PREFIX/franklin/prescia_script.sh &

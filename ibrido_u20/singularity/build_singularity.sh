@@ -21,15 +21,6 @@ while [[ "$#" -gt 0 ]]; do
         -s|--use_sudo) use_sudo=true ;;
         -i|--init) init=true ;;
         -stp|--do_setup) do_setup=true ;;
-        -ngc|--ngc_key) 
-            if [[ -n "$2" && "$2" != "-"* ]]; then
-                ngc_key=$2
-                shift
-            else
-                echo "Error: --ngc_key requires a non-empty argument."
-                usage
-            fi
-            ;;
         -h|--help) usage ;;
         *) echo "Unknown parameter passed: $1"; usage ;;
     esac
@@ -38,16 +29,12 @@ done
 
 if $build_container; then
     echo '--> Building IBRIDO container...'
-    echo '--> Insert your generated NVIDIA NGC password/token to pull IsaacSim (see https://catalog.ngc.nvidia.com/orgs/nvidia/containers/isaac-sim)'
     if $use_sudo; then
-        sudo singularity registry login --username \$oauthtoken --password $ngc_key docker://nvcr.io  # run with sudo if singularity build --fakeroot
         echo '--> Starting building of IBRIDO singularity container (sudo)...'
-        sudo singularity build $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $IBRIDO_CONTAINERS_PREFIX/u22_isaac.def # either --fakeroot or sudo are necessary
+        sudo singularity build $IBRIDO_CONTAINERS_PREFIX/ibrido_xbot.sif $IBRIDO_CONTAINERS_PREFIX/u20_xbot.def # either --fakeroot or sudo are necessary
     else
-        singularity registry login --username \$oauthtoken --password $ngc_key docker://nvcr.io  # run with sudo if singularity build --fakeroot
         echo '--> Starting building of IBRIDO singularity container (fakeroot)...'
-        singularity build --fakeroot $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $IBRIDO_CONTAINERS_PREFIX/u22_isaac.def # either --fakeroot or sudo are necessary
-
+        singularity build --fakeroot $IBRIDO_CONTAINERS_PREFIX/ibrido_xbot.sif $IBRIDO_CONTAINERS_PREFIX/u20_xbot.def # either --fakeroot or sudo are necessary
     fi
     echo 'Done.'
 fi
@@ -71,8 +58,8 @@ if $do_setup; then
         -B /etc/localtime:/etc/localtime:ro \
         --bind $binddirs\
         --no-mount home,cwd \
-        --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif post_build_setup.sh
-    echo 'Done. You can now either launch the container with run_interactive.sh or start the training with execute.sh'
+        --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_xbot.sif post_build_setup.sh
+    echo 'Done. You can now either launch the container with run_interactive_xbot.sh or start the training with execute_xbot.sh'
 fi
 
 

@@ -11,4 +11,4 @@ export TIMEOUT_MS=60000
 export CODEGEN_OVERRIDE_BDIR=""
 export COMMENT="${PBS_JOBID}__"
 export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace
-export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
+export WANDB_KEY=""
