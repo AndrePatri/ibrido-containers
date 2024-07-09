@@ -8,10 +8,7 @@
 module load go-1.19.4/apptainer-1.1.8
 
 export IBRIDO_CONTAINERS_PREFIX=""
-export WANDB_KEY=""
-export COMMENT="${PBS_JOBID}"
-export CODEGEN_OVERRIDE_BDIR=""
+export PBS_JOBID="${PBS_JOBID}"
 
 $IBRIDO_CONTAINERS_PREFIX/franklin/prescia_script.sh &
-
-$IBRIDO_CONTAINERS_PREFIX/execute.sh --wandb_key $WANDB_KEY --comment $COMMENT
+$IBRIDO_CONTAINERS_PREFIX/execute.sh

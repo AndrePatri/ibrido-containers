@@ -60,8 +60,11 @@ if $set_ulim; then
   ulimit -n $ulim_n
 fi
 
-python $DIR1/launch_sim_env.py --headless --remote_stepping --robot_name $ns --robot_pkg_name $robot_pkg_name --robot_pkg_pref_path $robot_pkg_pref_path --num_envs $num_envs --timeout_ms $timeout_ms&
-python $DIR2/launch_control_cluster.py --ns $ns --size $num_envs --timeout_ms $timeout_ms --codegen_override_dir $codegen_override --robot_pkg_pref_path $robot_pkg_pref_path & 
+robot_pkg_pref_path_eval=$(eval echo $robot_pkg_pref_path)
+codegen_override_eval=$(eval echo $codegen_override)
+
+python $DIR1/launch_sim_env.py --headless --remote_stepping --robot_name $ns --robot_pkg_name $robot_pkg_name --robot_pkg_pref_path $robot_pkg_pref_path_eval --num_envs $num_envs --timeout_ms $timeout_ms&
+python $DIR2/launch_control_cluster.py --ns $ns --size $num_envs --timeout_ms $timeout_ms --codegen_override_dir $codegen_override_eval --robot_pkg_pref_path $robot_pkg_pref_path_eval & 
 python $DIR1/launch_train_env.py --ns $ns --run_name $run_name --drop_dir $HOME/training_data --dump_checkpoints --comment $comment --seed $seed --timeout_ms $timeout_ms&
 
 wait # wait for all to exit
