@@ -8,6 +8,15 @@ From:ros:noetic-ros-base-focal
 %help
     This a Singularity container associated with the IBRIDO framework.
 
+%files # copy isaac kits
+    ./files/bind_list.sh /usr/local/bin
+    ./utils/create_mamba_env.sh /usr/local/bin
+    ./utils/mamba_utils/bin/_activate_current_env.sh /usr/local/bin
+    ./utils/setup_ws.sh /usr/local/bin
+    ./utils/post_build_setup.sh /usr/local/bin
+    ./utils/launch_byobu_ws.sh /usr/local/bin
+    ./utils/launch_training.sh /usr/local/bin
+
 %environment
     
     export DEBIAN_FRONTEND=noninteractive

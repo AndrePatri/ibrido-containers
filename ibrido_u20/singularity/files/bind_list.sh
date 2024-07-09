@@ -7,7 +7,7 @@ ME=$(whoami)
 BASE_FOLDER="/work/${ME}"
 # some definitions
 SING_CONTAINER_DIR="$(dirname "$THIS_DIR")"
-IBRIDO_PREFIX=$BASE_FOLDER/containers/ibrido-singularity
+IBRIDO_PREFIX=$BASE_FOLDER/containers/ibrido-singularity-xbot
 IBRIDO_WS_PREFIX=${IBRIDO_PREFIX}/ibrido_ws/
 IBRIDO_WS_SRC=${IBRIDO_WS_PREFIX}/src
 IBRIDO_CONDA=${IBRIDO_PREFIX}/conda
@@ -31,19 +31,8 @@ IBRIDO_BDIRS=(
     "${IBRIDO_PREFIX}/.rviz2:/root/.rviz2:rw"
 )
 
-ISAAC_BDIRS=(
-    "${IBRIDO_PREFIX}/isaac-sim/cache/ov:/root/.cache/ov:rw"
-    "${IBRIDO_PREFIX}/isaac-sim/cache/pip:/root/.cache/pip:rw"
-    "${IBRIDO_PREFIX}/isaac-sim/cache/warp:/root/.cache/warp:rw"
-    "${IBRIDO_PREFIX}/isaac-sim/local:/root/.local:rw"
-    "${IBRIDO_PREFIX}/isaac-sim/cache/glcache:/root/.cache/nvidia/GLCache:rw"
-    "${IBRIDO_PREFIX}/isaac-sim/cache/computecache:/root/.nv/ComputeCache:rw"
-    "${IBRIDO_PREFIX}/isaac-sim/logs:/root/.nvidia-omniverse/logs:rw"
-    "${IBRIDO_PREFIX}/isaac-sim/documents:/root/Documents:rw"
-    "${IBRIDO_PREFIX}/isaac-sim/cache/nv_shadercache:/isaac-sim/kit/exts/omni.gpu_foundation/cache/nv_shadercache:rw"
-    "${IBRIDO_PREFIX}/isaac-sim/cache/kit:/isaac-sim/kit/cache:rw"
-    "${IBRIDO_PREFIX}/isaac-sim/data:/isaac-sim/kit/data:rw"
-    "${IBRIDO_PREFIX}/isaac-sim/kitlogs/Isaac-Sim:/isaac-sim/kit/logs/Kit/Isaac-Sim:rw"
+OTHER_BDIRS=(
+    ":"
 )
 
 # git directories and their branches
@@ -64,7 +53,7 @@ IBRIDO_GITDIRS=(
 )
 
 # Concatenate
-IBRIDO_BDIRS=("${IBRIDO_BDIRS[@]}" "${ISAAC_BDIRS[@]}")
+# IBRIDO_BDIRS=("${IBRIDO_BDIRS[@]}" "${OTHER_BDIRS[@]}")
 IBRIDO_B_ALL=("${IBRIDO_BDIRS[@]}" "${IBRIDO_BFILES[@]}")
 
 IBRIDO_BDIRS_SRC=()
