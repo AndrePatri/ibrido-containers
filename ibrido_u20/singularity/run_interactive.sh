@@ -35,6 +35,8 @@ unset IFS # Reset the internal field separator
 
 if $use_sudo; then
     sudo singularity exec \
+        --cleanenv \
+        --env "DISPLAY=:0"\
         --env "WANDB_KEY=$wandb_key"\
         -B /tmp/.X11-unix:/tmp/.X11-unix\
         -B /etc/localtime:/etc/localtime:ro \
@@ -43,6 +45,8 @@ if $use_sudo; then
         --nv ibrido_xbot.sif bash
 else
     singularity exec \
+        --cleanenv \
+        --env "DISPLAY=:0"\
         --env "WANDB_KEY=$wandb_key"\
         -B /tmp/.X11-unix:/tmp/.X11-unix\
         -B /etc/localtime:/etc/localtime:ro \

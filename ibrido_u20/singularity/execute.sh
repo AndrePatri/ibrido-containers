@@ -42,7 +42,9 @@ training_script="/root/ibrido_ws/launch_training.sh"
 if $use_sudo; then
     if $set_ulim; then
         sudo singularity exec \
+            --cleanenv \
             --env "WANDB_KEY=$WANDB_KEY"\
+            --env "DISPLAY=:0"\
             -B /tmp/.X11-unix:/tmp/.X11-unix\
             -B /etc/localtime:/etc/localtime:ro \
             --bind $binddirs\
@@ -61,7 +63,9 @@ if $use_sudo; then
                 --codegen_override $CODEGEN_OVERRIDE_BDIR
     else
         sudo singularity exec \
+            --cleanenv \
             --env "WANDB_KEY=$WANDB_KEY"\
+            --env "DISPLAY=:0"\
             -B /tmp/.X11-unix:/tmp/.X11-unix\
             -B /etc/localtime:/etc/localtime:ro \
             --bind $binddirs\
@@ -81,7 +85,9 @@ if $use_sudo; then
 else
     if $set_ulim; then
         singularity exec \
+            --cleanenv \
             --env "WANDB_KEY=$WANDB_KEY"\
+            --env "DISPLAY=:0"\
             -B /tmp/.X11-unix:/tmp/.X11-unix\
             -B /etc/localtime:/etc/localtime:ro \
             --bind $binddirs\
@@ -100,7 +106,9 @@ else
                 --codegen_override $CODEGEN_OVERRIDE_BDIR
     else
         singularity exec \
+            --cleanenv \
             --env "WANDB_KEY=$WANDB_KEY"\
+            --env "DISPLAY=:0"\
             -B /tmp/.X11-unix:/tmp/.X11-unix\
             -B /etc/localtime:/etc/localtime:ro \
             --bind $binddirs\
