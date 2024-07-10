@@ -33,6 +33,7 @@ From:ros:noetic-ros-base-focal
 %post
     # writing some composite singularity env. variables
     HOME='/root'
+    ROS_HOME="${HOME}/.ros"
     MAMBA_ENV_NAME='ibrido'
     MAMBA_EXE_PREFIX='/usr/local/bin'
     MAMBA_EXE='${MAMBA_EXE_PREFIX}/micromamba'
@@ -42,6 +43,7 @@ From:ros:noetic-ros-base-focal
     PATH=$PATH:${HOME}/.local/bin
 
     echo "export HOME=\"${HOME}\"" >> $SINGULARITY_ENVIRONMENT
+    echo "export ROS_HOME=\"${ROS_HOME}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_ENV_NAME=\"${MAMBA_ENV_NAME}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_ENV_FPATH=\"${MAMBA_ENV_FPATH}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export PATH=\"${PATH}\"" >> $SINGULARITY_ENVIRONMENT

@@ -29,21 +29,6 @@ cd $WS_BASEDIR/build/phase_manager
 cmake -DCMAKE_BUILD_TYPE=Release ../../src/phase_manager/
 make -j8 install
 
-mkdir -p $WS_BASEDIR/build/centauro_urdf
-cd $WS_BASEDIR/build/centauro_urdf
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/iit-centauro-ros-pkg/centauro_urdf
-make -j8 install
-
-mkdir -p $WS_BASEDIR/build/kyon_urdf
-cd $WS_BASEDIR/build/kyon_urdf
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/iit-kyon-ros-pkg/kyon_urdf
-make -j8 install
-
-mkdir -p $WS_BASEDIR/build/kyon_srdf
-cd $WS_BASEDIR/build/kyon_srdf
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/iit-kyon-ros-pkg/kyon_srdf
-make -j8 install
-
 # pip installations
 cd $WS_BASEDIR/src  
 pip install -e CoClusterBridge 
