@@ -43,8 +43,6 @@ if $use_sudo; then
     if $set_ulim; then
         sudo singularity exec \
             --env "WANDB_KEY=$WANDB_KEY"\
-            -B /tmp/.X11-unix:/tmp/.X11-unix\
-            -B /etc/localtime:/etc/localtime:ro \
             --bind $binddirs\
             --no-mount home,cwd \
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
@@ -62,8 +60,6 @@ if $use_sudo; then
     else
         sudo singularity exec \
             --env "WANDB_KEY=$WANDB_KEY"\
-            -B /tmp/.X11-unix:/tmp/.X11-unix\
-            -B /etc/localtime:/etc/localtime:ro \
             --bind $binddirs\
             --no-mount home,cwd \
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
@@ -82,8 +78,6 @@ else
     if $set_ulim; then
         singularity exec \
             --env "WANDB_KEY=$WANDB_KEY"\
-            -B /tmp/.X11-unix:/tmp/.X11-unix\
-            -B /etc/localtime:/etc/localtime:ro \
             --bind $binddirs\
             --no-mount home,cwd \
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
@@ -101,8 +95,6 @@ else
     else
         singularity exec \
             --env "WANDB_KEY=$WANDB_KEY"\
-            -B /tmp/.X11-unix:/tmp/.X11-unix\
-            -B /etc/localtime:/etc/localtime:ro \
             --bind $binddirs\
             --no-mount home,cwd \
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \

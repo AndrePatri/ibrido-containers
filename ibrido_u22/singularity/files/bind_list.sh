@@ -2,7 +2,7 @@
 
 THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-BASE_FOLDER=$HOME
+# BASE_FOLDER=$HOME
 ME=$(whoami)
 BASE_FOLDER="/work/${ME}"
 # some definitions
@@ -44,6 +44,11 @@ ISAAC_BDIRS=(
     "${IBRIDO_PREFIX}/isaac-sim/cache/kit:/isaac-sim/kit/cache:rw"
     "${IBRIDO_PREFIX}/isaac-sim/data:/isaac-sim/kit/data:rw"
     "${IBRIDO_PREFIX}/isaac-sim/kitlogs/Isaac-Sim:/isaac-sim/kit/logs/Kit/Isaac-Sim:rw"
+)
+
+OTHER_BDIRS=(
+    "/tmp/.X11-unix:/tmp/.X11-unix"
+    "/etc/localtime:/etc/localtime:ro"
 )
 
 # git directories and their branches
