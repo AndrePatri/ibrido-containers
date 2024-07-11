@@ -1,5 +1,9 @@
 #!/bin/bash
 # set -e # exiting if any cmd fails
+
+source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
+source "${IBRIDO_CONTAINERS_PREFIX}/files/training_cfg.sh"
+
 if [ -z "$IBRIDO_CONTAINERS_PREFIX" ]; then
     echo "IBRIDO_CONTAINERS_PREFIX variable has not been seen. Please set it to \${path_to_ibrido-containers}/isaac_ubuntu22/singularity."
     exit
@@ -8,9 +12,6 @@ if [ -z "$WANDB_KEY" ]; then
     echo "WANDB_KEY variable has not been seen. Please set it to you Wandb key."
     exit
 fi
-
-source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
-source "${IBRIDO_CONTAINERS_PREFIX}/files/training_cfg.sh"
 
 # Function to print usage
 usage() {
