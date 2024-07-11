@@ -19,6 +19,8 @@ IBRIDO_BFILES=(
 # defining directories to be binded at runtime
 IBRIDO_BDIRS=(
     "/dev/input:/dev/input:rw"
+    "/tmp/.X11-unix:/tmp/.X11-unix"
+    "/etc/localtime:/etc/localtime:ro"
     "${IBRIDO_PREFIX}/tmp:/tmp:rw"
     "${IBRIDO_PREFIX}/aux_data:/root/aux_data:rw"
     "${IBRIDO_PREFIX}/training_data:/root/training_data:rw"
@@ -44,11 +46,6 @@ ISAAC_BDIRS=(
     "${IBRIDO_PREFIX}/isaac-sim/cache/kit:/isaac-sim/kit/cache:rw"
     "${IBRIDO_PREFIX}/isaac-sim/data:/isaac-sim/kit/data:rw"
     "${IBRIDO_PREFIX}/isaac-sim/kitlogs/Isaac-Sim:/isaac-sim/kit/logs/Kit/Isaac-Sim:rw"
-)
-
-OTHER_BDIRS=(
-    "/tmp/.X11-unix:/tmp/.X11-unix"
-    "/etc/localtime:/etc/localtime:ro"
 )
 
 # git directories and their branches
