@@ -37,8 +37,8 @@ IFS=',' # Set the internal field separator to a comma
 binddirs="${IBRIDO_B_ALL[*]}"
 unset IFS # Reset the internal field separator
 
-training_script="/root/ibrido_ws/launch_training.sh"
-# training_script="launch_training.sh"
+# training_script="/root/ibrido_ws/launch_training.sh"
+training_script="launch_training.sh"
 
 if $use_sudo; then
     if $set_ulim; then
