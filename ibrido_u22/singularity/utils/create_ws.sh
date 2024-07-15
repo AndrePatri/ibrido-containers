@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e # exiting if any cmd fails
+set +e # do not exit if any cmd fails
 
 THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 root_folder="$(dirname "$THIS_DIR")"
@@ -43,3 +43,5 @@ cp ${root_folder}/utils/launch_byobu_ws.sh $IBRIDO_WS_PREFIX/
 # cp ${root_folder}/utils/warmup_isaac.py $IBRIDO_WS_PREFIX/
 
 echo 'Done.'
+
+set -e
