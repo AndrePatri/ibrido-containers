@@ -15,12 +15,12 @@ IBRIDO_CONDA=${IBRIDO_PREFIX}/conda
 # defining files to be binded at runtime
 IBRIDO_BFILES=(
     "${IBRIDO_PREFIX}/network/.netrc:/root/.netrc:rw"
+    "/etc/localtime:/etc/localtime:ro"
 )
 # defining directories to be binded at runtime
 IBRIDO_BDIRS=(
     "/dev/input:/dev/input:rw"
     "/tmp/.X11-unix:/tmp/.X11-unix"
-    "/etc/localtime:/etc/localtime:ro"
     "${IBRIDO_PREFIX}/tmp:/tmp:rw"
     "${IBRIDO_PREFIX}/aux_data:/root/aux_data:rw"
     "${IBRIDO_PREFIX}/training_data:/root/training_data:rw"
