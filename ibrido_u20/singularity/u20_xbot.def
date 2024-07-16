@@ -23,6 +23,7 @@ From:ros:noetic-ros-base-focal
     export LANG=C.UTF-8
     export LC_ALL=C.UTF-8
     export ROS_DISTRO=noetic
+    export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:/.singularity.d/libs
     export force_color_prompt=Y
 #    export SINGULARITY_MEMORY=
 #    export SINGULARITY_MEMORY_SWAP=
@@ -54,6 +55,8 @@ From:ros:noetic-ros-base-focal
     apt-get update && apt-get install -y \
         ca-certificates python3 python3-venv python-is-python3 \
         git wget sudo vim iputils-ping ssh rsync \
+        plocate \
+        libgl1-mesa-glx libglx0 \
         libboost-all-dev \
         dirmngr gnupg2 \
         build-essential \
