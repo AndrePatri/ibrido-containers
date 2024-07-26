@@ -169,9 +169,23 @@ increase_file_limits_locally
 clear_terminal
 prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --with_agent_refs --ns {}"
 
+split_h
+execute_command "cd ${WORKING_DIR}"
+# execute_command "source /opt/ros/noetic/setup.bash"
+execute_command "source /opt/ros/humble/setup.bash"
+execute_command "source $WS_ROOT/setup.bash"
+activate_mamba_env
+increase_file_limits_locally
+clear_terminal
+prepare_command "reset && python launch_periodic_bag_dump.py --ns {} --bag_sdt {60.0} --ros_bridge_dt {0.01} --dump_dt_min {10} --env_idx {0}"
+
 # tab 1
 new_tab
 execute_command "cd ${WORKING_DIR}"
+activate_mamba_env
+execute_command "source /opt/ros/humble/setup.bash"
+clear_terminal
+prepare_command "reset && ./replay_bag {~/training_data/...}"
 
 split_h
 execute_command "cd ${WORKING_DIR2}"
