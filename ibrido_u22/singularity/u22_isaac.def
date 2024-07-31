@@ -1,5 +1,5 @@
 Bootstrap: docker
-From:nvcr.io/nvidia/isaac-sim:4.0.0
+From:nvcr.io/nvidia/isaac-sim:4.1.0
 
 %labels
     AUTHOR AndrePatri (andrepatrics@gmail.com)
