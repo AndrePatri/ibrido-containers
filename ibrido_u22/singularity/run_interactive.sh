@@ -41,6 +41,7 @@ unset IFS # Reset the internal field separator
 if $use_sudo; then
     sudo singularity exec \
         --env "WANDB_KEY=$wandb_key"\
+        --env "ROS_LOCALHOST_ONLY=1"\
         -B /tmp/.X11-unix:/tmp/.X11-unix\
         -B /etc/localtime:/etc/localtime:ro \
         --bind $binddirs\
@@ -49,6 +50,7 @@ if $use_sudo; then
 else
     singularity exec \
         --env "WANDB_KEY=$wandb_key"\
+        --env "ROS_LOCALHOST_ONLY=1"\
         -B /tmp/.X11-unix:/tmp/.X11-unix\
         -B /etc/localtime:/etc/localtime:ro \
         --bind $binddirs\
