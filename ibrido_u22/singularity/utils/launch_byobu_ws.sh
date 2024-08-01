@@ -185,7 +185,7 @@ execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 execute_command "source /opt/ros/humble/setup.bash"
 clear_terminal
-prepare_command "reset && ./replay_bag {~/training_data/...}"
+prepare_command "reset && ./replay_bag.sh {~/training_data/...}"
 
 split_h
 execute_command "cd ${WORKING_DIR2}"
