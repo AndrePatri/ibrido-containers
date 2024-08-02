@@ -68,6 +68,7 @@ From:nvcr.io/nvidia/isaac-sim:4.1.0
         libboost-all-dev \
         dirmngr gnupg2 \
         build-essential \
+        valgrind \
         byobu \
         wget \
         htop \
