@@ -7,7 +7,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     Version v0.0.1
 
 %help
-    This a Singularity container associated with the IBRIDO framework.
+    This is a Singularity container associated with the IBRIDO framework.
 
 %files # copy isaac kits
     ./files/bind_list.sh /usr/local/bin
@@ -19,19 +19,27 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     ./utils/launch_training.sh /usr/local/bin
 
 %environment
-    
     export DEBIAN_FRONTEND=noninteractive
     export LANG=C.UTF-8
     export LC_ALL=C.UTF-8
     export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:/.singularity.d/libs
     export force_color_prompt=Y
-#    export SINGULARITY_MEMORY=
-#    export SINGULARITY_MEMORY_SWAP=
+    # export SINGULARITY_MEMORY=
+    # export SINGULARITY_MEMORY_SWAP=
 
-#%setup
-#    ./utils/create_ws.sh
+# %setup
+# ./utils/create_ws.sh
 
 %post
+    set -e  # Exit immediately if a command exits with a non-zero status
+    
+    # Set debconf frontend to noninteractive to avoid dialog prompts
+    export DEBIAN_FRONTEND=noninteractive
+
+    # Disable starting services
+    dpkg-divert --local --rename --add /sbin/initctl
+    ln -sf /bin/true /sbin/initctl
+
     # writing some composite singularity env. variables
     HOME='/root'
     ROS_HOME="${HOME}/.ros"
@@ -59,7 +67,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     echo "deb http://us.archive.ubuntu.com/ubuntu/ focal-updates main universe multiverse" >> /etc/apt/sources.list
     echo "deb http://us.archive.ubuntu.com/ubuntu/ focal-security main universe multiverse" >> /etc/apt/sources.list
 
-    # base pkgs
+    # Base packages
     apt-get update && apt-get install -y \
         apt-utils \
         gpg gpgconf \
@@ -71,19 +79,14 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
         dirmngr gnupg2 \
         build-essential \
         byobu \
-        wget \
         htop \
-        apt-utils \
         software-properties-common \
         nano \
         cmake \
         cmake-curses-gui \
         curl \
-        python3-rosdep \
-        python3-rosinstall \
-        python3-vcstools \
         ffmpeg && rm -rf /var/lib/apt/lists/*
-         
+    
     # ROS1 core
     echo 'Etc/UTC' > /etc/timezone && \
     apt-get update && \
@@ -104,7 +107,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
        gpgconf --kill all; \
        rm -rf "$GNUPGHOME"
     
-    echo "deb [ signed-by=/usr/share/keyrings/ros1-latest-archive-keyring.gpg ] http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/sources.list.d/ros1-latest.list
+    echo "deb [signed-by=/usr/share/keyrings/ros1-latest-archive-keyring.gpg] http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/sources.list.d/ros1-latest.list
 
     apt-get update && apt-get install -y --no-install-recommends \
     ros-noetic-ros-core=1.5.0-1* \
@@ -125,7 +128,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     ros-noetic-ros-base=1.5.0-1* \
     && rm -rf /var/lib/apt/lists/*
 
-    # additional ROS 1 noetic setup
+    # Additional ROS 1 noetic setup
     apt-get update && apt-get install --no-install-recommends -y \
     libgazebo11-dev \
     ros-$ROS_DISTRO-urdf ros-$ROS_DISTRO-kdl-parser \
@@ -138,14 +141,14 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     curl -Ls https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj -C ${MAMBA_EXE_PREFIX}/ --strip-components=1 bin/micromamba
     
     # xbot2 setup
-    sudo sh -c 'echo "deb http://xbot.cloud/xbot2/ubuntu/$(lsb_release -sc) /" > /etc/apt/sources.list.d/xbot-latest.list'
-    wget -q -O - http://xbot.cloud/xbot2/ubuntu/KEY.gpg | sudo apt-key add -
+    echo "deb http://xbot.cloud/xbot2/ubuntu/$(lsb_release -sc) /" > /etc/apt/sources.list.d/xbot-latest.list
+    wget -q -O - http://xbot.cloud/xbot2/ubuntu/KEY.gpg | apt-key add -
     apt-get update && apt-get install --no-install-recommends -y xbot2_desktop_full \
     && rm -rf /var/lib/apt/lists/*
 
-#%test
-#    echo 'Testing if MicroMamba is present...'
-#    ${MAMBA_EXE} --version
+# %test
+# echo 'Testing if MicroMamba is present...'
+# ${MAMBA_EXE} --version
 
 %runscript
     exec /bin/bash "$@"
