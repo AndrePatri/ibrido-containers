@@ -30,11 +30,6 @@ cd $WS_BASEDIR/build/phase_manager
 cmake -DCMAKE_BUILD_TYPE=Release ../../src/phase_manager/
 make -j8 install
 
-mkdir -p $WS_BASEDIR/build/matlogger2
-cd $WS_BASEDIR/build/matlogger2
-cmake -DCMAKE_BUILD_TYPE=Release ../../src/matlogger2/
-make -j8 install
-
 mkdir -p $WS_BASEDIR/build/mujoco_cmake
 cd $WS_BASEDIR/build/mujoco_cmake
 cmake -DCMAKE_BUILD_TYPE=Release ../../src/mujoco_cmake/
