@@ -55,7 +55,7 @@ From:ros:noetic-ros-base-focal
     apt-get update && apt-get install -y \
         ca-certificates python3 python3-venv python-is-python3 \
         git wget sudo vim iputils-ping ssh rsync \
-        plocate \
+        mlocate \
         libgl1-mesa-glx libglx0 \
         libboost-all-dev \
         dirmngr gnupg2 \

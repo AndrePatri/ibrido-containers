@@ -12,10 +12,10 @@ channels:
 
 dependencies: 
   - python=3.10
-  - pytorch=2.*.*=*cuda*
-  - torchvision
-  - torchaudio
-  - pytorch-cuda=12.1
+  - pytorch=*.*.*=*cuda*
+  # - torchvision
+  # - torchaudio
+  - pytorch-cuda
   # - cuda-toolkit
   - clang
   - compilers 
