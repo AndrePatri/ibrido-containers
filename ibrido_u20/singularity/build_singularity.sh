@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e # exiting if any cmd fails
 
+if [ -z "$IBRIDO_CONTAINERS_PREFIX" ]; then
+    echo "IBRIDO_CONTAINERS_PREFIX variable has not been seen. Please set it to \${path_to_ibrido-containers}/ibrido_22/singularity."
+    exit
+fi
+
 source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
 
 # Function to print usage
@@ -31,10 +36,10 @@ if $build_container; then
     echo '--> Building IBRIDO container...'
     if $use_sudo; then
         echo '--> Starting building of IBRIDO singularity container (sudo)...'
-        sudo singularity build $IBRIDO_CONTAINERS_PREFIX/ibrido_xbot.sif $IBRIDO_CONTAINERS_PREFIX/u20_xbot.def # either --fakeroot or sudo are necessary
+        sudo singularity build --nv --nvccli $IBRIDO_CONTAINERS_PREFIX/ibrido_xbot.sif $IBRIDO_CONTAINERS_PREFIX/u20_xbot.def # either --fakeroot or sudo are necessary
     else
         echo '--> Starting building of IBRIDO singularity container (fakeroot)...'
-        singularity build --fakeroot $IBRIDO_CONTAINERS_PREFIX/ibrido_xbot.sif $IBRIDO_CONTAINERS_PREFIX/u20_xbot.def # either --fakeroot or sudo are necessary
+        singularity build --nv --nvccli --fakeroot $IBRIDO_CONTAINERS_PREFIX/ibrido_xbot.sif $IBRIDO_CONTAINERS_PREFIX/u20_xbot.def # either --fakeroot or sudo are necessary
     fi
     echo 'Done.'
 fi
@@ -58,7 +63,7 @@ if $do_setup; then
         -B /etc/localtime:/etc/localtime:ro \
         --bind $binddirs\
         --no-mount home,cwd \
-        --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_xbot.sif post_build_setup.sh
+        --nv --nvccli $IBRIDO_CONTAINERS_PREFIX/ibrido_xbot.sif post_build_setup.sh
     echo 'Done. You can now either launch the container with run_interactive_xbot.sh or start the training with execute_xbot.sh'
 fi
 

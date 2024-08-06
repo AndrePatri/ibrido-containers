@@ -42,7 +42,7 @@ if $use_sudo; then
         -B /etc/localtime:/etc/localtime:ro \
         --bind $binddirs\
         --no-mount home,cwd \
-        --nv ibrido_xbot.sif bash
+        --nv --nvccli ibrido_xbot.sif bash
 else
     singularity exec \
         --cleanenv \
@@ -52,6 +52,6 @@ else
         -B /etc/localtime:/etc/localtime:ro \
         --bind $binddirs\
         --no-mount home,cwd \
-        --nv ibrido_xbot.sif bash
+        --nv --nvccli ibrido_xbot.sif bash
 fi
 
