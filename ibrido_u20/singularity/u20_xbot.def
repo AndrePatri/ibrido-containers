@@ -23,7 +23,6 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     export DEBIAN_FRONTEND=noninteractive
     export LANG=C.UTF-8
     export LC_ALL=C.UTF-8
-    export ROS_DISTRO=noetic
     export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:/.singularity.d/libs
     export force_color_prompt=Y
 #    export SINGULARITY_MEMORY=
@@ -36,6 +35,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     # writing some composite singularity env. variables
     HOME='/root'
     ROS_HOME="${HOME}/.ros"
+    ROS_DISTRO=noetic
     MAMBA_ENV_NAME='ibrido'
     MAMBA_EXE_PREFIX='/usr/local/bin'
     MAMBA_EXE='${MAMBA_EXE_PREFIX}/micromamba'
@@ -46,6 +46,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 
     echo "export HOME=\"${HOME}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export ROS_HOME=\"${ROS_HOME}\"" >> $SINGULARITY_ENVIRONMENT
+    echo "export ROS_DISTRO=\"${ROS_DISTRO}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_ENV_NAME=\"${MAMBA_ENV_NAME}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_ENV_FPATH=\"${MAMBA_ENV_FPATH}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export PATH=\"${PATH}\"" >> $SINGULARITY_ENVIRONMENT
@@ -60,6 +61,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 
     # base pkgs
     apt-get update && apt-get install -y \
+        apt-utils \
         gpg gpgconf \
         ca-certificates python3 python3-venv python-is-python3 \
         git wget sudo vim iputils-ping ssh rsync \
@@ -71,7 +73,6 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
         byobu \
         wget \
         htop \
-        nvtop \
         apt-utils \
         software-properties-common \
         nano \
@@ -82,7 +83,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
         python3-rosinstall \
         python3-vcstools \
         ffmpeg && rm -rf /var/lib/apt/lists/*
-
+         
     # ROS1 core
     echo 'Etc/UTC' > /etc/timezone && \
     apt-get update && \
