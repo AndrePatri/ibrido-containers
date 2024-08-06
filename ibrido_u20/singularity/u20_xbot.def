@@ -1,5 +1,6 @@
-Bootstrap: docker
-From:ros:noetic-ros-base-focal
+Bootstrap: debootstrap
+OSVersion: focal
+MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 
 %labels
     AUTHOR AndrePatri (andrepatrics@gmail.com)
@@ -52,34 +53,47 @@ From:ros:noetic-ros-base-focal
     echo "export MAMBA_EXE=\"${MAMBA_EXE}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_ROOT_PREFIX=\"${MAMBA_ROOT_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
     
-    apt-get update && apt-get install -y \
-        ca-certificates python3 python3-venv python-is-python3 \
-        git wget sudo vim iputils-ping ssh rsync \
-        mlocate \
-        libgl1-mesa-glx libglx0 \
-        libboost-all-dev \
-        dirmngr gnupg2 \
-        build-essential \
-        byobu \
-        wget \
-        htop \
-        nvtop \
-        apt-utils \
-        software-properties-common \
-        nano \
-        cmake \
-        cmake-curses-gui \
-        curl \
-        python3-rosdep \
-        python3-rosinstall \
-        python3-vcstools \
-        ffmpeg && rm -rf /var/lib/apt/lists/*
+    # ROS1 core
+    echo 'Etc/UTC' > /etc/timezone && \
+    apt-get update && \
+    apt-get install -q -y --no-install-recommends tzdata && \
+    rm -rf /var/lib/apt/lists/*
 
-    apt-get update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata && rm -rf /var/lib/apt/lists/*
+    apt-get update && apt-get install -q -y --no-install-recommends \
+    dirmngr \
+    gnupg2 \
+    && rm -rf /var/lib/apt/lists/*
 
-    # Micromamba setup
-    curl -Ls https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj -C ${MAMBA_EXE_PREFIX}/ --strip-components=1 bin/micromamba
+    set -eux; \
+       key='C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654'; \
+       export GNUPGHOME="$(mktemp -d)"; \
+       gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
+       mkdir -p /usr/share/keyrings; \
+       gpg --batch --export "$key" > /usr/share/keyrings/ros1-latest-archive-keyring.gpg; \
+       gpgconf --kill all; \
+       rm -rf "$GNUPGHOME"
     
+    echo "deb [ signed-by=/usr/share/keyrings/ros1-latest-archive-keyring.gpg ] http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/sources.list.d/ros1-latest.list
+
+    apt-get update && apt-get install -y --no-install-recommends \
+    ros-noetic-ros-core=1.5.0-1* \
+    && rm -rf /var/lib/apt/lists/*
+
+    # ROS1 base
+    apt-get update && apt-get install --no-install-recommends -y \
+    build-essential \
+    python3-rosdep \
+    python3-rosinstall \
+    python3-vcstools \
+    && rm -rf /var/lib/apt/lists/*
+
+    rosdep init && \
+    rosdep update --rosdistro $ROS_DISTRO
+
+    apt-get update && apt-get install -y --no-install-recommends \
+    ros-noetic-ros-base=1.5.0-1* \
+    && rm -rf /var/lib/apt/lists/*
+
     # additional ROS 1 noetic setup
     apt-get update && apt-get install --no-install-recommends -y \
     libgazebo11-dev \
@@ -89,6 +103,9 @@ From:ros:noetic-ros-base-focal
     qttools5-dev libqt5charts5-dev qtdeclarative5-dev \
     && rm -rf /var/lib/apt/lists/*
 
+    # Micromamba setup
+    curl -Ls https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj -C ${MAMBA_EXE_PREFIX}/ --strip-components=1 bin/micromamba
+    
     # xbot2 setup
     sudo sh -c 'echo "deb http://xbot.cloud/xbot2/ubuntu/$(lsb_release -sc) /" > /etc/apt/sources.list.d/xbot-latest.list'
     wget -q -O - http://xbot.cloud/xbot2/ubuntu/KEY.gpg | sudo apt-key add -
