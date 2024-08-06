@@ -53,6 +53,36 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     echo "export MAMBA_EXE=\"${MAMBA_EXE}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_ROOT_PREFIX=\"${MAMBA_ROOT_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
     
+    # Configure APT sources
+    echo "deb http://us.archive.ubuntu.com/ubuntu/ focal main universe multiverse" > /etc/apt/sources.list
+    echo "deb http://us.archive.ubuntu.com/ubuntu/ focal-updates main universe multiverse" >> /etc/apt/sources.list
+    echo "deb http://us.archive.ubuntu.com/ubuntu/ focal-security main universe multiverse" >> /etc/apt/sources.list
+
+    # base pkgs
+    apt-get update && apt-get install -y \
+        gpg gpgconf \
+        ca-certificates python3 python3-venv python-is-python3 \
+        git wget sudo vim iputils-ping ssh rsync \
+        mlocate \
+        libgl1-mesa-glx libglx0 \
+        libboost-all-dev \
+        dirmngr gnupg2 \
+        build-essential \
+        byobu \
+        wget \
+        htop \
+        nvtop \
+        apt-utils \
+        software-properties-common \
+        nano \
+        cmake \
+        cmake-curses-gui \
+        curl \
+        python3-rosdep \
+        python3-rosinstall \
+        python3-vcstools \
+        ffmpeg && rm -rf /var/lib/apt/lists/*
+
     # ROS1 core
     echo 'Etc/UTC' > /etc/timezone && \
     apt-get update && \
