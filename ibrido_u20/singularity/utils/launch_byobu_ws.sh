@@ -122,8 +122,10 @@ byobu new-session -d -s ${BYOBU_WS_NAME} -c ${WORKING_DIR} -n ${BYOBU_WS_NAME} #
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 #execute_command "source ~/.local/share/ov/pkg/isaac_sim-2023.1.1/setup_conda_env.sh"
-execute_command "source /isaac-sim/setup_conda_env.sh"
+execute_command "source /opt/xbot/setup.bash"
+execute_command "source /opt/ros/noetic/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
+
 increase_file_limits_locally 
 # clear_terminal
 prepare_command "reset && python launch_sim_env.py --headless --remote_stepping --robot_name {} --robot_pkg_name {} --robot_pkg_pref_path {} --num_envs {}"

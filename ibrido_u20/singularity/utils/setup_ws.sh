@@ -8,6 +8,7 @@ WS_BASEDIR=$HOME/ibrido_ws
 source /usr/local/bin/_activate_current_env.sh # enable mamba for this shell
 micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install packages
 source /opt/ros/noetic/setup.bash # ros2 setup
+source ${WS_BASEDIR}/setup.bash # ros2 setup
 
 # clean ws if already initialized
 rm -rf $WS_BASEDIR/build && mkdir $WS_BASEDIR/build
@@ -27,6 +28,21 @@ make -j8 install
 mkdir -p $WS_BASEDIR/build/phase_manager
 cd $WS_BASEDIR/build/phase_manager
 cmake -DCMAKE_BUILD_TYPE=Release ../../src/phase_manager/
+make -j8 install
+
+mkdir -p $WS_BASEDIR/build/matlogger2
+cd $WS_BASEDIR/build/matlogger2
+cmake -DCMAKE_BUILD_TYPE=Release ../../src/matlogger2/
+make -j8 install
+
+mkdir -p $WS_BASEDIR/build/mujoco_cmake
+cd $WS_BASEDIR/build/mujoco_cmake
+cmake -DCMAKE_BUILD_TYPE=Release ../../src/mujoco_cmake/
+make -j8 install
+
+mkdir -p $WS_BASEDIR/build/xbot2_mujoco
+cd $WS_BASEDIR/build/xbot2_mujoco
+cmake -DCMAKE_BUILD_TYPE=Release ../../src/xbot2_mujoco/
 make -j8 install
 
 # pip installations
