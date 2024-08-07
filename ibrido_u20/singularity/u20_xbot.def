@@ -129,7 +129,6 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 
     # Additional ROS 1 noetic setup
     apt-get update && apt-get install --no-install-recommends -y \
-    libgazebo11-dev \
     ros-$ROS_DISTRO-urdf ros-$ROS_DISTRO-kdl-parser \
     ros-$ROS_DISTRO-eigen-conversions ros-$ROS_DISTRO-robot-state-publisher ros-$ROS_DISTRO-moveit-core \
     ros-$ROS_DISTRO-rviz ros-$ROS_DISTRO-interactive-markers ros-$ROS_DISTRO-tf-conversions ros-$ROS_DISTRO-tf2-eigen \
