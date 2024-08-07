@@ -4,9 +4,11 @@ set -e # exiting if any cmd fails
 echo "--> Setting up workspace..."
 
 WS_BASEDIR=$HOME/ibrido_ws
+XBOT2_SETUP=/opt/xbot2/setup.sh
 
 source /usr/local/bin/_activate_current_env.sh # enable mamba for this shell
 micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install packages
+source $XBOT2_SETUP
 source /opt/ros/noetic/setup.bash # ros2 setup
 source ${WS_BASEDIR}/setup.bash # ros2 setup
 
