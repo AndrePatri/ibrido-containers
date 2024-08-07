@@ -6,7 +6,7 @@ export GTK_IM_MODULE=ibus
 export QT_IM_MODULE=ibus
 
 SLEEP_FOR=0.1
-BYOBU_WS_NAME="ibrido"
+BYOBU_WS_NAME="ibrido_xbot2"
 WS_ROOT="$HOME/ibrido_ws"
 WORKING_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
 WORKING_DIR2="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
@@ -122,7 +122,7 @@ byobu new-session -d -s ${BYOBU_WS_NAME} -c ${WORKING_DIR} -n ${BYOBU_WS_NAME} #
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 #execute_command "source ~/.local/share/ov/pkg/isaac_sim-2023.1.1/setup_conda_env.sh"
-execute_command "source /opt/xbot/setup.bash"
+execute_command "source /opt/xbot/setup.sh"
 execute_command "source /opt/ros/noetic/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 
