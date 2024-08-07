@@ -38,8 +38,6 @@ if $use_sudo; then
         --cleanenv \
         --env "DISPLAY=:0"\
         --env "WANDB_KEY=$wandb_key"\
-        -B /tmp/.X11-unix:/tmp/.X11-unix\
-        -B /etc/localtime:/etc/localtime:ro \
         --bind $binddirs\
         --no-mount home,cwd \
         --nv --nvccli ibrido_xbot.sif bash
@@ -48,8 +46,6 @@ else
         --cleanenv \
         --env "DISPLAY=:0"\
         --env "WANDB_KEY=$wandb_key"\
-        -B /tmp/.X11-unix:/tmp/.X11-unix\
-        -B /etc/localtime:/etc/localtime:ro \
         --bind $binddirs\
         --no-mount home,cwd \
         --nv --nvccli ibrido_xbot.sif bash
