@@ -61,7 +61,9 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     echo "export MAMBA_EXE_PREFIX=\"${MAMBA_EXE_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_EXE=\"${MAMBA_EXE}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_ROOT_PREFIX=\"${MAMBA_ROOT_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
-    
+
+    export CMAKE_PREFIX_PATH=$CONDA_PREFIX:$CMAKE_PREFIX_PATH
+
     # Configure APT sources
     echo "deb http://us.archive.ubuntu.com/ubuntu/ focal main universe multiverse" > /etc/apt/sources.list
     echo "deb http://us.archive.ubuntu.com/ubuntu/ focal-updates main universe multiverse" >> /etc/apt/sources.list
@@ -77,7 +79,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
         libgl1-mesa-glx libglx0 \
         libboost-all-dev \
         dirmngr gnupg2 \
-        build-essential \
+        build-essential libc6-dev\
         byobu \
         htop \
         software-properties-common \
@@ -85,6 +87,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
         cmake \
         cmake-curses-gui \
         curl \
+        libyaml-cpp-dev \
         ffmpeg && rm -rf /var/lib/apt/lists/*
     
     # ROS1 core
