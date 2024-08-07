@@ -49,7 +49,6 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     MAMBA_EXE='${MAMBA_EXE_PREFIX}/micromamba'
     MAMBA_ROOT_PREFIX='/opt/conda'
     MAMBA_ENV_FPATH='/opt/conda/mamba_env.yml'
-    CMAKE_PREFIX_PATH='/usr':$CMAKE_PREFIX_PATH
 
     PATH=$PATH:${HOME}/.local/bin
 
@@ -62,7 +61,6 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     echo "export MAMBA_EXE_PREFIX=\"${MAMBA_EXE_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_EXE=\"${MAMBA_EXE}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_ROOT_PREFIX=\"${MAMBA_ROOT_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
-    echo "export CMAKE_PREFIX_PATH=\"${CMAKE_PREFIX_PATH}\"" >> $SINGULARITY_ENVIRONMENT
 
     export CMAKE_PREFIX_PATH=$CONDA_PREFIX:$CMAKE_PREFIX_PATH
 
@@ -89,6 +87,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
         cmake \
         cmake-curses-gui \
         curl \
+        libyaml-cpp-dev \
         ffmpeg && rm -rf /var/lib/apt/lists/*
     
     # ROS1 core

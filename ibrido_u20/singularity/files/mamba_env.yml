@@ -21,6 +21,12 @@ dependencies:
   - compilers 
   - cmake
   - make
+  - gcc
+  - gxx
+  - libcxx
+  - gcc_linux-64
+  - gxx_linux-64
+  - libgcc-devel_linux-64
   - gtest
   - pybind11
   - eigen3
@@ -29,7 +35,7 @@ dependencies:
   - casadi_kin_dyn
   - pinocchio=2.6.20
   - quaternion
-  - yaml-cpp
+  - yaml-cpp=0.6.0
   - ros-humble-xacro
   - empy 
   - pyqt
