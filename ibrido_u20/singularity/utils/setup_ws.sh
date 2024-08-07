@@ -4,9 +4,11 @@ set -e # exiting if any cmd fails
 echo "--> Setting up workspace..."
 
 WS_BASEDIR=$HOME/ibrido_ws
+XBOT2_SETUP=/opt/xbot/setup.sh
 
 source /usr/local/bin/_activate_current_env.sh # enable mamba for this shell
 micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install packages
+source $XBOT2_SETUP
 source /opt/ros/noetic/setup.bash # ros2 setup
 source ${WS_BASEDIR}/setup.bash # ros2 setup
 
@@ -28,11 +30,6 @@ make -j8 install
 mkdir -p $WS_BASEDIR/build/phase_manager
 cd $WS_BASEDIR/build/phase_manager
 cmake -DCMAKE_BUILD_TYPE=Release ../../src/phase_manager/
-make -j8 install
-
-mkdir -p $WS_BASEDIR/build/matlogger2
-cd $WS_BASEDIR/build/matlogger2
-cmake -DCMAKE_BUILD_TYPE=Release ../../src/matlogger2/
 make -j8 install
 
 mkdir -p $WS_BASEDIR/build/mujoco_cmake
