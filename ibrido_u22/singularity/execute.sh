@@ -5,10 +5,6 @@ if [ -z "$IBRIDO_CONTAINERS_PREFIX" ]; then
     echo "IBRIDO_CONTAINERS_PREFIX variable has not been seen. Please set it to \${path_to_ibrido-containers}/ibrido_22/singularity."
     exit
 fi
-if [ -z "$WANDB_KEY" ]; then
-    echo "WANDB_KEY variable has not been seen. Please set it to you Wandb key."
-    exit
-fi
 
 source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
 source "${IBRIDO_CONTAINERS_PREFIX}/files/training_cfg.sh"
@@ -50,6 +46,7 @@ if $use_sudo; then
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
                 --robot_pkg_name $RB_PNAME \
                 --robot_pkg_pref_path $RB_PPREFNAME \
+                --cocluster_dir $COCLUSTER_DIR\ 
                 --num_envs $N_ENVS \
                 --set_ulim \
                 --ulim_n $ULIM_N \
@@ -68,6 +65,7 @@ if $use_sudo; then
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
                 --robot_pkg_name $RB_PNAME \
                 --robot_pkg_pref_path $RB_PPREFNAME \
+                --cocluster_dir $COCLUSTER_DIR\ 
                 --num_envs $N_ENVS \
                 --ulim_n $ULIM_N \
                 --ns $SHM_NS \
@@ -87,6 +85,7 @@ else
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
                 --robot_pkg_name $RB_PNAME \
                 --robot_pkg_pref_path $RB_PPREFNAME \
+                --cocluster_dir $COCLUSTER_DIR\ 
                 --num_envs $N_ENVS \
                 --set_ulim\
                 --ulim_n $ULIM_N \
@@ -105,6 +104,7 @@ else
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
                 --robot_pkg_name $RB_PNAME \
                 --robot_pkg_pref_path $RB_PPREFNAME \
+                --cocluster_dir $COCLUSTER_DIR\ 
                 --num_envs $N_ENVS \
                 --ulim_n $ULIM_N \
                 --ns $SHM_NS \

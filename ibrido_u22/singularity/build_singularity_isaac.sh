@@ -72,8 +72,6 @@ if $do_setup; then
     binddirs="${IBRIDO_B_ALL[*]}"
     unset IFS # Reset the internal field separator
     singularity exec \
-        -B /tmp/.X11-unix:/tmp/.X11-unix\
-        -B /etc/localtime:/etc/localtime:ro \
         --bind $binddirs\
         --no-mount home,cwd \
         --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif post_build_setup.sh

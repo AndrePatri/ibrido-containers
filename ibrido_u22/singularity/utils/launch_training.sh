@@ -1,10 +1,9 @@
 #!/bin/bash
 WS_ROOT="$HOME/ibrido_ws"
-DIR1="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
-DIR2="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
+LRHC_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
 
 usage() {
-  echo "Usage: $0 --robot_pkg_name PKG_NAME --robot_pkg_pref_path PKG_PREF_PATH [--num_envs NUM] [--set_ulim|-ulim] [--ulim_n ULIM_N] \
+  echo "Usage: $0 --robot_pkg_name PKG_NAME --robot_pkg_pref_path PKG_PREF_PATH --cocluster_dir COCLUSTER_DIR [--num_envs NUM] [--set_ulim|-ulim] [--ulim_n ULIM_N] \
     [--ns] [--run_name RUN_NAME] [--comment COMMENT] [--seed SEED] [--timeout_ms TIMEOUT] \
     [--codegen_override CG_OVERRIDE]"
   exit 1
@@ -23,6 +22,7 @@ while [[ "$#" -gt 0 ]]; do
   case $1 in
     --robot_pkg_name) robot_pkg_name="$2"; shift ;;
     --robot_pkg_pref_path) robot_pkg_pref_path="$2"; shift ;;
+    --cocluster_dir) cocluster_dir="$2"; shift ;;
     --num_envs) num_envs="$2"; shift ;;
     --timeout_ms) timeout_ms="$2"; shift ;;
     -ulim|--set_ulim) set_ulim=true ;;
@@ -47,6 +47,11 @@ if [ -z "$robot_pkg_pref_path" ]; then
   usage
 fi
 
+if [ -z "$cocluster_dir" ]; then
+  echo "Error: --cocluster_dir is mandatory."
+  usage
+fi
+
 # activate micromamba for this shell
 eval "$(micromamba shell hook --shell bash)"
 micromamba activate ${MAMBA_ENV_NAME}
@@ -62,9 +67,11 @@ fi
 
 robot_pkg_pref_path_eval=$(eval echo $robot_pkg_pref_path)
 codegen_override_eval=$(eval echo $codegen_override)
+cocluster_dir_eval=$(eval echo $cocluster_dir)
+lrhc_dir=$LRHC_DIR
 
-python $DIR1/launch_sim_env.py --headless --remote_stepping --robot_name $ns --robot_pkg_name $robot_pkg_name --robot_pkg_pref_path $robot_pkg_pref_path_eval --num_envs $num_envs --timeout_ms $timeout_ms&
-python $DIR2/launch_control_cluster.py --ns $ns --size $num_envs --timeout_ms $timeout_ms --codegen_override_dir $codegen_override_eval --robot_pkg_pref_path $robot_pkg_pref_path_eval & 
-python $DIR1/launch_train_env.py --ns $ns --run_name $run_name --drop_dir $HOME/training_data --dump_checkpoints --comment $comment --seed $seed --timeout_ms $timeout_ms&
+python $lrhc_dir/launch_sim_env.py --headless --remote_stepping --robot_name $ns --robot_pkg_name $robot_pkg_name --robot_pkg_pref_path $robot_pkg_pref_path_eval --num_envs $num_envs --timeout_ms $timeout_ms&
+python $cocluster_dir_eval/launch_control_cluster.py --ns $ns --size $num_envs --timeout_ms $timeout_ms --codegen_override_dir $codegen_override_eval --robot_pkg_pref_path $robot_pkg_pref_path_eval & 
+python $lrhc_dir/launch_train_env.py --ns $ns --run_name $run_name --drop_dir $HOME/training_data --dump_checkpoints --comment $comment --seed $seed --timeout_ms $timeout_ms&
 
 wait # wait for all to exit
