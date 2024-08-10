@@ -177,7 +177,7 @@ execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_periodic_bag_dump.py --ns {} --bag_sdt {60.0} --ros_bridge_dt {0.01} --dump_dt_min {10} --env_idx {0}"
+prepare_command "reset && python launch_periodic_bag_dump.py --ns {} --bag_sdt {60.0} --ros_bridge_dt {0.01} --dump_dt_min {10} --env_idx {0} --srdf_path {}"
 
 # tab 1
 new_tab
