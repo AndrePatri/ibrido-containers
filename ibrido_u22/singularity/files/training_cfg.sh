@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export RB_PNAME="kyon" # name of the description package for the robot
+export RB_PNAME="******" # name of the description package for the robot
 export RB_PPREFNAME="\${HOME}/ibrido_ws/src/******" # base path where the description package for the robot are located
 export COCLUSTER_DIR="\${HOME}/ibrido_ws/src/******" # base dir where launch_control_cluster.py script is located
 export SHM_NS="IBRIDO" # shared mem namespace used for all shared data on CPU 
