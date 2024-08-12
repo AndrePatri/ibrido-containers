@@ -1,8 +1,59 @@
-lr_gym.sif
-build/
-.vscode
-isaac_ubuntu22/singularity/ibrido.oci.sif
-isaac_ubuntu22/singularity/ibrido.sif
-isaac_ubuntu22/singularity/ibrido_isaac.oci.sif
-isaac_ubuntu22/singularity/ibrido_isaac.sif
+# Node modules
+node_modules/
 
+# Python environment
+.env/
+*.pyc
+*.pyo
+__pycache__/
+
+# Build artifacts
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Docker
+# Ignore Docker build context files
+Dockerfile
+.dockerignore
+
+# Ignore Docker build artifacts
+**/docker-compose.override.yml
+docker-compose.override.yml
+*.tar
+*.tar.gz
+*.tgz
+
+# Singularity
+# Ignore Singularity build artifacts
+*.sif
+*.simg
+Singularity
+
+# macOS files
+.DS_Store
+
+# Linux files
+*.swp
+*.swo
+
+# Vim swap files
+*.swp
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Miscellaneous
+*.gz
+*.zip
+*.7z
+*.rar
+
+# Temporary files
+tmp/
+temp/
