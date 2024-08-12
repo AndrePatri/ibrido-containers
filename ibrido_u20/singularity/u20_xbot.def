@@ -88,6 +88,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
         cmake-curses-gui \
         curl \
         libyaml-cpp-dev \
+        python3-pybind11 \
         ffmpeg && rm -rf /var/lib/apt/lists/*
     
     # ROS1 core

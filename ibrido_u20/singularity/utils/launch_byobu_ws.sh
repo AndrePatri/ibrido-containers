@@ -120,8 +120,6 @@ byobu new-session -d -s ${BYOBU_WS_NAME} -c ${WORKING_DIR} -n ${BYOBU_WS_NAME} #
 
 # tab 0
 execute_command "cd ${WORKING_DIR}"
-activate_mamba_env
-#execute_command "source ~/.local/share/ov/pkg/isaac_sim-2023.1.1/setup_conda_env.sh"
 execute_command "source /opt/xbot/setup.sh"
 execute_command "source /opt/ros/noetic/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
@@ -163,8 +161,7 @@ prepare_command "reset && python launch_train_env.py --ns {} --run_name {} --dro
 
 split_h
 execute_command "cd ${WORKING_DIR}"
-# execute_command "source /opt/ros/noetic/setup.bash"
-execute_command "source /opt/ros/humble/setup.bash"
+execute_command "source /opt/ros/noetic/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
@@ -177,9 +174,8 @@ execute_command "cd ${WORKING_DIR}"
 
 split_h
 execute_command "cd ${WORKING_DIR2}"
-# execute_command "source /opt/ros/noetic/setup.bash"
+execute_command "source /opt/ros/noetic/setup.bash"
 activate_mamba_env
-execute_command "source /opt/ros/humble/setup.bash"
 clear_terminal
 prepare_command "reset && python launch_rhcviz.py --ns {}"
 
