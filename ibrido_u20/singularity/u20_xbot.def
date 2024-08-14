@@ -76,7 +76,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
         ca-certificates python3 python3-venv python-is-python3 \
         git wget sudo vim iputils-ping ssh rsync \
         mlocate \
-        libgl1-mesa-glx libglx0 \
+        libgl1-mesa-glx libglx0 libglew-dev libglfw3 libglfw3-dev\
         libboost-all-dev \
         dirmngr gnupg2 \
         build-essential libc6-dev\
@@ -89,6 +89,8 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
         curl \
         libyaml-cpp-dev \
         python3-pybind11 \
+        gdb valgrind\
+        libpugixml-dev \
         ffmpeg && rm -rf /var/lib/apt/lists/*
     
     # ROS1 core
