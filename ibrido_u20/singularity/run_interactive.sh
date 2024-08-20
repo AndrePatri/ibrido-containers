@@ -42,7 +42,7 @@ unset IFS # Reset the internal field separator
 if $use_sudo; then
     sudo singularity exec \
         --cleanenv \
-        --env "DISPLAY=:0"\
+        --env "DISPLAY=${DISPLAY}"\
         --env "WANDB_KEY=$wandb_key"\
         --bind $binddirs\
         --no-mount home,cwd \
@@ -50,7 +50,7 @@ if $use_sudo; then
 else
     singularity exec \
         --cleanenv \
-        --env "DISPLAY=:0"\
+        --env "DISPLAY=${DISPLAY}"\
         --env "WANDB_KEY=$wandb_key"\
         --bind $binddirs\
         --no-mount home,cwd \

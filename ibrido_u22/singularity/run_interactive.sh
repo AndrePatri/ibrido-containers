@@ -42,6 +42,7 @@ if $use_sudo; then
     sudo singularity exec \
         --env "WANDB_KEY=$wandb_key"\
         --env "ROS_LOCALHOST_ONLY=1"\
+        --env "DISPLAY=${DISPLAY}"\
         --bind $binddirs\
         --no-mount home,cwd \
         --nv ibrido_isaac.sif bash
@@ -49,6 +50,7 @@ else
     singularity exec \
         --env "WANDB_KEY=$wandb_key"\
         --env "ROS_LOCALHOST_ONLY=1"\
+        --env "DISPLAY=${DISPLAY}"\
         --bind $binddirs\
         --no-mount home,cwd \
         --nv ibrido_isaac.sif bash
