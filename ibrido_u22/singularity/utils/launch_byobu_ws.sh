@@ -14,8 +14,6 @@ WORKING_DIR2="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
 MAMBAENVNAME="${MAMBA_ENV_NAME}"
 N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
 
-mkdir -p /tmp/tmux-1005
-
 # Array of directories
 directories=(
     "$WS_ROOT/src/KyonRLStepping"
