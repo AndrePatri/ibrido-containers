@@ -91,6 +91,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
         python3-pybind11 \
         gdb valgrind\
         libpugixml-dev \
+        swig \
         ffmpeg && rm -rf /var/lib/apt/lists/*
     
     # ROS1 core

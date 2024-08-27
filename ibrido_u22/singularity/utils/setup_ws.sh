@@ -19,6 +19,11 @@ cd $WS_BASEDIR/build/SharsorIPCpp
 cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON ../../src/SharsorIPCpp/SharsorIPCpp
 make -j8 install
 
+mkdir -p $WS_BASEDIR/build/casadi
+cd $WS_BASEDIR/build/casadi
+cmake -DCMAKE_BUILD_TYPE=Release -DWITH_OSQP=1 -DWITH_QPOASES=1 -DWITH_LAPACK=1 -DWITH_THREAD=1 -DWITH_PYTHON=1 -DWITH_PYTHON3=1 -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/casadi
+make -j8 install
+
 mkdir -p $WS_BASEDIR/build/horizon
 cd $WS_BASEDIR/build/horizon
 cmake -DCMAKE_BUILD_TYPE=Release ../../src/horizon/horizon/cpp

@@ -63,6 +63,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:ADVRHumanoids/CentauroHybridMPC.git*isaac4.0.0"
     "git@github.com:ADVRHumanoids/iit-centauro-ros-pkg.git*big_wheels_v2.10_optional_find_ros2"
     "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*optional_find_ros2"
+    "git@github.com:AndrePatri/casadi.git*optional_float"
 )
 
 # Concatenate
