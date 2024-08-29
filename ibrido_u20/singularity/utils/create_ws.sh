@@ -34,8 +34,8 @@ done
 wait
 
 # copying some utility files
-cp ${root_folder}/files/setup.bash $IBRIDO_WS_PREFIX/
-cp ${root_folder}/files/mamba_env.yml $IBRIDO_CONDA/
+cp ${root_folder}/files/mamba_env.yml $IBRIDO_CONDA/ # conda env definition
+cp ${root_folder}/files/setup.bash $IBRIDO_WS_PREFIX/ # code ws setup
 
 cp ${root_folder}/utils/launch_training.sh $IBRIDO_WS_PREFIX/
 cp ${root_folder}/utils/launch_byobu_ws.sh $IBRIDO_WS_PREFIX/

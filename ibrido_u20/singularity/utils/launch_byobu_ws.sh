@@ -121,7 +121,7 @@ execute_command "cd ${WORKING_DIR}"
 execute_command "source /opt/xbot/setup.sh"
 execute_command "source /opt/ros/noetic/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
-
+activate_mamba_env
 increase_file_limits_locally 
 # clear_terminal
 prepare_command "reset && python launch_sim_env.py --headless --remote_stepping --robot_name {} --robot_pkg_name {} --robot_pkg_pref_path {} --num_envs {}"

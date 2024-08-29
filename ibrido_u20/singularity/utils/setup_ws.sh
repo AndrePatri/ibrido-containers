@@ -22,7 +22,7 @@ make -j8 install
 mkdir -p $WS_BASEDIR/build/xbot2_mujoco
 cd $WS_BASEDIR/build/xbot2_mujoco
 source $XBOT2_SETUP
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${WS_INSTALLDIR} ../../src/xbot2_mujoco/
+cmake -DCMAKE_BUILD_TYPE=Release -DWITH_TESTS=1 -DWITH_XMJ_SIM_ENV=1 -DWITH_PYTHON=2 -DCMAKE_INSTALL_PREFIX=${WS_INSTALLDIR} -Diit_centauro_ros_pkg_DIR=${WS_BASEDIR}/src/iit-centauro-ros-pkg ../../src/xbot2_mujoco/
 make -j8 install
 
 source /usr/local/bin/_activate_current_env.sh # enable mamba for this shell
@@ -34,9 +34,9 @@ cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON ../../src/SharsorIPCpp/Sharsor
 make -j8 install
 
 mkdir -p $WS_BASEDIR/build/casadi
-cd $WS_BASEDIR/build/casadi
-cmake -DCMAKE_BUILD_TYPE=Release -DWITH_OSQP=1 -DWITH_QPOASES=1 -DWITH_LAPACK=1 -DWITH_THREAD=1 -DWITH_PYTHON=1 -DWITH_PYTHON3=1 -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/casadi
-make -j8 install
+# cd $WS_BASEDIR/build/casadi
+# cmake -DCMAKE_BUILD_TYPE=Release -DWITH_OSQP=1 -DWITH_QPOASES=1 -DWITH_LAPACK=1 -DWITH_THREAD=1 -DWITH_PYTHON=1 -DWITH_PYTHON3=1 -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/casadi
+# make -j8 install
 
 mkdir -p $WS_BASEDIR/build/horizon
 cd $WS_BASEDIR/build/horizon
@@ -57,6 +57,8 @@ pip install -e CentauroHybridMPC
 pip install -e KyonRLStepping
 pip install -e RHCViz
 pip install --no-deps -e horizon
+pip install -e adarl
+pip install -e adarl_ros
 
 # copying omnirobogym isaac kit 
 # cd $WS_BASEDIR/src/OmniRoboGym/omni_robo_gym/cfg/omni_kits/  
