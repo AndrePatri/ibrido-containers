@@ -46,6 +46,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/SharsorIPCpp.git*devel"
     "git@github.com:AndrePatri/OmniRoboGym.git*isaac4.0.0"
     "git@github.com:AndrePatri/RHCViz.git*ros2_humble"
+    "git@github.com:AndrePatri/PerfSleep.git*main"
     "git@github.com:AndrePatri/phase_manager.git*new_architecture"
     "git@github.com:AndrePatri/unitree_ros.git*andrepatri_dev"
     "git@github.com:ADVRHumanoids/horizon.git*andrepatri_devel"
