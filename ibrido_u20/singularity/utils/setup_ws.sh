@@ -13,6 +13,8 @@ source ${WS_BASEDIR}/setup.bash # ros2 setup
 rm -rf $WS_BASEDIR/build && mkdir $WS_BASEDIR/build
 rm -rf $WS_BASEDIR/install && mkdir $WS_BASEDIR/install
 
+# OUTSIDE MICROMAMBA ENV->
+
 # build cmake packages
 mkdir -p $WS_BASEDIR/build/mujoco_cmake
 cd $WS_BASEDIR/build/mujoco_cmake
@@ -25,8 +27,20 @@ source $XBOT2_SETUP
 cmake -DCMAKE_BUILD_TYPE=Release -DWITH_TESTS=1 -DWITH_XMJ_SIM_ENV=1 -DWITH_PYTHON=2 -DCMAKE_INSTALL_PREFIX=${WS_INSTALLDIR} -Diit_centauro_ros_pkg_DIR=${WS_BASEDIR}/src/iit-centauro-ros-pkg ../../src/xbot2_mujoco/
 make -j8 install
 
+# adarl ros utils
+mkdir -p $WS_BASEDIR/build/adarl_ros_utils
+cd $WS_BASEDIR/build/adarl_ros_utils
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${WS_INSTALLDIR} -DWITH_MOVEIT=0 -DWITH_ROS_CONTROL=0 ../../src/adarl_ros/adarl_ros_utils/
+make -j8 install
+
+# INSIDE MICROMAMBA ENV->
 source /usr/local/bin/_activate_current_env.sh # enable mamba for this shell
 micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install packages
+
+mkdir -p $WS_BASEDIR/build/perf_sleep
+cd $WS_BASEDIR/build/perf_sleep
+cmake -DCMAKE_BUILD_TYPE=Release ../../src/PerfSleep/perf_sleep
+make -j8 install
 
 mkdir -p $WS_BASEDIR/build/SharsorIPCpp
 cd $WS_BASEDIR/build/SharsorIPCpp
@@ -56,9 +70,10 @@ pip install -e LRHControl
 pip install -e CentauroHybridMPC
 pip install -e KyonRLStepping
 pip install -e RHCViz
+# pip install --no-deps -e horizon --install-option="--skip-build"
 pip install --no-deps -e horizon
 pip install -e adarl
-pip install -e adarl_ros
+pip install -e adarl_ros/adarl_ros
 
 # copying omnirobogym isaac kit 
 # cd $WS_BASEDIR/src/OmniRoboGym/omni_robo_gym/cfg/omni_kits/  
@@ -68,7 +83,3 @@ pip install -e adarl_ros
 #cp $WS_BASEDIR/src/LRHControl/lrhc_control/scripts/launch_byobu_ws.sh /root/
 
 source /root/.bashrc
-
-
-
-
