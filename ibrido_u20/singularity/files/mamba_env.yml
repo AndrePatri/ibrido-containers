@@ -8,10 +8,9 @@ channels:
   - omnia
   - robostack-staging
   - francesco_ruscelli
-  - AndrePatri
 
 dependencies: 
-  - python=3.10
+  - python=3.8
   - pytorch=*.*.*=*cuda*
   # - torchvision
   # - torchaudio
@@ -36,12 +35,11 @@ dependencies:
   - pinocchio=2.6.20
   - quaternion
   - yaml-cpp=0.6
-  - ros-humble-xacro
   - empy 
   - pyqt
   - pyqtgraph
   - pyside2
-  - perf_sleep
+  # - perf_sleep
   - catkin_pkg=1.0.0
   - pip:
     - flit
@@ -58,3 +56,10 @@ dependencies:
     - gymnasium[mujoco]
     - tensorboard
     - wandb
+    # adarl stuff
+    - playsound
+    - opencv-python
+    - tqdm
+    - rospkg
+    - defusedxml
+    - git+https://github.com/ros/xacro.git@ros2
