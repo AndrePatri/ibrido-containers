@@ -44,8 +44,9 @@ if $use_sudo; then
             --bind $binddirs\
             --no-mount home,cwd \
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
-                --robot_pkg_name $RB_PNAME \
-                --robot_pkg_pref_path $RB_PPREFNAME \
+                --urdf_path $URDF_PATH \
+                --srdf_path $SRDF_PATH \
+                --cluster_client_fname $CLUSTER_CL_FNAME \
                 --cocluster_dir $COCLUSTER_DIR \
                 --num_envs $N_ENVS \
                 --set_ulim \
@@ -63,8 +64,9 @@ if $use_sudo; then
             --bind $binddirs\
             --no-mount home,cwd \
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
-                --robot_pkg_name $RB_PNAME \
-                --robot_pkg_pref_path $RB_PPREFNAME \
+                --urdf_path $URDF_PATH \
+                --srdf_path $SRDF_PATH \
+                --cluster_client_fname $CLUSTER_CL_FNAME \
                 --cocluster_dir $COCLUSTER_DIR \
                 --num_envs $N_ENVS \
                 --ulim_n $ULIM_N \
@@ -83,8 +85,9 @@ else
             --bind $binddirs\
             --no-mount home,cwd \
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
-                --robot_pkg_name $RB_PNAME \
-                --robot_pkg_pref_path $RB_PPREFNAME \
+                --urdf_path $URDF_PATH \
+                --srdf_path $SRDF_PATH \
+                --cluster_client_fname $CLUSTER_CL_FNAME \
                 --cocluster_dir $COCLUSTER_DIR \
                 --num_envs $N_ENVS \
                 --set_ulim\
@@ -102,8 +105,9 @@ else
             --bind $binddirs\
             --no-mount home,cwd \
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
-                --robot_pkg_name $RB_PNAME \
-                --robot_pkg_pref_path $RB_PPREFNAME \
+                --urdf_path $URDF_PATH \
+                --srdf_path $SRDF_PATH \
+                --cluster_client_fname $CLUSTER_CL_FNAME \
                 --cocluster_dir $COCLUSTER_DIR \
                 --num_envs $N_ENVS \
                 --ulim_n $ULIM_N \

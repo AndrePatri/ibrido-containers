@@ -1,7 +1,8 @@
 #!/bin/bash
 
-export RB_PNAME="******" # name of the description package for the robot
-export RB_PPREFNAME="\${HOME}/ibrido_ws/src/******" # base path where the description package for the robot are located
+export URDF_PATH="\${HOME}/ibrido_ws/src/******" # name of the description package for the robot
+export SRDF_PATH="\${HOME}/ibrido_ws/src/******" # base path where the description package for the robot are located
+export CLUSTER_CL_FNAME="lrhc_control/rhc/controllers/lrhc_cluster_client" # base path where the description package for the robot are located
 export COCLUSTER_DIR="\${HOME}/ibrido_ws/src/******" # base dir where launch_control_cluster.py script is located
 export SHM_NS="IBRIDO" # shared mem namespace used for all shared data on CPU 
 export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
