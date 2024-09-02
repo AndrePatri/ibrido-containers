@@ -9,7 +9,6 @@ SLEEP_FOR=0.1
 BYOBU_WS_NAME="ibrido"
 WS_ROOT="$HOME/ibrido_ws"
 WORKING_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
-WORKING_DIR2="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
 
 MAMBAENVNAME="${MAMBA_ENV_NAME}"
 N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
@@ -127,12 +126,12 @@ increase_file_limits_locally
 prepare_command "reset && python launch_sim_env.py --headless --remote_stepping --robot_name {} --robot_pkg_name {} --robot_pkg_pref_path {} --num_envs {}"
 
 split_v
-execute_command "cd ${WORKING_DIR2}"
+execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_control_cluster.py --enable_debug --ns {} --size {} --robot_pkg_pref_path {}"
+prepare_command "reset && python launch_control_cluster.py --enable_debug --ns {} --size {} --urdf_path {} --srdf_path {} --cluster_client_fname {}"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -186,12 +185,12 @@ clear_terminal
 prepare_command "reset && ./replay_bag.bash {~/training_data/...}"
 
 split_h
-execute_command "cd ${WORKING_DIR2}"
+execute_command "cd ${WORKING_DIR}"
 # execute_command "source /opt/ros/noetic/setup.bash"
 activate_mamba_env
 execute_command "source /opt/ros/humble/setup.bash"
 clear_terminal
-prepare_command "reset && python launch_rhcviz.py --ns {}"
+prepare_command "reset && python launch_rhcviz.py --ns {} --nodes_perc {}"
 
 # tab2
 new_tab
