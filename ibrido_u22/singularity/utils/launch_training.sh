@@ -74,7 +74,7 @@ fi
 
 urdf_path_eval=$(eval echo $urdf_path)
 srdf_path_eval=$(eval echo $srdf_path)
-jnt_imp_config_path_eval==$(eval echo $jnt_imp_config_path)
+jnt_imp_config_path_eval=$(eval echo $jnt_imp_config_path)
 cluster_client_fname_eval=$(eval echo $cluster_client_fname)
 codegen_override_eval=$(eval echo $codegen_override)
 

@@ -10,13 +10,14 @@ source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
 
 # Function to print usage
 usage() {
-    echo "Usage: $0 [--build|-b] [--use_sudo|-s] [--init|-i] [--do_setup|-stp] [--ngc_key|-ngc <key>]"
+    echo "Usage: $0 [--build|-b] [--use_sudo|-s] [--init|-i] [--do_setup|-stp] [--update_ws|-uws] [--ngc_key|-ngc <key>]"
     exit 1
 }
 build_container=false
 use_sudo=false # whether to use superuser privileges
 init=false # whether to initialize/create the workspace
 do_setup=false # whether to perform the post-build setup steps
+update_ws=false # whether to update workspace code
 ngc_key=""
 
 # Parse command line options
@@ -26,6 +27,7 @@ while [[ "$#" -gt 0 ]]; do
         -s|--use_sudo) use_sudo=true ;;
         -i|--init) init=true ;;
         -stp|--do_setup) do_setup=true ;;
+        -uws|--update_ws) update_ws=true ;;
         -ngc|--ngc_key) 
             if [[ -n "$2" && "$2" != "-"* ]]; then
                 ngc_key=$2
@@ -61,6 +63,13 @@ fi
 if $init; then
     echo '--> Initializing workspace...'
     ${IBRIDO_CONTAINERS_PREFIX}/utils/create_ws.sh
+    echo 'Done.'
+fi
+
+# ws initialization
+if $update_ws; then
+    echo '--> Updating workspace code...'
+    ${IBRIDO_CONTAINERS_PREFIX}/utils/update_ws_code.sh
     echo 'Done.'
 fi
 
