@@ -8,9 +8,26 @@ root_folder="$(dirname "$THIS_DIR")"
 source "${root_folder}/files/bind_list.sh"
 
 cd $IBRIDO_WS_SRC
+
+# Iterate through IBRIDO_GITDIRS
 for ((i = 0; i < ${#IBRIDO_GITDIRS[@]}; i++)); do
-    src="${IBRIDO_GIT_SRC[$i]}"
-    echo "--> $src"
+    git_url="${IBRIDO_GITDIRS[$i]}"
+    
+    # Extract the repo name by stripping off the URL prefix and ".git" suffix
+    repo_name=$(basename "${git_url%%.git*}" | cut -d'*' -f1)
+    
+    # Determine the directory path
+    repo_path="$IBRIDO_WS_SRC/$repo_name"
+
+    # Check if the directory exists and perform a git pull
+    if [ -d "$repo_path" ]; then
+        echo "Pulling latest changes in $repo_name..."
+        cd "$repo_path"
+        git pull &
+        cd "$IBRIDO_WS_SRC"
+    else
+        echo "Directory $repo_path does not exist. Skipping..."
+    fi
 done
 wait
 echo 'update done.'
