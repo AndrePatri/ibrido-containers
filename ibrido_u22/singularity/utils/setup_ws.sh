@@ -68,6 +68,9 @@ pip install --no-deps -e horizon
 
 source /root/.bashrc
 
+echo 'setup completed.'
+
+
 
 
 

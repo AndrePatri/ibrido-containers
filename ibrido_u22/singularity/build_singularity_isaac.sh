@@ -56,26 +56,22 @@ if $build_container; then
         singularity build --fakeroot $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $IBRIDO_CONTAINERS_PREFIX/u22_isaac.def # either --fakeroot or sudo are necessary
 
     fi
-    echo 'Done.'
+    echo 'container was built.'
 fi
 
 # ws initialization
 if $init; then
-    echo '--> Initializing workspace...'
     ${IBRIDO_CONTAINERS_PREFIX}/utils/create_ws.sh
-    echo 'Done.'
 fi
 
 # ws initialization
 if $update_ws; then
-    echo '--> Updating workspace code...'
     ${IBRIDO_CONTAINERS_PREFIX}/utils/update_ws_code.sh
-    echo 'Done.'
 fi
 
 # ws setup
 if $do_setup; then
-    echo '--> Running setup steps ...'
+    echo '--> About to run setup steps (from within container)...'
     # convert bind dirs to comma-separated list
     IFS=',' # Set the internal field separator to a comma
     binddirs="${IBRIDO_B_ALL[*]}"
