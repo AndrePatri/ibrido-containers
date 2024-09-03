@@ -4,7 +4,7 @@ LRHC_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
 
 usage() {
   echo "Usage: $0 --urdf_path URDF_PATH --srdf_path SRDF_PATH --jnt_imp_config_path JNT_IMP_CF_PATH \
-  --cluster_client_fname CLUSTER_CL_FNAME--cocluster_dir COCLUSTER_DIR [--num_envs NUM] [--set_ulim|-ulim] [--ulim_n ULIM_N] \
+  --cluster_client_fname CLUSTER_CL_FNAME [--num_envs NUM] [--set_ulim|-ulim] [--ulim_n ULIM_N] \
     [--ns] [--run_name RUN_NAME] [--comment COMMENT] [--seed SEED] [--timeout_ms TIMEOUT] \
     [--codegen_override CG_OVERRIDE]"
   exit 1
@@ -25,7 +25,6 @@ while [[ "$#" -gt 0 ]]; do
     --srdf_path) srdf_path="$2"; shift ;;
     --jnt_imp_config_path) jnt_imp_config_path="$2"; shift ;;
     --cluster_client_fname) cluster_client_fname="$2"; shift ;;
-    --cocluster_dir) cocluster_dir="$2"; shift ;;
     --num_envs) num_envs="$2"; shift ;;
     --timeout_ms) timeout_ms="$2"; shift ;;
     -ulim|--set_ulim) set_ulim=true ;;
@@ -60,11 +59,6 @@ if [ -z "$cluster_client_fname" ]; then
   usage
 fi
 
-if [ -z "$cocluster_dir" ]; then
-  echo "Error: --cocluster_dir is mandatory."
-  usage
-fi
-
 # activate micromamba for this shell
 eval "$(micromamba shell hook --shell bash)"
 micromamba activate ${MAMBA_ENV_NAME}
@@ -83,12 +77,11 @@ srdf_path_eval=$(eval echo $srdf_path)
 jnt_imp_config_path_eval==$(eval echo $jnt_imp_config_path)
 cluster_client_fname_eval=$(eval echo $cluster_client_fname)
 codegen_override_eval=$(eval echo $codegen_override)
-cocluster_dir_eval=$(eval echo $cocluster_dir)
 
 python $LRHC_DIR/launch_remote_env.py --headless --remote_stepping --robot_name $ns \
  --urdf_path $urdf_path_eval --srdf_path  $srdf_path_eval --jnt_imp_config_path $jnt_imp_config_path_eval\
  --num_envs $num_envs --timeout_ms $timeout_ms&
-python $cocluster_dir_eval/launch_control_cluster.py --ns $ns --size $num_envs --timeout_ms $timeout_ms \
+python $LRHC_DIR/launch_control_cluster.py --ns $ns --size $num_envs --timeout_ms $timeout_ms \
   --codegen_override_dir $codegen_override_eval \
   --urdf_path $urdf_path_eval --srdf_path $srdf_path_eval --cluster_client_fname $cluster_client_fname_eval & 
 python $LRHC_DIR/launch_train_env.py --ns $ns --run_name $run_name --drop_dir $HOME/training_data --dump_checkpoints \

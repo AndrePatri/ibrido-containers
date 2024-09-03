@@ -48,7 +48,6 @@ if $use_sudo; then
                 --srdf_path $SRDF_PATH \
                 --jnt_imp_config_path $JNT_IMP_CF_PATH \
                 --cluster_client_fname $CLUSTER_CL_FNAME \
-                --cocluster_dir $COCLUSTER_DIR \
                 --num_envs $N_ENVS \
                 --set_ulim \
                 --ulim_n $ULIM_N \
@@ -69,7 +68,6 @@ if $use_sudo; then
                 --srdf_path $SRDF_PATH \
                 --jnt_imp_config_path $JNT_IMP_CF_PATH \
                 --cluster_client_fname $CLUSTER_CL_FNAME \
-                --cocluster_dir $COCLUSTER_DIR \
                 --num_envs $N_ENVS \
                 --ulim_n $ULIM_N \
                 --ns $SHM_NS \
@@ -91,7 +89,6 @@ else
                 --srdf_path $SRDF_PATH \
                 --jnt_imp_config_path $JNT_IMP_CF_PATH \
                 --cluster_client_fname $CLUSTER_CL_FNAME \
-                --cocluster_dir $COCLUSTER_DIR \
                 --num_envs $N_ENVS \
                 --set_ulim\
                 --ulim_n $ULIM_N \
@@ -112,7 +109,6 @@ else
                 --srdf_path $SRDF_PATH \
                 --jnt_imp_config_path $JNT_IMP_CF_PATH \
                 --cluster_client_fname $CLUSTER_CL_FNAME \
-                --cocluster_dir $COCLUSTER_DIR \
                 --num_envs $N_ENVS \
                 --ulim_n $ULIM_N \
                 --ns $SHM_NS \
