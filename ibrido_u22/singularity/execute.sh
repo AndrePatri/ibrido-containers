@@ -46,6 +46,7 @@ if $use_sudo; then
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
                 --urdf_path $URDF_PATH \
                 --srdf_path $SRDF_PATH \
+                --jnt_imp_config_path $JNT_IMP_CF_PATH \
                 --cluster_client_fname $CLUSTER_CL_FNAME \
                 --cocluster_dir $COCLUSTER_DIR \
                 --num_envs $N_ENVS \
@@ -66,6 +67,7 @@ if $use_sudo; then
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
                 --urdf_path $URDF_PATH \
                 --srdf_path $SRDF_PATH \
+                --jnt_imp_config_path $JNT_IMP_CF_PATH \
                 --cluster_client_fname $CLUSTER_CL_FNAME \
                 --cocluster_dir $COCLUSTER_DIR \
                 --num_envs $N_ENVS \
@@ -87,6 +89,7 @@ else
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
                 --urdf_path $URDF_PATH \
                 --srdf_path $SRDF_PATH \
+                --jnt_imp_config_path $JNT_IMP_CF_PATH \
                 --cluster_client_fname $CLUSTER_CL_FNAME \
                 --cocluster_dir $COCLUSTER_DIR \
                 --num_envs $N_ENVS \
@@ -107,6 +110,7 @@ else
             --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_script \
                 --urdf_path $URDF_PATH \
                 --srdf_path $SRDF_PATH \
+                --jnt_imp_config_path $JNT_IMP_CF_PATH \
                 --cluster_client_fname $CLUSTER_CL_FNAME \
                 --cocluster_dir $COCLUSTER_DIR \
                 --num_envs $N_ENVS \

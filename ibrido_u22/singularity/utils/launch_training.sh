@@ -3,7 +3,8 @@ WS_ROOT="$HOME/ibrido_ws"
 LRHC_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
 
 usage() {
-  echo "Usage: $0 --urdf_path URDF_PATH --srdf_path SRDF_PATH --cluster_client_fname CLUSTER_CL_FNAME--cocluster_dir COCLUSTER_DIR [--num_envs NUM] [--set_ulim|-ulim] [--ulim_n ULIM_N] \
+  echo "Usage: $0 --urdf_path URDF_PATH --srdf_path SRDF_PATH --jnt_imp_config_path JNT_IMP_CF_PATH \
+  --cluster_client_fname CLUSTER_CL_FNAME--cocluster_dir COCLUSTER_DIR [--num_envs NUM] [--set_ulim|-ulim] [--ulim_n ULIM_N] \
     [--ns] [--run_name RUN_NAME] [--comment COMMENT] [--seed SEED] [--timeout_ms TIMEOUT] \
     [--codegen_override CG_OVERRIDE]"
   exit 1
@@ -22,6 +23,7 @@ while [[ "$#" -gt 0 ]]; do
   case $1 in
     --urdf_path) urdf_path="$2"; shift ;;
     --srdf_path) srdf_path="$2"; shift ;;
+    --jnt_imp_config_path) jnt_imp_config_path="$2"; shift ;;
     --cluster_client_fname) cluster_client_fname="$2"; shift ;;
     --cocluster_dir) cocluster_dir="$2"; shift ;;
     --num_envs) num_envs="$2"; shift ;;
@@ -45,6 +47,11 @@ fi
 
 if [ -z "$srdf_path" ]; then
   echo "Error: --srdf_path is mandatory."
+  usage
+fi
+
+if [ -z "$jnt_imp_config_path" ]; then
+  echo "Error: --jnt_imp_config_path is mandatory."
   usage
 fi
 
@@ -73,12 +80,14 @@ fi
 
 urdf_path_eval=$(eval echo $urdf_path)
 srdf_path_eval=$(eval echo $srdf_path)
+jnt_imp_config_path_eval==$(eval echo $jnt_imp_config_path)
 cluster_client_fname_eval=$(eval echo $cluster_client_fname)
 codegen_override_eval=$(eval echo $codegen_override)
 cocluster_dir_eval=$(eval echo $cocluster_dir)
 
-python $LRHC_DIR/launch_env.py --headless --remote_stepping --robot_name $ns \
- --urdf_path $urdf_path_eval --srdf_path  $srdf_path_eval --num_envs $num_envs --timeout_ms $timeout_ms&
+python $LRHC_DIR/launch_remote_env.py --headless --remote_stepping --robot_name $ns \
+ --urdf_path $urdf_path_eval --srdf_path  $srdf_path_eval --jnt_imp_config_path $jnt_imp_config_path_eval\
+ --num_envs $num_envs --timeout_ms $timeout_ms&
 python $cocluster_dir_eval/launch_control_cluster.py --ns $ns --size $num_envs --timeout_ms $timeout_ms \
   --codegen_override_dir $codegen_override_eval \
   --urdf_path $urdf_path_eval --srdf_path $srdf_path_eval --cluster_client_fname $cluster_client_fname_eval & 
