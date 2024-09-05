@@ -10,7 +10,7 @@ source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
 
 # Function to print usage
 usage() {
-    echo "Usage: $0 [--build|-b] [--use_sudo|-s] [--init|-i] [--do_setup|-stp]"
+    echo "Usage: $0 [--build|-b] [--use_sudo|-s] [--init|-i] [--do_setup|-stp] [--update_ws|-uws]"
     exit 1
 }
 build_container=false
@@ -26,6 +26,7 @@ while [[ "$#" -gt 0 ]]; do
         -s|--use_sudo) use_sudo=true ;;
         -i|--init) init=true ;;
         -stp|--do_setup) do_setup=true ;;
+        -uws|--update_ws) update_ws=true ;;
         -h|--help) usage ;;
         *) echo "Unknown parameter passed: $1"; usage ;;
     esac
@@ -49,6 +50,11 @@ if $init; then
     echo '--> Initializing workspace...'
     ${IBRIDO_CONTAINERS_PREFIX}/utils/create_ws.sh
     echo 'Done.'
+fi
+
+# ws update
+if $update_ws; then
+    ${IBRIDO_CONTAINERS_PREFIX}/utils/update_ws_code.sh
 fi
 
 # ws setup

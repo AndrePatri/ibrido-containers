@@ -64,7 +64,7 @@ if $init; then
     ${IBRIDO_CONTAINERS_PREFIX}/utils/create_ws.sh
 fi
 
-# ws initialization
+# ws update
 if $update_ws; then
     ${IBRIDO_CONTAINERS_PREFIX}/utils/update_ws_code.sh
 fi
