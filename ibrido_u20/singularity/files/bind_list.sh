@@ -58,7 +58,8 @@ IBRIDO_GITDIRS=(
     "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*optional_find"
     "git@github.com:AndrePatri/casadi.git*optional_float"
     "git@gitlab.com:crzz/adarl.git*master"
-    "git@gitlab.com:crzz/adarl_ros.git*crzz-dev-noetic"
+    "git@gitlab.com:crzz/adarl_ros.git*andrepatri_dev"
+    "git@gitlab.com:crzz/jumping_leg.git*andrepatri_dev"
 )
 
 # Concatenate
