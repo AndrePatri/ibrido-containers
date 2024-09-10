@@ -63,3 +63,5 @@ dependencies:
     - rospkg
     - defusedxml
     - git+https://github.com/ros/xacro.git@ros2
+    - pybullet
+    - xmltodict
