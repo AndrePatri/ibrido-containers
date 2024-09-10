@@ -62,7 +62,7 @@ cd $WS_BASEDIR/build/phase_manager
 cmake -DCMAKE_BUILD_TYPE=Release ../../src/phase_manager/
 make -j8 install
 
-pip insall -e $WS_BASEDIR/src/jumping_leg
+pip install -e $WS_BASEDIR/src/jumping_leg
 
 # pip installations
 cd $WS_BASEDIR/src  
