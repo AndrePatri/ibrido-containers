@@ -34,7 +34,7 @@ dependencies:
   - casadi_kin_dyn
   - pinocchio=2.6.20
   - quaternion
-  - yaml-cpp=0.6
+  - yaml-cpp
   - empy 
   - pyqt
   - pyqtgraph
