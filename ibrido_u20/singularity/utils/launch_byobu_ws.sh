@@ -118,8 +118,8 @@ byobu new-session -d -s ${BYOBU_WS_NAME} -c ${WORKING_DIR} -n ${BYOBU_WS_NAME} #
 
 # tab 0
 execute_command "cd ${WORKING_DIR}"
-execute_command "source /opt/xbot/setup.sh"
 execute_command "source /opt/ros/noetic/setup.bash"
+execute_command "source /opt/xbot/setup.sh"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally 
