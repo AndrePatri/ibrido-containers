@@ -124,7 +124,7 @@ execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally 
 # clear_terminal
-prepare_command "reset && python launch_sim_env.py --headless --remote_stepping --robot_name {} --robot_pkg_name {} --robot_pkg_pref_path {} --num_envs {}"
+prepare_command "reset && python launch_remote_env.py --headless --remote_stepping --robot_name {} --urdf_path {} --srdf_path {} --jnt_imp_config_path {} --num_envs {}"
 
 split_v
 execute_command "cd ${WORKING_DIR2}"
@@ -132,7 +132,7 @@ activate_mamba_env
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_control_cluster.py --enable_debug --ns {} --size {} --robot_pkg_pref_path {}"
+prepare_command "reset && python launch_control_cluster.py --enable_debug --ns {} --size {} --urdf_path {} --srdf_path {} --cluster_client_fname {}"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
