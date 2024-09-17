@@ -80,7 +80,7 @@ codegen_override_eval=$(eval echo $codegen_override)
 
 python $LRHC_DIR/launch_remote_env.py --headless --remote_stepping --robot_name $ns \
  --urdf_path $urdf_path_eval --srdf_path  $srdf_path_eval --jnt_imp_config_path $jnt_imp_config_path_eval\
- --num_envs $num_envs --timeout_ms $timeout_ms&
+ --num_envs $num_envs --seed $seed --timeout_ms $timeout_ms&
 python $LRHC_DIR/launch_control_cluster.py --ns $ns --size $num_envs --timeout_ms $timeout_ms \
   --codegen_override_dir $codegen_override_eval \
   --urdf_path $urdf_path_eval --srdf_path $srdf_path_eval --cluster_client_fname $cluster_client_fname_eval & 
