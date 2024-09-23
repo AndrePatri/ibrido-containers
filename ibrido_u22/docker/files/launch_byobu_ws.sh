@@ -18,7 +18,7 @@ N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
 directories=(
     "$WS_ROOT/src/LRHControl"
     "$WS_ROOT/src/CoClusterBridge"
-    "$WS_ROOT/src/OmniRoboGym"
+    "$WS_ROOT/src/LRHControlEnvs"
     "$WS_ROOT/src/SharsorIPCpp"
     "$WS_ROOT/src/horizon"
     # Add more directories as needed

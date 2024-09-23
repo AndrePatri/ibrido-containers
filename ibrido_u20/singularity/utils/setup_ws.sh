@@ -67,7 +67,7 @@ pip install -e $WS_BASEDIR/src/jumping_leg
 # pip installations
 cd $WS_BASEDIR/src  
 pip install -e CoClusterBridge 
-pip install -e OmniRoboGym
+pip install -e LRHControlEnvs
 pip install -e LRHControl
 pip install -e CentauroHybridMPC
 pip install -e KyonRLStepping
@@ -77,8 +77,8 @@ pip install --no-deps -e horizon
 pip install -e adarl
 pip install -e adarl_ros/adarl_ros
 
-# copying omnirobogym isaac kit 
-# cd $WS_BASEDIR/src/OmniRoboGym/omni_robo_gym/cfg/omni_kits/  
+# copying lrhcontrolenvs isaac kit 
+# cd $WS_BASEDIR/src/LRHControlEnvs/lrhcontrolenvs/cfg/omni_kits/  
 # ./copy2isaac_folder.sh
 
 # copying script to launch byobu

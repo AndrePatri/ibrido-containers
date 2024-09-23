@@ -52,15 +52,15 @@ make -j8 install
 # pip installations
 cd $WS_BASEDIR/src  
 pip install -e CoClusterBridge 
-pip install -e OmniRoboGym
+pip install -e LRHControlEnvs
 pip install -e LRHControl
 pip install -e CentauroHybridMPC
 pip install -e KyonRLStepping
 pip install -e RHCViz
 pip install --no-deps -e horizon
 
-# copying omnirobogym isaac kit 
-# cd $WS_BASEDIR/src/OmniRoboGym/omni_robo_gym/cfg/omni_kits/  
+# copying lrhcontrolenvs isaac kit 
+# cd $WS_BASEDIR/src/LRHControlEnvs/lrhcontrolenvs/cfg/omni_kits/  
 # ./copy2isaac_folder.sh
 
 # copying script to launch byobu

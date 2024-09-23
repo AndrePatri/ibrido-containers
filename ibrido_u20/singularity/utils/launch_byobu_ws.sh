@@ -19,7 +19,7 @@ directories=(
     "$WS_ROOT/src/KyonRLStepping"
     "$WS_ROOT/src/LRHControl"
     "$WS_ROOT/src/CoClusterBridge"
-    "$WS_ROOT/src/OmniRoboGym"
+    "$WS_ROOT/src/LRHControlEnvs"
     # Add more directories as needed
 )
 

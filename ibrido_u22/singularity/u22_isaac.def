@@ -1,9 +1,9 @@
 Bootstrap: docker
-From:nvcr.io/nvidia/isaac-sim:4.1.0
+From:nvcr.io/nvidia/isaac-sim:4.2.0
 
 %labels
     AUTHOR AndrePatri (andrepatrics@gmail.com)
-    Version v0.0.1
+    Version v0.2.0
 
 %help
     This is the Singularity container associated with the IBRIDO framework.
@@ -12,8 +12,8 @@ From:nvcr.io/nvidia/isaac-sim:4.1.0
 #    wandb_key=""
 
 %files # copy isaac kits
-    ./files/omni.isaac.sim.python.omnirobogym.headless.kit /isaac-sim/apps/
-    ./files/omni.isaac.sim.python.omnirobogym.kit /isaac-sim/apps
+    ./files/omni.isaac.sim.python.lrhcontrolenvs.headless.kit /isaac-sim/apps/
+    ./files/omni.isaac.sim.python.lrhcontrolenvs.kit /isaac-sim/apps
     ./files/nucleus4.0.0.py /isaac-sim/exts/omni.isaac.nucleus/omni/isaac/nucleus/nucleus.py
     ./files/bind_list.sh /usr/local/bin
     ./utils/create_mamba_env.sh /usr/local/bin
