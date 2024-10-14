@@ -6,10 +6,9 @@ export GTK_IM_MODULE=ibus
 export QT_IM_MODULE=ibus
 
 SLEEP_FOR=0.1
-BYOBU_WS_NAME="ibrido_xbot2"
+BYOBU_WS_NAME="ibrido"
 WS_ROOT="$HOME/ibrido_ws"
 WORKING_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
-WORKING_DIR2="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
 
 MAMBAENVNAME="${MAMBA_ENV_NAME}"
 N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
@@ -118,21 +117,21 @@ byobu new-session -d -s ${BYOBU_WS_NAME} -c ${WORKING_DIR} -n ${BYOBU_WS_NAME} #
 
 # tab 0
 execute_command "cd ${WORKING_DIR}"
-execute_command "source /opt/ros/noetic/setup.bash"
-execute_command "source /opt/xbot/setup.sh"
-execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
+#execute_command "source ~/.local/share/ov/pkg/isaac_sim-2023.1.1/setup_conda_env.sh"
+execute_command "source /isaac-sim/setup_conda_env.sh"
+execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally 
 # clear_terminal
-prepare_command "reset && python launch_remote_env.py --headless --remote_stepping --robot_name {} --urdf_path {} --srdf_path {} --jnt_imp_config_path {} --num_envs {}"
+prepare_command "reset && python launch_remote_env.py --headless --use_gpu --remote_stepping --robot_name {} --urdf_path {} --srdf_path {} --use_custom_jnt_imp --jnt_imp_config_path {} --num_envs {} --verbose"
 
 split_v
-execute_command "cd ${WORKING_DIR2}"
+execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_control_cluster.py --enable_debug --ns {} --size {} --urdf_path {} --srdf_path {} --cluster_client_fname {}"
+prepare_command "reset && python launch_control_cluster.py --enable_debug --verbose --cloop -ns {} --size {} --urdf_path {} --srdf_path {} --cluster_client_fname {}"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -155,27 +154,43 @@ execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_train_env.py --ns {} --run_name {} --drop_dir $HOME/training_data --dump_checkpoints --comment "" "
+prepare_command "reset && python launch_train_env.py --obs_norm --db --env_db --rmdb --ns {} --run_name {} --drop_dir $HOME/training_data --dump_checkpoints --comment "" --sac"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
-execute_command "source /opt/ros/noetic/setup.bash"
+# execute_command "source /opt/ros/noetic/setup.bash"
+execute_command "source /opt/ros/humble/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --with_agent_refs --ns {}"
+prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --use_shared_drop_dir --rhc_refs_in_h_frame --with_agent_refs --ns {}"
+
+split_h
+execute_command "cd ${WORKING_DIR}"
+# execute_command "source /opt/ros/noetic/setup.bash"
+execute_command "source /opt/ros/humble/setup.bash"
+execute_command "source $WS_ROOT/setup.bash"
+activate_mamba_env
+increase_file_limits_locally
+clear_terminal
+prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --use_shared_drop_dir --ns {} --rhc_refs_in_h_frame --bag_sdt {60.0} --ros_bridge_dt {0.01} --dump_dt_min {10} --env_idx {0} --srdf_path {} --with_agent_refs"
 
 # tab 1
 new_tab
 execute_command "cd ${WORKING_DIR}"
+activate_mamba_env
+execute_command "source /opt/ros/humble/setup.bash"
+clear_terminal
+prepare_command "reset && ./replay_bag.bash {~/training_data/...}"
 
 split_h
-execute_command "cd ${WORKING_DIR2}"
-execute_command "source /opt/ros/noetic/setup.bash"
+execute_command "cd ${WORKING_DIR}"
+# execute_command "source /opt/ros/noetic/setup.bash"
 activate_mamba_env
+execute_command "source /opt/ros/humble/setup.bash"
 clear_terminal
-prepare_command "reset && python launch_rhcviz.py --ns {}"
+prepare_command "reset && python launch_rhcviz.py --ns {} --nodes_perc {}"
 
 # tab2
 new_tab
