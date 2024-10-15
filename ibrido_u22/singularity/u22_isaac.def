@@ -15,15 +15,6 @@ From:nvcr.io/nvidia/isaac-sim:4.2.0
     ./files/omni.isaac.sim.python.lrhcontrolenvs.headless.kit /isaac-sim/apps/
     ./files/omni.isaac.sim.python.lrhcontrolenvs.kit /isaac-sim/apps
     ./files/nucleus4.0.0.py /isaac-sim/exts/omni.isaac.nucleus/omni/isaac/nucleus/nucleus.py
-    ./files/bind_list.sh /usr/local/bin
-    ./utils/create_mamba_env.sh /usr/local/bin
-    ./utils/warmup_isaac.py /usr/local/bin
-    ./utils/warmup_isaac.sh /usr/local/bin
-    ./utils/mamba_utils/bin/_activate_current_env.sh /usr/local/bin
-    ./utils/setup_ws.sh /usr/local/bin
-    ./utils/post_build_setup.sh /usr/local/bin
-    ./utils/launch_byobu_ws.sh /usr/local/bin
-    ./utils/launch_training.sh /usr/local/bin
 
 %environment
     
@@ -39,7 +30,6 @@ From:nvcr.io/nvidia/isaac-sim:4.2.0
 #    export SINGULARITY_MEMORY_SWAP=
 
 #%setup
-#    ./utils/create_ws.sh
 
 %post
     # writing some composite singularity env. variables
@@ -50,7 +40,7 @@ From:nvcr.io/nvidia/isaac-sim:4.2.0
     MAMBA_ROOT_PREFIX='/opt/conda'
     MAMBA_ENV_FPATH='/opt/conda/mamba_env.yml'
 
-    PATH=$PATH:${HOME}/.local/bin
+    PATH=$PATH:${HOME}/.local/bin:${HOME}/ibrido_utils:${HOME}/ibrido_files
 
     echo "export HOME=\"${HOME}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_ENV_NAME=\"${MAMBA_ENV_NAME}\"" >> $SINGULARITY_ENVIRONMENT

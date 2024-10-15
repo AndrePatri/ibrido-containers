@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ -z "$IBRIDO_CONTAINERS_PREFIX" ]; then
+    echo "IBRIDO_CONTAINERS_PREFIX variable has not been seen. Please set it to \${path_to_ibrido-containers}/ibrido_22/singularity."
+    exit
+fi
+
 THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # BASE_FOLDER=$HOME
@@ -21,6 +26,8 @@ IBRIDO_BFILES=(
 IBRIDO_BDIRS=(
     "/dev/input:/dev/input:rw"
     "/tmp/.X11-unix:/tmp/.X11-unix"
+    "${IBRIDO_CONTAINERS_PREFIX}/files:/root/ibrido_files"
+    "${IBRIDO_CONTAINERS_PREFIX}/utils:/root/ibrido_utils"
     "${IBRIDO_PREFIX}/tmp:/tmp:rw"
     "${IBRIDO_PREFIX}/aux_data:/root/aux_data:rw"
     "${IBRIDO_PREFIX}/training_data:/root/training_data:rw"

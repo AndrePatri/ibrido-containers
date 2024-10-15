@@ -85,7 +85,6 @@ python $LRHC_DIR/launch_remote_env.py --headless --use_gpu --remote_stepping --r
 python $LRHC_DIR/launch_control_cluster.py --ns $ns --size $num_envs --timeout_ms $timeout_ms \
   --codegen_override_dir $codegen_override_eval \
   --cloop \
-  --verbose \
   --urdf_path $urdf_path_eval --srdf_path $srdf_path_eval --cluster_client_fname $cluster_client_fname_eval & 
 python $LRHC_DIR/launch_train_env.py --ns $ns --run_name $run_name --drop_dir $HOME/training_data --dump_checkpoints \
   --obs_norm --sac \
