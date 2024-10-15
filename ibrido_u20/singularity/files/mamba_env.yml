@@ -11,7 +11,7 @@ channels:
 
 dependencies: 
   - python=3.8
-  - pytorch=*.*.*=*cuda*
+  - pytorch=2.*.*=*cuda*
   # - torchvision
   # - torchaudio
   - pytorch-cuda

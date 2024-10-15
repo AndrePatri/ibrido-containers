@@ -9,14 +9,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 %help
     This is a Singularity container associated with the IBRIDO framework.
 
-%files # copy isaac kits
-    ./files/bind_list.sh /usr/local/bin
-    ./utils/create_mamba_env.sh /usr/local/bin
-    ./utils/mamba_utils/bin/_activate_current_env.sh /usr/local/bin
-    ./utils/setup_ws.sh /usr/local/bin
-    ./utils/post_build_setup.sh /usr/local/bin
-    ./utils/launch_byobu_ws.sh /usr/local/bin
-    ./utils/launch_training.sh /usr/local/bin
+#%files # copy isaac kits
 
 %environment
     export DEBIAN_FRONTEND=noninteractive
@@ -48,7 +41,6 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     MAMBA_EXE_PREFIX='/usr/local/bin'
     MAMBA_EXE='${MAMBA_EXE_PREFIX}/micromamba'
     MAMBA_ROOT_PREFIX='/opt/conda'
-    MAMBA_ENV_FPATH='/opt/conda/mamba_env.yml'
 
     PATH=$PATH:${HOME}/.local/bin
 
@@ -56,7 +48,6 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     echo "export ROS_HOME=\"${ROS_HOME}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export ROS_DISTRO=\"${ROS_DISTRO}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_ENV_NAME=\"${MAMBA_ENV_NAME}\"" >> $SINGULARITY_ENVIRONMENT
-    echo "export MAMBA_ENV_FPATH=\"${MAMBA_ENV_FPATH}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export PATH=\"${PATH}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_EXE_PREFIX=\"${MAMBA_EXE_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_EXE=\"${MAMBA_EXE}\"" >> $SINGULARITY_ENVIRONMENT
