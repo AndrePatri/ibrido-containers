@@ -123,7 +123,7 @@ execute_command "source /isaac-sim/setup_conda_env.sh"
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally 
 # clear_terminal
-prepare_command "reset && python launch_remote_env.py --headless --use_gpu --remote_stepping --robot_name {} --urdf_path {} --srdf_path {} --use_custom_jnt_imp --jnt_imp_config_path {} --num_envs {} --verbose"
+prepare_command "reset && python launch_remote_env.py --headless --use_gpu --remote_stepping --robot_name {} --urdf_path {} --srdf_path {} --use_custom_jnt_imp --jnt_imp_config_path {} --num_envs {}"
 
 split_v
 execute_command "cd ${WORKING_DIR}"
@@ -131,7 +131,7 @@ activate_mamba_env
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_control_cluster.py --enable_debug --verbose --cloop -ns {} --size {} --urdf_path {} --srdf_path {} --cluster_client_fname {}"
+prepare_command "reset && python launch_control_cluster.py --enable_debug --verbose --cloop --ns {} --size {} --urdf_path {} --srdf_path {} --cluster_client_fname {}"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -154,7 +154,7 @@ execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_train_env.py --obs_norm --db --env_db --rmdb --ns {} --run_name {} --drop_dir $HOME/training_data --dump_checkpoints --comment "" --sac"
+prepare_command "reset && python launch_train_env.py --obs_norm --db --env_db --rmdb --ns {} --run_name {} --drop_dir $HOME/training_data --dump_checkpoints --comment {} --sac"
 
 split_h
 execute_command "cd ${WORKING_DIR}"

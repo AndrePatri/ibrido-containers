@@ -3,4 +3,5 @@ ISAAC_ROOT="/isaac-sim"
 
 set +e # Workaround post-install script failure
 
-"$ISAAC_ROOT/python.sh" "/usr/local/bin/warmup_isaac.py"
+"$ISAAC_ROOT/python.sh" "/root/ibrido_utils/warmup_isaac.py"
+

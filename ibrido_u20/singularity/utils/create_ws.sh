@@ -1,5 +1,7 @@
 #!/bin/bash
-set -e # exiting if any cmd fails
+set +e # do not exit if any cmd fails
+
+echo '--> Initializing workspace...'
 
 THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 root_folder="$(dirname "$THIS_DIR")"
@@ -34,12 +36,14 @@ done
 wait
 
 # copying some utility files
-cp ${root_folder}/files/mamba_env.yml $IBRIDO_CONDA/ # conda env definition
-cp ${root_folder}/files/setup.bash $IBRIDO_WS_PREFIX/ # code ws setup
+cp ${root_folder}/files/setup.bash $IBRIDO_WS_PREFIX/
+cp ${root_folder}/files/mamba_env.yml $IBRIDO_CONDA/
 
 cp ${root_folder}/utils/launch_training.sh $IBRIDO_WS_PREFIX/
 cp ${root_folder}/utils/launch_byobu_ws.sh $IBRIDO_WS_PREFIX/
 # cp ${root_folder}/utils/warmup_isaac.sh $IBRIDO_WS_PREFIX/
 # cp ${root_folder}/utils/warmup_isaac.py $IBRIDO_WS_PREFIX/
 
-echo 'Done.'
+echo 'workspace created.'
+
+set -e
