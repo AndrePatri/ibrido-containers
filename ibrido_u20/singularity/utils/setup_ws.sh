@@ -34,7 +34,7 @@ cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${WS_INSTALLDIR} -DWITH_
 make -j8 install
 
 # INSIDE MICROMAMBA ENV->
-source /usr/local/bin/_activate_current_env.sh # enable mamba for this shell
+source /root/ibrido_utils/mamba_utils/bin/_activate_current_env.sh # enable mamba for this shell
 micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install packages
 
 mkdir -p $WS_BASEDIR/build/perf_sleep

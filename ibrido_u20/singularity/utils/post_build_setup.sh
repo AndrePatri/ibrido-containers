@@ -10,6 +10,3 @@ setup_ws.sh
 echo "Fixing Byobu to launch BASH"
 echo 'set -g default-shell /bin/bash' >> ${HOME}/.byobu/.tmux.conf
 echo 'set -g default-command /bin/bash' >> ${HOME}/.byobu/.tmux.conf
-
-echo 'Warming up IsaacSim ...'
-warmup_isaac.sh
