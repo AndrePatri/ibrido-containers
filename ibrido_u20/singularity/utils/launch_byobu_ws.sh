@@ -119,11 +119,14 @@ byobu new-session -d -s ${BYOBU_WS_NAME} -c ${WORKING_DIR} -n ${BYOBU_WS_NAME} #
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 #execute_command "source ~/.local/share/ov/pkg/isaac_sim-2023.1.1/setup_conda_env.sh"
-execute_command "source /isaac-sim/setup_conda_env.sh"
+execute_command "source /opt/ros/noetic/setup.bash"
+execute_command "source /opt/xbot/setup.sh"
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally 
 # clear_terminal
-prepare_command "reset && python launch_remote_env.py --headless --use_gpu --remote_stepping --robot_name {} --urdf_path {} --srdf_path {} --use_custom_jnt_imp --jnt_imp_config_path {} --num_envs {}"
+prepare_command "reset && python launch_remote_env.py --robot_name {} --urdf_path {} --srdf_path {} --use_custom_jnt_imp \
+    --jnt_imp_config_path {} --num_envs {} --env_fname lrhcontrolenvs.envs.xmj_env --remote_stepping \
+    --custom_args_names xmj_files_dir --custom_args_dtype string --custom_args_vals {/root/ibrido_ws/src/...}"
 
 split_v
 execute_command "cd ${WORKING_DIR}"
@@ -164,12 +167,12 @@ execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --use_shared_drop_dir --rhc_refs_in_h_frame --with_agent_refs --ns {}"
+prepare_command "reset && python launch_rhc2ros_bridge.py --use_shared_drop_dir --rhc_refs_in_h_frame --with_agent_refs --ns {}"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
 # execute_command "source /opt/ros/noetic/setup.bash"
-execute_command "source /opt/ros/humble/setup.bash"
+execute_command "source /opt/ros/noetic/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
@@ -180,15 +183,14 @@ prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --use_shared
 new_tab
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
-execute_command "source /opt/ros/humble/setup.bash"
+execute_command "source /opt/ros/noetic/setup.bash"
 clear_terminal
 prepare_command "reset && ./replay_bag.bash {~/training_data/...}"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
-# execute_command "source /opt/ros/noetic/setup.bash"
 activate_mamba_env
-execute_command "source /opt/ros/humble/setup.bash"
+execute_command "source /opt/ros/noetic/setup.bash"
 clear_terminal
 prepare_command "reset && python launch_rhcviz.py --ns {} --nodes_perc {}"
 
