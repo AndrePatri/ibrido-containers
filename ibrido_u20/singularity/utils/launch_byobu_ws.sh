@@ -6,7 +6,7 @@ export GTK_IM_MODULE=ibus
 export QT_IM_MODULE=ibus
 
 SLEEP_FOR=0.1
-BYOBU_WS_NAME="ibrido"
+BYOBU_WS_NAME="ibrido_xbot"
 WS_ROOT="$HOME/ibrido_ws"
 WORKING_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
 
