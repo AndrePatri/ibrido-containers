@@ -46,7 +46,7 @@ if $use_sudo; then
         --env "WANDB_KEY=$wandb_key"\
         --bind $binddirs\
         --no-mount home,cwd \
-        --nv --nvccli ibrido_xbot.sif bash
+        --nv ibrido_xbot.sif bash
 else
     singularity exec \
         --cleanenv \
@@ -54,6 +54,6 @@ else
         --env "WANDB_KEY=$wandb_key"\
         --bind $binddirs\
         --no-mount home,cwd \
-        --nv --nvccli ibrido_xbot.sif bash
+        --nv ibrido_xbot.sif bash
 fi
 
