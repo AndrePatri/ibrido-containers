@@ -45,7 +45,7 @@ if $use_sudo; then
         --env "DISPLAY=${DISPLAY}"\
         --bind $binddirs\
         --no-mount home,cwd \
-        --nv ibrido_isaac.sif bash
+        --nv --nvccli ibrido_isaac.sif bash
 else
     singularity exec \
         --env "WANDB_KEY=$wandb_key"\
@@ -53,6 +53,6 @@ else
         --env "DISPLAY=${DISPLAY}"\
         --bind $binddirs\
         --no-mount home,cwd \
-        --nv ibrido_isaac.sif bash
+        --nv --nvccli ibrido_isaac.sif bash
 fi
 
