@@ -24,7 +24,7 @@ make -j8 install
 mkdir -p $WS_BASEDIR/build/xbot2_mujoco
 cd $WS_BASEDIR/build/xbot2_mujoco
 source $XBOT2_SETUP
-cmake -DCMAKE_BUILD_TYPE=Release -DWITH_TESTS=1 -DWITH_XMJ_SIM_ENV=1 -DWITH_PYTHON=2 -DCMAKE_INSTALL_PREFIX=${WS_INSTALLDIR} -Diit_centauro_ros_pkg_DIR=${WS_BASEDIR}/src/iit-centauro-ros-pkg ../../src/xbot2_mujoco/
+cmake -DCMAKE_BUILD_TYPE=Release -DWITH_TESTS=1 -DWITH_XMJ_SIM_ENV=1 -DWITH_PYTHON=1 -DCMAKE_INSTALL_PREFIX=${WS_INSTALLDIR} -Diit_centauro_ros_pkg_DIR=${WS_BASEDIR}/src/iit-centauro-ros-pkg ../../src/xbot2_mujoco/
 make -j8 install
 
 # adarl ros utils
