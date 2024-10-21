@@ -55,6 +55,7 @@ From:nvcr.io/nvidia/isaac-sim:4.2.0
         git wget sudo vim iputils-ping ssh rsync \
         plocate \
         libgl1-mesa-glx libglx0 \
+        libgl1-mesa-glx libglx0 libglew-dev libglfw3 libglfw3-dev mesa-utils\
         libboost-all-dev \
         dirmngr gnupg2 \
         build-essential \
