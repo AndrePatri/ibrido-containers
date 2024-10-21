@@ -37,10 +37,10 @@ if $build_container; then
     echo '--> Building IBRIDO container...'
     if $use_sudo; then
         echo '--> Starting building of IBRIDO singularity container (sudo)...'
-        sudo singularity build --nv --nvccli $IBRIDO_CONTAINERS_PREFIX/ibrido_xbot.sif $IBRIDO_CONTAINERS_PREFIX/u20_xbot.def # either --fakeroot or sudo are necessary
+        sudo singularity build $IBRIDO_CONTAINERS_PREFIX/ibrido_xbot.sif $IBRIDO_CONTAINERS_PREFIX/u20_xbot.def # either --fakeroot or sudo are necessary
     else
         echo '--> Starting building of IBRIDO singularity container (fakeroot)...'
-        singularity build --nv --nvccli --fakeroot $IBRIDO_CONTAINERS_PREFIX/ibrido_xbot.sif $IBRIDO_CONTAINERS_PREFIX/u20_xbot.def # either --fakeroot or sudo are necessary
+        singularity build --fakeroot $IBRIDO_CONTAINERS_PREFIX/ibrido_xbot.sif $IBRIDO_CONTAINERS_PREFIX/u20_xbot.def # either --fakeroot or sudo are necessary
     fi
     echo 'Done.'
 fi
