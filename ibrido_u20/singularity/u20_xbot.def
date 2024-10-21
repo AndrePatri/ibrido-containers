@@ -75,6 +75,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
         build-essential libc6-dev\
         byobu \
         htop \
+        nvtop \
         software-properties-common \
         nano \
         cmake \
