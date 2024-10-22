@@ -134,7 +134,7 @@ activate_mamba_env
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_control_cluster.py --enable_debug --cloop --ns {} --size {} --urdf_path {} --srdf_path {} --cluster_client_fname {}"
+prepare_command "reset && python launch_control_cluster.py --enable_debug --cloop --ns {} --urdf_path {} --srdf_path {} --cluster_client_fname {}"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
