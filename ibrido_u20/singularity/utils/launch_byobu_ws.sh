@@ -126,7 +126,7 @@ increase_file_limits_locally
 clear_terminal
 prepare_command "reset && python launch_remote_env.py --robot_name {} --urdf_path {} --srdf_path {} \
     --jnt_imp_config_path {} --env_fname lrhcontrolenvs.envs.xmj_env --remote_stepping \
-    --custom_args_names xmj_files_dir --custom_args_dtype string --custom_args_vals {/root/ibrido_ws/src/...}"
+    --custom_args_names xmj_files_dir xmj_timeout --custom_args_dtype string int --custom_args_vals {/root/ibrido_ws/src/...} 10000"
 
 split_v
 execute_command "cd ${WORKING_DIR}"
