@@ -123,7 +123,7 @@ execute_command "source /opt/ros/noetic/setup.bash"
 execute_command "source /opt/xbot/setup.sh"
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally 
-# clear_terminal
+clear_terminal
 prepare_command "reset && python launch_remote_env.py --robot_name {} --urdf_path {} --srdf_path {} \
     --jnt_imp_config_path {} --env_fname lrhcontrolenvs.envs.xmj_env --remote_stepping \
     --custom_args_names xmj_files_dir --custom_args_dtype string --custom_args_vals {/root/ibrido_ws/src/...}"
@@ -135,6 +135,15 @@ execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally
 clear_terminal
 prepare_command "reset && python launch_control_cluster.py --enable_debug --cloop --ns {} --urdf_path {} --srdf_path {} --cluster_client_fname {}"
+
+split_h
+execute_command "cd ${WORKING_DIR}"
+activate_mamba_env
+execute_command "source /opt/ros/noetic/setup.bash"
+execute_command "source /opt/xbot/setup.sh"
+increase_file_limits_locally
+clear_terminal
+prepare_command "roscore"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
