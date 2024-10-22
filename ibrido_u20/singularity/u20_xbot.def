@@ -145,6 +145,10 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     wget -q -O - http://xbot.cloud/xbot2/ubuntu/KEY.gpg | apt-key add -
     apt-get update && apt-get install --no-install-recommends -y xbot2_desktop_full \
     && rm -rf /var/lib/apt/lists/*
+    
+    # nvtop
+    apt-get update && apt-get install -y \
+    nvtop
 
 # %test
 # echo 'Testing if MicroMamba is present...'
