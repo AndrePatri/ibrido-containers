@@ -124,8 +124,8 @@ execute_command "source /opt/xbot/setup.sh"
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally 
 # clear_terminal
-prepare_command "reset && python launch_remote_env.py --robot_name {} --urdf_path {} --srdf_path {} --use_custom_jnt_imp \
-    --jnt_imp_config_path {} --num_envs {} --env_fname lrhcontrolenvs.envs.xmj_env --remote_stepping \
+prepare_command "reset && python launch_remote_env.py --robot_name {} --urdf_path {} --srdf_path {} \
+    --jnt_imp_config_path {} --env_fname lrhcontrolenvs.envs.xmj_env --remote_stepping \
     --custom_args_names xmj_files_dir --custom_args_dtype string --custom_args_vals {/root/ibrido_ws/src/...}"
 
 split_v
