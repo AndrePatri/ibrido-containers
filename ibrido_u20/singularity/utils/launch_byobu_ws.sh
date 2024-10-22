@@ -143,7 +143,7 @@ execute_command "source /opt/ros/noetic/setup.bash"
 execute_command "source /opt/xbot/setup.sh"
 increase_file_limits_locally
 clear_terminal
-prepare_command "roscore"
+prepare_command "reset && xbot2-core -S"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -202,6 +202,21 @@ activate_mamba_env
 execute_command "source /opt/ros/noetic/setup.bash"
 clear_terminal
 prepare_command "reset && python launch_rhcviz.py --ns {} --nodes_perc {}"
+
+split_h
+execute_command "cd ${WORKING_DIR}"
+activate_mamba_env
+execute_command "source /opt/ros/noetic/setup.bash"
+execute_command "source /opt/xbot/setup.sh"
+clear_terminal
+prepare_command "reset && xbot2-gui"
+
+split_h
+execute_command "cd ${WORKING_DIR}"
+activate_mamba_env
+execute_command "source /opt/ros/noetic/setup.bash"
+clear_terminal
+prepare_command "reset && roscore"
 
 # tab2
 new_tab
