@@ -171,7 +171,7 @@ prepare_command "reset && python launch_train_env.py --obs_norm --db --env_db --
 split_h
 execute_command "cd ${WORKING_DIR}"
 # execute_command "source /opt/ros/noetic/setup.bash"
-execute_command "source /opt/ros/humble/setup.bash"
+execute_command "source /opt/ros/noetic/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
