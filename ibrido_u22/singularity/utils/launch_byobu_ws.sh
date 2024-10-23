@@ -123,7 +123,7 @@ execute_command "source /isaac-sim/setup_conda_env.sh"
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally 
 # clear_terminal
-prepare_command "reset && python launch_remote_env.py --headless --use_gpu --remote_stepping --robot_name {} --urdf_path {} --srdf_path {} --use_custom_jnt_imp --jnt_imp_config_path {} --num_envs {}"
+prepare_command "reset && python launch_remote_env.py --headless --use_gpu --remote_stepping --robot_name {} --urdf_path {} --srdf_path {} --jnt_imp_config_path {} --num_envs {}"
 
 split_v
 execute_command "cd ${WORKING_DIR}"
