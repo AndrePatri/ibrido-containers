@@ -38,7 +38,7 @@ IBRIDO_BDIRS=(
     "${IBRIDO_PREFIX}/.xbot:/root/.xbot:rw"
     "${IBRIDO_PREFIX}/.ros:/root/.ros:rw"
     "${IBRIDO_PREFIX}/.gazebo:/root/.gazebo:rw"
-    "${IBRIDO_PREFIX}/.rviz2:/root/.rviz2:rw"
+    "${IBRIDO_PREFIX}/.rviz2:/root/.rviz:rw"
 )
 
 OTHER_BDIRS=(
