@@ -58,7 +58,11 @@ singularity_cmd="singularity exec \
     --bag_sdt $BAG_SDT \
     --ros_bridge_dt $BRIDGE_DT \
     --dump_dt_min $DUMP_DT \
-    --env_idx_bag $ENV_IDX_BAG"
+    --env_idx_bag $ENV_IDX_BAG \
+    --custom_args_names $CUSTOM_ARGS_NAMES \
+    --custom_args_dtype $CUSTOM_ARGS_DTYPE \
+    --custom_args_vals $CUSTOM_ARGS_VALS \
+    --remote_stepping $REMOTE_STEPPING
 
 if $use_sudo; then
     sudo bash -c "$singularity_cmd"

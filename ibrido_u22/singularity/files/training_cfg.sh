@@ -21,3 +21,7 @@ export BAG_SDT=60.0
 export BRIDGE_DT=0.1
 export DUMP_DT=50.0
 export ENV_IDX_BAG=0
+export REMOTE_STEPPING=1 
+export CUSTOM_ARGS_NAMES=""
+export CUSTOM_ARGS_DTYPE="str"
+export CUSTOM_ARGS_VALS=""
