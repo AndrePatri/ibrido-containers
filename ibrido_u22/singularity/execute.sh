@@ -22,6 +22,7 @@ cleanup() {
     echo "execute.sh: Cleaning up and sending SIGINT to training process..."
     kill -SIGINT "$training_pid"  # Send SIGINT to singularity process
     wait "$training_pid"  # Wait for process to exit
+    echo "execute.sh: training script exited."
 }
 
 # Trap and forward signals to singularity process for clean exit
@@ -116,7 +117,4 @@ else
     echo "execute.sh: Failed to locate training process PID."
 fi
 
-# Get PID of singularity command
-training_pid=$!
-wait "$training_pid"
-
+wait
