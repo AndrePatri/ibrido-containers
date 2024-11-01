@@ -110,6 +110,9 @@ cd_and_split() {
     fi
 }
 
+# clear tmp folder 
+rm -r /tmp/*
+
 # launch terminator window
 byobu kill-session -t ${BYOBU_WS_NAME}
 

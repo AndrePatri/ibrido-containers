@@ -59,6 +59,9 @@ if [ -z "$cluster_client_fname" ]; then
   usage
 fi
 
+# clear tmp folder 
+rm -r /tmp/*
+
 # activate micromamba for this shell
 eval "$(micromamba shell hook --shell bash)"
 micromamba activate ${MAMBA_ENV_NAME}
