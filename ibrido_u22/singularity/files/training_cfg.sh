@@ -16,6 +16,7 @@ export TIMEOUT_MS=300000 # timeout after which each script autokills ([ms])
 export CODEGEN_OVERRIDE_BDIR="\${HOME}/aux_data/***RHCLusterClient_***/CodeGen/***Rhc" # where to load rhc codegenerated functions
 export COMMENT="${PBS_JOBID}__" # any training comment
 export WANDB_KEY="" # wandb key for logging remote db data
+export CLUSTER_DB=1
 export LAUNCH_ROSBAG=1
 export BAG_SDT=60.0
 export BRIDGE_DT=0.1

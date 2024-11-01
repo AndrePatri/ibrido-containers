@@ -2,6 +2,15 @@
 WS_ROOT="$HOME/ibrido_ws"
 LRHC_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
 
+# # Define a cleanup function to send SIGINT to all child processes
+cleanup() {
+    echo "launch_training.sh: sending SIGINT to all child processes..."
+    kill -INT $(jobs -p)  # Sends SIGINT to all child processes of the current script
+}
+
+# Trap EXIT, INT (Ctrl+C), and TERM signals to trigger cleanup
+trap cleanup EXIT INT TERM
+
 usage() {
   echo "Usage: $0 --urdf_path URDF_PATH --srdf_path SRDF_PATH --jnt_imp_config_path JNT_IMP_CF_PATH \
   --cluster_client_fname CLUSTER_CL_FNAME [--num_envs NUM] [--set_ulim] [--ulim_n ULIM_N] \
@@ -16,6 +25,8 @@ usage() {
     [--custom_args_dtype CUSTOM_ARGS_DTYPE] \
     [--custom_args_vals CUSTOM_ARGS_VALS] \
     [--remote_stepping REMOTE_STEPPING] \
+    [--cluster_db CLUSTER_DB] \
+    [--unique_id UNIQUE_ID] \
     "
   exit 1
 }
@@ -37,6 +48,8 @@ custom_args_names=""
 custom_args_dtype=""
 custom_args_vals=""
 remote_stepping=1
+cluster_db=1
+unique_id=""
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
@@ -61,7 +74,9 @@ while [[ "$#" -gt 0 ]]; do
     --custom_args_names) custom_args_names="$2"; shift ;;
     --custom_args_dtype) custom_args_dtype="$2"; shift ;;
     --custom_args_vals) custom_args_vals="$2"; shift ;;
+    --cluster_db) cluster_db="$2"; shift ;;
     --remote_stepping) remote_stepping="$2"; shift ;;
+    --unique_id) unique_id="$2"; shift ;;
     *) echo "Unknown parameter passed: $1"; usage ;;
   esac
   shift
@@ -99,14 +114,25 @@ wandb login --relogin $WANDB_KEY # login to wandb
 source /isaac-sim/setup_conda_env.sh
 source $HOME/ibrido_ws/setup.bash
 
-urdf_path_eval=$(eval echo $urdf_path)
+urdf_path_eval=$(eval echo "$urdf_path")
 srdf_path_eval=$(eval echo $srdf_path)
 jnt_imp_config_path_eval=$(eval echo $jnt_imp_config_path)
 cluster_client_fname_eval=$(eval echo $cluster_client_fname)
 codegen_override_eval=$(eval echo $codegen_override)
 launch_rosbag_eval=$(eval echo $launch_rosbag)
 set_ulim_eval=$(eval echo $set_ulim)
-remote_stepping$(eval echo $remote_stepping)
+remote_stepping=$(eval echo $remote_stepping)
+enable_cluster_db=$(eval echo $cluster_db)
+
+#!/bin/bash
+
+# # Define the timestamp and log file based on RUN_NAME and current date and time
+timestamp=$(date +"%Y%m%d_%H%M%S")
+log_file="${HOME}/ibrido_logs/ibrido_training_run_${RUN_NAME}_${timestamp}.log"
+# # Redirect stdout and stderr to both the terminal and the log file
+echo "launch_training.sh: logging output to $log_file"
+
+exec > "$log_file" 2>&1
 
 if (( set_ulim_eval )); then
   ulimit -n $ulim_n
@@ -130,23 +156,35 @@ else
     --custom_args_vals $custom_args_vals&
 fi 
 
+if (( enable_cluster_db )); then
 python $LRHC_DIR/launch_control_cluster.py --ns $ns --size $num_envs --timeout_ms $timeout_ms \
   --codegen_override_dir $codegen_override_eval \
   --cloop \
-  --verbose \
+  --enable_debug \
   --urdf_path $urdf_path_eval --srdf_path $srdf_path_eval --cluster_client_fname $cluster_client_fname_eval \
   --custom_args_names $custom_args_names \
   --custom_args_dtype $custom_args_dtype \
   --custom_args_vals $custom_args_vals&
+else
+python $LRHC_DIR/launch_control_cluster.py --ns $ns --size $num_envs --timeout_ms $timeout_ms \
+  --codegen_override_dir $codegen_override_eval \
+  --cloop \
+  --urdf_path $urdf_path_eval --srdf_path $srdf_path_eval --cluster_client_fname $cluster_client_fname_eval \
+  --custom_args_names $custom_args_names \
+  --custom_args_dtype $custom_args_dtype \
+  --custom_args_vals $custom_args_vals&
+fi
 
 if (( remote_stepping )); then
   python $LRHC_DIR/launch_train_env.py --ns $ns --run_name $run_name --drop_dir $HOME/training_data --dump_checkpoints \
     --obs_norm --sac \
     --db --env_db --rmdb \
-    --comment $comment --seed $seed --timeout_ms $timeout_ms &
+    --comment "$comment" \
+    --seed $seed --timeout_ms $timeout_ms &
 fi 
 
-if (( launch_rosbag_eval )); then
+if (( launch_rosbag_eval && enable_cluster_db)); then
+  source /opt/ros/humble/setup.bash
   if (( remote_stepping )); then
     python $LRHC_DIR/launch_periodic_bag_dump.py --ros2 --use_shared_drop_dir \
       --ns $ns --rhc_refs_in_h_frame \
