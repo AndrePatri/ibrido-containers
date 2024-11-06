@@ -177,7 +177,7 @@ execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --use_shared_drop_dir --ns {} --rhc_refs_in_h_frame --bag_sdt {60.0} --ros_bridge_dt {0.01} --dump_dt_min {10} --env_idx {0} --srdf_path {} --with_agent_refs"
+prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir --ns {} --rhc_refs_in_h_frame --bag_sdt {60.0} --ros_bridge_dt {0.01} --dump_dt_min {10} --env_idx {0} --srdf_path {} --with_agent_refs"
 
 # tab 1
 new_tab
