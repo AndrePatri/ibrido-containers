@@ -167,7 +167,7 @@ execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --use_shared_drop_dir --rhc_refs_in_h_frame --with_agent_refs --ns {}"
+prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --rhc_refs_in_h_frame --with_agent_refs --ns {}"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
