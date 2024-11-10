@@ -194,7 +194,7 @@ activate_mamba_env
 increase_file_limits_locally
 prepare_command "reset && python launch_train_env.py --obs_rescale --db --env_db --rmdb \
 --ns $SHM_NS --run_name $RNAME --drop_dir $HOME/training_data --dump_checkpoints \
---comment $COMMENT --sac --seed $SEED"
+--comment "\"$COMMENT\"" --sac --seed $SEED"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
