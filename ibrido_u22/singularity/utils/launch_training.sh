@@ -12,94 +12,33 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 usage() {
-  echo "Usage: $0 --urdf_path URDF_PATH --srdf_path SRDF_PATH --jnt_imp_config_path JNT_IMP_CF_PATH \
-  --cluster_client_fname CLUSTER_CL_FNAME [--num_envs NUM] [--set_ulim] [--ulim_n ULIM_N] \
-    [--ns] [--run_name RUN_NAME] [--comment COMMENT] [--seed SEED] [--timeout_ms TIMEOUT] \
-    [--codegen_override CG_OVERRIDE] \
-    [--launch_rosbag LAUNCH_ROSBAG]\
-    [--bag_sdt BAG_SDT] \
-    [--ros_bridge_dt BRIDGE_DT] \
-    [--dump_dt_min DUMP_DT] \
-    [--env_idx_bag ENV_IDX_BAG] \
-    [--custom_args_names CUSTOM_ARGS_NAMES] \
-    [--custom_args_dtype CUSTOM_ARGS_DTYPE] \
-    [--custom_args_vals CUSTOM_ARGS_VALS] \
-    [--remote_stepping REMOTE_STEPPING] \
-    [--cluster_db CLUSTER_DB] \
+  echo "Usage: $0
+    [--cfg CFG] \
     [--unique_id UNIQUE_ID] \
     "
   exit 1
 }
-num_envs=128
-timeout_ms=60000
-set_ulim=1
-ulim_n=28672
-seed=0
-ns="ibrido"
-run_name=""
-comment=""
-codegen_override=""
-launch_rosbag_eval=false
-bag_sdt=60.0
-ros_bridge_dt=0.1
-dump_dt_min=50.0
-env_idx_bag=0
-custom_args_names=""
-custom_args_dtype=""
-custom_args_vals=""
-remote_stepping=1
-cluster_db=1
-unique_id=""
+
+cfg_file_basepath="/root/ibrido_files"
+
+# Default configuration file
+config_file="${cfg_file_basepath}/training_cfg.sh"
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
-    --urdf_path) urdf_path="$2"; shift ;;
-    --srdf_path) srdf_path="$2"; shift ;;
-    --jnt_imp_config_path) jnt_imp_config_path="$2"; shift ;;
-    --cluster_client_fname) cluster_client_fname="$2"; shift ;;
-    --num_envs) num_envs="$2"; shift ;;
-    --timeout_ms) timeout_ms="$2"; shift ;;
-    --set_ulim) set_ulim="$2"; shift ;;
-    --ulim_n) ulim_n="$2"; shift ;;
-    --ns) ns="$2"; shift ;;
-    --seed) seed="$2"; shift ;;
-    --run_name) run_name="$2"; shift ;;
-    --comment) comment="$2"; shift ;;
-    --codegen_override) codegen_override="$2"; shift ;;
-    --launch_rosbag) launch_rosbag="$2"; shift ;;
-    --bag_sdt) bag_sdt="$2"; shift ;;
-    --ros_bridge_dt) ros_bridge_dt="$2"; shift ;;
-    --dump_dt_min) dump_dt_min="$2"; shift ;;
-    --env_idx_bag) env_idx_bag="$2"; shift ;;
-    --custom_args_names) custom_args_names="$2"; shift ;;
-    --custom_args_dtype) custom_args_dtype="$2"; shift ;;
-    --custom_args_vals) custom_args_vals="$2"; shift ;;
-    --cluster_db) cluster_db="$2"; shift ;;
-    --remote_stepping) remote_stepping="$2"; shift ;;
     --unique_id) unique_id="$2"; shift ;;
+    -cfg|--cfg) config_file="${cfg_file_basepath}/$2"; shift ;;
     *) echo "Unknown parameter passed: $1"; usage ;;
   esac
   shift
 done
 
-if [ -z "$urdf_path" ]; then
-  echo "Error: --urdf_path is mandatory."
-  usage
-fi
-
-if [ -z "$srdf_path" ]; then
-  echo "Error: --srdf_path is mandatory."
-  usage
-fi
-
-if [ -z "$jnt_imp_config_path" ]; then
-  echo "Error: --jnt_imp_config_path is mandatory."
-  usage
-fi
-
-if [ -z "$cluster_client_fname" ]; then
-  echo "Error: --cluster_client_fname is mandatory."
-  usage
+# Source the configuration file
+if [ -f "$config_file" ]; then
+    source "$config_file"
+else
+    echo "Configuration file not found: $config_file"
+    exit 1
 fi
 
 # clear tmp folder 
@@ -114,21 +53,10 @@ wandb login --relogin $WANDB_KEY # login to wandb
 source /isaac-sim/setup_conda_env.sh
 source $HOME/ibrido_ws/setup.bash
 
-urdf_path_eval=$(eval echo "$urdf_path")
-srdf_path_eval=$(eval echo $srdf_path)
-jnt_imp_config_path_eval=$(eval echo $jnt_imp_config_path)
-cluster_client_fname_eval=$(eval echo $cluster_client_fname)
-codegen_override_eval=$(eval echo $codegen_override)
-launch_rosbag_eval=$(eval echo $launch_rosbag)
-set_ulim_eval=$(eval echo $set_ulim)
-remote_stepping=$(eval echo $remote_stepping)
-enable_cluster_db=$(eval echo $cluster_db)
-
 #!/bin/bash
 
-# # Define the timestamp and log file based on RUN_NAME and current date and time
-timestamp=$(date +"%Y%m%d_%H%M%S")
-log_file="${HOME}/ibrido_logs/ibrido_training_run_${RUN_NAME}_${timestamp}.log"
+# # Define the timestamp and log file based on RUN_NAME and unique id
+log_file="${HOME}/ibrido_logs/ibrido_training_run_${RUN_NAME}_${unique_id}.log"
 # # Redirect stdout and stderr to both the terminal and the log file
 echo "launch_training.sh: logging output to $log_file"
 
@@ -138,61 +66,76 @@ if (( set_ulim_eval )); then
   ulimit -n $ulim_n
 fi
 
-if (( remote_stepping )); then
-  python $LRHC_DIR/launch_remote_env.py --headless --use_gpu --remote_stepping --robot_name $ns \
-    --urdf_path $urdf_path_eval --srdf_path  $srdf_path_eval \
-    --use_custom_jnt_imp --jnt_imp_config_path $jnt_imp_config_path_eval\
-    --num_envs $num_envs --seed $seed --timeout_ms $timeout_ms \
-    --custom_args_names $custom_args_names \
-    --custom_args_dtype $custom_args_dtype \
-    --custom_args_vals $custom_args_vals&
+if (( $REMOTE_STEPPING )); then
+  python $LRHC_DIR/launch_remote_env.py --headless --use_gpu --remote_stepping --robot_name $SHM_NS \
+    --urdf_path $URDF_PATH --srdf_path  $SRDF_PATH \
+    --use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH\
+    --num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
+    --custom_args_names $CUSTOM_ARGS_NAMES \
+    --custom_args_dtype $CUSTOM_ARGS_DTYPE \
+    --custom_args_vals $CUSTOM_ARGS_VALS&
 else
-  python $LRHC_DIR/launch_remote_env.py --headless --use_gpu --robot_name $ns \
-    --urdf_path $urdf_path_eval --srdf_path  $srdf_path_eval \
-    --use_custom_jnt_imp --jnt_imp_config_path $jnt_imp_config_path_eval\
-    --num_envs $num_envs --seed $seed --timeout_ms $timeout_ms \
-    --custom_args_names $custom_args_names \
-    --custom_args_dtype $custom_args_dtype \
-    --custom_args_vals $custom_args_vals&
+  python $LRHC_DIR/launch_remote_env.py --headless --use_gpu --robot_name $SHM_NS \
+    --urdf_path $URDF_PATH --srdf_path  $SRDF_PATH \
+    --use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH\
+    --num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
+    --custom_args_names $CUSTOM_ARGS_NAMES \
+    --custom_args_dtype $CUSTOM_ARGS_DTYPE \
+    --custom_args_vals $CUSTOM_ARGS_VALS&
 fi 
 
-if (( enable_cluster_db )); then
-python $LRHC_DIR/launch_control_cluster.py --ns $ns --size $num_envs --timeout_ms $timeout_ms \
-  --codegen_override_dir $codegen_override_eval \
-  --cloop \
-  --enable_debug \
-  --urdf_path $urdf_path_eval --srdf_path $srdf_path_eval --cluster_client_fname $cluster_client_fname_eval \
-  --custom_args_names $custom_args_names \
-  --custom_args_dtype $custom_args_dtype \
-  --custom_args_vals $custom_args_vals&
+if (( $CLUSTER_DB )); then
+  python $LRHC_DIR/launch_control_cluster.py --ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
+    --codegen_override_dir $CODEGEN_OVERRIDE_BDIR \
+    --cloop \
+    --enable_debug \
+    --urdf_path $URDF_PATH --srdf_path $SRDF_PATH --cluster_client_fname $CLUSTER_CL_FNAME \
+    --custom_args_names $CUSTOM_ARGS_NAMES \
+    --custom_args_dtype $CUSTOM_ARGS_DTYPE \
+    --custom_args_vals $CUSTOM_ARGS_VALS&
 else
-python $LRHC_DIR/launch_control_cluster.py --ns $ns --size $num_envs --timeout_ms $timeout_ms \
-  --codegen_override_dir $codegen_override_eval \
-  --cloop \
-  --urdf_path $urdf_path_eval --srdf_path $srdf_path_eval --cluster_client_fname $cluster_client_fname_eval \
-  --custom_args_names $custom_args_names \
-  --custom_args_dtype $custom_args_dtype \
-  --custom_args_vals $custom_args_vals&
+  python $LRHC_DIR/launch_control_cluster.py --ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
+    --codegen_override_dir $CODEGEN_OVERRIDE_BDIR \
+    --cloop \
+    --urdf_path $URDF_PATH --srdf_path $SRDF_PATH --cluster_client_fname $CLUSTER_CL_FNAME \
+    --custom_args_names $CUSTOM_ARGS_NAMES \
+    --custom_args_dtype $CUSTOM_ARGS_DTYPE \
+    --custom_args_vals $CUSTOM_ARGS_VALS&
 fi
 
-if (( remote_stepping )); then
-  python $LRHC_DIR/launch_train_env.py --ns $ns --run_name $run_name --drop_dir $HOME/training_data --dump_checkpoints \
+if (( $REMOTE_STEPPING )); then
+  if (( $OBS_NORM )); then
+    python $LRHC_DIR/launch_train_env.py --ns $SHM_NS --run_name $RNAME --drop_dir $HOME/training_data --dump_checkpoints \
     --obs_norm --sac \
     --db --env_db --rmdb \
-    --comment "$comment" \
-    --seed $seed --timeout_ms $timeout_ms &
+    --comment "$COMMENT" \
+    --seed $SEED --timeout_ms $TIMEOUT_MS \
+    --actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH\
+    --critic_lwidth $CRITIC_LWIDTH --critic_n_hlayers $CRITIC_DEPTH&
+  else
+    python $LRHC_DIR/launch_train_env.py --ns $SHM_NS --run_name $RNAME --drop_dir $HOME/training_data --dump_checkpoints \
+    --sac \
+    --db --env_db --rmdb \
+    --comment "$COMMENT" \
+    --seed $SEED --timeout_ms $TIMEOUT_MS \
+    --actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH\
+    --critic_lwidth $CRITIC_LWIDTH --critic_n_hlayers $CRITIC_DEPTH&
+  fi 
+  
 fi 
 
-if (( launch_rosbag_eval && enable_cluster_db)); then
+if (( $LAUNCH_ROSBAG && $CLUSTER_DB)); then
   source /opt/ros/humble/setup.bash
-  if (( remote_stepping )); then
+  if (( $REMOTE_STEPPING )); then
     python $LRHC_DIR/launch_periodic_bag_dump.py --ros2 --use_shared_drop_dir \
-      --ns $ns --rhc_refs_in_h_frame \
-      --bag_sdt $bag_sdt --ros_bridge_dt $ros_bridge_dt --dump_dt_min $dump_dt_min --env_idx $env_idx_bag --srdf_path $srdf_path_eval --with_agent_refs &
+      --ns $SHM_NS --rhc_refs_in_h_frame \
+      --srdf_path $SRDF_PATH_ROSBAG \
+      --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG --with_agent_refs &
   else
     python $LRHC_DIR/launch_periodic_bag_dump.py --ros2 --use_shared_drop_dir \
-      --ns $ns --rhc_refs_in_h_frame \
-      --bag_sdt $bag_sdt --ros_bridge_dt $ros_bridge_dt --dump_dt_min $dump_dt_min --env_idx $env_idx_bag --srdf_path $srdf_path_eval &
+      --ns $SHM_NS --rhc_refs_in_h_frame \
+      --srdf_path $SRDF_PATH_ROSBAG \
+      --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG &
   fi
 fi
 

@@ -1,5 +1,12 @@
 #!/bin/bash
 
+usage() {
+  echo "Usage: $0
+    [--cfg CFG] \
+    "
+  exit 1
+}
+
 # Set Italian keyboard layout
 export XMODIFIERS=@im=ibus
 export GTK_IM_MODULE=ibus
@@ -12,6 +19,9 @@ WORKING_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
 
 MAMBAENVNAME="${MAMBA_ENV_NAME}"
 N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
+
+# Default configuration file
+config_file="$HOME/ibrido_files/training_cfg.sh"
 
 # Array of directories
 directories=(
@@ -36,6 +46,7 @@ execute_command() {
 }
 
 prepare_command() {
+    clear_terminal
     byobu send-keys "$1"
     sleep $SLEEP_FOR
 }
@@ -67,7 +78,7 @@ activate_mamba_env() {
 
 clear_terminal() {
 
-    execute_command "clear"
+    execute_command "reset"
 
 }
 
@@ -110,6 +121,24 @@ cd_and_split() {
     fi
 }
 
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+    -cfg|--cfg) config_file="${cfg_file_basepath}/$2"; shift ;;
+    *) echo "Unknown parameter passed: $1"; usage ;;
+  esac
+  shift
+done
+
+# Source the configuration file
+if [ -f "$config_file" ]; then
+    source "$config_file"
+else
+    echo "Configuration file not found: $config_file"
+    exit 1
+fi
+
+echo "Will preload script cmds from $config_file"
+
 # clear tmp folder 
 # rm -r /tmp/*
 
@@ -125,30 +154,37 @@ activate_mamba_env
 execute_command "source /isaac-sim/setup_conda_env.sh"
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally 
-# clear_terminal
-prepare_command "reset && python launch_remote_env.py --headless --use_gpu --remote_stepping --robot_name {} --urdf_path {} --srdf_path {} --jnt_imp_config_path {} --use_custom_jnt_imp --num_envs {} --seed {}"
+prepare_command "reset && python launch_remote_env.py --headless --use_gpu \
+--robot_name $SHM_NS --urdf_path $URDF_PATH --srdf_path $SRDF_PATH --jnt_imp_config_path $JNT_IMP_CF_PATH \
+--use_custom_jnt_imp --num_envs $N_ENVS --seed $SEED \
+--remote_stepping"
 
 split_v
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally
-clear_terminal
-prepare_command "reset && python launch_control_cluster.py --enable_debug --cloop --ns {} --size {} --urdf_path {} --srdf_path {} --cluster_client_fname {}"
+prepare_command "reset && python launch_control_cluster.py --enable_debug --cloop \
+--ns $SHM_NS --size $N_ENVS --urdf_path $URDF_PATH --srdf_path $SRDF_PATH \
+--cluster_client_fname $CLUSTER_CL_FNAME"
 
 split_h
-execute_command "cd ${WORKING_DIR}"
+execute_command "cd $WORKING_DIR"
 activate_mamba_env
 increase_file_limits_locally
-clear_terminal
-prepare_command "reset && python launch_GUI.py --ns {}"
+prepare_command "reset && python launch_GUI.py --ns $SHM_NS"
 
 split_h
-execute_command "cd ${WORKING_DIR}"
+execute_command "cd $WORKING_DIR"
 activate_mamba_env
 increase_file_limits_locally
-clear_terminal
-prepare_command "reset && python launch_rhc_keybrd_cmds.py --ns {}"
+prepare_command "reset && python launch_rhc_keybrd_cmds.py --ns $SHM_NS"
+
+split_h
+execute_command "cd $WORKING_DIR"
+activate_mamba_env
+increase_file_limits_locally
+prepare_command "reset && python launch_agent_keybrd_cmds.py --ns $SHM_NS"
 
 go_to_pane 0 
 
@@ -156,8 +192,9 @@ split_h
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 increase_file_limits_locally
-clear_terminal
-prepare_command "reset && python launch_train_env.py --obs_norm --db --env_db --rmdb --ns {} --run_name {} --drop_dir $HOME/training_data --dump_checkpoints --comment {} --sac --seed {}"
+prepare_command "reset && python launch_train_env.py --obs_norm --db --env_db --rmdb \
+--ns $SHM_NS --run_name $RNAME --drop_dir $HOME/training_data --dump_checkpoints \
+--comment $COMMENT --sac --seed $SEED"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -166,8 +203,8 @@ execute_command "source /opt/ros/humble/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
-clear_terminal
-prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --rhc_refs_in_h_frame --with_agent_refs --ns {}"
+prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --rhc_refs_in_h_frame --with_agent_refs \
+--ns $SHM_NS"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -176,24 +213,24 @@ execute_command "source /opt/ros/humble/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
-clear_terminal
-prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir --ns {} --rhc_refs_in_h_frame --bag_sdt {60.0} --ros_bridge_dt {0.01} --dump_dt_min {10} --env_idx {0} --srdf_path {} --with_agent_refs"
+prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir \
+--ns $SHM_NS --rhc_refs_in_h_frame \
+--bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG \
+--srdf_path $SRDF_PATH_ROSBAG --with_agent_refs"
 
 # tab 1
 new_tab
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 execute_command "source /opt/ros/humble/setup.bash"
-clear_terminal
-prepare_command "reset && ./replay_bag.bash {~/training_data/...}"
+prepare_command "reset && ./replay_bag.bash ~/training_data/{}"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
 # execute_command "source /opt/ros/noetic/setup.bash"
 activate_mamba_env
 execute_command "source /opt/ros/humble/setup.bash"
-clear_terminal
-prepare_command "reset && python launch_rhcviz.py --ns {} --nodes_perc {}"
+prepare_command "reset && python launch_rhcviz.py --ns $SHM_NS --nodes_perc 10"
 
 # tab2
 new_tab
@@ -202,7 +239,6 @@ execute_command "htop"
 split_h
 execute_command "cd ${WORKING_DIR}"
 execute_command "nvtop"
-clear_terminal
 
 # tab 3
 new_tab
