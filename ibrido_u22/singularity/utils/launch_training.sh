@@ -48,7 +48,7 @@ rm -r /tmp/*
 eval "$(micromamba shell hook --shell bash)"
 micromamba activate ${MAMBA_ENV_NAME}
 
-wandb login --relogin $WANDB_KEY # login to wandb
+wandb login $WANDB_KEY # login to wandb
 
 source /isaac-sim/setup_conda_env.sh
 source $HOME/ibrido_ws/setup.bash
@@ -62,14 +62,14 @@ echo "launch_training.sh: logging output to $log_file"
 
 exec > "$log_file" 2>&1
 
-if (( set_ulim_eval )); then
-  ulimit -n $ulim_n
+if (( $SET_ULIM )); then
+  ulimit -n $ULIM_N
 fi
 
 # remote env
 remote_env_cmd="--headless --use_gpu  --robot_name $SHM_NS \
 --urdf_path $URDF_PATH --srdf_path  $SRDF_PATH \
---use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH\
+--use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH \
 --num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
@@ -77,7 +77,8 @@ remote_env_cmd="--headless --use_gpu  --robot_name $SHM_NS \
 if (( $REMOTE_STEPPING )); then
 remote_env_cmd+="--remote_stepping "
 fi 
-python $LRHC_DIR/launch_remote_env.py $remote_env_cmd&
+echo $remote_env_cmd
+# python $LRHC_DIR/launch_remote_env.py $remote_env_cmd &
 
 # cluster
 cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
@@ -86,27 +87,29 @@ cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
 --urdf_path $URDF_PATH --srdf_path $SRDF_PATH --cluster_client_fname $CLUSTER_CL_FNAME \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
---custom_args_vals $CUSTOM_ARGS_VALS"
+--custom_args_vals $CUSTOM_ARGS_VALS "
 if (( $CLUSTER_DB )); then
 cluster_cmd+="--enable_debug "
 fi
-python $LRHC_DIR/launch_control_cluster.py $cluster_cmd
+echo $cluster_cmd
+# python $LRHC_DIR/launch_control_cluster.py $cluster_cmd S&
 
 # train env
-trainign_env_cmd="--dump_checkpoints --ns $SHM_NS --run_name $RNAME --drop_dir $HOME/training_data \
+if (( $REMOTE_STEPPING )); then
+training_env_cmd="--dump_checkpoints --ns $SHM_NS --run_name $RNAME --drop_dir $HOME/training_data \
 --sac --db --env_db --rmdb \
---comment "$COMMENT" \
+--comment $COMMENT \
 --seed $SEED --timeout_ms $TIMEOUT_MS \
 --actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH \
 --critic_lwidth $CRITIC_LWIDTH --critic_n_hlayers $CRITIC_DEPTH "
 if (( $OBS_NORM )); then
-trainign_env_cmd+="--obs_norm "
+training_env_cmd+="--obs_norm "
 fi
 if (( $OBS_RESCALING )); then
-trainign_env_cmd+="--obs_rescale "
+training_env_cmd+="--obs_rescale "
 fi
-if (( $REMOTE_STEPPING )); then
-python $LRHC_DIR/launch_train_env.py $trainign_env_cmd&
+echo $training_env_cmd
+# python $LRHC_DIR/launch_train_env.py $training_env_cmd &
 fi
 
 # rosbag db
@@ -119,7 +122,7 @@ if (( $LAUNCH_ROSBAG && $CLUSTER_DB)); then
   if (( $REMOTE_STEPPING )); then
   rosbag_cmd+="--with_agent_refs "
   fi
-  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd
+  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd&
 fi
 
 wait # wait for all to exit
