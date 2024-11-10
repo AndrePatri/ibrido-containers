@@ -55,12 +55,24 @@ source $HOME/ibrido_ws/setup.bash
 
 #!/bin/bash
 
-# # Define the timestamp and log file based on RUN_NAME and unique id
-log_file="${HOME}/ibrido_logs/ibrido_training_run_${RUN_NAME}_${unique_id}.log"
-# # Redirect stdout and stderr to both the terminal and the log file
-echo "launch_training.sh: logging output to $log_file"
+# Define the timestamp and log file based on RUN_NAME and unique id
+base_log_dir="${HOME}/ibrido_logs/ibrido_run_${unique_id}"
+mkdir -p "$base_log_dir"
+log_remote="${base_log_dir}/ibrido_remote_env_${RUN_NAME}_${unique_id}.log"
+log_cluster="${base_log_dir}/ibrido_rhc_cluster_${RUN_NAME}_${unique_id}.log"
+log_train="${base_log_dir}/ibrido_train_env_${RUN_NAME}_${unique_id}.log"
+log_bag="${base_log_dir}/ibrido_rosbag_env_${RUN_NAME}_${unique_id}.log"
 
-exec > "$log_file" 2>&1
+# Ensure the log directory exists
+
+# # Redirect stdout and stderr to both the terminal and the log file
+echo "
+launch_training.sh: logging output to->
+remote env: $log_remote
+rhc cluster: $log_cluster
+train. env: $log_train
+log bag: $log_bag
+"
 
 if (( $SET_ULIM )); then
   ulimit -n $ULIM_N
@@ -77,8 +89,7 @@ remote_env_cmd="--headless --use_gpu  --robot_name $SHM_NS \
 if (( $REMOTE_STEPPING )); then
 remote_env_cmd+="--remote_stepping "
 fi 
-echo $remote_env_cmd
-# python $LRHC_DIR/launch_remote_env.py $remote_env_cmd &
+python $LRHC_DIR/launch_remote_env.py $remote_env_cmd > "$log_remote" 2>&1 &
 
 # cluster
 cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
@@ -91,14 +102,12 @@ cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
 if (( $CLUSTER_DB )); then
 cluster_cmd+="--enable_debug "
 fi
-echo $cluster_cmd
-# python $LRHC_DIR/launch_control_cluster.py $cluster_cmd S&
+python $LRHC_DIR/launch_control_cluster.py $cluster_cmd > "$log_cluster" 2>&1 &
 
 # train env
 if (( $REMOTE_STEPPING )); then
 training_env_cmd="--dump_checkpoints --ns $SHM_NS --run_name $RNAME --drop_dir $HOME/training_data \
 --sac --db --env_db --rmdb \
---comment $COMMENT \
 --seed $SEED --timeout_ms $TIMEOUT_MS \
 --actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH \
 --critic_lwidth $CRITIC_LWIDTH --critic_n_hlayers $CRITIC_DEPTH "
@@ -108,8 +117,7 @@ fi
 if (( $OBS_RESCALING )); then
 training_env_cmd+="--obs_rescale "
 fi
-echo $training_env_cmd
-# python $LRHC_DIR/launch_train_env.py $training_env_cmd &
+python $LRHC_DIR/launch_train_env.py $training_env_cmd --comment "\"$COMMENT\"" > "$log_train" 2>&1 &
 fi
 
 # rosbag db
@@ -122,7 +130,7 @@ if (( $LAUNCH_ROSBAG && $CLUSTER_DB)); then
   if (( $REMOTE_STEPPING )); then
   rosbag_cmd+="--with_agent_refs "
   fi
-  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd&
+  python $LRHC_DIR/launch_periodic_bag_dump.py > "$log_bag" 2>&1 &
 fi
 
 wait # wait for all to exit

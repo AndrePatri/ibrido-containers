@@ -55,7 +55,7 @@ unset IFS # Reset the internal field separator
 training_script="launch_training.sh"
 
 # Generate a unique ID based on the current timestamp
-unique_id="ibrido_run_$(date +%Y%m%d%H%M%S)" # just used to retrive process ID
+unique_id="ibrido_run_$(date +%Y_%m_%d-%H_%M_%S)" # just used to retrive process ID
 
 training_cmd="$training_script --unique_id ${unique_id} --cfg $config_file"
 
