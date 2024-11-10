@@ -66,77 +66,60 @@ if (( set_ulim_eval )); then
   ulimit -n $ulim_n
 fi
 
+# remote env
+remote_env_cmd="--headless --use_gpu  --robot_name $SHM_NS \
+--urdf_path $URDF_PATH --srdf_path  $SRDF_PATH \
+--use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH\
+--num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
+--custom_args_names $CUSTOM_ARGS_NAMES \
+--custom_args_dtype $CUSTOM_ARGS_DTYPE \
+--custom_args_vals $CUSTOM_ARGS_VALS "
 if (( $REMOTE_STEPPING )); then
-  python $LRHC_DIR/launch_remote_env.py --headless --use_gpu --remote_stepping --robot_name $SHM_NS \
-    --urdf_path $URDF_PATH --srdf_path  $SRDF_PATH \
-    --use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH\
-    --num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
-    --custom_args_names $CUSTOM_ARGS_NAMES \
-    --custom_args_dtype $CUSTOM_ARGS_DTYPE \
-    --custom_args_vals $CUSTOM_ARGS_VALS&
-else
-  python $LRHC_DIR/launch_remote_env.py --headless --use_gpu --robot_name $SHM_NS \
-    --urdf_path $URDF_PATH --srdf_path  $SRDF_PATH \
-    --use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH\
-    --num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
-    --custom_args_names $CUSTOM_ARGS_NAMES \
-    --custom_args_dtype $CUSTOM_ARGS_DTYPE \
-    --custom_args_vals $CUSTOM_ARGS_VALS&
+remote_env_cmd+="--remote_stepping "
 fi 
+python $LRHC_DIR/launch_remote_env.py $remote_env_cmd&
 
+# cluster
+cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
+--codegen_override_dir $CODEGEN_OVERRIDE_BDIR \
+--cloop \
+--urdf_path $URDF_PATH --srdf_path $SRDF_PATH --cluster_client_fname $CLUSTER_CL_FNAME \
+--custom_args_names $CUSTOM_ARGS_NAMES \
+--custom_args_dtype $CUSTOM_ARGS_DTYPE \
+--custom_args_vals $CUSTOM_ARGS_VALS"
 if (( $CLUSTER_DB )); then
-  python $LRHC_DIR/launch_control_cluster.py --ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
-    --codegen_override_dir $CODEGEN_OVERRIDE_BDIR \
-    --cloop \
-    --enable_debug \
-    --urdf_path $URDF_PATH --srdf_path $SRDF_PATH --cluster_client_fname $CLUSTER_CL_FNAME \
-    --custom_args_names $CUSTOM_ARGS_NAMES \
-    --custom_args_dtype $CUSTOM_ARGS_DTYPE \
-    --custom_args_vals $CUSTOM_ARGS_VALS&
-else
-  python $LRHC_DIR/launch_control_cluster.py --ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
-    --codegen_override_dir $CODEGEN_OVERRIDE_BDIR \
-    --cloop \
-    --urdf_path $URDF_PATH --srdf_path $SRDF_PATH --cluster_client_fname $CLUSTER_CL_FNAME \
-    --custom_args_names $CUSTOM_ARGS_NAMES \
-    --custom_args_dtype $CUSTOM_ARGS_DTYPE \
-    --custom_args_vals $CUSTOM_ARGS_VALS&
+cluster_cmd+="--enable_debug "
+fi
+python $LRHC_DIR/launch_control_cluster.py $cluster_cmd
+
+# train env
+trainign_env_cmd="--dump_checkpoints --ns $SHM_NS --run_name $RNAME --drop_dir $HOME/training_data \
+--sac --db --env_db --rmdb \
+--comment "$COMMENT" \
+--seed $SEED --timeout_ms $TIMEOUT_MS \
+--actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH \
+--critic_lwidth $CRITIC_LWIDTH --critic_n_hlayers $CRITIC_DEPTH "
+if (( $OBS_NORM )); then
+trainign_env_cmd+="--obs_norm "
+fi
+if (( $OBS_RESCALING )); then
+trainign_env_cmd+="--obs_rescale "
+fi
+if (( $REMOTE_STEPPING )); then
+python $LRHC_DIR/launch_train_env.py $trainign_env_cmd&
 fi
 
-if (( $REMOTE_STEPPING )); then
-  if (( $OBS_NORM )); then
-    python $LRHC_DIR/launch_train_env.py --ns $SHM_NS --run_name $RNAME --drop_dir $HOME/training_data --dump_checkpoints \
-    --obs_norm --sac \
-    --db --env_db --rmdb \
-    --comment "$COMMENT" \
-    --seed $SEED --timeout_ms $TIMEOUT_MS \
-    --actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH\
-    --critic_lwidth $CRITIC_LWIDTH --critic_n_hlayers $CRITIC_DEPTH&
-  else
-    python $LRHC_DIR/launch_train_env.py --ns $SHM_NS --run_name $RNAME --drop_dir $HOME/training_data --dump_checkpoints \
-    --sac \
-    --db --env_db --rmdb \
-    --comment "$COMMENT" \
-    --seed $SEED --timeout_ms $TIMEOUT_MS \
-    --actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH\
-    --critic_lwidth $CRITIC_LWIDTH --critic_n_hlayers $CRITIC_DEPTH&
-  fi 
-  
-fi 
-
+# rosbag db
 if (( $LAUNCH_ROSBAG && $CLUSTER_DB)); then
   source /opt/ros/humble/setup.bash
+  rosbag_cmd="--ros2 --use_shared_drop_dir \
+  --ns $SHM_NS --rhc_refs_in_h_frame \
+  --srdf_path $SRDF_PATH_ROSBAG \
+  --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG "
   if (( $REMOTE_STEPPING )); then
-    python $LRHC_DIR/launch_periodic_bag_dump.py --ros2 --use_shared_drop_dir \
-      --ns $SHM_NS --rhc_refs_in_h_frame \
-      --srdf_path $SRDF_PATH_ROSBAG \
-      --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG --with_agent_refs &
-  else
-    python $LRHC_DIR/launch_periodic_bag_dump.py --ros2 --use_shared_drop_dir \
-      --ns $SHM_NS --rhc_refs_in_h_frame \
-      --srdf_path $SRDF_PATH_ROSBAG \
-      --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG &
+  rosbag_cmd+="--with_agent_refs "
   fi
+  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd
 fi
 
 wait # wait for all to exit
