@@ -110,8 +110,26 @@ cd_and_split() {
     fi
 }
 
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+    -cfg|--cfg) config_file="${cfg_file_basepath}/$2"; shift ;;
+    *) echo "Unknown parameter passed: $1"; usage ;;
+  esac
+  shift
+done
+
+# Source the configuration file
+if [ -f "$config_file" ]; then
+    source "$config_file"
+else
+    echo "Configuration file not found: $config_file"
+    exit 1
+fi
+
+echo "Will preload script cmds from $config_file"
+
 # clear tmp folder 
-rm -r /tmp/*
+# rm -r /tmp/*
 
 # launch terminator window
 byobu kill-session -t ${BYOBU_WS_NAME}
@@ -127,9 +145,10 @@ execute_command "source /opt/xbot/setup.sh"
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally 
 clear_terminal
-prepare_command "reset && python launch_remote_env.py --robot_name {} --urdf_path {} --srdf_path {} \
-    --jnt_imp_config_path {} --env_fname lrhcontrolenvs.envs.xmj_env --remote_stepping \
-    --custom_args_names xmj_files_dir xmj_timeout --custom_args_dtype string int --custom_args_vals {/root/ibrido_ws/src/...} 10000"
+prepare_command "reset && python launch_remote_env.py --robot_name $SHM_NS --urdf_path $URDF_PATH --srdf_path $SRDF_PATH \
+--jnt_imp_config_path $JNT_IMP_CF_PATH --env_fname lrhcontrolenvs.envs.xmj_env \
+--custom_args_names xmj_files_dir xmj_timeout --custom_args_dtype string int --custom_args_vals $HOME/ibrido_ws/src/$XMJ_FILES_DIR 10000 \
+--remote_stepping "
 
 split_v
 execute_command "cd ${WORKING_DIR}"
@@ -137,7 +156,8 @@ activate_mamba_env
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_control_cluster.py --enable_debug --cloop --ns {} --urdf_path {} --srdf_path {} --cluster_client_fname {}"
+prepare_command "reset && python launch_control_cluster.py --enable_debug --cloop \
+--ns $SHM_NS --urdf_path $URDF_PATH --srdf_path $SRDF_PATH --cluster_client_fname $CLUSTER_CL_FNAME"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -145,6 +165,7 @@ activate_mamba_env
 execute_command "source /opt/ros/noetic/setup.bash"
 execute_command "source /opt/xbot/setup.sh"
 increase_file_limits_locally
+execute_command "set_xbot_config $HOME/$XBOT_CONFIG"
 clear_terminal
 prepare_command "reset && xbot2-core -S"
 
@@ -153,14 +174,14 @@ execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_GUI.py --ns {}"
+prepare_command "reset && python launch_GUI.py --ns $SHM_NS"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_rhc_keybrd_cmds.py --ns {}"
+prepare_command "reset && python launch_rhc_keybrd_cmds.py --ns $SHM_NS"
 
 go_to_pane 0 
 
@@ -169,7 +190,9 @@ execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_train_env.py --obs_norm --db --env_db --rmdb --ns {} --run_name {} --drop_dir $HOME/training_data --dump_checkpoints --comment {} --sac"
+prepare_command "reset && python launch_train_env.py --obs_norm --db --env_db --rmdb \
+--ns $SHM_NS --run_name $RNAME --drop_dir $HOME/training_data --dump_checkpoints --sac \
+--comment \"$COMMENT\" "
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -179,7 +202,7 @@ execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_rhc2ros_bridge.py --use_shared_drop_dir --rhc_refs_in_h_frame --with_agent_refs --ns {}"
+prepare_command "reset && python launch_rhc2ros_bridge.py --use_shared_drop_dir --rhc_refs_in_h_frame --with_agent_refs --ns $SHM_NS"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -189,7 +212,9 @@ execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --use_shared_drop_dir --ns {} --rhc_refs_in_h_frame --bag_sdt {60.0} --ros_bridge_dt {0.01} --dump_dt_min {10} --env_idx {0} --srdf_path {} --with_agent_refs"
+prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --use_shared_drop_dir --ns $SHM_NS \
+--rhc_refs_in_h_frame --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG --srdf_path $SRDF_PATH_ROSBAG \
+--with_agent_refs"
 
 # tab 1
 new_tab
@@ -197,14 +222,14 @@ execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 execute_command "source /opt/ros/noetic/setup.bash"
 clear_terminal
-prepare_command "reset && ./replay_bag.bash {~/training_data/...}"
+prepare_command "reset && ./replay_bag.bash $HOME/training_data/{}"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 execute_command "source /opt/ros/noetic/setup.bash"
 clear_terminal
-prepare_command "reset && python launch_rhcviz.py --ns {} --nodes_perc {}"
+prepare_command "reset && python launch_rhcviz.py --ns $SHM_NS --nodes_perc 10"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
