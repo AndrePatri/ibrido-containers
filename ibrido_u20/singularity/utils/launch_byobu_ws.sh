@@ -147,7 +147,10 @@ increase_file_limits_locally
 clear_terminal
 prepare_command "reset && python launch_remote_env.py --robot_name $SHM_NS --urdf_path $URDF_PATH --srdf_path $SRDF_PATH \
 --jnt_imp_config_path $JNT_IMP_CF_PATH --env_fname lrhcontrolenvs.envs.xmj_env \
---custom_args_names xmj_files_dir xmj_timeout --custom_args_dtype string int --custom_args_vals $HOME/ibrido_ws/src/$XMJ_FILES_DIR 10000 \
+--num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
+--custom_args_names $CUSTOM_ARGS_NAMES \
+--custom_args_dtype $CUSTOM_ARGS_DTYPE \
+--custom_args_vals $CUSTOM_ARGS_VALS \
 --remote_stepping "
 
 split_v
@@ -157,7 +160,13 @@ execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally
 clear_terminal
 prepare_command "reset && python launch_control_cluster.py --enable_debug --cloop \
---ns $SHM_NS --urdf_path $URDF_PATH --srdf_path $SRDF_PATH --cluster_client_fname $CLUSTER_CL_FNAME"
+--ns $SHM_NS --size $N_ENVS \
+--urdf_path $URDF_PATH --srdf_path $SRDF_PATH \
+--timeout_ms $TIMEOUT_MS \
+--cluster_client_fname $CLUSTER_CL_FNAME \
+--custom_args_names $CUSTOM_ARGS_NAMES \
+--custom_args_dtype $CUSTOM_ARGS_DTYPE \
+--custom_args_vals $CUSTOM_ARGS_VALS "
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -165,7 +174,7 @@ activate_mamba_env
 execute_command "source /opt/ros/noetic/setup.bash"
 execute_command "source /opt/xbot/setup.sh"
 increase_file_limits_locally
-execute_command "set_xbot_config $HOME/$XBOT_CONFIG"
+execute_command "set_xbot2_config $HOME/ibrido_ws/src/$XBOT_CONFIG"
 clear_terminal
 prepare_command "reset && xbot2-core -S"
 
@@ -192,6 +201,7 @@ increase_file_limits_locally
 clear_terminal
 prepare_command "reset && python launch_train_env.py --obs_norm --db --env_db --rmdb \
 --ns $SHM_NS --run_name $RNAME --drop_dir $HOME/training_data --dump_checkpoints --sac \
+--timeout_ms $TIMEOUT_MS \
 --comment \"$COMMENT\" "
 
 split_h
@@ -202,7 +212,7 @@ execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_rhc2ros_bridge.py --use_shared_drop_dir --rhc_refs_in_h_frame --with_agent_refs --ns $SHM_NS"
+prepare_command "reset && python launch_rhc2ros_bridge.py --rhc_refs_in_h_frame --ns $SHM_NS --with_agent_refs "
 
 split_h
 execute_command "cd ${WORKING_DIR}"

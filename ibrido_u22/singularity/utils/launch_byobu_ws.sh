@@ -157,6 +157,10 @@ increase_file_limits_locally
 prepare_command "reset && python launch_remote_env.py --headless --use_gpu \
 --robot_name $SHM_NS --urdf_path $URDF_PATH --srdf_path $SRDF_PATH --jnt_imp_config_path $JNT_IMP_CF_PATH \
 --use_custom_jnt_imp --num_envs $N_ENVS --seed $SEED \
+--timeout_ms $TIMEOUT_MS \
+--custom_args_names $CUSTOM_ARGS_NAMES \
+--custom_args_dtype $CUSTOM_ARGS_DTYPE \
+--custom_args_vals $CUSTOM_ARGS_VALS \
 --remote_stepping"
 
 split_v
@@ -166,7 +170,11 @@ execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally
 prepare_command "reset && python launch_control_cluster.py --enable_debug --cloop \
 --ns $SHM_NS --size $N_ENVS --urdf_path $URDF_PATH --srdf_path $SRDF_PATH \
---cluster_client_fname $CLUSTER_CL_FNAME"
+--timeout_ms $TIMEOUT_MS \
+--cluster_client_fname $CLUSTER_CL_FNAME \
+--custom_args_names $CUSTOM_ARGS_NAMES \
+--custom_args_dtype $CUSTOM_ARGS_DTYPE \
+--custom_args_vals $CUSTOM_ARGS_VALS"
 
 split_h
 execute_command "cd $WORKING_DIR"
@@ -196,6 +204,7 @@ increase_file_limits_locally
 prepare_command "reset && python launch_train_env.py --obs_rescale --db --env_db --rmdb \
 --ns $SHM_NS --run_name $RNAME --drop_dir $HOME/training_data --dump_checkpoints \
 --sac --seed $SEED \
+--timeout_ms $TIMEOUT_MS \
 --comment \"$COMMENT\" " 
 
 split_h
