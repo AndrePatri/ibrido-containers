@@ -32,6 +32,6 @@ export SET_ULIM=1
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=10000 # timeout after which each script autokills ([ms])
 
-export CUSTOM_ARGS_NAMES="xmj_files_dir xmj_timeout wheels fixed_flights"
-export CUSTOM_ARGS_DTYPE="string int xacro bool"
-export CUSTOM_ARGS_VALS="$HOME/ibrido_ws/src/$XMJ_FILES_DIR $TIMEOUT_MS false true"
+export CUSTOM_ARGS_NAMES="xmj_files_dir xmj_timeout wheels fixed_flights use_diff_vels"
+export CUSTOM_ARGS_DTYPE="string int xacro bool bool"
+export CUSTOM_ARGS_VALS="$HOME/ibrido_ws/src/$XMJ_FILES_DIR $TIMEOUT_MS false true true"
