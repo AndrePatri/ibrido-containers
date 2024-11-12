@@ -64,7 +64,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/SharsorIPCpp.git*devel"
     "git@github.com:AndrePatri/LRHControlEnvs.git*isaac4.0.0"
     "git@github.com:AndrePatri/RHCViz.git*ros2_humble"
-    "git@github.com:AndrePatri/phase_manager.git*new_architecture"
+    "git@github.com:AndrePatri/phase_manager.git*add_update"
     "git@github.com:AndrePatri/unitree_ros.git*andrepatri_dev"
     "git@github.com:ADVRHumanoids/horizon.git*andrepatri_devel"
     "git@github.com:ADVRHumanoids/KyonRLStepping.git*isaac4.0.0"
