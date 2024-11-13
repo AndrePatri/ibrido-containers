@@ -3,7 +3,7 @@
 export SHM_NS="kyon_no_wheels" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=600 # number of env to run in parallel
 export RNAME="LinVelTrackBaseline" # a descriptive base name for this run
-export SEED=566 # random n generator seed to be used for this run
+export SEED=1 # random n generator seed to be used for this run
 export REMOTE_STEPPING=1
 export ACTOR_LWIDTH=256
 export ACTOR_DEPTH=2
