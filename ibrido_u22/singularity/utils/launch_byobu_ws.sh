@@ -225,6 +225,7 @@ execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
 prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir \
+--pub_stime \
 --ns $SHM_NS --rhc_refs_in_h_frame \
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG \
 --srdf_path $SRDF_PATH_ROSBAG --with_agent_refs"

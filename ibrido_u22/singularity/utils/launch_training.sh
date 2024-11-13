@@ -123,7 +123,7 @@ fi
 # rosbag db
 if (( $LAUNCH_ROSBAG && $CLUSTER_DB)); then
   source /opt/ros/humble/setup.bash
-  rosbag_cmd="--ros2 --use_shared_drop_dir \
+  rosbag_cmd="--ros2 --use_shared_drop_dir --pub_stime\
   --ns $SHM_NS --rhc_refs_in_h_frame \
   --srdf_path $SRDF_PATH_ROSBAG \
   --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG "
