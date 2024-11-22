@@ -24,7 +24,8 @@ export BAG_SDT=90.0
 export BRIDGE_DT=0.1
 export DUMP_DT=50.0
 export ENV_IDX_BAG=0
-export SRDF_PATH_ROSBAG="${HOME}/aux_data/KyonRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
+export ENV_IDX_BAG_DEMO=1
+export ENV_IDX_BAG_EXPL=2export SRDF_PATH_ROSBAG="${HOME}/aux_data/KyonRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
 export CUSTOM_ARGS_NAMES="dummy_custom_arg"
 export CUSTOM_ARGS_DTYPE="str"
 export CUSTOM_ARGS_VALS="empty"
