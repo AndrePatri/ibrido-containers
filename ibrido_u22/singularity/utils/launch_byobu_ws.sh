@@ -238,7 +238,7 @@ execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
 prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir \
---ns $SHM_NS --remap_ns "${SHM_NS}_expl"\
+--ns $SHM_NS --remap_ns "${SHM_NS}_expl" \
 --rhc_refs_in_h_frame \
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_EXPL \
 --srdf_path $SRDF_PATH_ROSBAG --with_agent_refs"
@@ -251,7 +251,7 @@ execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
 prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir \
---ns $SHM_NS --remap_ns "${SHM_NS}_demo"\
+--ns $SHM_NS --remap_ns "${SHM_NS}_demo" \
 --rhc_refs_in_h_frame \
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_DEMO \
 --srdf_path $SRDF_PATH_ROSBAG --with_agent_refs"
