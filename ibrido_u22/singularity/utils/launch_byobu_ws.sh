@@ -157,6 +157,7 @@ increase_file_limits_locally
 prepare_command "reset && python launch_remote_env.py --headless --use_gpu \
 --robot_name $SHM_NS --urdf_path $URDF_PATH --srdf_path $SRDF_PATH --jnt_imp_config_path $JNT_IMP_CF_PATH \
 --use_custom_jnt_imp --num_envs $N_ENVS --seed $SEED \
+--cluster_dt $CLUSTER_DT \
 --timeout_ms $TIMEOUT_MS \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
@@ -243,7 +244,7 @@ prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_trainin
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_EXPL \
 --srdf_path $SRDF_PATH_ROSBAG --with_agent_refs"
 
-split_h
+split_v
 execute_command "cd ${WORKING_DIR}"
 # execute_command "source /opt/ros/noetic/setup.bash"
 execute_command "source /opt/ros/humble/setup.bash"

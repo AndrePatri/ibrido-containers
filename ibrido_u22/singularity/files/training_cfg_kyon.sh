@@ -16,6 +16,7 @@ export URDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-ros-pkg/kyon_urdf/urdf/kyon.urd
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-ros-pkg/kyon_srdf/srdf/kyon.srdf.xacro" # base path where the description package for the robot are located
 export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config.yaml" # path to yaml file for jnt imp configuration
 export CLUSTER_CL_FNAME="kyonrlstepping.controllers.horizon_based.kyon_rhc_cluster_client" # base path where the description package for the robot are located
+export CLUSTER_DT=0.03
 export CLUSTER_DB=1
 export CODEGEN_OVERRIDE_BDIR="none"
 export LAUNCH_ROSBAG=0

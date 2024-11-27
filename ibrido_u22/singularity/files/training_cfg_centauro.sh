@@ -16,6 +16,7 @@ export URDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_urdf/urdf/
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_srdf/srdf/centauro.srdf.xacro" # base path where the description package for the robot are located
 export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config.yaml" # path to yaml file for jnt imp configuration
 export CLUSTER_CL_FNAME="centaurohybridmpc.controllers.horizon_based.centauro_rhc_cluster_client" # base path where the description package for the robot are located
+export CLUSTER_DT=0.05
 export CLUSTER_DB=1
 export CODEGEN_OVERRIDE_BDIR="none"
 export LAUNCH_ROSBAG=0
