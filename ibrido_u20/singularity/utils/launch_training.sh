@@ -82,6 +82,7 @@ fi
 remote_env_cmd="--headless --use_gpu  --robot_name $SHM_NS \
 --urdf_path $URDF_PATH --srdf_path  $SRDF_PATH \
 --use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH \
+--cluster_dt $CLUSTER_DT \
 --num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
@@ -123,7 +124,7 @@ fi
 # rosbag db
 if (( $LAUNCH_ROSBAG && $CLUSTER_DB)); then
   source /opt/ros/humble/setup.bash
-  rosbag_cmd="--ros2 --use_shared_drop_dir \
+  rosbag_cmd="--ros2 --use_shared_drop_dir --pub_stime\
   --ns $SHM_NS --rhc_refs_in_h_frame \
   --srdf_path $SRDF_PATH_ROSBAG \
   --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG "

@@ -147,6 +147,7 @@ increase_file_limits_locally
 clear_terminal
 prepare_command "reset && python launch_remote_env.py --robot_name $SHM_NS --urdf_path $URDF_PATH --srdf_path $SRDF_PATH \
 --jnt_imp_config_path $JNT_IMP_CF_PATH --env_fname lrhcontrolenvs.envs.xmj_env \
+--cluster_dt $CLUSTER_DT \
 --num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
@@ -191,6 +192,12 @@ activate_mamba_env
 increase_file_limits_locally
 clear_terminal
 prepare_command "reset && python launch_rhc_keybrd_cmds.py --ns $SHM_NS"
+
+split_h
+execute_command "cd $WORKING_DIR"
+activate_mamba_env
+increase_file_limits_locally
+prepare_command "reset && python launch_agent_keybrd_cmds.py --ns $SHM_NS"
 
 go_to_pane 0 
 
