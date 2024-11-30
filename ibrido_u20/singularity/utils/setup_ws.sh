@@ -42,9 +42,9 @@ cd $WS_BASEDIR/build/perf_sleep
 cmake -DCMAKE_BUILD_TYPE=Release ../../src/PerfSleep/perf_sleep
 make -j8 install
 
-mkdir -p $WS_BASEDIR/build/SharsorIPCpp
-cd $WS_BASEDIR/build/SharsorIPCpp
-cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON ../../src/SharsorIPCpp/SharsorIPCpp
+mkdir -p $WS_BASEDIR/build/EigenIPC
+cd $WS_BASEDIR/build/EigenIPC
+cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON ../../src/EigenIPC/EigenIPC
 make -j8 install
 
 mkdir -p $WS_BASEDIR/build/casadi

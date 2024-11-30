@@ -16,9 +16,9 @@ rm -rf $WS_BASEDIR/build && mkdir $WS_BASEDIR/build
 rm -rf $WS_BASEDIR/install && mkdir $WS_BASEDIR/install
 
 # build cmake packages
-mkdir -p $WS_BASEDIR/build/SharsorIPCpp
-cd $WS_BASEDIR/build/SharsorIPCpp
-cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON ../../src/SharsorIPCpp/SharsorIPCpp
+mkdir -p $WS_BASEDIR/build/EigenIPC
+cd $WS_BASEDIR/build/EigenIPC
+cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON ../../src/EigenIPC/EigenIPC
 make -j8 install
 
 mkdir -p $WS_BASEDIR/build/horizon

@@ -50,7 +50,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/IBRIDO.git*main"
     "git@github.com:AndrePatri/LRHControl.git*isaac4.0.0"
     "git@github.com:AndrePatri/CoClusterBridge.git*devel"
-    "git@github.com:AndrePatri/SharsorIPCpp.git*devel"
+    "git@github.com:AndrePatri/EigenIPC.git*devel"
     "git@github.com:AndrePatri/LRHControlEnvs.git*isaac4.0.0"
     "git@github.com:AndrePatri/RHCViz.git*ros1_noetic"
     "git@github.com:AndrePatri/PerfSleep.git*main"

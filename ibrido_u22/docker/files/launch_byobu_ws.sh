@@ -19,7 +19,7 @@ directories=(
     "$WS_ROOT/src/LRHControl"
     "$WS_ROOT/src/CoClusterBridge"
     "$WS_ROOT/src/LRHControlEnvs"
-    "$WS_ROOT/src/SharsorIPCpp"
+    "$WS_ROOT/src/EigenIPC"
     "$WS_ROOT/src/horizon"
     # Add more directories as needed
 )
