@@ -117,7 +117,10 @@ fi
 if (( $OBS_RESCALING )); then
 training_env_cmd+="--obs_rescale "
 fi
+
 wandb login $WANDB_KEY # login to wandb
+sleep 5  # Check every second
+
 python $LRHC_DIR/launch_train_env.py $training_env_cmd --comment "\"$COMMENT\"" > "$log_train" 2>&1 &
 fi
 
