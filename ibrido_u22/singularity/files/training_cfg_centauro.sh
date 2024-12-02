@@ -1,5 +1,4 @@
 #!/bin/bash
-# export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
 export WANDB_KEY=""
 export SHM_NS="centauro_big_wheels" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=1 # number of env to run in parallel
@@ -35,3 +34,5 @@ export CUSTOM_ARGS_VALS="false true true true"
 export SET_ULIM=1 
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=10000 # timeout after which each script autokills ([ms])
+
+# export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to actual shm namespace 
