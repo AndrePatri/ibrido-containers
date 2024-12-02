@@ -7,6 +7,13 @@ fi
 
 THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+# Check if PBS is installed
+if command -v qstat >/dev/null 2>&1; then
+    IS_PBS_AVAILABLE=true
+else
+    IS_PBS_AVAILABLE=false
+fi
+
 # BASE_FOLDER=$HOME
 ME=$(whoami)
 # BASE_FOLDER="/work/${ME}"
@@ -41,6 +48,15 @@ IBRIDO_BDIRS=(
     "${IBRIDO_PREFIX}/.ros:/root/.ros:rw"
     "${IBRIDO_PREFIX}/.rviz2:/root/.rviz2:rw"
 )
+
+# Only add these bindings if PBS is NOT available (when runnin on cluster
+# we don't need user input)
+if [ "$IS_PBS_AVAILABLE" = false ]; then
+    IBRIDO_BDIRS+=(
+        "/dev/input:/dev/input:rw"
+        "/tmp/.X11-unix:/tmp/.X11-unix"
+    )
+fi
 
 ISAAC_BDIRS=(
     "${IBRIDO_PREFIX}/isaac-sim/cache/ov:/root/.cache/ov:rw"
