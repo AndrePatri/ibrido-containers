@@ -1,5 +1,6 @@
 #!/bin/bash
-# export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
+# export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace
+export WANDB_KEY=""
 export SHM_NS="kyon_no_wheels" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=1 # number of env to run in parallel
 export RNAME="LinVelTrackBaseline" # a descriptive base name for this run

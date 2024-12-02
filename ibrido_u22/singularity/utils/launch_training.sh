@@ -48,8 +48,6 @@ rm -r /tmp/*
 eval "$(micromamba shell hook --shell bash)"
 micromamba activate ${MAMBA_ENV_NAME}
 
-wandb login $WANDB_KEY # login to wandb
-
 source /isaac-sim/setup_conda_env.sh
 source $HOME/ibrido_ws/setup.bash
 
@@ -118,6 +116,7 @@ fi
 if (( $OBS_RESCALING )); then
 training_env_cmd+="--obs_rescale "
 fi
+wandb login $WANDB_KEY # login to wandb
 python $LRHC_DIR/launch_train_env.py $training_env_cmd --comment "\"$COMMENT\"" > "$log_train" 2>&1 &
 fi
 
