@@ -9,7 +9,8 @@ THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # BASE_FOLDER=$HOME
 ME=$(whoami)
-BASE_FOLDER="/work/${ME}"
+# BASE_FOLDER="/work/${ME}"
+BASE_FOLDER="/fastwork/${ME}"
 # some definitions
 SING_CONTAINER_DIR="$(dirname "$THIS_DIR")"
 IBRIDO_PREFIX=$BASE_FOLDER/containers/ibrido-singularity
