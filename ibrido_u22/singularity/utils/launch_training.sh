@@ -130,7 +130,7 @@ if (( $LAUNCH_ROSBAG && $CLUSTER_DB)); then
   if (( $REMOTE_STEPPING )); then
   rosbag_cmd+="--with_agent_refs "
   fi
-  python $LRHC_DIR/launch_periodic_bag_dump.py > "$log_bag" 2>&1 &
+  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
 fi
 
 wait # wait for all to exit
