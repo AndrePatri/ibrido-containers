@@ -9,6 +9,7 @@ SLEEP_FOR=0.1
 BYOBU_WS_NAME="ibrido_xbot"
 WS_ROOT="$HOME/ibrido_ws"
 WORKING_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
+XMJ_TEST_DIR="$WS_ROOT/build/xbot2_mujoco/tests/PyXbotMjSimEnv"
 
 MAMBAENVNAME="${MAMBA_ENV_NAME}"
 N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
@@ -155,6 +156,19 @@ prepare_command "reset && python launch_remote_env.py --robot_name $SHM_NS --urd
 --remote_stepping "
 
 split_v
+
+execute_command "cd ${XMJ_TEST_DIR}"
+activate_mamba_env
+#execute_command "source ~/.local/share/ov/pkg/isaac_sim-2023.1.1/setup_conda_env.sh"
+execute_command "source /opt/ros/noetic/setup.bash"
+execute_command "source /opt/xbot/setup.sh"
+execute_command "source $WS_ROOT/setup.bash"
+increase_file_limits_locally 
+clear_terminal
+prepare_command "reset && {}"
+
+split_v
+
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 execute_command "source $WS_ROOT/setup.bash"
