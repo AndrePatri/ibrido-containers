@@ -21,7 +21,6 @@ export CLUSTER_DT=0.03
 export CLUSTER_DB=1
 # export CODEGEN_OVERRIDE_BDIR="none"
 export CODEGEN_OVERRIDE_BDIR="${HOME}/aux_data/KyonRHCLusterClient_${SHM_NS}/CodeGen/${SHM_NS}Rhc"
-export LAUNCH_ROSBAG=0
 export BAG_SDT=90.0
 export BRIDGE_DT=0.1
 export DUMP_DT=50.0
@@ -36,4 +35,4 @@ export SET_ULIM=1
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=10000 # timeout after which each script autokills ([ms])
 
-# export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to actual shm namespace 
+# export SHM_NS+="_$(date '+%Y_%m_%d_%H_%M_%S')" # appending unique string to actual shm namespace 

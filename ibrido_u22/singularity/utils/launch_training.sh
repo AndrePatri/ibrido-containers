@@ -119,18 +119,47 @@ training_env_cmd+="--obs_rescale "
 fi
 
 wandb login $WANDB_KEY # login to wandb
-sleep 5  # Check every second
 
 python $LRHC_DIR/launch_train_env.py $training_env_cmd --comment "\"$COMMENT\"" > "$log_train" 2>&1 &
 fi
 
 # rosbag db
-if (( $LAUNCH_ROSBAG && $CLUSTER_DB)); then
+if (( $ENV_IDX_BAG > 0 && $CLUSTER_DB)); then
   source /opt/ros/humble/setup.bash
   rosbag_cmd="--ros2 --use_shared_drop_dir --pub_stime\
   --ns $SHM_NS --rhc_refs_in_h_frame \
   --srdf_path $SRDF_PATH_ROSBAG \
   --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG "
+  if (( $REMOTE_STEPPING )); then
+  rosbag_cmd+="--with_agent_refs "
+  fi
+  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+fi
+
+# demo env db
+sleep 2 # wait a bit
+if (( $ENV_IDX_BAG_DEMO > 0 && $CLUSTER_DB)); then
+  source /opt/ros/humble/setup.bash
+  rosbag_cmd="--ros2 --use_shared_drop_dir\
+  --ns $SHM_NS --remap_ns "${SHM_NS}_demo" \
+  --rhc_refs_in_h_frame \
+  --srdf_path $SRDF_PATH_ROSBAG \
+  --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_DEMO "
+  if (( $REMOTE_STEPPING )); then
+  rosbag_cmd+="--with_agent_refs "
+  fi
+  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+fi
+
+# expl env db
+sleep 2 # wait a bit
+if (( $ENV_IDX_BAG_EXPL > 0 && $CLUSTER_DB)); then
+  source /opt/ros/humble/setup.bash
+  rosbag_cmd="--ros2 --use_shared_drop_dir\
+  --ns $SHM_NS --remap_ns "${SHM_NS}_expl" \
+  --rhc_refs_in_h_frame \
+  --srdf_path $SRDF_PATH_ROSBAG \
+  --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_EXPL "
   if (( $REMOTE_STEPPING )); then
   rosbag_cmd+="--with_agent_refs "
   fi

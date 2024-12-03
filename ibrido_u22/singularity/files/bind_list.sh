@@ -14,10 +14,14 @@ else
     IS_PBS_AVAILABLE=false
 fi
 
-# BASE_FOLDER=$HOME
 ME=$(whoami)
-# BASE_FOLDER="/work/${ME}"
-BASE_FOLDER="/fastwork/${ME}"
+
+# defining base folder for framework
+BASE_FOLDER="/work/${ME}"
+if [ "$IS_PBS_AVAILABLE" = true ]; then
+    BASE_FOLDER="/fastwork/${ME}" # use fastwork for cluster
+fi
+
 # some definitions
 SING_CONTAINER_DIR="$(dirname "$THIS_DIR")"
 IBRIDO_PREFIX=$BASE_FOLDER/containers/ibrido-singularity
@@ -32,8 +36,6 @@ IBRIDO_BFILES=(
 )
 # defining directories to be binded at runtime
 IBRIDO_BDIRS=(
-    "/dev/input:/dev/input:rw"
-    "/tmp/.X11-unix:/tmp/.X11-unix"
     "${IBRIDO_CONTAINERS_PREFIX}/files:/root/ibrido_files"
     "${IBRIDO_CONTAINERS_PREFIX}/utils:/root/ibrido_utils"
     "${IBRIDO_PREFIX}/ibrido_logs:/root/ibrido_logs"
