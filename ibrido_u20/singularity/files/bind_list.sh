@@ -24,6 +24,7 @@ IBRIDO_BFILES=(
 # defining directories to be binded at runtime
 IBRIDO_BDIRS=(
     "/dev/input:/dev/input:rw"
+    "/tmp/.X11-unix:/tmp/.X11-unix"
     "${IBRIDO_CONTAINERS_PREFIX}/files:/root/ibrido_files"
     "${IBRIDO_CONTAINERS_PREFIX}/utils:/root/ibrido_utils"
     "${IBRIDO_PREFIX}/tmp:/tmp:rw"

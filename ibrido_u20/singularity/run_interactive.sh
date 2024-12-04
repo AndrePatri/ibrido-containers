@@ -40,7 +40,9 @@ binddirs="${IBRIDO_B_ALL[*]}"
 unset IFS # Reset the internal field separator
 
 if $use_sudo; then
-    sudo singularity exec \
+    singularity exec \
+        --fakeroot \
+        --net \
         --cleanenv \
         --env "DISPLAY=${DISPLAY}"\
         --env "WANDB_KEY=$wandb_key"\
