@@ -9,7 +9,6 @@ SLEEP_FOR=0.1
 BYOBU_WS_NAME="ibrido_xbot"
 WS_ROOT="$HOME/ibrido_ws"
 WORKING_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
-XMJ_TEST_DIR="$WS_ROOT/build/xbot2_mujoco/tests/PyXbotMjSimEnv"
 
 MAMBAENVNAME="${MAMBA_ENV_NAME}"
 N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
@@ -145,9 +144,11 @@ execute_command "source /opt/ros/noetic/setup.bash"
 execute_command "source /opt/xbot/setup.sh"
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally 
+export ROS_MASTER_URI=$ROS_MASTER_URI
+export ROS_IP=$ROS_IP
 clear_terminal
 prepare_command "reset && python launch_remote_env.py --robot_name $SHM_NS --urdf_path $URDF_PATH --srdf_path $SRDF_PATH \
---jnt_imp_config_path $JNT_IMP_CF_PATH --env_fname lrhcontrolenvs.envs.xmj_env \
+--jnt_imp_config_path $JNT_IMP_CF_PATH --env_fname $REMOTE_ENV_FNAME \
 --cluster_dt $CLUSTER_DT \
 --num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
 --custom_args_names $CUSTOM_ARGS_NAMES \
@@ -156,19 +157,6 @@ prepare_command "reset && python launch_remote_env.py --robot_name $SHM_NS --urd
 --remote_stepping "
 
 split_v
-
-execute_command "cd ${XMJ_TEST_DIR}"
-activate_mamba_env
-#execute_command "source ~/.local/share/ov/pkg/isaac_sim-2023.1.1/setup_conda_env.sh"
-execute_command "source /opt/ros/noetic/setup.bash"
-execute_command "source /opt/xbot/setup.sh"
-execute_command "source $WS_ROOT/setup.bash"
-increase_file_limits_locally 
-clear_terminal
-prepare_command "reset && {}"
-
-split_v
-
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 execute_command "source $WS_ROOT/setup.bash"
@@ -190,6 +178,8 @@ execute_command "source /opt/ros/noetic/setup.bash"
 execute_command "source /opt/xbot/setup.sh"
 increase_file_limits_locally
 execute_command "set_xbot2_config $HOME/ibrido_ws/src/$XBOT_CONFIG"
+export ROS_MASTER_URI=$ROS_MASTER_URI
+export ROS_IP=$ROS_IP
 clear_terminal
 prepare_command "reset && xbot2-core -S"
 
@@ -221,19 +211,21 @@ activate_mamba_env
 increase_file_limits_locally
 clear_terminal
 prepare_command "reset && python launch_train_env.py --obs_norm --db --env_db --rmdb \
---ns $SHM_NS --run_name $RNAME --drop_dir $HOME/training_data --dump_checkpoints --sac \
+--ns $SHM_NS --run_name $RNAME --drop_dir $HOME/training_data --dump_checkpoints --dummy \
 --timeout_ms $TIMEOUT_MS \
 --comment \"$COMMENT\" "
 
 split_h
 execute_command "cd ${WORKING_DIR}"
-# execute_command "source /opt/ros/noetic/setup.bash"
-execute_command "source /opt/ros/noetic/setup.bash"
-execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
-increase_file_limits_locally
+#execute_command "source ~/.local/share/ov/pkg/isaac_sim-2023.1.1/setup_conda_env.sh"
+execute_command "source /opt/ros/noetic/setup.bash"
+execute_command "source /opt/xbot/setup.sh"
+execute_command "source $WS_ROOT/setup.bash"
+increase_file_limits_locally 
+export ROS_MASTER_URI=$ROS_MASTER_URI
+export ROS_IP=$ROS_IP
 clear_terminal
-prepare_command "reset && python launch_rhc2ros_bridge.py --rhc_refs_in_h_frame --ns $SHM_NS --with_agent_refs "
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -242,16 +234,32 @@ execute_command "source /opt/ros/noetic/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
+export ROS_MASTER_URI=$ROS_MASTER_URI
+export ROS_IP=$ROS_IP
 clear_terminal
-prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --use_shared_drop_dir --ns $SHM_NS \
---rhc_refs_in_h_frame --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG --srdf_path $SRDF_PATH_ROSBAG \
---with_agent_refs"
+prepare_command "reset && python launch_rhc2ros_bridge.py --rhc_refs_in_h_frame --ns $SHM_NS --with_agent_refs "
+
+# split_h
+# execute_command "cd ${WORKING_DIR}"
+# # execute_command "source /opt/ros/noetic/setup.bash"
+# execute_command "source /opt/ros/noetic/setup.bash"
+# execute_command "source $WS_ROOT/setup.bash"
+# activate_mamba_env
+# increase_file_limits_locally
+# export ROS_MASTER_URI=$ROS_MASTER_URI
+# export ROS_IP=$ROS_IP
+# clear_terminal
+# prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --use_shared_drop_dir --ns $SHM_NS \
+# --rhc_refs_in_h_frame --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG --srdf_path $SRDF_PATH_ROSBAG \
+# --with_agent_refs"
 
 # tab 1
 new_tab
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 execute_command "source /opt/ros/noetic/setup.bash"
+export ROS_MASTER_URI=$ROS_MASTER_URI
+export ROS_IP=$ROS_IP
 clear_terminal
 prepare_command "reset && ./replay_bag.bash $HOME/training_data/{}"
 
@@ -259,6 +267,8 @@ split_h
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 execute_command "source /opt/ros/noetic/setup.bash"
+export ROS_MASTER_URI=$ROS_MASTER_URI
+export ROS_IP=$ROS_IP
 clear_terminal
 prepare_command "reset && python launch_rhcviz.py --ns $SHM_NS --nodes_perc 10"
 
@@ -274,6 +284,8 @@ split_h
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 execute_command "source /opt/ros/noetic/setup.bash"
+export ROS_MASTER_URI=$ROS_MASTER_URI
+export ROS_IP=$ROS_IP
 clear_terminal
 prepare_command "reset && roscore"
 
