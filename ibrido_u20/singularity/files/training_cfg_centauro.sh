@@ -35,15 +35,15 @@ export SET_ULIM=1
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 
-export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot"
-export CUSTOM_ARGS_DTYPE="bool bool bool bool bool int string bool"
-export CUSTOM_ARGS_VALS="false true true true false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true"
-export REMOTE_ENV_FNAME="lrhcontrolenvs.envs.xmj_env"
+# export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot"
+# export CUSTOM_ARGS_DTYPE="bool bool bool bool bool int string bool"
+# export CUSTOM_ARGS_VALS="false true true true false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true"
+# export REMOTE_ENV_FNAME="lrhcontrolenvs.envs.xmj_env"
 
-# export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels state_from_xbot"
-# export CUSTOM_ARGS_DTYPE="bool bool bool bool bool bool"
-# export CUSTOM_ARGS_VALS="false true true true false true"
-# export REMOTE_ENV_FNAME="lrhcontrolenvs.envs.rt_deploy_env"
+export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels state_from_xbot"
+export CUSTOM_ARGS_DTYPE="bool bool bool bool bool bool"
+export CUSTOM_ARGS_VALS="false true true false false true"
+export REMOTE_ENV_FNAME="lrhcontrolenvs.envs.rt_deploy_env"
 
 export ROS_MASTER_URI="http://127.0.0.1:11311"
 export ROS_IP="127.0.0.1"
