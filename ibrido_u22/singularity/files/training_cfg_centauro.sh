@@ -34,4 +34,5 @@ export SET_ULIM=1
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=10000 # timeout after which each script autokills ([ms])
 
-# export SHM_NS+="_$(date '+%Y_%m_%d_%H_%M_%S')" # appending unique string to actual shm namespace 
+# export SHM_NS+="_$(date '+%Y_%m_%d_%H_%M_%S')_ID${PBS_JOBID}" # appending unique string to actual shm namespace 
+
