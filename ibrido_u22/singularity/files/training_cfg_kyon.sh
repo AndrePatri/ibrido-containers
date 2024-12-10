@@ -25,6 +25,7 @@ export TRAIN_ENV_FNAME="linvel_env_baseline"
 export TRAIN_ENV_CNAME="LinVelTrackBaseline"
 # export TRAIN_ENV_FNAME="linvel_env_with_demo"
 # export TRAIN_ENV_CNAME="LinVelEnvWithDemo"
+export DEMO_STOP_THRESH=0.3
 export BAG_SDT=90.0
 export BRIDGE_DT=0.1
 export DUMP_DT=50.0
