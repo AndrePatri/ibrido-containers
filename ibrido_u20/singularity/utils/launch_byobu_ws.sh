@@ -154,7 +154,8 @@ prepare_command "reset && python launch_remote_env.py --robot_name $SHM_NS --urd
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
 --custom_args_vals $CUSTOM_ARGS_VALS \
---remote_stepping "
+--remote_stepping \
+--enable_debug "
 
 split_v
 execute_command "cd ${WORKING_DIR}"
