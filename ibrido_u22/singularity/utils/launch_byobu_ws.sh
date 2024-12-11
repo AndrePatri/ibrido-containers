@@ -206,7 +206,8 @@ prepare_command "reset && python launch_train_env.py --obs_norm --db --env_db --
 --ns $SHM_NS --run_name $RNAME --drop_dir $HOME/training_data --dump_checkpoints \
 --sac --seed $SEED \
 --timeout_ms $TIMEOUT_MS \
---comment \"$COMMENT\" " 
+--comment \"$COMMENT\" \
+--env_fname $TRAIN_ENV_FNAME --env_classname $TRAIN_ENV_CNAME"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
