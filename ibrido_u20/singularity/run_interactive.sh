@@ -43,6 +43,7 @@ if $use_sudo; then
     singularity exec \
         --fakeroot \
         --cleanenv \
+        --net \
         --env "DISPLAY=${DISPLAY}"\
         --env "WANDB_KEY=$wandb_key"\
         --bind $binddirs\
