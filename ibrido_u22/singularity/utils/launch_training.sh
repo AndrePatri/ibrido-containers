@@ -109,6 +109,7 @@ training_env_cmd="--dump_checkpoints --ns $SHM_NS --run_name $RNAME --drop_dir $
 --sac --db --env_db --rmdb \
 --seed $SEED --timeout_ms $TIMEOUT_MS \
 --env_fname $TRAIN_ENV_FNAME --env_classname $TRAIN_ENV_CNAME \
+--demo_stop_thresh $DEMO_STOP_THRESH  \
 --actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH \
 --critic_lwidth $CRITIC_LWIDTH --critic_n_hlayers $CRITIC_DEPTH "
 if (( $OBS_NORM )); then
