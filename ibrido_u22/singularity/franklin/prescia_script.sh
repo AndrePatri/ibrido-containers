@@ -2,7 +2,7 @@
 
 PRESCIA_DT=5 # minutes
 CHECK_INTERVAL=4  # Check interval in minutes
-TERMINATION_SCRIPT="launch_control_cluster.py"
+TERMINATION_SCRIPT="launch_train_env.py"
 TERMINATION_SIGNAL="SIGINT"
 
 source "$IBRIDO_CONTAINERS_PREFIX/franklin/utils.sh"
