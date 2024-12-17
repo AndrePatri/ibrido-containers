@@ -18,6 +18,7 @@ export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmp
 export CLUSTER_CL_FNAME="centaurohybridmpc.controllers.horizon_based.centauro_rhc_cluster_client" # base path where the description package for the robot are located
 export CLUSTER_DT=0.05
 export CLUSTER_DB=1
+export PHYSICS_DT=0.0005
 # export CODEGEN_OVERRIDE_BDIR="none"
 export CODEGEN_OVERRIDE_BDIR="${HOME}/aux_data/CentauroRHCLusterClient_${SHM_NS}/CodeGen/${SHM_NS}Rhc"
 export TRAIN_ENV_FNAME="linvel_env_baseline"

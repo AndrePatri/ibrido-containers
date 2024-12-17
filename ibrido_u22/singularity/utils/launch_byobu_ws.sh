@@ -158,6 +158,7 @@ prepare_command "reset && python launch_remote_env.py --headless --use_gpu \
 --robot_name $SHM_NS --urdf_path $URDF_PATH --srdf_path $SRDF_PATH --jnt_imp_config_path $JNT_IMP_CF_PATH \
 --use_custom_jnt_imp --num_envs $N_ENVS --seed $SEED \
 --cluster_dt $CLUSTER_DT \
+--physics_dt $PHYSICS_DT \
 --timeout_ms $TIMEOUT_MS \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
