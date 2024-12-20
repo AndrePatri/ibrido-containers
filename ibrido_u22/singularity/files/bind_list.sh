@@ -17,7 +17,7 @@ fi
 ME=$(whoami)
 
 # defining base folder for framework
-BASE_FOLDER="/work/${ME}"
+BASE_FOLDER="$HOME/work"
 if [ "$IS_PBS_AVAILABLE" = true ]; then
     BASE_FOLDER="/fastwork/${ME}" # use fastwork for cluster
 fi
