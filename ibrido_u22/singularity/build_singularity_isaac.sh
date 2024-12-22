@@ -45,7 +45,7 @@ done
 
 if $build_container; then
     echo '--> Building IBRIDO container...'
-    echo '--> Insert your generated NVIDIA NGC password/token to pull IsaacSim (see https://catalog.ngc.nvidia.com/orgs/nvidia/containers/isaac-sim)'
+    echo '--> Please make sure to provide your generated NVIDIA NGC password/token using the --ngc_key arg to pull IsaacSim (see https://catalog.ngc.nvidia.com/orgs/nvidia/containers/isaac-sim)'
     if $use_sudo; then
         sudo singularity registry login --username \$oauthtoken --password $ngc_key docker://nvcr.io  # run with sudo if singularity build --fakeroot
         echo '--> Starting building of IBRIDO singularity container (sudo)...'
