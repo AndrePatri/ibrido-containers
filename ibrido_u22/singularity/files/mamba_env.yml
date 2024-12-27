@@ -38,7 +38,6 @@ dependencies:
   - perf_sleep
   - catkin_pkg=1.0.0
   - pip:
-    - triton
     - flit
     - h5py
     - protobuf
