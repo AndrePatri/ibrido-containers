@@ -7,9 +7,21 @@ fi
 
 THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-BASE_FOLDER=$HOME
+# Check if PBS is installed
+if command -v qstat >/dev/null 2>&1; then
+    IS_PBS_AVAILABLE=true
+else
+    IS_PBS_AVAILABLE=false
+fi
+
 ME=$(whoami)
-BASE_FOLDER="/work/${ME}"
+
+# defining base folder for framework
+BASE_FOLDER="$HOME/work"
+if [ "$IS_PBS_AVAILABLE" = true ]; then
+    BASE_FOLDER="/fastwork/${ME}" # use fastwork for cluster
+fi
+
 # some definitions
 SING_CONTAINER_DIR="$(dirname "$THIS_DIR")"
 IBRIDO_PREFIX=$BASE_FOLDER/containers/ibrido-singularity-xbot
