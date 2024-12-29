@@ -41,9 +41,9 @@ export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 # export CUSTOM_ARGS_VALS="false true true false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true true"
 # export REMOTE_ENV_FNAME="lrhcontrolenvs.envs.xmj_env"
 
-export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels state_from_xbot rt_safety_perf_coeff closed_partial"
-export CUSTOM_ARGS_DTYPE="bool bool bool bool bool bool float bool"
-export CUSTOM_ARGS_VALS="false true true false false true 1.0 true"
+export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels state_from_xbot rt_safety_perf_coeff closed_partial add_upper_body"
+export CUSTOM_ARGS_DTYPE="bool bool bool bool bool bool float bool bool"
+export CUSTOM_ARGS_VALS="false true true false false true 1.0 true true"
 export REMOTE_ENV_FNAME="lrhcontrolenvs.envs.rt_deploy_env"
 
 export ROS_MASTER_URI="http://127.0.0.1:11311"
