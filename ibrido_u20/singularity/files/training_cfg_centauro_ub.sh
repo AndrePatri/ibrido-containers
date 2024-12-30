@@ -4,7 +4,7 @@ export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbo
 export XMJ_FILES_DIR="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files"
 
 # export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
-export SHM_NS="centauro_big_wheels" # shared mem namespace used for all shared data on CPU 
+export SHM_NS="centauro_big_wheels_ub" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=1 # number of env to run in parallel
 export RNAME="LinVelTrackBaseline" # a descriptive base name for this run
 export SEED=1 # random n generator seed to be used for this run
