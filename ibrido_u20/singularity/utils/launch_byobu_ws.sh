@@ -147,12 +147,11 @@ increase_file_limits_locally
 export ROS_MASTER_URI=$ROS_MASTER_URI
 export ROS_IP=$ROS_IP
 clear_terminal
-remote_env_cmd="--headless --use_gpu  --robot_name $SHM_NS \
+remote_env_cmd="--headless --robot_name $SHM_NS \
 --urdf_path $URDF_PATH --srdf_path  $SRDF_PATH \
 --use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH \
 --env_fname $REMOTE_ENV_FNAME \
 --cluster_dt $CLUSTER_DT \
---physics_dt $PHYSICS_DT \
 --num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
