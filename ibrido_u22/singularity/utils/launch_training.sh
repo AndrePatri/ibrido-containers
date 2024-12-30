@@ -121,6 +121,9 @@ fi
 if (( $OBS_RESCALING )); then
 training_env_cmd+="--obs_rescale "
 fi
+if (( $WEIGHT_NORM )); then
+training_env_cmd+="--add_weight_norm "
+fi
 
 wandb login $WANDB_KEY # login to wandb
 

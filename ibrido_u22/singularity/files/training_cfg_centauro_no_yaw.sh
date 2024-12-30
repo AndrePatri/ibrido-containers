@@ -11,6 +11,7 @@ export CRITIC_LWIDTH=512
 export CRITIC_DEPTH=4
 export OBS_NORM=1
 export OBS_RESCALING=0
+export WEIGHT_NORM=0
 export COMMENT='centauro big wheels (fixed ankle yaw)' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_urdf/urdf/centauro.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_srdf/srdf/centauro.srdf.xacro" # base path where the description package for the robot are located
