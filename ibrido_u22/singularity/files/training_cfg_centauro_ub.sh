@@ -1,6 +1,6 @@
 #!/bin/bash
 export WANDB_KEY=""
-export SHM_NS="centauro_big_wheels" # shared mem namespace used for all shared data on CPU 
+export SHM_NS="centauro_big_wheels_ub" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=1 # number of env to run in parallel
 export RNAME="LinVelTrackBaseline" # a descriptive base name for this run
 export SEED=1 # random n generator seed to be used for this run
