@@ -223,7 +223,7 @@ fi
 if (( $OBS_RESCALING )); then
 training_env_cmd+="--obs_rescale "
 fi
-prepare_command "reset && python launch_train_env.py $training_env_cmd"
+prepare_command "reset && python launch_train_env.py $training_env_cmd --comment \"$COMMENT\""
 
 split_h
 execute_command "cd ${WORKING_DIR}"

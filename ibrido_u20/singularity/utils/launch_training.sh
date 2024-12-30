@@ -48,8 +48,6 @@ rm -r /tmp/*
 eval "$(micromamba shell hook --shell bash)"
 micromamba activate ${MAMBA_ENV_NAME}
 
-wandb login $WANDB_KEY # login to wandb
-
 source /isaac-sim/setup_conda_env.sh
 source $HOME/ibrido_ws/setup.bash
 
@@ -83,6 +81,7 @@ remote_env_cmd="--headless --use_gpu  --robot_name $SHM_NS \
 --urdf_path $URDF_PATH --srdf_path  $SRDF_PATH \
 --use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH \
 --cluster_dt $CLUSTER_DT \
+--physics_dt $PHYSICS_DT \
 --num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
@@ -95,7 +94,6 @@ python $LRHC_DIR/launch_remote_env.py $remote_env_cmd > "$log_remote" 2>&1 &
 # cluster
 cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
 --codegen_override_dir $CODEGEN_OVERRIDE_BDIR \
---cloop \
 --urdf_path $URDF_PATH --srdf_path $SRDF_PATH --cluster_client_fname $CLUSTER_CL_FNAME \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
@@ -103,13 +101,18 @@ cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
 if (( $CLUSTER_DB )); then
 cluster_cmd+="--enable_debug "
 fi
+if (( $IS_CLOSED_LOOP )); then
+cluster_cmd+="--cloop "
+fi
 python $LRHC_DIR/launch_control_cluster.py $cluster_cmd > "$log_cluster" 2>&1 &
 
 # train env
 if (( $REMOTE_STEPPING )); then
-training_env_cmd="--dump_checkpoints --ns $SHM_NS --run_name $RNAME --drop_dir $HOME/training_data \
+training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data \
 --sac --db --env_db --rmdb \
 --seed $SEED --timeout_ms $TIMEOUT_MS \
+--env_fname $TRAIN_ENV_FNAME --env_classname $TRAIN_ENV_CNAME \
+--demo_stop_thresh $DEMO_STOP_THRESH  \
 --actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH \
 --critic_lwidth $CRITIC_LWIDTH --critic_n_hlayers $CRITIC_DEPTH "
 if (( $OBS_NORM )); then
@@ -118,11 +121,14 @@ fi
 if (( $OBS_RESCALING )); then
 training_env_cmd+="--obs_rescale "
 fi
+
+wandb login $WANDB_KEY # login to wandb
+
 python $LRHC_DIR/launch_train_env.py $training_env_cmd --comment "\"$COMMENT\"" > "$log_train" 2>&1 &
 fi
 
 # rosbag db
-if (( $LAUNCH_ROSBAG && $CLUSTER_DB)); then
+if (( $ENV_IDX_BAG > 0 && $CLUSTER_DB)); then
   source /opt/ros/humble/setup.bash
   rosbag_cmd="--ros2 --use_shared_drop_dir --pub_stime\
   --ns $SHM_NS --rhc_refs_in_h_frame \
@@ -131,7 +137,37 @@ if (( $LAUNCH_ROSBAG && $CLUSTER_DB)); then
   if (( $REMOTE_STEPPING )); then
   rosbag_cmd+="--with_agent_refs "
   fi
-  python $LRHC_DIR/launch_periodic_bag_dump.py > "$log_bag" 2>&1 &
+  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+fi
+
+# demo env db
+sleep 2 # wait a bit
+if (( $ENV_IDX_BAG_DEMO > 0 && $CLUSTER_DB)); then
+  source /opt/ros/humble/setup.bash
+  rosbag_cmd="--ros2 --use_shared_drop_dir\
+  --ns $SHM_NS --remap_ns "${SHM_NS}_demo" \
+  --rhc_refs_in_h_frame \
+  --srdf_path $SRDF_PATH_ROSBAG \
+  --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_DEMO "
+  if (( $REMOTE_STEPPING )); then
+  rosbag_cmd+="--with_agent_refs "
+  fi
+  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+fi
+
+# expl env db
+sleep 2 # wait a bit
+if (( $ENV_IDX_BAG_EXPL > 0 && $CLUSTER_DB)); then
+  source /opt/ros/humble/setup.bash
+  rosbag_cmd="--ros2 --use_shared_drop_dir\
+  --ns $SHM_NS --remap_ns "${SHM_NS}_expl" \
+  --rhc_refs_in_h_frame \
+  --srdf_path $SRDF_PATH_ROSBAG \
+  --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_EXPL "
+  if (( $REMOTE_STEPPING )); then
+  rosbag_cmd+="--with_agent_refs "
+  fi
+  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
 fi
 
 wait # wait for all to exit
