@@ -131,7 +131,7 @@ python $LRHC_DIR/launch_train_env.py $training_env_cmd --comment "\"$COMMENT\"" 
 fi
 
 # rosbag db
-if (( $ENV_IDX_BAG > 0 && $CLUSTER_DB)); then
+if (( $ENV_IDX_BAG >= 0 && $CLUSTER_DB)); then
   source /opt/ros/humble/setup.bash
   rosbag_cmd="--ros2 --use_shared_drop_dir --pub_stime\
   --ns $SHM_NS --rhc_refs_in_h_frame \
@@ -145,7 +145,7 @@ fi
 
 # demo env db
 sleep 2 # wait a bit
-if (( $ENV_IDX_BAG_DEMO > 0 && $CLUSTER_DB)); then
+if (( $ENV_IDX_BAG_DEMO >= 0 && $CLUSTER_DB)); then
   source /opt/ros/humble/setup.bash
   rosbag_cmd="--ros2 --use_shared_drop_dir\
   --ns $SHM_NS --remap_ns "${SHM_NS}_demo" \
@@ -160,7 +160,7 @@ fi
 
 # expl env db
 sleep 2 # wait a bit
-if (( $ENV_IDX_BAG_EXPL > 0 && $CLUSTER_DB)); then
+if (( $ENV_IDX_BAG_EXPL >= 0 && $CLUSTER_DB)); then
   source /opt/ros/humble/setup.bash
   rosbag_cmd="--ros2 --use_shared_drop_dir\
   --ns $SHM_NS --remap_ns "${SHM_NS}_expl" \
