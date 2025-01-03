@@ -179,7 +179,7 @@ cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
 --custom_args_vals $CUSTOM_ARGS_VALS "
 if (( $CLUSTER_DB )); then
-cluster_cmd+="--enable_debug "
+# cluster_cmd+="--enable_debug "
 fi
 if (( $IS_CLOSED_LOOP )); then
 cluster_cmd+="--cloop "
