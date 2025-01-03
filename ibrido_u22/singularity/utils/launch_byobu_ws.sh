@@ -235,8 +235,8 @@ execute_command "source /opt/ros/humble/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
-prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --rhc_refs_in_h_frame --with_agent_refs \
---ns $SHM_NS"
+prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --rhc_refs_in_h_frame \
+--ns $SHM_NS --with_agent_refs --no_rhc_internal"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -249,7 +249,7 @@ prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_trainin
 --pub_stime \
 --ns $SHM_NS --rhc_refs_in_h_frame \
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG \
---srdf_path $SRDF_PATH_ROSBAG --with_agent_refs"
+--srdf_path $SRDF_PATH_ROSBAG --with_agent_refs --no_rhc_internal"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -262,7 +262,7 @@ prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_trainin
 --ns $SHM_NS --remap_ns "${SHM_NS}_expl" \
 --rhc_refs_in_h_frame \
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_EXPL \
---srdf_path $SRDF_PATH_ROSBAG --with_agent_refs"
+--srdf_path $SRDF_PATH_ROSBAG --with_agent_refs --no_rhc_internal"
 
 split_v
 execute_command "cd ${WORKING_DIR}"
@@ -275,7 +275,7 @@ prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_trainin
 --ns $SHM_NS --remap_ns "${SHM_NS}_demo" \
 --rhc_refs_in_h_frame \
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_DEMO \
---srdf_path $SRDF_PATH_ROSBAG --with_agent_refs"
+--srdf_path $SRDF_PATH_ROSBAG --with_agent_refs --no_rhc_internal"
 
 # tab 1
 new_tab

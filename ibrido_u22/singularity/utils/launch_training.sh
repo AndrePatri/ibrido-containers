@@ -138,7 +138,7 @@ if (( $ENV_IDX_BAG >= 0 && $CLUSTER_DB)); then
   --srdf_path $SRDF_PATH_ROSBAG \
   --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG "
   if (( $REMOTE_STEPPING )); then
-  rosbag_cmd+="--with_agent_refs "
+  rosbag_cmd+="--with_agent_refs --no_rhc_internal "
   fi
   python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
 fi
@@ -153,7 +153,7 @@ if (( $ENV_IDX_BAG_DEMO >= 0 && $CLUSTER_DB)); then
   --srdf_path $SRDF_PATH_ROSBAG \
   --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_DEMO "
   if (( $REMOTE_STEPPING )); then
-  rosbag_cmd+="--with_agent_refs "
+  rosbag_cmd+="--with_agent_refs --no_rhc_internal "
   fi
   python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
 fi
@@ -168,7 +168,7 @@ if (( $ENV_IDX_BAG_EXPL >= 0 && $CLUSTER_DB)); then
   --srdf_path $SRDF_PATH_ROSBAG \
   --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_EXPL "
   if (( $REMOTE_STEPPING )); then
-  rosbag_cmd+="--with_agent_refs "
+  rosbag_cmd+="--with_agent_refs --no_rhc_internal "
   fi
   python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
 fi
