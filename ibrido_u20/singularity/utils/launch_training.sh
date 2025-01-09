@@ -114,7 +114,8 @@ training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data
 --env_fname $TRAIN_ENV_FNAME --env_classname $TRAIN_ENV_CNAME \
 --demo_stop_thresh $DEMO_STOP_THRESH  \
 --actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH \
---critic_lwidth $CRITIC_LWIDTH --critic_n_hlayers $CRITIC_DEPTH "
+--critic_lwidth $CRITIC_LWIDTH --critic_n_hlayers $CRITIC_DEPTH \
+--input_compression_ratio $INPUT_COMPRESSION_RATIO "
 if (( $OBS_NORM )); then
 training_env_cmd+="--obs_norm "
 fi
