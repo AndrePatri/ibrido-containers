@@ -10,18 +10,19 @@ export RNAME="LinVelTrackBaseline" # a descriptive base name for this run
 export SEED=1 # random n generator seed to be used for this run
 export REMOTE_STEPPING=1
 export ACTOR_LWIDTH=256
-export ACTOR_DEPTH=2
+export ACTOR_DEPTH=4
 export CRITIC_LWIDTH=512
 export CRITIC_DEPTH=4
 export OBS_NORM=1
 export OBS_RESCALING=0
+export WEIGHT_NORM=1
 export IS_CLOSED_LOOP=1
 export COMMENT='centauro big wheels' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_urdf/urdf/centauro.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_srdf/srdf/centauro.srdf.xacro" # base path where the description package for the robot are located
-export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_open_with_ub.yaml" # path to yaml file for jnt imp configuration
+export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_open.yaml" # path to yaml file for jnt imp configuration
 if (( $IS_CLOSED_LOOP )); then
-  export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_with_ub.yaml"
+  export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config.yaml"
 fi
 export CLUSTER_CL_FNAME="centaurohybridmpc.controllers.horizon_based.centauro_rhc_cluster_client" # base path where the description package for the robot are located
 export CLUSTER_DT=0.05
@@ -47,9 +48,9 @@ export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 # export CUSTOM_ARGS_VALS="false true true false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true true"
 # export REMOTE_ENV_FNAME="lrhcontrolenvs.envs.xmj_env"
 
-export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels state_from_xbot rt_safety_perf_coeff closed_partial add_upper_body"
-export CUSTOM_ARGS_DTYPE="bool bool bool bool bool bool float bool bool"
-export CUSTOM_ARGS_VALS="false true true false false true 1.0 true true"
+export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body"
+export CUSTOM_ARGS_DTYPE="bool bool bool bool bool bool bool float bool bool"
+export CUSTOM_ARGS_VALS="false true true false true false true 1.0 false false"
 export REMOTE_ENV_FNAME="lrhcontrolenvs.envs.rt_deploy_env"
 
 export ROS_MASTER_URI="http://127.0.0.1:11311"
