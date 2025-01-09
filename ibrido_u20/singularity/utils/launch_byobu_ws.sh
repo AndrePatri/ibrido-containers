@@ -274,7 +274,8 @@ prepare_command "reset && python launch_periodic_bag_dump.py --is_training --use
 --ns $SHM_NS --rhc_refs_in_h_frame \
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG \
 --srdf_path $SRDF_PATH_ROSBAG --with_agent_refs \
---pub_stime"
+--pub_stime \
+--xbot "
 
 # tab 1
 new_tab
