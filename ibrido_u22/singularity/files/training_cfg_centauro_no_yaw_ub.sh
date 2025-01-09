@@ -2,7 +2,7 @@
 export WANDB_KEY=""
 export SHM_NS="centauro_big_wheels_no_yaw_ub" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=1 # number of env to run in parallel
-export RNAME="LinVelTrackBaseline" # a descriptive base name for this run
+export RNAME="FakePosEnvBaseline" # a descriptive base name for this run
 export SEED=1 # random n generator seed to be used for this run
 export REMOTE_STEPPING=1
 export INPUT_COMPRESSION_RATIO=-1.0
