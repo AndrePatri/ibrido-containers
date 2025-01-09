@@ -56,6 +56,8 @@ source $HOME/ibrido_ws/setup.bash
 # Define the timestamp and log file based on RUN_NAME and unique id
 base_log_dir="${HOME}/ibrido_logs/ibrido_run_${unique_id}"
 mkdir -p "$base_log_dir"
+cp $config_file "${base_log_dir}/"
+
 log_remote="${base_log_dir}/ibrido_remote_env_${RUN_NAME}_${unique_id}.log"
 log_cluster="${base_log_dir}/ibrido_rhc_cluster_${RUN_NAME}_${unique_id}.log"
 log_train="${base_log_dir}/ibrido_train_env_${RUN_NAME}_${unique_id}.log"
