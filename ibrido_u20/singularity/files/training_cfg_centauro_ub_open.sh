@@ -13,7 +13,7 @@ else
 fi 
 
 # export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
-export SHM_NS="centauro_big_wheels_no_yaw_ub" # shared mem namespace used for all shared data on CPU 
+export SHM_NS="centauro_big_wheels_ub_open" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=1 # number of env to run in parallel
 export RNAME="LinVelTrackBaseline" # a descriptive base name for this run
 export SEED=1 # random n generator seed to be used for this run
@@ -26,8 +26,8 @@ export CRITIC_DEPTH=4
 export OBS_NORM=1
 export OBS_RESCALING=0
 export WEIGHT_NORM=1
-export IS_CLOSED_LOOP=1
-export COMMENT='centauro big wheels no yaw with upper body' # any training comment
+export IS_CLOSED_LOOP=0
+export COMMENT='centauro big wheels with upper body, ' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_urdf/urdf/centauro.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_srdf/srdf/centauro.srdf.xacro" # base path where the description package for the robot are located
 export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_open_with_ub.yaml" # path to yaml file for jnt imp configuration
@@ -58,7 +58,7 @@ export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 # export CUSTOM_ARGS_VALS="false true true false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true true"
 # export REMOTE_ENV_FNAME="lrhcontrolenvs.envs.xmj_env"
 
-export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial fix_yaw use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body"
-export CUSTOM_ARGS_DTYPE="bool bool bool bool bool bool bool bool float bool bool"
-export CUSTOM_ARGS_VALS="false true true false true true false true 1.0 false true"
+export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body"
+export CUSTOM_ARGS_DTYPE="bool bool bool bool bool bool bool float bool bool"
+export CUSTOM_ARGS_VALS="false true true false true false true 1.0 false true"
 export REMOTE_ENV_FNAME="lrhcontrolenvs.envs.rt_deploy_env"

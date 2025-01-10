@@ -3,6 +3,15 @@ export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbo
 # export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
 export XMJ_FILES_DIR="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files"
 
+export RT_DEPLOY=0
+if (( $RT_DEPLOY )); then
+  export ROS_MASTER_URI="http://10.24.4.100:11311" # centauro embeeded
+  export ROS_IP=$(hostname -I | awk 'print $1') # hostname 
+else
+  export ROS_MASTER_URI="http://127.0.0.1:11311"
+  export ROS_IP="127.0.0.1"
+fi 
+
 # export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
 export SHM_NS="centauro_big_wheels_ub" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=1 # number of env to run in parallel
@@ -53,9 +62,3 @@ export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedbac
 export CUSTOM_ARGS_DTYPE="bool bool bool bool bool bool bool float bool bool"
 export CUSTOM_ARGS_VALS="false true true false true false true 1.0 false true"
 export REMOTE_ENV_FNAME="lrhcontrolenvs.envs.rt_deploy_env"
-
-export ROS_MASTER_URI="http://127.0.0.1:11311"
-export ROS_IP="127.0.0.1"
-
-# export ROS_MASTER_URI="http://10.24.4.100:11311" # centauro embeeded
-# export ROS_IP=$(hostname -I | awk 'print $1') # hostname 
