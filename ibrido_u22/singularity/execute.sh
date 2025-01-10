@@ -19,7 +19,7 @@ cleanup() {
     echo "execute.sh: Cleaning up and sending SIGINT to training process..."
     kill -SIGINT "$training_script_pid"  # Send SIGINT to singularity process
     # Loop until the process is no longer found in `ps` output
-    while ps -p "$target_pid" > /dev/null; do
+    while ps -p "$training_script_pid" > /dev/null; do
         echo "execute.sh: training script still alive."
         sleep 1  # Check every second
     done
