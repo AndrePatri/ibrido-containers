@@ -172,7 +172,10 @@ cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
 --urdf_path $URDF_PATH --srdf_path $SRDF_PATH --cluster_client_fname $CLUSTER_CL_FNAME \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
---custom_args_vals $CUSTOM_ARGS_VALS "
+--custom_args_vals $CUSTOM_ARGS_VALS \
+--cluster_dt $CLUSTER_DT \
+--n_nodes $N_NODES "
+
 if (( $CLUSTER_DB )); then
 cluster_cmd+="--enable_debug "
 fi

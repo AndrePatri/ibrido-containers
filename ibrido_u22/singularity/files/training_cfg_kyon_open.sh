@@ -24,6 +24,7 @@ fi
 
 export CLUSTER_CL_FNAME="kyonrlstepping.controllers.horizon_based.kyon_rhc_cluster_client" # base path where the description package for the robot are located
 export CLUSTER_DT=0.03
+export N_NODES=31
 export CLUSTER_DB=1
 export PHYSICS_DT=0.001
 # export CODEGEN_OVERRIDE_BDIR="none"
