@@ -23,7 +23,7 @@ if (( $IS_CLOSED_LOOP )); then
 fi
 
 export CLUSTER_CL_FNAME="centaurohybridmpc.controllers.horizon_based.centauro_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.05
+export CLUSTER_DT=0.055
 export N_NODES=31
 export CLUSTER_DB=1
 export PHYSICS_DT=0.0005
@@ -52,5 +52,5 @@ export SET_ULIM=1
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=10000 # timeout after which each script autokills ([ms])
 
-# job_id=$(echo "$PBS_JOBID" | cut -d'.' -f1) # extract the job ID before the first dot
-# export SHM_NS+="_$(date '+%Y_%m_%d_%H_%M_%S')_ID${job_id}" # appending unique string to actual shm namespace 
+job_id=$(echo "$PBS_JOBID" | cut -d'.' -f1) # extract the job ID before the first dot
+export SHM_NS+="_$(date '+%Y_%m_%d_%H_%M_%S')_ID${job_id}" # appending unique string to actual shm namespace 
