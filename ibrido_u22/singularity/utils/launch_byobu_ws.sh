@@ -123,7 +123,7 @@ cd_and_split() {
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
-    -cfg|--cfg) config_file="${cfg_file_basepath}/$2"; shift ;;
+    -cfg|--cfg) config_file="$2"; shift ;;
     *) echo "Unknown parameter passed: $1"; usage ;;
   esac
   shift

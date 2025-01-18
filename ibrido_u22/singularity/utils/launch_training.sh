@@ -19,7 +19,7 @@ usage() {
   exit 1
 }
 
-cfg_file_basepath="/root/ibrido_files"
+cfg_file_basepath="/root/ibrido_files/training_cfgs"
 
 # Default configuration file
 config_file="${cfg_file_basepath}/training_cfg.sh"
