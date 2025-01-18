@@ -221,6 +221,9 @@ training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data
 --actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH \
 --critic_lwidth $CRITIC_LWIDTH --critic_n_hlayers $CRITIC_DEPTH \
 --compression_ratio $COMPRESSION_RATIO "
+if (( $DUMP_ENV_CHECKPOINTS )); then
+training_env_cmd+="--full_env_db "
+fi
 if (( $OBS_NORM )); then
 training_env_cmd+="--obs_norm "
 fi
