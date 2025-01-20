@@ -3,6 +3,8 @@ export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbo
 # export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
 export XMJ_FILES_DIR="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files"
 
+export RT_DEPLOY=1
+
 if [[ $RT_DEPLOY -eq 1 ]]; then
   # Set ROS_MASTER_URI and ROS_IP for deployment
   export ROS_MASTER_URI="http://10.24.4.100:11311" # Centauro embedded
