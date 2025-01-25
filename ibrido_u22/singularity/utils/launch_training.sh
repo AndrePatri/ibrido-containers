@@ -119,6 +119,10 @@ training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data
 --demo_stop_thresh $DEMO_STOP_THRESH  \
 --actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH \
 --critic_lwidth $CRITIC_LWIDTH --critic_n_hlayers $CRITIC_DEPTH \
+--tot_tsteps $TOT_STEPS \
+--demo_envs_perc $DEMO_ENVS_PERC \
+--expl_envs_perc $EXPL_ENVS_PERC \
+--action_repeat $ACTION_REPEAT \
 --compression_ratio $COMPRESSION_RATIO "
 if (( $DUMP_ENV_CHECKPOINTS )); then
 training_env_cmd+="--full_env_db "
