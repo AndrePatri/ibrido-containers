@@ -2,7 +2,7 @@
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
 export SHM_NS="kyon_wheels_open" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=800 # number of env to run in parallel
-export RNAME="FakePosEnvVariableFlights" # a descriptive base name for this run
+export RNAME="" # a descriptive base name for this run
 export SEED=56 # random n generator seed to be used for this run
 export REMOTE_STEPPING=1
 export COMPRESSION_RATIO=-1.0
