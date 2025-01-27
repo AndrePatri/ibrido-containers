@@ -18,7 +18,6 @@ export DUMP_ENV_CHECKPOINTS=0
 export DEMO_STOP_THRESH=10.0
 export TOT_STEPS=30000000
 export DEMO_ENVS_PERC=0.1
-export DEMO_STOP_THRESH=7.5
 export EXPL_ENVS_PERC=0.1
 export ACTION_REPEAT=3
 export COMMENT='centauro big wheels, fake pos env with demo (full), 10% demos, action repeat 3, 10% expl envs, 1:5 coll:update ratio, 0.99 discount factor, 1e-3 lrs, 0.8 agent compression' # any training comment
