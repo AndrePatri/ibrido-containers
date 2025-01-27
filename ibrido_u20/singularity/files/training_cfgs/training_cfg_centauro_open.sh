@@ -14,9 +14,7 @@ else
   export ROS_MASTER_URI="http://127.0.0.1:11311"
   export ROS_IP="127.0.0.1"
 fi
-# Set ROS_MASTER_URI and ROS_IP for local setup
-export ROS_MASTER_URI="http://127.0.0.1:11311"
-export ROS_IP="127.0.0.1"
+
 # export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
 export SHM_NS="centauro_big_wheels_open" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=1 # number of env to run in parallel
