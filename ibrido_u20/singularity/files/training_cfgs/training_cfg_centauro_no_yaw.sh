@@ -1,4 +1,12 @@
 #!/bin/bash
+export EVAL=1
+export DET_EVAL=1
+export EVAL_ON_CPU=1
+export OVERRIDE_ENV=1
+export OVERRIDE_AGENT_REFS=1
+export MPATH="/root/training_data/"
+export MNAME=""
+
 export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbot2_basic.yaml"
 # export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
 export XMJ_FILES_DIR="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files"
@@ -30,6 +38,12 @@ export OBS_NORM=1
 export OBS_RESCALING=0
 export WEIGHT_NORM=1
 export IS_CLOSED_LOOP=1
+export DUMP_ENV_CHECKPOINTS=0
+export DEMO_STOP_THRESH=10.0
+export TOT_STEPS=1000000
+export DEMO_ENVS_PERC=0.0
+export EXPL_ENVS_PERC=0.0
+export ACTION_REPEAT=3
 export COMMENT='centauro big wheels no yaw' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_urdf/urdf/centauro.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_srdf/srdf/centauro.srdf.xacro" # base path where the description package for the robot are located

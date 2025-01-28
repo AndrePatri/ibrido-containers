@@ -237,6 +237,22 @@ fi
 if (( $WEIGHT_NORM )); then
 training_env_cmd+="--add_weight_norm "
 fi
+if (( $EVAL )); then
+  # adding options if in eval mode
+  training_env_cmd+="--eval --n_eval_timesteps $TOT_STEPS --mpath $MPATH --mname $MNAME "
+  if (( $DET_EVAL )); then
+  training_env_cmd+="--det_eval "
+  fi
+  if (( $EVAL_ON_CPU )); then
+  training_env_cmd+="--use_cpu "
+  fi
+  if (( $OVERRIDE_ENV )); then
+  training_env_cmd+="--override_env "
+  fi
+  if (( $OVERRIDE_AGENT_REFS )); then
+  training_env_cmd+="--override_agent_refs "
+  fi
+fi
 prepare_command "reset && python launch_train_env.py $training_env_cmd --comment \"$COMMENT\""
 
 split_h
@@ -310,13 +326,13 @@ split_h
 execute_command "cd ${WORKING_DIR}"
 execute_command "nvtop"
 
-# tab 3
-new_tab
+# # tab 3
+# new_tab
 
-# Loop through directories and navigate to each one
-for dir in "${directories[@]}"; do
-    cd_and_split "$dir"
-done
+# # Loop through directories and navigate to each one
+# for dir in "${directories[@]}"; do
+#     cd_and_split "$dir"
+# done
 
 # we attach to the detached session
 attach_to_session

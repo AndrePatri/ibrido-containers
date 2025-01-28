@@ -2,10 +2,17 @@
 WS_ROOT="$HOME/ibrido_ws"
 LRHC_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
 
-# # Define a cleanup function to send SIGINT to all child processes
+# Improved cleanup function
 cleanup() {
     echo "launch_training.sh: sending SIGINT to all child processes..."
-    kill -INT $(jobs -p)  # Sends SIGINT to all child processes of the current script
+    # Send SIGINT to all child processes
+    kill -INT $(jobs -p) 2>/dev/null
+
+    echo "launch_training.sh: waiting for child processes to exit..."
+    # Wait for all background jobs to exit
+    wait
+
+    echo "launch_training.sh: all child processes have exited."
 }
 
 # Trap EXIT, INT (Ctrl+C), and TERM signals to trigger cleanup
@@ -19,7 +26,7 @@ usage() {
   exit 1
 }
 
-cfg_file_basepath="/root/ibrido_files"
+cfg_file_basepath="/root/ibrido_files/training_cfgs"
 
 # Default configuration file
 config_file="${cfg_file_basepath}/training_cfg.sh"
@@ -42,7 +49,7 @@ else
 fi
 
 # clear tmp folder 
-rm -r /tmp/*
+# rm -r /tmp/*
 
 # activate micromamba for this shell
 eval "$(micromamba shell hook --shell bash)"
@@ -56,6 +63,8 @@ source $HOME/ibrido_ws/setup.bash
 # Define the timestamp and log file based on RUN_NAME and unique id
 base_log_dir="${HOME}/ibrido_logs/ibrido_run_${unique_id}"
 mkdir -p "$base_log_dir"
+cp $config_file "${base_log_dir}/"
+
 log_remote="${base_log_dir}/ibrido_remote_env_${RUN_NAME}_${unique_id}.log"
 log_cluster="${base_log_dir}/ibrido_rhc_cluster_${RUN_NAME}_${unique_id}.log"
 log_train="${base_log_dir}/ibrido_train_env_${RUN_NAME}_${unique_id}.log"
@@ -75,6 +84,9 @@ log bag: $log_bag
 if (( $SET_ULIM )); then
   ulimit -n $ULIM_N
 fi
+
+SHM_NS+="${unique_id}" # appending unique string to actual shm namespace 
+echo "Will use shared memory namespace ${SHM_NS}"
 
 # remote env
 remote_env_cmd="--headless --use_gpu  --robot_name $SHM_NS \
@@ -100,10 +112,9 @@ cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
 --custom_args_vals $CUSTOM_ARGS_VALS \
 --cluster_dt $CLUSTER_DT \
 --n_nodes $N_NODES "
-
-if (( $CLUSTER_DB )); then
-cluster_cmd+="--enable_debug "
-fi
+# if (( $CLUSTER_DB )); then
+# cluster_cmd+="--enable_debug "
+# fi
 if (( $IS_CLOSED_LOOP )); then
 cluster_cmd+="--cloop "
 fi
@@ -115,15 +126,41 @@ training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data
 --sac --db --env_db --rmdb \
 --seed $SEED --timeout_ms $TIMEOUT_MS \
 --env_fname $TRAIN_ENV_FNAME --env_classname $TRAIN_ENV_CNAME \
+--demo_stop_thresh $DEMO_STOP_THRESH  \
 --actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH \
 --critic_lwidth $CRITIC_LWIDTH --critic_n_hlayers $CRITIC_DEPTH \
+--tot_tsteps $TOT_STEPS \
+--demo_envs_perc $DEMO_ENVS_PERC \
+--expl_envs_perc $EXPL_ENVS_PERC \
 --action_repeat $ACTION_REPEAT \
 --compression_ratio $COMPRESSION_RATIO "
+if (( $DUMP_ENV_CHECKPOINTS )); then
+training_env_cmd+="--full_env_db "
+fi
 if (( $OBS_NORM )); then
 training_env_cmd+="--obs_norm "
 fi
 if (( $OBS_RESCALING )); then
 training_env_cmd+="--obs_rescale "
+fi
+if (( $WEIGHT_NORM )); then
+training_env_cmd+="--add_weight_norm "
+fi
+if (( $EVAL )); then
+  # adding options if in eval mode
+  training_env_cmd+="--eval --n_eval_timesteps $TOT_STEPS --mpath $MPATH --mname $MNAME "
+  if (( $DET_EVAL )); then
+  training_env_cmd+="--det_eval "
+  fi
+  if (( $EVAL_ON_CPU )); then
+  training_env_cmd+="--use_cpu "
+  fi
+  if (( $OVERRIDE_ENV )); then
+  training_env_cmd+="--override_env "
+  fi
+  if (( $OVERRIDE_AGENT_REFS )); then
+  training_env_cmd+="--override_agent_refs "
+  fi
 fi
 
 wandb login $WANDB_KEY # login to wandb
@@ -132,44 +169,14 @@ python $LRHC_DIR/launch_train_env.py $training_env_cmd --comment "\"$COMMENT\"" 
 fi
 
 # rosbag db
-if (( $ENV_IDX_BAG > 0 && $CLUSTER_DB)); then
-  source /opt/ros/humble/setup.bash
-  rosbag_cmd="--ros2 --use_shared_drop_dir --pub_stime\
+if (( $ENV_IDX_BAG >= 0 && $CLUSTER_DB)); then
+  source /opt/ros/noetic/setup.bash
+  rosbag_cmd="--xbot \
   --ns $SHM_NS --rhc_refs_in_h_frame \
   --srdf_path $SRDF_PATH_ROSBAG \
   --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG "
   if (( $REMOTE_STEPPING )); then
-  rosbag_cmd+="--with_agent_refs "
-  fi
-  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
-fi
-
-# demo env db
-sleep 2 # wait a bit
-if (( $ENV_IDX_BAG_DEMO > 0 && $CLUSTER_DB)); then
-  source /opt/ros/humble/setup.bash
-  rosbag_cmd="--ros2 --use_shared_drop_dir\
-  --ns $SHM_NS --remap_ns "${SHM_NS}_demo" \
-  --rhc_refs_in_h_frame \
-  --srdf_path $SRDF_PATH_ROSBAG \
-  --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_DEMO "
-  if (( $REMOTE_STEPPING )); then
-  rosbag_cmd+="--with_agent_refs "
-  fi
-  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
-fi
-
-# expl env db
-sleep 2 # wait a bit
-if (( $ENV_IDX_BAG_EXPL > 0 && $CLUSTER_DB)); then
-  source /opt/ros/humble/setup.bash
-  rosbag_cmd="--ros2 --use_shared_drop_dir\
-  --ns $SHM_NS --remap_ns "${SHM_NS}_expl" \
-  --rhc_refs_in_h_frame \
-  --srdf_path $SRDF_PATH_ROSBAG \
-  --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_EXPL "
-  if (( $REMOTE_STEPPING )); then
-  rosbag_cmd+="--with_agent_refs "
+  rosbag_cmd+="--with_agent_refs --no_rhc_internal --use_shared_drop_dir --is_training "
   fi
   python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
 fi

@@ -56,7 +56,7 @@ training_script="launch_training.sh"
 
 # Generate a unique ID based on the current timestamp
 job_id=$(echo "$PBS_JOBID" | cut -d'.' -f1)
-unique_id="ibrido_run_$(date +%Y_%m_%d-%H_%M_%S)_JID${job_id}" # just used to retrive process ID
+unique_id="_$(date +%Y_%m_%d_%H_%M_%S)_ID${job_id}" # just used to retrive process ID
 
 training_cmd="$training_script --unique_id ${unique_id} --cfg $config_file"
 

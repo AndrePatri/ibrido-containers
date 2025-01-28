@@ -327,12 +327,12 @@ execute_command "nvtop"
 clear_terminal
 
 # tab 3
-new_tab
+# new_tab
 
-# Loop through directories and navigate to each one
-for dir in "${directories[@]}"; do
-    cd_and_split "$dir"
-done
+# # Loop through directories and navigate to each one
+# for dir in "${directories[@]}"; do
+#     cd_and_split "$dir"
+# done
 
 # we attach to the detached session
 attach_to_session

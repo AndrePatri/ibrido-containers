@@ -1,4 +1,12 @@
 #!/bin/bash
+export EVAL=0
+export DET_EVAL=1
+export EVAL_ON_CPU=1
+export OVERRIDE_ENV=1
+export OVERRIDE_AGENT_REFS=1
+export MPATH="/root/training_data/"
+export MNAME=""
+
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
 export SHM_NS="unitree_b2w" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=800 # number of env to run in parallel
@@ -60,6 +68,3 @@ export CUSTOM_ARGS_VALS="true true true false true true false base true true"
 export SET_ULIM=1 
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=120000 # timeout after which each script autokills ([ms])
-
-job_id=$(echo "$PBS_JOBID" | cut -d'.' -f1) # extract the job ID before the first dot
-export SHM_NS+="_$(date '+%Y_%m_%d_%H_%M_%S')_ID${job_id}" # appending unique string to actual shm namespace 

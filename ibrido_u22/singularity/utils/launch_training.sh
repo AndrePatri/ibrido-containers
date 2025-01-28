@@ -2,10 +2,17 @@
 WS_ROOT="$HOME/ibrido_ws"
 LRHC_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
 
-# # Define a cleanup function to send SIGINT to all child processes
+# Improved cleanup function
 cleanup() {
     echo "launch_training.sh: sending SIGINT to all child processes..."
-    kill -INT $(jobs -p)  # Sends SIGINT to all child processes of the current script
+    # Send SIGINT to all child processes
+    kill -INT $(jobs -p) 2>/dev/null
+
+    echo "launch_training.sh: waiting for child processes to exit..."
+    # Wait for all background jobs to exit
+    wait
+
+    echo "launch_training.sh: all child processes have exited."
 }
 
 # Trap EXIT, INT (Ctrl+C), and TERM signals to trigger cleanup
@@ -42,7 +49,7 @@ else
 fi
 
 # clear tmp folder 
-rm -r /tmp/*
+# rm -r /tmp/*
 
 # activate micromamba for this shell
 eval "$(micromamba shell hook --shell bash)"
@@ -78,8 +85,11 @@ if (( $SET_ULIM )); then
   ulimit -n $ULIM_N
 fi
 
+SHM_NS+="${unique_id}" # appending unique string to actual shm namespace 
+echo "Will use shared memory namespace ${SHM_NS}"
+
 # remote env
-remote_env_cmd="--headless --use_gpu  --robot_name $SHM_NS \
+remote_env_cmd="--headless --use_gpu --robot_name $SHM_NS \
 --urdf_path $URDF_PATH --srdf_path  $SRDF_PATH \
 --use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH \
 --cluster_dt $CLUSTER_DT \
@@ -136,6 +146,22 @@ fi
 if (( $WEIGHT_NORM )); then
 training_env_cmd+="--add_weight_norm "
 fi
+if (( $EVAL )); then
+  # adding options if in eval mode
+  training_env_cmd+="--eval --n_eval_timesteps $TOT_STEPS --mpath $MPATH --mname $MNAME "
+  if (( $DET_EVAL )); then
+  training_env_cmd+="--det_eval "
+  fi
+  if (( $EVAL_ON_CPU )); then
+  training_env_cmd+="--use_cpu "
+  fi
+  if (( $OVERRIDE_ENV )); then
+  training_env_cmd+="--override_env "
+  fi
+  if (( $OVERRIDE_AGENT_REFS )); then
+  training_env_cmd+="--override_agent_refs "
+  fi
+fi
 
 wandb login $WANDB_KEY # login to wandb
 
@@ -145,7 +171,7 @@ fi
 # rosbag db
 if (( $ENV_IDX_BAG >= 0 && $CLUSTER_DB)); then
   source /opt/ros/humble/setup.bash
-  rosbag_cmd="--ros2 --use_shared_drop_dir --pub_stime\
+  rosbag_cmd="--ros2 --use_shared_drop_dir --pub_stime --is_training \
   --ns $SHM_NS --rhc_refs_in_h_frame \
   --srdf_path $SRDF_PATH_ROSBAG \
   --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG "
@@ -159,7 +185,7 @@ fi
 sleep 2 # wait a bit
 if (( $ENV_IDX_BAG_DEMO >= 0 && $CLUSTER_DB)); then
   source /opt/ros/humble/setup.bash
-  rosbag_cmd="--ros2 --use_shared_drop_dir\
+  rosbag_cmd="--ros2 --use_shared_drop_dir --is_training \
   --ns $SHM_NS --remap_ns "${SHM_NS}_demo" \
   --rhc_refs_in_h_frame \
   --srdf_path $SRDF_PATH_ROSBAG \
@@ -174,7 +200,7 @@ fi
 sleep 2 # wait a bit
 if (( $ENV_IDX_BAG_EXPL >= 0 && $CLUSTER_DB)); then
   source /opt/ros/humble/setup.bash
-  rosbag_cmd="--ros2 --use_shared_drop_dir\
+  rosbag_cmd="--ros2 --use_shared_drop_dir --is_training \
   --ns $SHM_NS --remap_ns "${SHM_NS}_expl" \
   --rhc_refs_in_h_frame \
   --srdf_path $SRDF_PATH_ROSBAG \
