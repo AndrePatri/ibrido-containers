@@ -19,7 +19,7 @@ cleanup() {
     echo "execute.sh: Cleaning up and sending SIGINT to training process..."
     kill -SIGINT "$training_script_pid"  # Send SIGINT to singularity process
     # Loop until the process is no longer found in `ps` output
-    while ps -p "$target_pid" > /dev/null; do
+    while ps -p "$training_script_pid" > /dev/null; do
         echo "execute.sh: training script still alive."
         sleep 1  # Check every second
     done
@@ -55,24 +55,25 @@ unset IFS # Reset the internal field separator
 training_script="launch_training.sh"
 
 # Generate a unique ID based on the current timestamp
-unique_id="ibrido_run_$(date +%Y_%m_%d-%H_%M_%S)" # just used to retrive process ID
+job_id=$(echo "$PBS_JOBID" | cut -d'.' -f1)
+unique_id="_$(date +%Y_%m_%d_%H_%M_%S)_ID${job_id}" # just used to retrive process ID
 
 training_cmd="$training_script --unique_id ${unique_id} --cfg $config_file"
 
 singularity_cmd="singularity exec \
+    --cleanenv \
     --env \"WANDB_KEY=$wandb_key\"\
-    --env \"ROS_LOCALHOST_ONLY=1\"\
-    --bind $binddirs\
+    --bind $binddirs \
     --no-mount home,cwd \
-    --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_cmd \
+    --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_xbot.sif $training_cmd \
     "
 
 # Run the singularity command and get its PID
 if $use_sudo; then
-    sudo bash -c "$singularity_cmd" &
-else
-    bash -c "$singularity_cmd" &
+    singularity_cmd+="--fakeroot --net "
 fi
+
+bash -c "$singularity_cmd" &
 
 # Capture the PID of the sudo or bash process
 parent_pid=$!

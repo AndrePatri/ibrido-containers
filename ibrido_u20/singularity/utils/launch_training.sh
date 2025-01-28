@@ -55,7 +55,6 @@ fi
 eval "$(micromamba shell hook --shell bash)"
 micromamba activate ${MAMBA_ENV_NAME}
 
-source /isaac-sim/setup_conda_env.sh
 source $HOME/ibrido_ws/setup.bash
 
 #!/bin/bash
@@ -88,21 +87,6 @@ fi
 SHM_NS+="${unique_id}" # appending unique string to actual shm namespace 
 echo "Will use shared memory namespace ${SHM_NS}"
 
-# remote env
-remote_env_cmd="--headless --use_gpu  --robot_name $SHM_NS \
---urdf_path $URDF_PATH --srdf_path  $SRDF_PATH \
---use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH \
---cluster_dt $CLUSTER_DT \
---physics_dt $PHYSICS_DT \
---num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
---custom_args_names $CUSTOM_ARGS_NAMES \
---custom_args_dtype $CUSTOM_ARGS_DTYPE \
---custom_args_vals $CUSTOM_ARGS_VALS "
-if (( $REMOTE_STEPPING )); then
-remote_env_cmd+="--remote_stepping "
-fi 
-python $LRHC_DIR/launch_remote_env.py $remote_env_cmd > "$log_remote" 2>&1 &
-
 # cluster
 cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
 --codegen_override_dir $CODEGEN_OVERRIDE_BDIR \
@@ -123,7 +107,7 @@ python $LRHC_DIR/launch_control_cluster.py $cluster_cmd > "$log_cluster" 2>&1 &
 # train env
 if (( $REMOTE_STEPPING )); then
 training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data \
---sac --db --env_db --rmdb \
+--sac --db --env_db \
 --seed $SEED --timeout_ms $TIMEOUT_MS \
 --env_fname $TRAIN_ENV_FNAME --env_classname $TRAIN_ENV_CNAME \
 --demo_stop_thresh $DEMO_STOP_THRESH  \
@@ -163,22 +147,50 @@ if (( $EVAL )); then
   fi
 fi
 
-wandb login $WANDB_KEY # login to wandb
+# wandb login $WANDB_KEY # login to wandb
 
 python $LRHC_DIR/launch_train_env.py $training_env_cmd --comment "\"$COMMENT\"" > "$log_train" 2>&1 &
 fi
 
+# after here all thing that need ros
+source /opt/ros/noetic/setup.bash
+source /opt/xbot/setup.sh
+source $HOME/ibrido_ws/setup.bash
+
+# remote env
+remote_env_cmd="--robot_name $SHM_NS \
+--urdf_path $URDF_PATH --srdf_path  $SRDF_PATH \
+--use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH \
+--env_fname $REMOTE_ENV_FNAME \
+--cluster_dt $CLUSTER_DT \
+--num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
+--custom_args_names $CUSTOM_ARGS_NAMES \
+--custom_args_dtype $CUSTOM_ARGS_DTYPE \
+--custom_args_vals $CUSTOM_ARGS_VALS \
+--enable_debug "
+if (( $REMOTE_STEPPING )); then
+remote_env_cmd+="--remote_stepping "
+fi 
+python $LRHC_DIR/launch_remote_env.py $remote_env_cmd > "$log_remote" 2>&1 &
+
 # rosbag db
 if (( $ENV_IDX_BAG >= 0 && $CLUSTER_DB)); then
-  source /opt/ros/noetic/setup.bash
-  rosbag_cmd="--xbot \
-  --ns $SHM_NS --rhc_refs_in_h_frame \
-  --srdf_path $SRDF_PATH_ROSBAG \
-  --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG "
+  # rosbag_cmd="--xbot \
+  # --ns $SHM_NS --rhc_refs_in_h_frame \
+  # --srdf_path $SRDF_PATH_ROSBAG \
+  # --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG "
+  # if (( $REMOTE_STEPPING )); then
+  # rosbag_cmd+="--with_agent_refs --no_rhc_internal --use_shared_drop_dir --is_training "
+  # fi
+  # python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+
+  bridge_cmd="--ns $SHM_NS --rhc_refs_in_h_frame \
+  --stime_trgt $BAG_SDT --dt $BRIDGE_DT --env_idx $ENV_IDX_BAG "
   if (( $REMOTE_STEPPING )); then
-  rosbag_cmd+="--with_agent_refs --no_rhc_internal --use_shared_drop_dir --is_training "
+  bridge_cmd+="--with_agent_refs --no_rhc_internal"
   fi
-  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+  python $LRHC_DIR/launch_rhc2ros_bridge.py $bridge_cmd > "$log_bag" 2>&1 &
+  
 fi
 
 wait # wait for all to exit

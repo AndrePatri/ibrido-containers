@@ -4,8 +4,8 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=1
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/"
-export MNAME=""
+export MPATH="/root/training_data/SAC/FakePosEnvWithDemo/d2025_01_27_h13_m17_s49-FakePosEnvWithDemo"
+export MNAME="d2025_01_27_h13_m17_s49-FakePosEnvWithDemo_model_checkpoint2386"
 
 export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbot2_basic.yaml"
 # export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
@@ -72,9 +72,9 @@ export ULIM_N=28672 # maximum number of open file descriptors for each process (
 export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 
 if [[ $RT_DEPLOY -eq 1 ]]; then
-  export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body"
-  export CUSTOM_ARGS_DTYPE="bool bool bool bool bool bool bool float bool bool"
-  export CUSTOM_ARGS_VALS="false true true false true false true 1.0 false false"
+  export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body use_mpc_pos_for_robot"
+  export CUSTOM_ARGS_DTYPE="bool bool bool bool bool bool bool float bool bool bool"
+  export CUSTOM_ARGS_VALS="false true true false true false true 1.0 false false true"
   export REMOTE_ENV_FNAME="lrhcontrolenvs.envs.rt_deploy_env"
 else
   export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot closed_partial"

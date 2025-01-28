@@ -39,6 +39,7 @@ IBRIDO_BDIRS=(
     "/tmp/.X11-unix:/tmp/.X11-unix"
     "${IBRIDO_CONTAINERS_PREFIX}/files:/root/ibrido_files"
     "${IBRIDO_CONTAINERS_PREFIX}/utils:/root/ibrido_utils"
+    "${IBRIDO_PREFIX}/ibrido_logs:/root/ibrido_logs"
     "${IBRIDO_PREFIX}/tmp:/tmp:rw"
     "${IBRIDO_PREFIX}/aux_data:/root/aux_data:rw"
     "${IBRIDO_PREFIX}/training_data:/root/training_data:rw"
