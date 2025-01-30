@@ -223,6 +223,7 @@ training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data
 --tot_tsteps $TOT_STEPS \
 --demo_envs_perc $DEMO_ENVS_PERC \
 --expl_envs_perc $EXPL_ENVS_PERC \
+--use_rnd $USE_RND \
 --action_repeat $ACTION_REPEAT \
 --compression_ratio $COMPRESSION_RATIO "
 if (( $DUMP_ENV_CHECKPOINTS )); then

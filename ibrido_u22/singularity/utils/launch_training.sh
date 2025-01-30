@@ -133,6 +133,7 @@ training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data
 --demo_envs_perc $DEMO_ENVS_PERC \
 --expl_envs_perc $EXPL_ENVS_PERC \
 --action_repeat $ACTION_REPEAT \
+--use_rnd $USE_RND \
 --compression_ratio $COMPRESSION_RATIO "
 if (( $DUMP_ENV_CHECKPOINTS )); then
 training_env_cmd+="--full_env_db "
