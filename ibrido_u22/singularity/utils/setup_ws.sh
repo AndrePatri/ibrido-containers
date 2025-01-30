@@ -57,6 +57,8 @@ pip install -e LRHControl
 pip install -e CentauroHybridMPC
 pip install -e KyonRLStepping
 pip install -e RHCViz
+pip install -e adarl
+
 pip install --no-deps -e horizon
 
 # copying lrhcontrolenvs isaac kit 
