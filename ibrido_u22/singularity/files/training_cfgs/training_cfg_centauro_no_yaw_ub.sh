@@ -29,6 +29,7 @@ export DEMO_ENVS_PERC=0.0
 export DEMO_STOP_THRESH=10.0
 export EXPL_ENVS_PERC=0.0
 export ACTION_REPEAT=1
+export USE_SAC=1
 export COMMENT='centauro big wheels (fixed ankle yaw) with upper body, fake pos tracking with ref VARIABLE FLIGHTS (len, apex) always at 5 m, max 1 m/s, 1.5 cot rew, 5% expl env, gamma 0.995, 512 ep length (15 sec), -1.0 trgt entropy, 8192 bsize, 25:5 update:collection ratio, 1e-3 lrs actor/critic' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_urdf/urdf/centauro.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_srdf/srdf/centauro.srdf.xacro" # base path where the description package for the robot are located
