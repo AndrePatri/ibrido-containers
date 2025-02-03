@@ -1,9 +1,9 @@
 Bootstrap: docker
-From:nvcr.io/nvidia/isaac-sim:4.2.0
+From:nvcr.io/nvidia/isaac-sim:4.5.0
 
 %labels
     AUTHOR AndrePatri (andrepatrics@gmail.com)
-    Version v0.2.0
+    Version v0.5.0
 
 %help
     This is the Singularity container associated with the IBRIDO framework.
