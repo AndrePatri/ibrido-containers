@@ -121,6 +121,7 @@ fi
 python $LRHC_DIR/launch_control_cluster.py $cluster_cmd > "$log_cluster" 2>&1 &
 
 # train env
+export EXP_PATH="$HOME/ibrido_files/" # used by isaac sim for extensions loading
 if (( $REMOTE_STEPPING )); then
 training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data \
 --sac --db --env_db --rmdb \

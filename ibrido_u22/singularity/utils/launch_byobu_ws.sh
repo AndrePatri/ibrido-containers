@@ -213,6 +213,7 @@ split_h
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 increase_file_limits_locally
+export EXP_PATH="$HOME/ibrido_files" # used by isaac sim for extensions loading
 training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data \
 --sac --db --env_db --rmdb \
 --seed $SEED --timeout_ms $TIMEOUT_MS \
