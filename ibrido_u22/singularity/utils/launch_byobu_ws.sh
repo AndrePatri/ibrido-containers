@@ -241,6 +241,10 @@ fi
 if (( $WEIGHT_NORM )); then
 training_env_cmd+="--add_weight_norm "
 fi
+if (( $CRITIC_ACTION_RESCALE )); then
+training_env_cmd+="--act_rescale_critic "
+fi
+
 if (( $EVAL )); then
   # adding options if in eval mode
   training_env_cmd+="--eval --n_eval_timesteps $TOT_STEPS --mpath $MPATH --mname $MNAME "
