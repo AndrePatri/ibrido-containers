@@ -157,6 +157,9 @@ fi
 if (( $CRITIC_ACTION_RESCALE )); then
 training_env_cmd+="--act_rescale_critic "
 fi
+if (( $USE_PERIOD_RESETS )); then
+training_env_cmd+="--use_period_resets "
+fi
 
 if (( $EVAL )); then
   # adding options if in eval mode
