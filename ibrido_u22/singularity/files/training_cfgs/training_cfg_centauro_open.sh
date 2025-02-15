@@ -30,6 +30,7 @@ export DEMO_ENVS_PERC=0.0
 export EXPL_ENVS_PERC=0.1
 export ACTION_REPEAT=3
 export USE_SAC=1
+export DISCOUNT_FACTOR=0.99
 export COMMENT='centauro big wheels, linveltrack baseline, pow + action rate + jnt v, action repeat 3, 10% expl envs, 1:1 coll:update ratio, 0.99 discount factor, 1e-3 lrs, 0.8 agent compression, -3.0 trgt entropy pper action' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_urdf/urdf/centauro.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_srdf/srdf/centauro.srdf.xacro" # base path where the description package for the robot are located

@@ -225,7 +225,8 @@ training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data
 --demo_envs_perc $DEMO_ENVS_PERC \
 --expl_envs_perc $EXPL_ENVS_PERC \
 --action_repeat $ACTION_REPEAT \
---compression_ratio $COMPRESSION_RATIO "
+--compression_ratio $COMPRESSION_RATIO \
+--discount_factor $DISCOUNT_FACTOR "
 if (( $USE_SAC )); then
 training_env_cmd+="--sac "
 fi

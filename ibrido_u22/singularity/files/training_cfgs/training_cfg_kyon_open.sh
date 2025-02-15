@@ -30,6 +30,7 @@ export DEMO_STOP_THRESH=10.0
 export EXPL_ENVS_PERC=0.0
 export ACTION_REPEAT=1
 export USE_SAC=1
+export DISCOUNT_FACTOR=0.99
 export COMMENT='kyon no wheels OPEN LOOP, ' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-ros-pkg/kyon_urdf/urdf/kyon.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-ros-pkg/kyon_srdf/srdf/kyon.srdf.xacro" # base path where the description package for the robot are located

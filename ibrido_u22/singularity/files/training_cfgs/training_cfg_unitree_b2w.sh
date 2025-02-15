@@ -29,6 +29,7 @@ export DEMO_ENVS_PERC=0.0
 export EXPL_ENVS_PERC=0.0
 export ACTION_REPEAT=1
 export USE_SAC=1
+export DISCOUNT_FACTOR=0.99
 export COMMENT='unitree b2w, ' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/unitree_ros/robots/b2w_description/xacro/robot.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/unitree_ros/robots/b2w_description/xacro/robot.srdf.xacro" # base path where the description package for the robot are located
