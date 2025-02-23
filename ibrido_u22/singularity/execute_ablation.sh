@@ -13,15 +13,17 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
-cfg_dir="$2"
+# Find the directory where the current script is located
+script_dir=$(dirname "$0")
+
+cfg_dir="$script_dir/files/training_cfgs/$2"
 
 if [ ! -d "$cfg_dir" ]; then
     echo "The directory $cfg_dir is not valid. Please provide a valid directory."
     exit 1
 fi
 
-# Find the directory where the current script is located
-script_dir=$(dirname "$0")
+
 
 # Find all .sh files starting with "training_cfg_" in the specified directory
 cfg_files=($(find "$cfg_dir" -maxdepth 1 -type f -name "training_cfg_*.sh"))
@@ -43,6 +45,6 @@ for file in "${cfg_files[@]}"; do
     # Use basename to strip the path and only print the file name
     file_name=$(basename "$file")
     # Run the ./execute command with the configuration file name
-    "$script_dir/execute.sh" --cfg "$file_name"
+    "$script_dir/execute.sh" --cfg "${2}/${file_name}"
 done
 echo "Ablation study completed."
