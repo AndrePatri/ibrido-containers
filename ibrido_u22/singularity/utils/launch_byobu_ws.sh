@@ -257,7 +257,9 @@ fi
 if (( $USE_PERIOD_RESETS )); then
 training_env_cmd+="--use_period_resets "
 fi
-
+if [[ -n "$RNAME" ]]; then
+    training_env_cmd+="--run_name ${RNAME}_${TRAIN_ENV_CNAME} "
+fi
 if (( $EVAL )); then
   # adding options if in eval mode
   training_env_cmd+="--eval --n_eval_timesteps $TOT_STEPS --mpath $MPATH --mname $MNAME "
