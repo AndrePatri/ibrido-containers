@@ -245,6 +245,12 @@ fi
 if (( $WEIGHT_NORM )); then
 training_env_cmd+="--add_weight_norm "
 fi
+if (( $LAYER_NORM )); then
+training_env_cmd+="--add_layer_norm "
+fi
+if (( $BATCH_NORM )); then
+training_env_cmd+="--add_batch_norm "
+fi
 if (( $CRITIC_ACTION_RESCALE )); then
 training_env_cmd+="--act_rescale_critic "
 fi
