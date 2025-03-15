@@ -107,7 +107,7 @@ python $LRHC_DIR/launch_control_cluster.py $cluster_cmd > "$log_cluster" 2>&1 &
 # train env
 if (( $REMOTE_STEPPING )); then
 training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data \
---sac --db --env_db \
+--db --env_db \
 --seed $SEED --timeout_ms $TIMEOUT_MS \
 --env_fname $TRAIN_ENV_FNAME --env_classname $TRAIN_ENV_CNAME \
 --demo_stop_thresh $DEMO_STOP_THRESH  \
@@ -118,6 +118,9 @@ training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data
 --expl_envs_perc $EXPL_ENVS_PERC \
 --action_repeat $ACTION_REPEAT \
 --compression_ratio $COMPRESSION_RATIO "
+if (( $USE_SAC )); then
+training_env_cmd+="--sac "
+fi
 if (( $DUMP_ENV_CHECKPOINTS )); then
 training_env_cmd+="--full_env_db "
 fi
