@@ -11,7 +11,7 @@ export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbo
 # export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
 export XMJ_FILES_DIR="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files"
 
-export RT_DEPLOY=1
+export RT_DEPLOY=0
 
 if [[ $RT_DEPLOY -eq 1 ]]; then
   # Set ROS_MASTER_URI and ROS_IP for deployment
@@ -76,12 +76,14 @@ export SET_ULIM=1
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 
-# export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot closed_partial"
-# export CUSTOM_ARGS_DTYPE="bool bool bool bool bool int string bool bool"
-# export CUSTOM_ARGS_VALS="false true true false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true true"
-# export REMOTE_ENV_FNAME="lrhcontrolenvs.envs.xmj_env"
-
-export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial fix_yaw use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body use_mpc_pos_for_robot"
-export CUSTOM_ARGS_DTYPE="bool bool bool bool bool bool bool bool float bool bool bool"
-export CUSTOM_ARGS_VALS="true true true false false true false true 1.0 false false true"
-export REMOTE_ENV_FNAME="lrhcontrolenvs.envs.rt_deploy_env"
+if [[ $RT_DEPLOY -eq 1 ]]; then
+  export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body use_mpc_pos_for_robot fix_yaw"
+  export CUSTOM_ARGS_DTYPE="bool bool bool bool bool bool bool float bool bool bool bool"
+  export CUSTOM_ARGS_VALS="true true true false false false true 1.0 false false true true"
+  export REMOTE_ENV_FNAME="lrhcontrolenvs.envs.rt_deploy_env"
+else
+  export CUSTOM_ARGS_NAMES="control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot closed_partial fix_yaw"
+  export CUSTOM_ARGS_DTYPE="bool bool bool bool bool int string bool bool bool"
+  export CUSTOM_ARGS_VALS="true true true false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true false true"
+  export REMOTE_ENV_FNAME="lrhcontrolenvs.envs.xmj_env"  
+fi
