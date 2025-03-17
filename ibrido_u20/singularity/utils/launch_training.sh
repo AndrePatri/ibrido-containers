@@ -178,21 +178,26 @@ python $LRHC_DIR/launch_remote_env.py $remote_env_cmd > "$log_remote" 2>&1 &
 
 # rosbag db
 if (( $ENV_IDX_BAG >= 0 && $CLUSTER_DB)); then
-  # rosbag_cmd="--xbot \
-  # --ns $SHM_NS --rhc_refs_in_h_frame \
-  # --srdf_path $SRDF_PATH_ROSBAG \
-  # --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG "
-  # if (( $REMOTE_STEPPING )); then
-  # rosbag_cmd+="--with_agent_refs --no_rhc_internal --use_shared_drop_dir --is_training "
-  # fi
-  # python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
-
-  bridge_cmd="--ns $SHM_NS --rhc_refs_in_h_frame \
-  --stime_trgt $BAG_SDT --dt $BRIDGE_DT --env_idx $ENV_IDX_BAG "
+  rosbag_cmd="--xbot \
+  --ns $SHM_NS --rhc_refs_in_h_frame \
+  --srdf_path $SRDF_PATH_ROSBAG \
+  --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG "
   if (( $REMOTE_STEPPING )); then
-  bridge_cmd+="--with_agent_refs --no_rhc_internal"
+  rosbag_cmd+="--with_agent_refs --no_rhc_internal --use_shared_drop_dir"
+
+  if (( !$RT_DEPLOY )); then
+  rosbag_cmd+="--pub_stime"
+  fi 
+
   fi
-  python $LRHC_DIR/launch_rhc2ros_bridge.py $bridge_cmd > "$log_bag" 2>&1 &
+  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+
+  # bridge_cmd="--ns $SHM_NS --rhc_refs_in_h_frame \
+  # --stime_trgt $BAG_SDT --dt $BRIDGE_DT --env_idx $ENV_IDX_BAG "
+  # if (( $REMOTE_STEPPING )); then
+  # bridge_cmd+="--with_agent_refs --no_rhc_internal"
+  # fi
+  # python $LRHC_DIR/launch_rhc2ros_bridge.py $bridge_cmd > "$log_bag" 2>&1 &
   
 fi
 

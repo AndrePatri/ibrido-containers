@@ -224,13 +224,23 @@ activate_mamba_env
 increase_file_limits_locally
 clear_terminal
 training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data \
---sac --db --env_db --rmdb \
+--db --env_db \
 --seed $SEED --timeout_ms $TIMEOUT_MS \
 --env_fname $TRAIN_ENV_FNAME --env_classname $TRAIN_ENV_CNAME \
---action_repeat $ACTION_REPEAT \
+--demo_stop_thresh $DEMO_STOP_THRESH  \
 --actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH \
 --critic_lwidth $CRITIC_LWIDTH --critic_n_hlayers $CRITIC_DEPTH \
+--tot_tsteps $TOT_STEPS \
+--demo_envs_perc $DEMO_ENVS_PERC \
+--expl_envs_perc $EXPL_ENVS_PERC \
+--action_repeat $ACTION_REPEAT \
 --compression_ratio $COMPRESSION_RATIO "
+if (( $USE_SAC )); then
+training_env_cmd+="--sac "
+fi
+if (( $DUMP_ENV_CHECKPOINTS )); then
+training_env_cmd+="--full_env_db "
+fi
 if (( $OBS_NORM )); then
 training_env_cmd+="--obs_norm "
 fi
@@ -239,6 +249,22 @@ training_env_cmd+="--obs_rescale "
 fi
 if (( $WEIGHT_NORM )); then
 training_env_cmd+="--add_weight_norm "
+fi
+if (( $EVAL )); then
+  # adding options if in eval mode
+  training_env_cmd+="--eval --n_eval_timesteps $TOT_STEPS --mpath $MPATH --mname $MNAME "
+  if (( $DET_EVAL )); then
+  training_env_cmd+="--det_eval "
+  fi
+  if (( $EVAL_ON_CPU )); then
+  training_env_cmd+="--use_cpu "
+  fi
+  if (( $OVERRIDE_ENV )); then
+  training_env_cmd+="--override_env "
+  fi
+  if (( $OVERRIDE_AGENT_REFS )); then
+  training_env_cmd+="--override_agent_refs "
+  fi
 fi
 prepare_command "reset && python launch_train_env.py $training_env_cmd --comment \"$COMMENT\""
 
