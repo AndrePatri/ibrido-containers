@@ -4,13 +4,13 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=1
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/"
-export MNAME=""
+export MPATH="/root/training_data/d2025_03_16_h13_m40_s28-KyonFullyCloopNoWheelsActRepAblation_FakePosEnvBaseline"
+export MNAME="d2025_03_16_h13_m40_s28-KyonFullyCloopNoWheelsActRepAblation_FakePosEnvBaseline_model"
 
 export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic.yaml"
 export XMJ_FILES_DIR="KyonRLStepping/kyonrlstepping/config/xmj_env_files"
 
-export RT_DEPLOY=1
+export RT_DEPLOY=0
 
 # Set ROS_MASTER_URI and ROS_IP for local setup
 export ROS_MASTER_URI="http://127.0.0.1:11311"
@@ -32,7 +32,7 @@ export OBS_RESCALING=0
 export WEIGHT_NORM=1
 export LAYER_NORM=0
 export BATCH_NORM=0
-export IS_CLOSED_LOOP=0
+export IS_CLOSED_LOOP=1
 export DUMP_ENV_CHECKPOINTS=1
 export DEMO_STOP_THRESH=10.0
 export TOT_STEPS=10000
@@ -71,5 +71,5 @@ export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 
 export CUSTOM_ARGS_NAMES="wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot estimate_v_root closed_partial fully_closed"
 export CUSTOM_ARGS_DTYPE="xacro bool bool bool bool int string bool bool bool bool"
-export CUSTOM_ARGS_VALS="false true false false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true false false true"
+export CUSTOM_ARGS_VALS="false true false false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR false false false true"
 export REMOTE_ENV_FNAME="lrhcontrolenvs.envs.xmj_env"  
