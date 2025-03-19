@@ -1,9 +1,9 @@
 #!/bin/bash
 export EVAL=1
 export DET_EVAL=1
-export EVAL_ON_CPU=1
-export OVERRIDE_ENV=1
-export OVERRIDE_AGENT_REFS=1
+export EVAL_ON_CPU=0
+export OVERRIDE_ENV=0
+export OVERRIDE_AGENT_REFS=0
 export MPATH="/root/IBRIDO/KyonFullyCloopNoWheelsActRepAblation_FakePosEnvBaseline/d2025_03_15_h18_m20_s40-KyonFullyCloopNoWheelsActRepAblation_FakePosEnvBaseline"
 export MNAME="d2025_03_15_h18_m20_s40-KyonFullyCloopNoWheelsActRepAblation_FakePosEnvBaseline_model"
 
@@ -26,7 +26,7 @@ export LAYER_NORM=0
 export BATCH_NORM=0
 export IS_CLOSED_LOOP=1
 export DUMP_ENV_CHECKPOINTS=1
-export TOT_STEPS=6000000
+export TOT_STEPS=1000000
 export USE_RND=0
 export DEMO_ENVS_PERC=0.0
 export DEMO_STOP_THRESH=10.0
