@@ -5,7 +5,7 @@ export EVAL_ON_CPU=1
 export OVERRIDE_ENV=1
 export OVERRIDE_AGENT_REFS=1
 export MPATH="/root/training_data/"
-export MNAME=""
+export MNAME="B2WPartialCloopNoWheelsActRepAblation"
 
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
 export SHM_NS="unitree_b2w" # shared mem namespace used for all shared data on CPU 
