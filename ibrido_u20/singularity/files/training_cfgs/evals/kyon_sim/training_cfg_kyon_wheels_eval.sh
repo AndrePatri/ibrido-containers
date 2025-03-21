@@ -2,7 +2,7 @@
 export EVAL=1
 export DET_EVAL=1
 export EVAL_ON_CPU=1
-export OVERRIDE_ENV=1
+export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
 export MPATH="/root/training_data/d2025_03_16_h15_m42_s03-KyonFullyCloopWheelsSeedAblation_FakePosEnvBaseline"
 export MNAME="d2025_03_16_h15_m42_s03-KyonFullyCloopWheelsSeedAblation_FakePosEnvBaseline_model"

@@ -2,10 +2,10 @@
 export EVAL=1
 export DET_EVAL=1
 export EVAL_ON_CPU=1
-export OVERRIDE_ENV=1
+export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/d2025_03_16_h13_m40_s28-KyonFullyCloopNoWheelsActRepAblation_FakePosEnvBaseline"
-export MNAME="d2025_03_16_h13_m40_s28-KyonFullyCloopNoWheelsActRepAblation_FakePosEnvBaseline_model"
+export MPATH="/root/IBRIDO/KyonPartialCloopNoWheelsActRepAblation/d2025_03_20_h15_m52_s11-KyonFullyCloopNoWheelsActRepAblation_FakePosEnvBaseline"
+export MNAME="d2025_03_20_h15_m52_s11-KyonFullyCloopNoWheelsActRepAblation_FakePosEnvBaseline_model"
 
 export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic.yaml"
 export XMJ_FILES_DIR="KyonRLStepping/kyonrlstepping/config/xmj_env_files"
