@@ -7,8 +7,8 @@ export OVERRIDE_AGENT_REFS=1
 export MPATH="/root/IBRIDO/B2WPartialCloopNoWheelsActRepAblation/d2025_03_20_h16_m57_s26-FakePosEnvBaseline"
 export MNAME="d2025_03_20_h16_m57_s26-FakePosEnvBaseline_model"
 
-export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic.yaml"
-export XMJ_FILES_DIR="KyonRLStepping/kyonrlstepping/config/xmj_env_files"
+export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/b2w/xbot2_basic.yaml"
+export XMJ_FILES_DIR="KyonRLStepping/kyonrlstepping/config/xmj_env_files/b2w"
 
 export RT_DEPLOY=1
 
