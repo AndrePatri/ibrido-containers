@@ -4,8 +4,8 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=1
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/IBRIDO/B2WPartialCloopNoWheelsActRepAblation/d2025_03_20_h16_m57_s26-FakePosEnvBaseline"
-export MNAME="d2025_03_20_h16_m57_s26-FakePosEnvBaseline_model"
+export MPATH="/root/IBRIDO/B2WPartialCloopNoWheelsActRepAblation/d2025_03_21_h22_m45_s19-B2WPartialCloopNoWheelsActRepAblation_FakePosEnvBaseline"
+export MNAME="d2025_03_21_h22_m45_s19-B2WPartialCloopNoWheelsActRepAblation_FakePosEnvBaseline_model"
 
 export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/b2w/xbot2_basic.yaml"
 export XMJ_FILES_DIR="KyonRLStepping/kyonrlstepping/config/xmj_env_files/b2w"
