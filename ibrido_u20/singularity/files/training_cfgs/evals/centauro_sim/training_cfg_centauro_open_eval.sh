@@ -4,7 +4,7 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=1
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/d2025_03_10_h15_m29_s13-CentauroOpenNoWheelsActRepAblation_FakePosEnvBaseline"
+export MPATH="/root/IBRIDO/CentauroOpenNoWheelsActRepAblation_FakePosEnvBaseline/d2025_03_10_h15_m29_s13-CentauroOpenNoWheelsActRepAblation_FakePosEnvBaseline"
 export MNAME="d2025_03_10_h15_m29_s13-CentauroOpenNoWheelsActRepAblation_FakePosEnvBaseline_model"
 
 export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbot2_basic.yaml"
