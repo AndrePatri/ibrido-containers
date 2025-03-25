@@ -2,7 +2,7 @@
 export EVAL=1
 export DET_EVAL=1
 export EVAL_ON_CPU=1
-export OVERRIDE_ENV=1
+export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
 export MPATH="/root/IBRIDO/CentauroCloopANoYawActRepAblation_FakePosEnvBaseline/d2025_03_21_h19_m47_s17-CentauroCloopANoYawActRepAblation_FakePosEnvBaseline"
 export MNAME="d2025_03_21_h19_m47_s17-CentauroCloopANoYawActRepAblation_FakePosEnvBaseline_model"
