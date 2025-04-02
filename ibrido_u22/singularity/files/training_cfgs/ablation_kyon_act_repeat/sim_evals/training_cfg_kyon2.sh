@@ -4,8 +4,8 @@ export DET_EVAL=1
 export EVAL_ON_CPU=0
 export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=0
-export MPATH="/root/training_data/"
-export MNAME=""
+export MPATH="/root/IBRIDO/KyonPartialCloopNoWheelsActRepAblation/d2025_04_01_h16_m49_s27-KyonPartialCloopNoWheelsActRepAblation_FakePosEnvBaseline"
+export MNAME="d2025_04_01_h16_m49_s27-KyonPartialCloopNoWheelsActRepAblation_FakePosEnvBaseline_model"
 
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
 export SHM_NS="kyon_no_wheels" # shared mem namespace used for all shared data on CPU 
