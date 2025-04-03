@@ -26,8 +26,7 @@ dependencies:
   - eigen3
   - poetry
   - python-devtools
-  - casadi_kin_dyn
-  - pinocchio=2.6.20
+  - pinocchio>2.7
   - quaternion
   - yaml-cpp
   - ros-humble-xacro

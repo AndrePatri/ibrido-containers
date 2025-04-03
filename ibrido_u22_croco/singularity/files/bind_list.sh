@@ -85,7 +85,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/RHCViz.git*ros2_humble"
     "git@github.com:AndrePatri/phase_manager.git*add_update"
     "git@github.com:AndrePatri/unitree_ros.git*andrepatri_dev"
-    "git@github.com:ADVRHumanoids/horizon.git*andrepatri_devel"
+    # "git@github.com:ADVRHumanoids/horizon.git*andrepatri_devel"
     "git@github.com:ADVRHumanoids/KyonRLStepping.git*isaac4.0.0"
     "git@github.com:ADVRHumanoids/CentauroHybridMPC.git*isaac4.0.0"
     "git@github.com:ADVRHumanoids/iit-centauro-ros-pkg.git*big_wheels_v2.10_optional_find_ros2"
@@ -93,6 +93,7 @@ IBRIDO_GITDIRS=(
     "git@gitlab.com:crzz/adarl.git*andrepatri_dev"
     "git@github.com:loco-3d/crocoddyl.git*devel"
     "git@github.com:Gepetto/example-robot-data.git*master"
+    "git@github.com:coin-or/CppAD.git*master"
     "git@github.com:joaoleal/CppADCodeGen.git*master"
 )
 

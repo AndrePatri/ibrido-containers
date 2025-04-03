@@ -70,7 +70,6 @@ From:nvcr.io/nvidia/isaac-sim:4.2.0
         cmake-curses-gui \
         curl \
         swig \
-        libcppad-dev \
         gfortran pkg-config libblas-dev liblapack-dev libmetis-dev coinor-libipopt-dev \
         libzmq3-dev \
         ffmpeg && rm -rf /var/lib/apt/lists/*
