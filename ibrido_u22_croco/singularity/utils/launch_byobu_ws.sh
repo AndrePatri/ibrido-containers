@@ -349,13 +349,27 @@ split_h
 execute_command "cd ${WORKING_DIR}"
 execute_command "nvtop"
 
-# # tab 3
-# new_tab
+# tab 3
+new_tab
+execute_command "cd $WS_ROOT/src/crocoddyl"
+activate_mamba_env
+execute_command "source $WS_ROOT/setup.bash"
 
-# # Loop through directories and navigate to each one
-# for dir in "${directories[@]}"; do
-#     cd_and_split "$dir"
-# done
+split_v
+execute_command "cd $WS_ROOT/src/crocoddyl"
+activate_mamba_env
+execute_command "source $WS_ROOT/setup.bash"
+
+split_h
+execute_command "cd $WS_ROOT/src/crocoddyl"
+activate_mamba_env
+execute_command "source $WS_ROOT/setup.bash"
+
+go_to_pane 0 
+split_h
+execute_command "cd $WS_ROOT/src/crocoddyl"
+activate_mamba_env
+execute_command "source $WS_ROOT/setup.bash"
 
 # we attach to the detached session
 attach_to_session

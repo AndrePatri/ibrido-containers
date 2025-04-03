@@ -7,7 +7,6 @@ channels:
   - conda-forge
   - omnia
   - robostack-staging
-  - francesco_ruscelli
   - AndrePatri
 
 dependencies: 
@@ -36,6 +35,8 @@ dependencies:
   - pyside2
   - perf_sleep
   - catkin_pkg=1.0.0
+  - pycppad
+  - jupiter
   - pip:
     - flit
     - h5py
@@ -52,4 +53,3 @@ dependencies:
     - tensorboard
     - wandb
     - meshcat
-    - jupyterlab

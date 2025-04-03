@@ -19,17 +19,17 @@ g++ --version
 rm -rf $WS_BASEDIR/build && mkdir $WS_BASEDIR/build
 rm -rf $WS_BASEDIR/install && mkdir $WS_BASEDIR/install
 
-mkdir -p $WS_BASEDIR/build/cppad
-cd $WS_BASEDIR/build/cppad
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/CppAD
-make -j8 install
+# mkdir -p $WS_BASEDIR/build/cppad
+# cd $WS_BASEDIR/build/cppad
+# cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/CppAD
+# make -j8 install
 
-micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install some packages
+# micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install some packages
 
-mkdir -p $WS_BASEDIR/build/cppadcg
-cd $WS_BASEDIR/build/cppadcg
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/CppADCodeGen
-make -j8 install
+# mkdir -p $WS_BASEDIR/build/cppadcg
+# cd $WS_BASEDIR/build/cppadcg
+# cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/CppADCodeGen
+# make -j8 install
 
 # build cmake packages
 mkdir -p $WS_BASEDIR/build/EigenIPC

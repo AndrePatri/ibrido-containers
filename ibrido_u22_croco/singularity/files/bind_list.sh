@@ -61,6 +61,7 @@ if [ "$IS_PBS_AVAILABLE" = false ]; then
 fi
 
 ISAAC_BDIRS=(
+    "$HOME:/mnt"
     "${IBRIDO_PREFIX}/isaac-sim/cache/ov:/root/.cache/ov:rw"
     "${IBRIDO_PREFIX}/isaac-sim/cache/pip:/root/.cache/pip:rw"
     "${IBRIDO_PREFIX}/isaac-sim/cache/warp:/root/.cache/warp:rw"
@@ -93,8 +94,8 @@ IBRIDO_GITDIRS=(
     "git@gitlab.com:crzz/adarl.git*andrepatri_dev"
     "git@github.com:loco-3d/crocoddyl.git*devel"
     "git@github.com:Gepetto/example-robot-data.git*master"
-    "git@github.com:coin-or/CppAD.git*master"
-    "git@github.com:joaoleal/CppADCodeGen.git*master"
+    # "git@github.com:coin-or/CppAD.git*master"
+    # "git@github.com:joaoleal/CppADCodeGen.git*master"
 )
 
 # Concatenate
