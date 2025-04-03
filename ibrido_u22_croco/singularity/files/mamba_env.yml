@@ -1,0 +1,56 @@
+name: ibrido
+
+channels: 
+  - defaults
+  - pytorch
+  - nvidia
+  - conda-forge
+  - omnia
+  - robostack-staging
+  - francesco_ruscelli
+  - AndrePatri
+
+dependencies: 
+  - python=3.10
+  - pytorch>2.5=*cuda*
+  - torchvision
+  # - torchaudio
+  - pytorch-cuda=12.1
+  # - cuda-toolkit
+  - clang
+  - compilers 
+  - cmake
+  - make
+  - gtest
+  - pybind11
+  - eigen3
+  - poetry
+  - python-devtools
+  - casadi_kin_dyn
+  - pinocchio=2.6.20
+  - quaternion
+  - yaml-cpp
+  - ros-humble-xacro
+  - empy 
+  - pyqt
+  - pyqtgraph
+  - pyside2
+  - perf_sleep
+  - catkin_pkg=1.0.0
+  - pip:
+    - flit
+    - h5py
+    - protobuf
+    - matplotlib
+    - scipy
+    - urdf-parser-py
+    - multiprocess
+    - pynput==1.6.6
+    - urdf_parser_py
+    - psutil
+    - gymnasium
+    - gymnasium[mujoco]
+    - tensorboard
+    - wandb
+    - meshcat
+    - jupyterlab
