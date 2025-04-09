@@ -23,7 +23,6 @@ if [ "$IS_PBS_AVAILABLE" = true ]; then
 fi
 
 # some definitions
-SING_CONTAINER_DIR="$(dirname "$THIS_DIR")"
 IBRIDO_PREFIX=$BASE_FOLDER/containers/ibrido-singularity-croco
 IBRIDO_WS_PREFIX=${IBRIDO_PREFIX}/ibrido_ws/
 IBRIDO_WS_SRC=${IBRIDO_WS_PREFIX}/src
@@ -92,7 +91,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:ADVRHumanoids/CentauroHybridMPC.git*isaac4.0.0"
     "git@github.com:ADVRHumanoids/iit-centauro-ros-pkg.git*big_wheels_v2.10_optional_find_ros2"
     "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*optional_find_ros2"
-    "git@github.com:loco-3d/crocoddyl.git*devel"
+    "https://github.com/AndrePatri/crocoddyl*devel"
     "git@github.com:Gepetto/example-robot-data.git*master"
     # "git@github.com:coin-or/CppAD.git*master"
     # "git@github.com:joaoleal/CppADCodeGen.git*master"

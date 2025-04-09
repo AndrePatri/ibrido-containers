@@ -39,7 +39,7 @@ dependencies:
   - perf_sleep
   - catkin_pkg=1.0.0
   - pycppad
-  - jupiter
+  - jupyter
   - pip:
     - flit
     - h5py
