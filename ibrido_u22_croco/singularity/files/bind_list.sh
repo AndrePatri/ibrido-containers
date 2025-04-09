@@ -36,6 +36,7 @@ IBRIDO_BFILES=(
 )
 # defining directories to be binded at runtime
 IBRIDO_BDIRS=(
+    "/media/apatrizi/AP_ext/data/IBRIDO/:/root/IBRIDO"
     "${IBRIDO_CONTAINERS_PREFIX}/files:/root/ibrido_files"
     "${IBRIDO_CONTAINERS_PREFIX}/utils:/root/ibrido_utils"
     "${IBRIDO_PREFIX}/ibrido_logs:/root/ibrido_logs"
@@ -91,7 +92,6 @@ IBRIDO_GITDIRS=(
     "git@github.com:ADVRHumanoids/CentauroHybridMPC.git*isaac4.0.0"
     "git@github.com:ADVRHumanoids/iit-centauro-ros-pkg.git*big_wheels_v2.10_optional_find_ros2"
     "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*optional_find_ros2"
-    "git@gitlab.com:crzz/adarl.git*andrepatri_dev"
     "git@github.com:loco-3d/crocoddyl.git*devel"
     "git@github.com:Gepetto/example-robot-data.git*master"
     # "git@github.com:coin-or/CppAD.git*master"

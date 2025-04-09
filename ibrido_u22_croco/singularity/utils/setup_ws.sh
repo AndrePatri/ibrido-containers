@@ -24,7 +24,7 @@ rm -rf $WS_BASEDIR/install && mkdir $WS_BASEDIR/install
 # cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/CppAD
 # make -j8 install
 
-# micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install some packages
+micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install some packages
 
 # mkdir -p $WS_BASEDIR/build/cppadcg
 # cd $WS_BASEDIR/build/cppadcg
@@ -73,12 +73,6 @@ cd $WS_BASEDIR/build/example-robot-data
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/example-robot-data
 make -j8 install
 
-echo -e "\nCompiling crocoddyl" 
-mkdir -p $WS_BASEDIR/build/crocoddyl
-cd $WS_BASEDIR/build/crocoddyl
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" -DBUILD_WITH_CODEGEN_SUPPORT=1 ../../src/crocoddyl
-make -j5 install
-
 # pip installations
 cd $WS_BASEDIR/src  
 pip install -e CoClusterBridge 
@@ -87,16 +81,21 @@ pip install -e LRHControl
 pip install -e CentauroHybridMPC
 pip install -e KyonRLStepping
 pip install -e RHCViz
-pip install -e adarl
+# pip install -e adarl
 
 # pip install --no-deps -e horizon
 
-# copying lrhcontrolenvs isaac kit 
-# cd $WS_BASEDIR/src/LRHControlEnvs/lrhcontrolenvs/cfg/omni_kits/  
-# ./copy2isaac_folder.sh
-
-# copying script to launch byobu
-#cp $WS_BASEDIR/src/LRHControl/lrhc_control/scripts/launch_byobu_ws.sh /root/
+echo -e "\nCompiling crocoddyl" 
+mkdir -p $WS_BASEDIR/build/crocoddyl
+cd $WS_BASEDIR/build/crocoddyl
+# CC=clang CXX=clang++ 
+cmake \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" \
+  -DBUILD_WITH_CODEGEN_SUPPORT=1 \
+  -DBUILD_WITH_MULTITHREADS=1 \
+  ../../src/crocoddyl
+make -j5 install
 
 source /root/.bashrc
 

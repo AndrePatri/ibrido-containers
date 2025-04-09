@@ -17,6 +17,9 @@ dependencies:
   - pytorch-cuda=12.1
   # - cuda-toolkit
   - clang
+  - clangxx
+  - libcxx 
+  - libcxxabi
   - compilers 
   - cmake
   - make
