@@ -156,6 +156,7 @@ remote_env_cmd="--robot_name $SHM_NS \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
 --custom_args_vals $CUSTOM_ARGS_VALS \
+--physics_dt $PHYSICS_DT \
 --enable_debug "
 if (( $REMOTE_STEPPING )); then
 remote_env_cmd+="--remote_stepping "
@@ -305,6 +306,7 @@ prepare_command "reset && python launch_periodic_bag_dump.py --use_shared_drop_d
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG \
 --srdf_path $SRDF_PATH_ROSBAG --with_agent_refs \
 --pub_stime \
+--no_rhc_internal \
 --xbot "
 
 # tab 1
