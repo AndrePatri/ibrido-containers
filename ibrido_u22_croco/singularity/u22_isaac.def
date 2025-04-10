@@ -74,14 +74,12 @@ From:nvcr.io/nvidia/isaac-sim:4.2.0
         libzmq3-dev \
         ffmpeg && rm -rf /var/lib/apt/lists/*
 
-    apt-get update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata && rm -rf /var/lib/apt/lists/*
-
     # Micromamba setup
     curl -Ls https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj -C ${MAMBA_EXE_PREFIX}/ --strip-components=1 bin/micromamba
     
     # ROS 2 base setup
     echo 'Etc/UTC' > /etc/timezone
-    apt-get update && apt-get install -q -y --no-install-recommends tzdata && rm -rf /var/lib/apt/lists/*
+    apt-get update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -q -y --no-install-recommends tzdata && rm -rf /var/lib/apt/lists/*
 
     apt-get update && apt-get install -q -y --no-install-recommends \
         dirmngr \
@@ -99,7 +97,6 @@ From:nvcr.io/nvidia/isaac-sim:4.2.0
     echo "deb [ signed-by=/usr/share/keyrings/ros2-latest-archive-keyring.gpg ] http://packages.ros.org/ros2/ubuntu jammy main" > /etc/apt/sources.list.d/ros2-latest.list
 
     apt-get update && apt-get install --no-install-recommends -y \
-        build-essential \
         git \
         python3-colcon-common-extensions \
         python3-colcon-mixin \
@@ -120,6 +117,9 @@ From:nvcr.io/nvidia/isaac-sim:4.2.0
     apt-get update && apt-get install -y --no-install-recommends \
         ros-humble-ros-base \
         ros-humble-rviz2 && rm -rf /var/lib/apt/lists/*
+    
+    # qt creator
+    apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -q -y --no-install-recommends qtcreator && rm -rf /var/lib/apt/lists/*
 
     # give access to /isaac-sim folder to anybody (root only by default)
     chmod --recursive 777 /isaac-sim

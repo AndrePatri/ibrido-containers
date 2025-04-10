@@ -40,6 +40,7 @@ IBRIDO_BDIRS=(
     "${IBRIDO_CONTAINERS_PREFIX}/utils:/root/ibrido_utils"
     "${IBRIDO_PREFIX}/ibrido_logs:/root/ibrido_logs"
     "${IBRIDO_PREFIX}/tmp:/tmp:rw"
+    "${IBRIDO_PREFIX}/config:/root/.config:rw"
     "${IBRIDO_PREFIX}/aux_data:/root/aux_data:rw"
     "${IBRIDO_PREFIX}/training_data:/root/training_data:rw"
     "${IBRIDO_WS_PREFIX}:/root/ibrido_ws:rw"
