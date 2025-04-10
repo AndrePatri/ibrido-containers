@@ -17,6 +17,7 @@ build_container=false
 use_sudo=false # whether to use superuser privileges
 init=false # whether to initialize/create the workspace
 do_setup=false # whether to perform the post-build setup steps
+update_ws=false
 ngc_key=""
 
 # Parse command line options
