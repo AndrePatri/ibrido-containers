@@ -2,7 +2,7 @@
 export EVAL=1
 export DET_EVAL=1
 export EVAL_ON_CPU=1
-export OVERRIDE_ENV=0
+export OVERRIDE_ENV=1
 export OVERRIDE_AGENT_REFS=1
 export MPATH="/root/IBRIDO/CentauroCLoopPartialNoWheelsActRepAblation_FakePosEnvBaseline/d2025_03_24_h20_m58_s24-CentauroCLoopPartialNoWheelsActRepAblation_FakePosEnvBaseline"
 export MNAME="d2025_03_24_h20_m58_s24-CentauroCLoopPartialNoWheelsActRepAblation_FakePosEnvBaseline_model"
@@ -58,7 +58,7 @@ if (( $IS_CLOSED_LOOP )); then
 fi
 export CLUSTER_CL_FNAME="centaurohybridmpc.controllers.horizon_based.centauro_rhc_cluster_client" # base path where the description package for the robot are located
 export CLUSTER_DT=0.05
-export PHYSICS_DT=0.0005
+export PHYSICS_DT=0.0001
 export N_NODES=31
 export CLUSTER_DB=1
 export CODEGEN_OVERRIDE_BDIR="none"
