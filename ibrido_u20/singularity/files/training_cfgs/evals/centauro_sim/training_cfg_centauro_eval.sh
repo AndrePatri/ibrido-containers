@@ -58,7 +58,7 @@ if (( $IS_CLOSED_LOOP )); then
 fi
 export CLUSTER_CL_FNAME="centaurohybridmpc.controllers.horizon_based.centauro_rhc_cluster_client" # base path where the description package for the robot are located
 export CLUSTER_DT=0.05
-export PHYSICS_DT=0.0001
+export PHYSICS_DT=0.0005
 export N_NODES=31
 export CLUSTER_DB=1
 export CODEGEN_OVERRIDE_BDIR="none"
