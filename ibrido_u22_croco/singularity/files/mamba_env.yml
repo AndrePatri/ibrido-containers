@@ -25,7 +25,6 @@ dependencies:
   - make
   - gtest
   - pybind11
-  - eigen3
   - poetry
   - python-devtools
   - pinocchio>2.7

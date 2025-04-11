@@ -92,12 +92,12 @@ cd $WS_BASEDIR/build/crocoddyl
 cmake \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" \
-  -DBUILD_WITH_CODEGEN_SUPPORT=0 \
+  -DBUILD_WITH_CODEGEN_SUPPORT=1 \
   -DBUILD_WITH_MULTITHREADS=1 \
   -DBUILD_TESTING=0 \
   -DBUILD_BENCHMARK=0 \
   ../../src/crocoddyl
-make -j5 install
+make -j4 install
 
 source /root/.bashrc
 
