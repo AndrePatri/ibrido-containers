@@ -88,11 +88,15 @@ pip install -e RHCViz
 echo -e "\nCompiling crocoddyl" 
 mkdir -p $WS_BASEDIR/build/crocoddyl
 cd $WS_BASEDIR/build/crocoddyl
-# CC=clang CXX=clang++ 
+
+# Set compilers to Clang
+# export CC=clang
+# export CXX=clang++
+
 cmake \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" \
-  -DBUILD_WITH_CODEGEN_SUPPORT=1 \
+  -DBUILD_WITH_CODEGEN_SUPPORT=0 \
   -DBUILD_WITH_MULTITHREADS=1 \
   -DBUILD_TESTING=0 \
   -DBUILD_BENCHMARK=0 \
