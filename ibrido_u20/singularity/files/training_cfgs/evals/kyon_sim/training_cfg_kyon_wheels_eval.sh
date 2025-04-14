@@ -4,8 +4,8 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/IBRIDO/KyonPartialCloopNoWheelsActRepAblation/d2025_04_01_h16_m49_s27-KyonPartialCloopNoWheelsActRepAblation_FakePosEnvBaseline"
-export MNAME="d2025_04_01_h16_m49_s27-KyonPartialCloopNoWheelsActRepAblation_FakePosEnvBaseline_model"
+export MPATH="/root/IBRIDO/KyonPartialCloopWheelsSeedAblation_FakePosEnvBaseline/KyonPartialCloopNoWheelsActRepAblation/d2025_03_23_h21_m47_s57-KyonPartialCloopWheelsSeedAblation_FakePosEnvBaseline"
+export MNAME="d2025_03_23_h21_m47_s57-KyonPartialCloopWheelsSeedAblation_FakePosEnvBaseline_model"
 
 export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
 export XMJ_FILES_DIR="KyonRLStepping/kyonrlstepping/config/xmj_env_files"
@@ -68,7 +68,7 @@ export ENV_IDX_BAG=0
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/KyonRHCLusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
 export SET_ULIM=1 
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
-export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
+export TIMEOUT_MS=60000 # timeout after which each script autokills ([ms])
 
 export CUSTOM_ARGS_NAMES="wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot estimate_v_root closed_partial fully_closed"
 export CUSTOM_ARGS_DTYPE="xacro bool bool bool bool int string bool bool bool bool"

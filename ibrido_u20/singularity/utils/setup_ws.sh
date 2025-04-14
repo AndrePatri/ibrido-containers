@@ -47,7 +47,7 @@ cd $WS_BASEDIR/build/EigenIPC
 cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON ../../src/EigenIPC/EigenIPC
 make -j8 install
 
-mkdir -p $WS_BASEDIR/build/casadi
+# mkdir -p $WS_BASEDIR/build/casadi
 # cd $WS_BASEDIR/build/casadi
 # cmake -DCMAKE_BUILD_TYPE=Release -DWITH_OSQP=1 -DWITH_QPOASES=1 -DWITH_LAPACK=1 -DWITH_THREAD=1 -DWITH_PYTHON=1 -DWITH_PYTHON3=1 -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/casadi
 # make -j8 install
@@ -62,7 +62,7 @@ cd $WS_BASEDIR/build/phase_manager
 cmake -DCMAKE_BUILD_TYPE=Release ../../src/phase_manager/
 make -j8 install
 
-pip install -e $WS_BASEDIR/src/jumping_leg
+# pip install -e $WS_BASEDIR/src/jumping_leg
 
 # pip installations
 cd $WS_BASEDIR/src  
