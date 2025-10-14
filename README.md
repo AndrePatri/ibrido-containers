@@ -17,7 +17,7 @@ To set up docker in rootless mode see the [how-to-rootless-docker](https://docs.
 
 You can setup you workspace by running `isaac_ubuntu22/docker/create_ws.sh`. This script will create some directories used by the container + clone all the main packages of the echosystem. Please note that not all packages are currently publicly available (specifically the one hosting the employed RHC controller, which is owned by the [HHCM](https://hhcm.iit.it/) research line at IIT), so this step will fail if you don't have access to it. Basically, you need to be part of the [ADVR Humanoids](https://github.com/ADVRHumanoids) team.
 
-Before being able to run the `isaac_ubuntu22/docker/build_docker.sh` script (which builds the base image used by LRHControl), you need follow the instructions at [Omniverse's Isaac sim image](https://docs.omniverse.nvidia.com/isaacsim/latest/installation/install_container.html) and at [isaac-sim container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/isaac-sim), to get access to IsaacSim's container image. 
+Before being able to run the `isaac_ubuntu22/docker/build_docker.sh` script (which builds the base image used by AugMPC), you need follow the instructions at [Omniverse's Isaac sim image](https://docs.omniverse.nvidia.com/isaacsim/latest/installation/install_container.html) and at [isaac-sim container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/isaac-sim), to get access to IsaacSim's container image. 
 
 Running `isaac_ubuntu22/docker/build_docker.sh` will build the base image, which is basically an image with [micromamba](https://github.com/mamba-org/micromamba-releases), [IsaacSim](https://developer.nvidia.com/isaac/sim) and [ros2-humble-base](https://docs.ros.org/en/humble/index.html).
 

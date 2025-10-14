@@ -8,7 +8,7 @@ export QT_IM_MODULE=ibus
 SLEEP_FOR=0.1
 BYOBU_WS_NAME="ibrido_xbot"
 WS_ROOT="$HOME/ibrido_ws"
-WORKING_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
+WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
 
 MAMBAENVNAME="${MAMBA_ENV_NAME}"
 N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
@@ -16,9 +16,9 @@ N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
 # Array of directories
 directories=(
     "$WS_ROOT/src/KyonRLStepping"
-    "$WS_ROOT/src/LRHControl"
-    "$WS_ROOT/src/CoClusterBridge"
-    "$WS_ROOT/src/LRHControlEnvs"
+    "$WS_ROOT/src/AugMPC"
+    "$WS_ROOT/src/MPCHive"
+    "$WS_ROOT/src/AugMPCEnvs"
     # Add more directories as needed
 )
 
@@ -326,7 +326,7 @@ execute_command "source /opt/ros/noetic/setup.bash"
 export ROS_MASTER_URI=$ROS_MASTER_URI
 export ROS_IP=$ROS_IP
 clear_terminal
-prepare_command "reset && python launch_rhcviz.py --ns $SHM_NS --nodes_perc 10"
+prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
 
 split_h
 execute_command "cd ${WORKING_DIR}"

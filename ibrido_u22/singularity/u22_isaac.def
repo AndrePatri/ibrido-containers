@@ -12,8 +12,8 @@ From:nvcr.io/nvidia/isaac-sim:4.2.0
 #    wandb_key=""
 
 %files # copy isaac kits
-    ./files/omni.isaac.sim.python.lrhcontrolenvs.headless.kit /isaac-sim/apps/
-    ./files/omni.isaac.sim.python.lrhcontrolenvs.kit /isaac-sim/apps
+    ./files/omni.isaac.sim.python.aug_mpc_envs.headless.kit /isaac-sim/apps/
+    ./files/omni.isaac.sim.python.aug_mpc_envs.kit /isaac-sim/apps
     ./files/nucleus4.0.0.py /isaac-sim/exts/omni.isaac.nucleus/omni/isaac/nucleus/nucleus.py
 
 %environment

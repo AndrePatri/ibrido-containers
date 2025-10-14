@@ -51,22 +51,22 @@ make -j8 install
 
 # pip installations
 cd $WS_BASEDIR/src  
-pip install -e CoClusterBridge 
-pip install -e LRHControlEnvs
-pip install -e LRHControl
+pip install -e MPCHive 
+pip install -e AugMPCEnvs
+pip install -e AugMPC
 pip install -e CentauroHybridMPC
 pip install -e KyonRLStepping
-pip install -e RHCViz
+pip install -e MPCViz
 pip install -e adarl
 
 pip install --no-deps -e horizon
 
-# copying lrhcontrolenvs isaac kit 
-# cd $WS_BASEDIR/src/LRHControlEnvs/lrhcontrolenvs/cfg/omni_kits/  
+# copying aug_mpc_envs isaac kit 
+# cd $WS_BASEDIR/src/AugMPCEnvs/aug_mpc_envs/cfg/omni_kits/  
 # ./copy2isaac_folder.sh
 
 # copying script to launch byobu
-#cp $WS_BASEDIR/src/LRHControl/lrhc_control/scripts/launch_byobu_ws.sh /root/
+#cp $WS_BASEDIR/src/AugMPC/aug_mpc/scripts/launch_byobu_ws.sh /root/
 
 source /root/.bashrc
 

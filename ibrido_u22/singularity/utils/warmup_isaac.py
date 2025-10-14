@@ -1,7 +1,7 @@
 from isaacsim import SimulationApp
 
 # The most basic usage for creating a simulation app
-kit = SimulationApp(experience="/isaac-sim/apps/omni.isaac.sim.python.lrhcontrolenvs.headless.kit")
+kit = SimulationApp(experience="/isaac-sim/apps/omni.isaac.sim.python.aug_mpc_envs.headless.kit")
 
 import omni
 

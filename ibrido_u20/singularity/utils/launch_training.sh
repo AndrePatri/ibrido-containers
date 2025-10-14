@@ -1,6 +1,6 @@
 #!/bin/bash
 WS_ROOT="$HOME/ibrido_ws"
-LRHC_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
+LRHC_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
 
 # Improved cleanup function
 cleanup() {

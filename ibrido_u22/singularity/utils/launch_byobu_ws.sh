@@ -15,7 +15,7 @@ export QT_IM_MODULE=ibus
 SLEEP_FOR=0.1
 BYOBU_WS_NAME="ibrido_isaac"
 WS_ROOT="$HOME/ibrido_ws"
-WORKING_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
+WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
 
 MAMBAENVNAME="${MAMBA_ENV_NAME}"
 N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
@@ -26,9 +26,9 @@ config_file="$HOME/ibrido_files/training_cfg.sh"
 # Array of directories
 directories=(
     "$WS_ROOT/src/KyonRLStepping"
-    "$WS_ROOT/src/LRHControl"
-    "$WS_ROOT/src/CoClusterBridge"
-    "$WS_ROOT/src/LRHControlEnvs"
+    "$WS_ROOT/src/AugMPC"
+    "$WS_ROOT/src/MPCHive"
+    "$WS_ROOT/src/AugMPCEnvs"
     # Add more directories as needed
 )
 
@@ -339,7 +339,7 @@ execute_command "cd ${WORKING_DIR}"
 # execute_command "source /opt/ros/noetic/setup.bash"
 activate_mamba_env
 execute_command "source /opt/ros/humble/setup.bash"
-prepare_command "reset && python launch_rhcviz.py --ns $SHM_NS --nodes_perc 10"
+prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
 
 # tab2
 new_tab

@@ -8,7 +8,7 @@ export QT_IM_MODULE=ibus
 SLEEP_FOR=0.1
 BYOBU_WS_NAME="ibrido_ws"
 WS_ROOT="$HOME/ibrido_ws"
-WORKING_DIR="$WS_ROOT/src/LRHControl/lrhc_control/scripts"
+WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
 WORKING_DIR2="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
 
 MAMBAENVNAME="ibrido"
@@ -16,9 +16,9 @@ N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
 
 # Array of directories
 directories=(
-    "$WS_ROOT/src/LRHControl"
-    "$WS_ROOT/src/CoClusterBridge"
-    "$WS_ROOT/src/LRHControlEnvs"
+    "$WS_ROOT/src/AugMPC"
+    "$WS_ROOT/src/MPCHive"
+    "$WS_ROOT/src/AugMPCEnvs"
     "$WS_ROOT/src/EigenIPC"
     "$WS_ROOT/src/horizon"
     # Add more directories as needed
@@ -177,7 +177,7 @@ execute_command "cd ${WORKING_DIR2}"
 activate_mamba_env
 execute_command "source /opt/ros/humble/setup.bash"
 clear_terminal
-prepare_command "reset && python launch_rhcviz.py --ns {}"
+prepare_command "reset && python launch_mpcviz.py --ns {}"
 
 # tab2
 new_tab
