@@ -7,7 +7,6 @@ WS_BASEDIR=$HOME/ibrido_ws
 
 source /root/ibrido_utils/mamba_utils/bin/_activate_current_env.sh # enable mamba for this shell
 micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install packages
-source /opt/ros/humble/setup.bash # ros2 setup
 
 # clean ws if already initialized
 rm -rf $WS_BASEDIR/build && mkdir $WS_BASEDIR/build
@@ -34,19 +33,31 @@ cd $WS_BASEDIR/build/phase_manager
 cmake -DCMAKE_BUILD_TYPE=Release ../../src/phase_manager/
 make -j8 install
 
+source /opt/ros/humble/setup.bash # ros2 setup
+
 mkdir -p $WS_BASEDIR/build/centauro_urdf
 cd $WS_BASEDIR/build/centauro_urdf
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/iit-centauro-ros-pkg/centauro_urdf
 make -j8 install
 
-mkdir -p $WS_BASEDIR/build/kyon_urdf
-cd $WS_BASEDIR/build/kyon_urdf
+mkdir -p $WS_BASEDIR/build/kyon_urdf_simple
+cd $WS_BASEDIR/build/kyon_urdf_simple
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/iit-kyon-ros-pkg/kyon_urdf
 make -j8 install
 
-mkdir -p $WS_BASEDIR/build/kyon_srdf
-cd $WS_BASEDIR/build/kyon_srdf
+mkdir -p $WS_BASEDIR/build/kyon_srdf_simple
+cd $WS_BASEDIR/build/kyon_srdf_simple
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/iit-kyon-ros-pkg/kyon_srdf
+make -j8 install
+
+mkdir -p $WS_BASEDIR/build/kyon_urdf
+cd $WS_BASEDIR/build/kyon_urdf
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/iit-kyon-description/kyon_urdf
+make -j8 install
+
+mkdir -p $WS_BASEDIR/build/kyon_srdf_simple
+cd $WS_BASEDIR/build/kyon_srdf_simple
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/iit-kyon-description/kyon_srdf
 make -j8 install
 
 # pip installations
