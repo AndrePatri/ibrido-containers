@@ -58,8 +58,8 @@ cd $WS_BASEDIR/build/kyon_urdf
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/iit-kyon-description/kyon_urdf
 make -j8 install
 
-mkdir -p $WS_BASEDIR/build/kyon_srdf_simple
-cd $WS_BASEDIR/build/kyon_srdf_simple
+mkdir -p $WS_BASEDIR/build/kyon_srdf
+cd $WS_BASEDIR/build/kyon_srdf
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/iit-kyon-description/kyon_srdf
 make -j8 install
 
