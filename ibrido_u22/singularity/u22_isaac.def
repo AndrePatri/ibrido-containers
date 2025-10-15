@@ -67,6 +67,7 @@ From:nvcr.io/nvidia/isaac-sim:4.2.0
         software-properties-common \
         nano \
         cmake \
+        clang \
         cmake-curses-gui \
         curl \
         swig \
