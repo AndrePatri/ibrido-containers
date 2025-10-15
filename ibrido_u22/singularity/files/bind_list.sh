@@ -49,6 +49,7 @@ IBRIDO_BDIRS=(
     "${IBRIDO_PREFIX}/.byobu:/root/.byobu:rw"
     "${IBRIDO_PREFIX}/.ros:/root/.ros:rw"
     "${IBRIDO_PREFIX}/.rviz2:/root/.rviz2:rw"
+    "${IBRIDO_PREFIX}/.mamba:/root/.mamba:rw"
 )
 
 # Only add these bindings if PBS is NOT available (when runnin on cluster
