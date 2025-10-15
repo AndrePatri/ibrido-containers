@@ -44,10 +44,10 @@ if (( $IS_CLOSED_LOOP )); then
 fi
 
 export CLUSTER_CL_FNAME="kyonrlstepping.controllers.horizon_based.kyon_real_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.03
+export CLUSTER_DT=0.04
 export N_NODES=31
 export CLUSTER_DB=1
-export PHYSICS_DT=0.001
+export PHYSICS_DT=0.0005
 # export CODEGEN_OVERRIDE_BDIR="none"
 export CODEGEN_OVERRIDE_BDIR="${HOME}/aux_data/KyonRHCLusterClient_${SHM_NS}/CodeGen/${SHM_NS}Rhc"
 # export TRAIN_ENV_FNAME="linvel_env_baseline"
@@ -69,9 +69,9 @@ export ENV_IDX_BAG=98
 export ENV_IDX_BAG_DEMO=-1
 export ENV_IDX_BAG_EXPL=-1
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/KyonRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
-export CUSTOM_ARGS_NAMES="wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_flat_ground estimate_v_root base_linkname" 
-export CUSTOM_ARGS_DTYPE="xacro bool bool bool bool bool bool str"
-export CUSTOM_ARGS_VALS="false true true false true true false pelvis" 
+export CUSTOM_ARGS_NAMES="wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_flat_ground estimate_v_root base_linkname self_collide" 
+export CUSTOM_ARGS_DTYPE="xacro bool bool bool bool bool bool str bool"
+export CUSTOM_ARGS_VALS="false true true false true true false pelvis false" 
 export SET_ULIM=1 
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=120000 # timeout after which each script autokills ([ms])
