@@ -340,7 +340,7 @@ execute_command "cd ${WORKING_DIR_OTHER}"
 # execute_command "source /opt/ros/noetic/setup.bash"
 activate_mamba_env
 execute_command "source /opt/ros/humble/setup.bash"
-prepare_command "reset && python launch_mpc_viz.py --ns $SHM_NS --nodes_perc 10"
+prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
 
 # tab2
 new_tab
