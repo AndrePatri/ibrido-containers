@@ -16,6 +16,7 @@ SLEEP_FOR=0.1
 BYOBU_WS_NAME="ibrido_isaac"
 WS_ROOT="$HOME/ibrido_ws"
 WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
+WORKING_DIR_OTHER="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
 
 MAMBAENVNAME="${MAMBA_ENV_NAME}"
 N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
@@ -335,7 +336,7 @@ execute_command "source /opt/ros/humble/setup.bash"
 prepare_command "reset && ./replay_bag.bash ~/training_data/{}"
 
 split_h
-execute_command "cd ${WORKING_DIR}"
+execute_command "cd ${WORKING_DIR_OTHER}"
 # execute_command "source /opt/ros/noetic/setup.bash"
 activate_mamba_env
 execute_command "source /opt/ros/humble/setup.bash"
