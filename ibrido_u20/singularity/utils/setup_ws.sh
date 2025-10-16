@@ -16,6 +16,11 @@ rm -rf $WS_BASEDIR/install && mkdir $WS_BASEDIR/install
 
 # OUTSIDE MICROMAMBA ENV->
 
+mkdir -p $WS_BASEDIR/build/phase_manager
+cd $WS_BASEDIR/build/phase_manager
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${WS_INSTALLDIR} ../../src/phase_manager/
+make -j8 install
+
 # build cmake packages
 mkdir -p $WS_BASEDIR/build/mujoco_cmake
 cd $WS_BASEDIR/build/mujoco_cmake
@@ -32,11 +37,6 @@ make -j8 install
 mkdir -p $WS_BASEDIR/build/adarl_ros_utils
 cd $WS_BASEDIR/build/adarl_ros_utils
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${WS_INSTALLDIR} -DWITH_MOVEIT=0 -DWITH_ROS_CONTROL=0 ../../src/adarl_ros/adarl_ros_utils/
-make -j8 install
-
-mkdir -p $WS_BASEDIR/build/phase_manager
-cd $WS_BASEDIR/build/phase_manager
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${WS_INSTALLDIR} ../../src/phase_manager/
 make -j8 install
 
 # INSIDE MICROMAMBA ENV->
