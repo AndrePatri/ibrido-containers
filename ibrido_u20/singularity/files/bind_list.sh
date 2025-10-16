@@ -37,7 +37,7 @@ IBRIDO_BFILES=(
 IBRIDO_BDIRS=(
     "/dev/input:/dev/input:rw"
     "/tmp/.X11-unix:/tmp/.X11-unix"
-    "/media/apatrizi/AP_ext/data/IBRIDO/:/root/IBRIDO"
+    # "/media/apatrizi/AP_ext/data/IBRIDO/:/root/IBRIDO"
     "${IBRIDO_CONTAINERS_PREFIX}/files:/root/ibrido_files"
     "${IBRIDO_CONTAINERS_PREFIX}/utils:/root/ibrido_utils"
     "${IBRIDO_PREFIX}/ibrido_logs:/root/ibrido_logs"
