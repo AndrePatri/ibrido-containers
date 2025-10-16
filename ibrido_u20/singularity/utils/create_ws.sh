@@ -25,13 +25,32 @@ for item in "${IBRIDO_BFILES_SRC[@]}"; do
 done
 echo 'Done.'
 
+# echo 'Cloning repos...'
+# cd $IBRIDO_WS_SRC
+# for ((i = 0; i < ${#IBRIDO_GITDIRS[@]}; i++)); do
+#     src="${IBRIDO_GIT_SRC[$i]}"
+#     branch="${IBRIDO_GIT_BRCH[$i]}"
+#     echo "--> $src # $branch"
+#     git clone -q -b $branch $src &
+# done
+# wait
+
 echo 'Cloning repos...'
-cd $IBRIDO_WS_SRC
+cd "$IBRIDO_WS_SRC" || exit 1
 for ((i = 0; i < ${#IBRIDO_GITDIRS[@]}; i++)); do
-    src="${IBRIDO_GIT_SRC[$i]}"
-    branch="${IBRIDO_GIT_BRCH[$i]}"
-    echo "--> $src # $branch"
-    git clone -q -b $branch $src &
+src="${IBRIDO_GIT_SRC[$i]}"
+branch="${IBRIDO_GIT_BRCH[$i]}"
+target_dir="${IBRIDO_GIT_DIR[$i]}"
+
+
+if [ -n "$target_dir" ]; then
+# clone into the requested directory under IBRIDO_WS_SRC
+echo "--> $src # $branch -> $target_dir"
+git clone -q -b "$branch" "$src" "$IBRIDO_WS_SRC/$target_dir" &
+else
+echo "--> $src # $branch"
+git clone -q -b "$branch" "$src" &
+fi
 done
 wait
 

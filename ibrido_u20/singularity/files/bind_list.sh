@@ -55,6 +55,7 @@ IBRIDO_BDIRS=(
     "${IBRIDO_PREFIX}/.ros:/root/.ros:rw"
     "${IBRIDO_PREFIX}/.gazebo:/root/.gazebo:rw"
     "${IBRIDO_PREFIX}/.rviz2:/root/.rviz:rw"
+    "${IBRIDO_PREFIX}/.mamba:/root/.mamba:rw"
 )
 
 OTHER_BDIRS=(
@@ -68,26 +69,25 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/AugMPCEnvs.git*ibrido"
     "git@github.com:AndrePatri/MPCHive.git*devel"
     "git@github.com:AndrePatri/EigenIPC.git*devel"
-    "git@github.com:AndrePatri/AugMPCEnvs.git*isaac4.2.0"
-    "git@github.com:AndrePatri/MPCViz.git*ros1_noetic"
-    "git@github.com:AndrePatri/phase_manager.git*add_update"
-    "git@github.com:AndrePatri/unitree_ros.git*andrepatri_dev"
-    "git@github.com:ADVRHumanoids/horizon.git*andrepatri_devel"
-    "git@github.com:ADVRHumanoids/xbot2_mujoco.git*andrepatri_dev"
-    "git@github.com:AndrePatri/mujoco_cmake.git*3.x"
-    "git@github.com:ADVRHumanoids/KyonRLStepping.git*isaac4.0.0"
-    "git@github.com:ADVRHumanoids/CentauroHybridMPC.git*isaac4.0.0"
-    "git@github.com:ADVRHumanoids/iit-centauro-ros-pkg.git*big_wheels_v2.10_optional_find"
-    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*optional_find"
+    "git@github.com:AndrePatri/MPCViz.git*ros2_humble"
+    "git@github.com:ADVRHumanoids/KyonRLStepping.git*ibrido"
+    "git@github.com:ADVRHumanoids/CentauroHybridMPC.git*ibrido"
+    "git@github.com:AndrePatri/horizon.git*ibrido"
+    "git@github.com:AndrePatri/phase_manager.git*ibrido"
+    "git@github.com:AndrePatri/xbot2_mujoco.git*ibrido"
+    "git@github.com:AndrePatri/mujoco_cmake.git*ibrido"
+    "git@github.com:AndrePatri/unitree_ros.git*ibrido"
+    "git@github.com:AndrePatri/iit-centauro-ros-pkg.git*ibrido_ros1"
+    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros1_simple"
+    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros1&iit-kyon-description"
     "git@github.com:AndrePatri/PerfSleep.git*main"
     "git@github.com:AndrePatri/casadi.git*optional_float"
-    "git@gitlab.com:crzz/adarl.git*andrepatri_dev"
-    "git@gitlab.com:crzz/adarl_ros.git*andrepatri_dev"
-    "git@gitlab.com:crzz/jumping_leg.git*andrepatri_dev"
+    "git@gitlab.com:crzz/adarl.git*ibrido"
+    "git@gitlab.com:crzz/adarl_ros.git*ibrido"
 )
 
 # Concatenate
-# IBRIDO_BDIRS=("${IBRIDO_BDIRS[@]}" "${OTHER_BDIRS[@]}")
+IBRIDO_BDIRS=("${IBRIDO_BDIRS[@]}" "${ISAAC_BDIRS[@]}")
 IBRIDO_B_ALL=("${IBRIDO_BDIRS[@]}" "${IBRIDO_BFILES[@]}")
 
 IBRIDO_BDIRS_SRC=()
@@ -106,16 +106,44 @@ for entry in "${IBRIDO_BFILES[@]}"; do
     IBRIDO_BFILES_SRC+=("$filtered_entry")
 done
 
+# # extract git repo info
+# IBRIDO_GIT_SRC=()
+# IBRIDO_GIT_BRCH=()
+# for entry in "${IBRIDO_GITDIRS[@]}"; do
+#     # Split entry based on colon
+#     IFS='*' read -r src branch <<< "$entry"
+    
+#     # Add to respective arrays
+#     IBRIDO_GIT_SRC+=("$src")
+#     IBRIDO_GIT_BRCH+=("$branch")
+# done
+
 # extract git repo info
 IBRIDO_GIT_SRC=()
 IBRIDO_GIT_BRCH=()
+IBRIDO_GIT_DIR=()
 for entry in "${IBRIDO_GITDIRS[@]}"; do
-    # Split entry based on colon
-    IFS='*' read -r src branch <<< "$entry"
-    
-    # Add to respective arrays
-    IBRIDO_GIT_SRC+=("$src")
-    IBRIDO_GIT_BRCH+=("$branch")
+# Split entry on first '*'
+IFS='*' read -r src rest <<< "$entry"
+
+
+branch_and_dir="$rest"
+branch="$branch_and_dir"
+dir=""
+
+
+# If a '->' is present in the rest, split into branch and dir
+if [[ "$branch_and_dir" == *'&'* ]]; then
+IFS='&' read -r branch dir <<< "$branch_and_dir"
+fi
+
+
+# Trim whitespace (in case of accidental spaces)
+branch="$(echo -n "$branch" | xargs)"
+dir="$(echo -n "$dir" | xargs)"
+
+
+IBRIDO_GIT_SRC+=("$src")
+IBRIDO_GIT_BRCH+=("$branch")
+IBRIDO_GIT_DIR+=("$dir")
 done
-
-

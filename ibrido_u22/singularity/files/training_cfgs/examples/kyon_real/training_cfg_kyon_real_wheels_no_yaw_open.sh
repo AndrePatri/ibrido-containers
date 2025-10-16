@@ -8,7 +8,7 @@ export MPATH="/root/training_data/"
 export MNAME=""
 
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
-export SHM_NS="kyon_real_open" # shared mem namespace used for all shared data on CPU 
+export SHM_NS="kyon_real_wheels_open" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=1 # number of env to run in parallel
 export RNAME="" # a descriptive base name for this run
 export SEED=935 # random n generator seed to be used for this run
@@ -34,16 +34,16 @@ export ACTION_REPEAT=1
 export USE_SAC=1
 export DISCOUNT_FACTOR=0.99
 export USE_PERIOD_RESETS=1
-export COMMENT='kyon real OPEN LOOP, ' # any training comment
+export COMMENT='kyon real wheels OPEN LOOP, ' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-description/kyon_urdf/urdf/kyon.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-description/kyon_srdf/srdf/kyon.srdf.xacro" # base path where the description package for the robot are located
-export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_kyon_real_open.yaml" # path to yaml file for jnt imp configuration
+export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_kyon_real_no_yaw_open.yaml" # path to yaml file for jnt imp configuration
 if (( $IS_CLOSED_LOOP )); then
-  export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_kyon_real.yaml"
+  export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_kyon_real_no_yaw.yaml"
 fi
 
 export CLUSTER_CL_FNAME="kyonrlstepping.controllers.horizon_based.kyon_real_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.03
+export CLUSTER_DT=0.04
 export N_NODES=31
 export CLUSTER_DB=1
 export PHYSICS_DT=0.0005
@@ -68,9 +68,9 @@ export ENV_IDX_BAG=661
 export ENV_IDX_BAG_DEMO=-1
 export ENV_IDX_BAG_EXPL=-1
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/B2WRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
-export CUSTOM_ARGS_NAMES="wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_flat_ground estimate_v_root base_linkname self_collide" 
-export CUSTOM_ARGS_DTYPE="xacro bool bool bool bool bool bool str bool"
-export CUSTOM_ARGS_VALS="false true true false true true false pelvis false" 
+export CUSTOM_ARGS_NAMES="fix_yaw wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_flat_ground estimate_v_root base_linkname self_collide" 
+export CUSTOM_ARGS_DTYPE="bool xacro bool bool bool bool bool bool str bool"
+export CUSTOM_ARGS_VALS="true true true true false true true false pelvis false" 
 export SET_ULIM=1 
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=120000 # timeout after which each script autokills ([ms])

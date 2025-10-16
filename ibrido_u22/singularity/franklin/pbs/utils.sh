@@ -75,14 +75,14 @@ function send_signal() {
 alias send_signal="send_signal"
 
 get_walltime() {
-    # Check if PBS_JOBID environment variable is set
-    if [ -z "$PBS_JOBID" ]; then
-        echo "Error: PBS_JOBID environment variable is not set."
+    # Check if SCHED_JOBID environment variable is set
+    if [ -z "$SCHED_JOBID" ]; then
+        echo "Error: SCHED_JOBID environment variable is not set."
         return 1
     fi
 
     # Run the qstat command and parse the JSON output using jq
-    walltime=$(qstat -f "$PBS_JOBID" -F json | jq -r '.Jobs[].Resource_List.walltime')
+    walltime=$(qstat -f "$SCHED_JOBID" -F json | jq -r '.Jobs[].Resource_List.walltime')
 
     # Check if jq command was successful
     if [ $? -ne 0 ]; then
@@ -95,13 +95,13 @@ get_walltime() {
 alias get_walltime="get_walltime"
 
 send_signal_from_within() {
-    # Check if PBS_JOBID and script_pattern are provided
+    # Check if SCHED_JOBID and script_pattern are provided
 
     local script_pattern=$1
     local signal=${2:-SIGINT}  # Default to SIGINT if no signal is provided
 
     # Extract the job ID before the first dot
-    local job_id=$(echo "$PBS_JOBID" | cut -d'.' -f1)
+    local job_id=$(echo "$SCHED_JOBID" | cut -d'.' -f1)
     echo "Preparing to send signal from within job $job_id"
 
     # Find the PIDs of the scripts matching the pattern

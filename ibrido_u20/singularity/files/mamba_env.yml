@@ -16,16 +16,16 @@ dependencies:
   # - torchaudio
   - pytorch-cuda
   # - cuda-toolkit
-  - clang
-  - compilers 
-  - cmake
-  - make
-  - gcc
-  - gxx
-  - libcxx
-  - gcc_linux-64
-  - gxx_linux-64
-  - libgcc-devel_linux-64
+  # - clang
+  # - compilers 
+  # - cmake
+  # - make
+  # - gcc
+  # - gxx
+  # - libcxx
+  # - gcc_linux-64
+  # - gxx_linux-64
+  # - libgcc-devel_linux-64
   - gtest
   - pybind11
   - eigen3
