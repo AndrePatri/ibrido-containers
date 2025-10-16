@@ -13,6 +13,8 @@ WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
 MAMBAENVNAME="${MAMBA_ENV_NAME}"
 N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
 
+config_file="$HOME/ibrido_files/training_cfgs/training_cfg.sh"
+
 # Array of directories
 directories=(
     "$WS_ROOT/src/KyonRLStepping"

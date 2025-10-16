@@ -13,7 +13,6 @@ source ${WS_BASEDIR}/setup.bash # ros2 setup
 rm -rf $WS_BASEDIR/build && mkdir $WS_BASEDIR/build
 rm -rf $WS_BASEDIR/install && mkdir $WS_BASEDIR/install
 
-# export LD_LIBRARY_PATH=$MAMBA_ROOT_PREFIX/envs/$MAMBA_ENV_NAME/lib:$LD_LIBRARY_PATH
 
 # OUTSIDE MICROMAMBA ENV->
 
@@ -38,6 +37,8 @@ make -j8 install
 # INSIDE MICROMAMBA ENV->
 source /root/ibrido_utils/mamba_utils/bin/_activate_current_env.sh # enable mamba for this shell
 micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install packages
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MAMBA_ROOT_PREFIX/envs/$MAMBA_ENV_NAME/lib
 
 mkdir -p $WS_BASEDIR/build/perf_sleep
 cd $WS_BASEDIR/build/perf_sleep
