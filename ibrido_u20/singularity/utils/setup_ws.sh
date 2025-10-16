@@ -34,6 +34,11 @@ cd $WS_BASEDIR/build/adarl_ros_utils
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${WS_INSTALLDIR} -DWITH_MOVEIT=0 -DWITH_ROS_CONTROL=0 ../../src/adarl_ros/adarl_ros_utils/
 make -j8 install
 
+mkdir -p $WS_BASEDIR/build/phase_manager
+cd $WS_BASEDIR/build/phase_manager
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${WS_INSTALLDIR} ../../src/phase_manager/
+make -j8 install
+
 # INSIDE MICROMAMBA ENV->
 source /root/ibrido_utils/mamba_utils/bin/_activate_current_env.sh # enable mamba for this shell
 micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install packages
@@ -58,11 +63,6 @@ make -j8 install
 mkdir -p $WS_BASEDIR/build/horizon
 cd $WS_BASEDIR/build/horizon
 cmake -DCMAKE_BUILD_TYPE=Release ../../src/horizon/horizon/cpp
-make -j8 install
-
-mkdir -p $WS_BASEDIR/build/phase_manager
-cd $WS_BASEDIR/build/phase_manager
-cmake -DCMAKE_BUILD_TYPE=Release ../../src/phase_manager/
 make -j8 install
 
 # pip install -e $WS_BASEDIR/src/jumping_leg
