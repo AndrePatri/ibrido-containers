@@ -1,136 +1,90 @@
-function qifun() {
-             ssh $(qstat -f $1 | grep exec_host | cut -f 7 -d " " | cut -f 1 -d "/") cat /var/spool/pbs/spool/$1*
+# Utility helpers adapted from PBS-based helpers to Slurm equivalents.
+echo "Could not determine a node for job $job"
+return 1
+fi
+echo "Launching bash session on host: $node"
+ssh -t "$node" bash
+else
+# No job given — open a local shell
+bash
+fi
 }
+alias bash_session=launch_bash_session
 
-alias print_out="qifun"
 
-
-function qhfun() {
-             ssh -t $(qstat -f $1 | grep exec_host | cut -f 7 -d " " | cut -f 1 -d "/") htop -u $USER
-}
-
-alias cpu_usage="qhfun"
-
-function qnfun() {
-             ssh -t $(qstat -f $1 | grep exec_host | cut -f 7 -d " " | cut -f 1 -d "/") nvidia-smi
-}
-
-alias gpu_usage="qnfun"
-
-function launch_bash_session() {
-    if [ -z "$1" ]; then
-        echo "Usage: launch_bash_session <job_id>"
-        return 1
-    fi
-
-    # Get the execution host of the job
-    exec_host=$(qstat -f $1 | grep exec_host | cut -f 7 -d " " | cut -f 1 -d "/")
-
-    if [ -z "$exec_host" ]; then
-        echo "Could not determine the execution host for job $1."
-        return 1
-    fi
-
-    echo "Launching bash session on host: $exec_host"
-    ssh -t $exec_host bash
-}
-alias bash_session="launch_bash_session"
-
+# Send a signal to a job (prefer scancel --signal if available)
 function send_signal() {
-    if [ -z "$1" ] || [ -z "$2" ]; then
-        echo "Usage: send_signal <job_id> <script_pattern> [<signal>]"
-        return 1
-    fi
+local job_id=$1
+local script_pattern=$2
+local signal=${3:-SIGINT}
 
-    local job_id=$1
-    local script_pattern=$2
-    local signal=${3:-SIGINT}  # Default to SIGINT if no signal is provided
 
-    # Get the execution host of the job
-    local exec_host=$(qstat -f $job_id | grep exec_host | cut -f 7 -d " " | cut -f 1 -d "/")
+if [ -z "$job_id" ]; then
+echo "Usage: send_signal <jobid> <script_pattern> [SIGNAL]"
+return 1
+fi
 
-    if [ -z "$exec_host" ]; then
-        echo "Could not determine the execution host for job $job_id."
-        return 1
-    fi
 
-    ssh -t "$exec_host" "
-        # Find the PIDs of the scripts matching the pattern
-        pids=\$(pgrep -f '${script_pattern}')
-        echo "Matching PIDS: \$pids"
-        if [ -z \"\$pids\" ]; then
-            echo 'No processes found matching pattern \"${script_pattern}\"'
-            exit 1
-        fi
+# Prefer Slurm's scancel --signal mechanism (requires slurm version with --signal support)
+if command -v scancel >/dev/null 2>&1; then
+# Try sending the signal to the job
+scancel --signal="$signal" "$job_id" 2>/dev/null || true
+fi
 
-        # Loop through each PID and send the specified signal
-        for pid in \$pids; do
-            kill -s ${signal} \$pid
-        done
 
-        # Open a bash shell
-        bash
-    "
+# If scancel didn't do it (or to act on processes directly), try SSH to node and kill matching procs
+local node=$(squeue -j "$job_id" -h -o "%N" | cut -d',' -f1)
+if [ -z "$node" ]; then
+echo "Could not determine the execution host for job $job_id."
+return 1
+fi
+
+
+echo "Preparing to send signal from within job $job_id on node $node"
+ssh -t "$node" "
+pids=\$(pgrep -f '${script_pattern}')
+echo 'Matching PIDs:' \"\$pids\"
+if [ -z \"\$pids\" ]; then
+echo 'No processes found matching pattern "${script_pattern}"'
+exit 1
+fi
+for pid in \$pids; do
+kill -s \"$signal\" \"\$pid\"
+done
+"
 }
-alias send_signal="send_signal"
 
-get_walltime() {
-    # Check if PBS_JOBID environment variable is set
-    if [ -z "$SCHED_JOBID" ]; then
-        echo "Error: SCHED_JOBID environment variable is not set."
-        return 1
-    fi
 
-    # Run the qstat command and parse the JSON output using jq
-    walltime=$(qstat -f "$SCHED_JOBID" -F json | jq -r '.Jobs[].Resource_List.walltime')
+alias send_signal_outside=send_signal
 
-    # Check if jq command was successful
-    if [ $? -ne 0 ]; then
-        echo "Error: Unable to parse the JSON output."
-        return 1
-    fi
 
-    echo "$walltime"
+# Get walltime (TimeLimit) for the current Slurm job
+function get_walltime() {
+if [ -z "$SLURM_JOB_ID" ]; then
+echo "Error: SLURM_JOB_ID environment variable is not set."
+return 1
+fi
+
+
+local walltime=$(scontrol show job "$SLURM_JOB_ID" | awk -F"TimeLimit=" '/TimeLimit/ {print $2}' | awk '{print $1}')
+echo "$walltime"
 }
-alias get_walltime="get_walltime"
+alias get_walltime=get_walltime
 
-send_signal_from_within() {
-    # Check if SCHED_JOBID and script_pattern are provided
-
-    local script_pattern=$1
-    local signal=${2:-SIGINT}  # Default to SIGINT if no signal is provided
-
-    # Extract the job ID before the first dot
-    local job_id=$(echo "$SCHED_JOBID" | cut -d'.' -f1)
-    echo "Preparing to send signal from within job $job_id"
-
-    # Find the PIDs of the scripts matching the pattern
-    pids=$(pgrep -f "$script_pattern")
-    echo "Matching PIDs: $pids"
-    if [ -z "$pids" ]; then
-        echo "No processes found matching pattern \"$script_pattern\""
-        return 1
-    fi
-
-    # Loop through each PID and send the specified signal
-    for pid in $pids; do
-        kill -s "$signal" "$pid"
-    done
-}
-alias send_signal_from_within="send_signal_from_within"
 
 # Convert h:m:s to seconds
-time_to_seconds() {
-    local time=$1
-    local h=$(echo $time | cut -d':' -f1)
-    local m=$(echo $time | cut -d':' -f2)
-    local s=$(echo $time | cut -d':' -f3)
-    echo $((10#$h*3600 + 10#$m*60 + 10#$s))
+function time_to_seconds() {
+local time=$1
+local h=$(echo $time | cut -d':' -f1)
+local m=$(echo $time | cut -d':' -f2)
+local s=$(echo $time | cut -d':' -f3)
+echo $((10#$h*3600 + 10#$m*60 + 10#$s))
 }
 
+
 # Convert minutes to seconds
-minutes_to_seconds() {
-    local minutes=$1
-    echo $((minutes * 60))
+function minutes_to_seconds() {
+local minutes=$1
+echo $((minutes * 60))
 }
 alias minutes_to_seconds="minutes_to_seconds"
