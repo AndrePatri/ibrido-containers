@@ -5,7 +5,7 @@ export XMODIFIERS=@im=ibus
 export GTK_IM_MODULE=ibus
 export QT_IM_MODULE=ibus
 
-SLEEP_FOR=0.05
+SLEEP_FOR=0.1
 BYOBU_WS_NAME="ibrido_xbot"
 WS_ROOT="$HOME/ibrido_ws"
 WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
@@ -114,7 +114,7 @@ cd_and_split() {
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
-    -cfg|--cfg) config_file="${cfg_file_basepath}/$2"; shift ;;
+    -cfg|--cfg) config_file="$2"; shift ;;
     *) echo "Unknown parameter passed: $1"; usage ;;
   esac
   shift
@@ -138,6 +138,7 @@ byobu kill-session -t ${BYOBU_WS_NAME}
 
 byobu new-session -d -s ${BYOBU_WS_NAME} -c ${WORKING_DIR} -n ${BYOBU_WS_NAME} # -d "detached" session
 
+echo $REMOTE_ENV_FNAME
 # tab 0
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
