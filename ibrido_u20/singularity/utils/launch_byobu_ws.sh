@@ -9,6 +9,7 @@ SLEEP_FOR=0.1
 BYOBU_WS_NAME="ibrido_xbot"
 WS_ROOT="$HOME/ibrido_ws"
 WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
+WORKING_DIR_OTHER="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
 
 MAMBAENVNAME="${MAMBA_ENV_NAME}"
 N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
@@ -138,7 +139,6 @@ byobu kill-session -t ${BYOBU_WS_NAME}
 
 byobu new-session -d -s ${BYOBU_WS_NAME} -c ${WORKING_DIR} -n ${BYOBU_WS_NAME} # -d "detached" session
 
-echo $REMOTE_ENV_FNAME
 # tab 0
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
@@ -323,7 +323,7 @@ clear_terminal
 prepare_command "reset && ./replay_bag.bash $HOME/training_data/{}"
 
 split_h
-execute_command "cd ${WORKING_DIR}"
+execute_command "cd ${WORKING_DIR_OTHER}"
 activate_mamba_env
 execute_command "source /opt/ros/noetic/setup.bash"
 export ROS_MASTER_URI=$ROS_MASTER_URI
