@@ -69,7 +69,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/AugMPCEnvs.git*ibrido"
     "git@github.com:AndrePatri/MPCHive.git*devel"
     "git@github.com:AndrePatri/EigenIPC.git*devel"
-    "git@github.com:AndrePatri/MPCViz.git*ros2_humble"
+    "git@github.com:AndrePatri/MPCViz.git*ros1_noetic"
     "git@github.com:ADVRHumanoids/KyonRLStepping.git*ibrido"
     "git@github.com:ADVRHumanoids/CentauroHybridMPC.git*ibrido"
     "git@github.com:AndrePatri/horizon.git*ibrido"
