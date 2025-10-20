@@ -70,8 +70,8 @@ export SET_ULIM=1
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=60000 # timeout after which each script autokills ([ms])
 
-export CUSTOM_ARGS_NAMES="wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot estimate_v_root closed_partial fully_closed"
-export CUSTOM_ARGS_DTYPE="xacro bool bool bool bool int string bool bool bool bool"
-export CUSTOM_ARGS_VALS="true true true false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR false false true false"
+export CUSTOM_ARGS_NAMES="render_to_file render_fps wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot estimate_v_root closed_partial fully_closed"
+export CUSTOM_ARGS_DTYPE="bool float xacro bool bool bool bool int string bool bool bool bool"
+export CUSTOM_ARGS_VALS="false 60.0 true true true false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR false false true false"
 export REMOTE_ENV_FNAME="aug_mpc_envs.envs.xmj_env"  
 
