@@ -2,7 +2,7 @@
 
 if [ -z "$IBRIDO_CONTAINERS_PREFIX" ]; then
     echo "IBRIDO_CONTAINERS_PREFIX variable has not been seen. Please set it to \${path_to_ibrido-containers}/ibrido_22/singularity."
-    exit
+    exit 1
 fi
 
 THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
@@ -14,12 +14,29 @@ else
     IS_PBS_AVAILABLE=false
 fi
 
+# Check if SLURM is installed (look for common Slurm commands)
+if command -v squeue >/dev/null 2>&1 || command -v sbatch >/dev/null 2>&1 || command -v srun >/dev/null 2>&1; then
+    IS_SLURM_AVAILABLE=true
+else
+    IS_SLURM_AVAILABLE=false
+fi
+
+# Set a simple scheduler label (pbs preferred if both exist)
+if [ "$IS_PBS_AVAILABLE" = true ]; then
+    SCHEDULER="pbs"
+elif [ "$IS_SLURM_AVAILABLE" = true ]; then
+    SCHEDULER="slurm"
+else
+    SCHEDULER="none"
+fi
+
 ME=$(whoami)
 
 # defining base folder for framework
 BASE_FOLDER="$HOME/work"
-if [ "$IS_PBS_AVAILABLE" = true ]; then
-    BASE_FOLDER="/fastwork/${ME}" # use fastwork for cluster
+# Use cluster fastwork if either PBS or Slurm is available (PBS keeps priority previously used)
+if [ "$SCHEDULER" != "none" ]; then
+    BASE_FOLDER="/fastwork/${ME}"
 fi
 
 # some definitions
