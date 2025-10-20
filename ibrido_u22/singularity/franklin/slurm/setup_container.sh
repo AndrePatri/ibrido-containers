@@ -11,4 +11,4 @@
 
 module load apptainer-1.4.1
 
-$IBRIDO_CONTAINERS_PREFIX/build_singularity_isaac.sh --init --do_setup --ngc $NGC_KEY
+$IBRIDO_CONTAINERS_PREFIX/build_singularity_isaac.sh --init --do_setup --ngc_key $NGC_KEY
