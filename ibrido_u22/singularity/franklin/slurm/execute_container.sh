@@ -14,4 +14,4 @@ module load apptainer-1.4.1
 export SCHED_JOBID="${SLURM_JOB_ID:-$PBS_JOBID}"
 
 $IBRIDO_CONTAINERS_PREFIX/franklin/slurm/prescia_script.sh &
-$IBRIDO_CONTAINERS_PREFIX/execute.sh --cfg $cfg
+$IBRIDO_CONTAINERS_PREFIX/execute.sh --cfg "$1"
