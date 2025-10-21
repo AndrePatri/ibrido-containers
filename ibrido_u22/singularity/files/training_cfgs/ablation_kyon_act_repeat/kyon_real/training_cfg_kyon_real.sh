@@ -48,6 +48,7 @@ export CLUSTER_DT=0.04
 export N_NODES=31
 export CLUSTER_DB=1
 export PHYSICS_DT=0.001
+export USE_GPU_SIM=1
 # export CODEGEN_OVERRIDE_BDIR="none"
 export CODEGEN_OVERRIDE_BDIR="${HOME}/aux_data/KyonRHCLusterClient_${SHM_NS}/CodeGen/${SHM_NS}Rhc"
 # export TRAIN_ENV_FNAME="linvel_env_baseline"
