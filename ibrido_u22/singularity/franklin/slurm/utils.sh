@@ -1,16 +1,4 @@
 # Utility helpers adapted from PBS-based helpers to Slurm equivalents.
-echo "Could not determine a node for job $job"
-return 1
-fi
-echo "Launching bash session on host: $node"
-ssh -t "$node" bash
-else
-# No job given — open a local shell
-bash
-fi
-}
-alias bash_session=launch_bash_session
-
 
 # Send a signal to a job (prefer scancel --signal if available)
 function send_signal() {

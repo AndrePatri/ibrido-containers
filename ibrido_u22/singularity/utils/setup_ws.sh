@@ -75,6 +75,8 @@ pip install -e adarl
 
 pip install --no-deps -e horizon
 
+micromamba install -y clang
+
 # copying aug_mpc_envs isaac kit 
 # cd $WS_BASEDIR/src/AugMPCEnvs/aug_mpc_envs/cfg/omni_kits/  
 # ./copy2isaac_folder.sh
