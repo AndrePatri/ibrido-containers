@@ -42,6 +42,7 @@ dependencies:
   # - perf_sleep
   - catkin_pkg=1.0.0
   - pip:
+    - transforms3d
     - flit
     - h5py
     - protobuf
