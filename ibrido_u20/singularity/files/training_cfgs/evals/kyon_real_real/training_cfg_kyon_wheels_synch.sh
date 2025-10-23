@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export RT_DEPLOY=0
+export RT_DEPLOY=1
 
 export EVAL=1
 export DET_EVAL=1

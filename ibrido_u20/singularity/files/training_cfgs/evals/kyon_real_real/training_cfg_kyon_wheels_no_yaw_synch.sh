@@ -1,14 +1,14 @@
 #!/bin/bash
 
-export RT_DEPLOY=0
+export RT_DEPLOY=1
 
 export EVAL=1
 export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-export MPATH=""
-export MNAME=""
+export MPATH="/root/training_data/d2025_10_22_h22_m26_s16-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline"
+export MNAME="d2025_10_22_h22_m26_s16-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline_model"
 
 if [[ $RT_DEPLOY -eq 1 ]]; then
   export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_wheels_no_yaw_real.yaml"
