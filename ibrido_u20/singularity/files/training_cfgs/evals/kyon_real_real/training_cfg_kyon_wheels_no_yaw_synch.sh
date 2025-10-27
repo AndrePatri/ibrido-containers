@@ -82,14 +82,14 @@ export ULIM_N=28672 # maximum number of open file descriptors for each process (
 export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 
 if [[ $RT_DEPLOY -eq 1 ]]; then
-  export CUSTOM_ARGS_NAMES="fix_yaw step_height wheels fixed_flights adaptive_is lin_a_feedback closed_partial fully_closed estimate_v_root base_linkname use_diff_vels xmj_timeout xmj_files_dir state_from_xbot rt_safety_perf_coeff use_mpc_pos_for_robot" 
-  export CUSTOM_ARGS_DTYPE="bool float xacro bool bool bool bool bool bool str bool int string bool float bool"
-  export CUSTOM_ARGS_VALS="true 0.18 true true true false true false false pelvis false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true 1.0 true" 
+  export CUSTOM_ARGS_NAMES="fix_yaw step_height wheels fixed_flights adaptive_is lin_a_feedback closed_partial fully_closed estimate_v_root use_jnt_v_feedback base_linkname use_diff_vels xmj_timeout xmj_files_dir state_from_xbot rt_safety_perf_coeff use_mpc_pos_for_robot" 
+  export CUSTOM_ARGS_DTYPE="bool float xacro bool bool bool bool bool bool bool str bool int string bool float bool"
+  export CUSTOM_ARGS_VALS="true 0.18 true true true false true false false true pelvis false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true 1.0 true" 
   export REMOTE_ENV_FNAME="aug_mpc_envs.envs.rt_deploy_env" 
 
 else
-  export CUSTOM_ARGS_NAMES="fix_yaw step_height render_to_file render_fps wheels fixed_flights adaptive_is lin_a_feedback closed_partial fully_closed estimate_v_root base_linkname use_diff_vels xmj_timeout xmj_files_dir state_from_xbot" 
-  export CUSTOM_ARGS_DTYPE="bool float bool float xacro bool bool bool bool bool bool str bool int string bool"
-  export CUSTOM_ARGS_VALS="true 0.18 false 60.0 true true true false true false false pelvis false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR false" 
+  export CUSTOM_ARGS_NAMES="fix_yaw step_height render_to_file render_fps wheels fixed_flights adaptive_is lin_a_feedback closed_partial fully_closed estimate_v_root use_jnt_v_feedback base_linkname use_diff_vels xmj_timeout xmj_files_dir state_from_xbot" 
+  export CUSTOM_ARGS_DTYPE="bool float bool float xacro bool bool bool bool bool bool bool str bool int string bool"
+  export CUSTOM_ARGS_VALS="true 0.18 false 60.0 true true true false true false false true pelvis false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR false" 
   export REMOTE_ENV_FNAME="aug_mpc_envs.envs.xmj_env"  
 fi
