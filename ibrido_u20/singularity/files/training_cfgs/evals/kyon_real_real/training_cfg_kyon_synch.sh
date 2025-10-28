@@ -61,7 +61,7 @@ if (( $IS_CLOSED_LOOP )); then
   export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_kyon_real.yaml"
 fi
 export CLUSTER_CL_FNAME="kyonrlstepping.controllers.horizon_based.kyon_real_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.04
+export CLUSTER_DT=0.035
 export PHYSICS_DT=0.0005
 export N_NODES=31
 export CLUSTER_DB=1

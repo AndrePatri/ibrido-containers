@@ -44,7 +44,7 @@ if (( $IS_CLOSED_LOOP )); then
 fi
 
 export CLUSTER_CL_FNAME="kyonrlstepping.controllers.horizon_based.kyon_real_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.04
+export CLUSTER_DT=0.035
 export N_NODES=31
 export CLUSTER_DB=1
 export PHYSICS_DT=0.001
