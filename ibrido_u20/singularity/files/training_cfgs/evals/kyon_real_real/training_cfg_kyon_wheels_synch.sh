@@ -88,7 +88,7 @@ if [[ $RT_DEPLOY -eq 1 ]]; then
   export REMOTE_ENV_FNAME="aug_mpc_envs.envs.rt_deploy_env" 
 
 else
-  export CUSTOM_ARGS_NAMES="fix_yaw step_height render_to_file render_fps wheels fixed_flights adaptive_is lin_a_feedback closed_partial fully_closed estimate_v_root use_jnt_v_feedback use_jnt_v_feedback base_linkname use_diff_vels xmj_timeout xmj_files_dir state_from_xbot" 
+  export CUSTOM_ARGS_NAMES="fix_yaw step_height render_to_file render_fps wheels fixed_flights adaptive_is lin_a_feedback closed_partial fully_closed estimate_v_root use_jnt_v_feedback base_linkname use_diff_vels xmj_timeout xmj_files_dir state_from_xbot" 
   export CUSTOM_ARGS_DTYPE="bool float bool float xacro bool bool bool bool bool bool bool str bool int string bool"
   export CUSTOM_ARGS_VALS="false 0.18 false 60.0 true true true false true false false true pelvis false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR false" 
   export REMOTE_ENV_FNAME="aug_mpc_envs.envs.xmj_env"  
