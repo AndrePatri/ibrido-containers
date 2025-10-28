@@ -13,7 +13,7 @@ export GTK_IM_MODULE=ibus
 export QT_IM_MODULE=ibus
 
 SLEEP_FOR=0.05
-BYOBU_WS_NAME="ibrido_isaac"
+BYOBU_WS_NAME="ibrido_isaac_5x"
 WS_ROOT="$HOME/ibrido_ws"
 WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
 WORKING_DIR_OTHER="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
@@ -161,6 +161,7 @@ remote_env_cmd="--headless --use_gpu  --robot_name $SHM_NS \
 --cluster_dt $CLUSTER_DT \
 --physics_dt $PHYSICS_DT \
 --num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
+--env_fname $REMOTE_ENV_FNAME \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
 --custom_args_vals $CUSTOM_ARGS_VALS "

@@ -51,6 +51,7 @@ export PHYSICS_DT=0.001
 export USE_GPU_SIM=1
 # export CODEGEN_OVERRIDE_BDIR="none"
 export CODEGEN_OVERRIDE_BDIR="${HOME}/aux_data/KyonRHCLusterClient_${SHM_NS}/CodeGen/${SHM_NS}Rhc"
+export REMOTE_ENV_FNAME="aug_mpc_envs.envs.isaac5x_env" 
 # export TRAIN_ENV_FNAME="linvel_env_baseline"
 # export TRAIN_ENV_CNAME="LinVelTrackBaseline"
 export TRAIN_ENV_FNAME="fake_pos_env_baseline"

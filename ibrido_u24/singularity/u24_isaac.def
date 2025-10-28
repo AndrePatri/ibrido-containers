@@ -14,7 +14,6 @@ From:nvcr.io/nvidia/isaac-sim:5.1.0
 %files # copy isaac kits
     ./files/omni.isaac.sim.python.aug_mpc_envs.isaac5.1.headless.kit /isaac-sim/apps/
     ./files/omni.isaac.sim.python.aug_mpc_envs.isaac5.1.kit /isaac-sim/apps
-    ./files/nucleus4.0.0.py /isaac-sim/exts/omni.isaac.nucleus/omni/isaac/nucleus/nucleus.py
 
 %environment
     
@@ -49,33 +48,17 @@ From:nvcr.io/nvidia/isaac-sim:5.1.0
     echo "export MAMBA_EXE_PREFIX=\"${MAMBA_EXE_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_EXE=\"${MAMBA_EXE}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_ROOT_PREFIX=\"${MAMBA_ROOT_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
-
-    apt-get update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC && apt-get install -y ca-certificates python3 python3-venv python-is-python3 \
+    
+    apt-get update && apt-get install -y --no-install-recommends byobu nano cmake clang cmake-curses-gui curl swig ffmpeg zstd tzdata \
+        python3 python3-venv python-is-python3 \
         git wget sudo vim iputils-ping ssh rsync \
         plocate \
-        libgl1-mesa-glx libglx0 libglew-dev libglfw3 libglfw3-dev mesa-utils \
         libboost-all-dev \
-        dirmngr gnupg2 \
+        mesa-utils \
         build-essential \
-        valgrind \
-        byobu \
-        wget \
         htop \
         nvtop \
-        apt-utils \
-        software-properties-common \
-        nano \
-        cmake \
-        clang \
-        cmake-curses-gui \
-        curl \
-        swig \
-        ffmpeg \
-        zstd \
-        tzdata \
         && rm -rf /var/lib/apt/lists/*
-    
-    apt-get update && apt-get install -y --no-install-recommends byobu && rm -rf /var/lib/apt/lists/*
 
     # Micromamba setup
     # ensure decompression tools + file are present
