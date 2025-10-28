@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ -z "$IBRIDO_CONTAINERS_PREFIX" ]; then
-    echo "IBRIDO_CONTAINERS_PREFIX variable has not been seen. Please set it to \${path_to_ibrido-containers}/ibrido_22/singularity."
+    echo "IBRIDO_CONTAINERS_PREFIX variable has not been seen. Please set it to \${path_to_ibrido-containers}/ibrido_24/singularity."
     exit
 fi
 

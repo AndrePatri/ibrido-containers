@@ -9,11 +9,13 @@ source /root/ibrido_utils/mamba_utils/bin/_activate_current_env.sh # enable mamb
 
 micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install packages
 
+micromamba install -y cmake make
+
 # clean ws if already initialized
 rm -rf $WS_BASEDIR/build && mkdir $WS_BASEDIR/build
 rm -rf $WS_BASEDIR/install && mkdir $WS_BASEDIR/install
 
-export LD_LIBRARY_PATH=$MAMBA_ROOT_PREFIX/envs/$MAMBA_ENV_NAME/lib:$LD_LIBRARY_PATH
+# export LD_LIBRARY_PATH=$MAMBA_ROOT_PREFIX/envs/$MAMBA_ENV_NAME/lib:$LD_LIBRARY_PATH
 
 # build cmake packages
 mkdir -p $WS_BASEDIR/build/EigenIPC
