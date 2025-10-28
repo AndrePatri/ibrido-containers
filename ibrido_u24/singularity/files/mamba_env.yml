@@ -17,10 +17,10 @@ dependencies:
   # - torchaudio
   - pytorch-cuda=12.1
   # - cuda-toolkit
-  # - clang
-  # - compilers 
-  # - cmake
-  # - make
+  - clang
+  - compilers 
+  - cmake
+  - make
   - gtest
   - pybind11
   - eigen3
