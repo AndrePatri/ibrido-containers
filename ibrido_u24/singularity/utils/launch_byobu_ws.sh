@@ -12,7 +12,7 @@ export XMODIFIERS=@im=ibus
 export GTK_IM_MODULE=ibus
 export QT_IM_MODULE=ibus
 
-SLEEP_FOR=0.1
+SLEEP_FOR=0.05
 BYOBU_WS_NAME="ibrido_isaac"
 WS_ROOT="$HOME/ibrido_ws"
 WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
@@ -93,13 +93,13 @@ increase_file_limits_locally() {
 
 split_h() {
 
-    byobu split-window -p 50 -v
+    byobu split-window -v
 
 }
 
 split_v() {
 
-    byobu split-window -p 50 -h
+    byobu split-window -h
 
 }
 
@@ -350,13 +350,13 @@ split_h
 execute_command "cd ${WORKING_DIR}"
 execute_command "nvtop"
 
-# # tab 3
-# new_tab
+# tab 3
+new_tab
 
-# # Loop through directories and navigate to each one
-# for dir in "${directories[@]}"; do
-#     cd_and_split "$dir"
-# done
+# Loop through directories and navigate to each one
+for dir in "${directories[@]}"; do
+    cd_and_split "$dir"
+done
 
 # we attach to the detached session
 attach_to_session

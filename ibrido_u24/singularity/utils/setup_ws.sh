@@ -9,8 +9,6 @@ source /root/ibrido_utils/mamba_utils/bin/_activate_current_env.sh # enable mamb
 
 micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install packages
 
-micromamba install -y 
-
 # clean ws if already initialized
 rm -rf $WS_BASEDIR/build && mkdir $WS_BASEDIR/build
 rm -rf $WS_BASEDIR/install && mkdir $WS_BASEDIR/install
@@ -25,7 +23,7 @@ make -j8 install
 
 mkdir -p $WS_BASEDIR/build/phase_manager
 cd $WS_BASEDIR/build/phase_manager
-cmake -DCMAKE_BUILD_TYPE=Release -DTESTS=OFF../../src/phase_manager/
+cmake -DCMAKE_BUILD_TYPE=Release -DTESTS=OFF ../../src/phase_manager/
 make -j8 install
 
 # mkdir -p $WS_BASEDIR/build/casadi
@@ -38,7 +36,7 @@ cd $WS_BASEDIR/build/horizon
 cmake -DCMAKE_BUILD_TYPE=Release -DTESTS=OFF ../../src/horizon/horizon/cpp
 make -j8 install
 
-source /opt/ros/humble/setup.bash # ros2 setup
+source /opt/ros/jazzy/setup.bash # ros2 setup
 
 mkdir -p $WS_BASEDIR/build/centauro_urdf
 cd $WS_BASEDIR/build/centauro_urdf
