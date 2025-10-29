@@ -104,6 +104,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:ADVRHumanoids/KyonRLStepping.git*ibrido"
     "git@github.com:ADVRHumanoids/CentauroHybridMPC.git*ibrido"
     "git@github.com:AndrePatri/horizon.git*ibrido"
+    "git@github.com:AndrePatri/casadi_kin_dyn.git*ibrido"
     "git@github.com:AndrePatri/phase_manager.git*ibrido"
     "git@github.com:AndrePatri/unitree_ros.git*ibrido"
     "git@github.com:AndrePatri/iit-centauro-ros-pkg.git*ibrido_ros2"
@@ -111,6 +112,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros2&iit-kyon-description"
     "git@github.com:AndrePatri/casadi.git*optional_float"
     "git@gitlab.com:crzz/adarl.git*andrepatri_dev"
+    "git@github.com:AndrePatri/PerfSleep.git*main"
 )
 
 # Concatenate

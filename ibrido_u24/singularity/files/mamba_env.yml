@@ -7,8 +7,8 @@ channels:
   - conda-forge
   - omnia
   - robostack-staging
-  - francesco_ruscelli
-  - AndrePatri
+  # - francesco_ruscelli
+  # - AndrePatri
 
 dependencies: 
   - python=3.11
@@ -26,7 +26,8 @@ dependencies:
   - eigen3
   - poetry
   - python-devtools
-  - casadi_kin_dyn
+  - casadi
+  # - casadi_kin_dyn
   - pinocchio=2.6.20
   - quaternion
   - yaml-cpp
@@ -35,7 +36,7 @@ dependencies:
   - pyqt
   - pyqtgraph
   - pyside2
-  - perf_sleep
+  # - perf_sleep
   - catkin_pkg=1.0.0
   - pip:
     - flit

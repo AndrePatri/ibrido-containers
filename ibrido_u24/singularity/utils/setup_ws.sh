@@ -16,6 +16,12 @@ rm -rf $WS_BASEDIR/install && mkdir $WS_BASEDIR/install
 # export LD_LIBRARY_PATH=$MAMBA_ROOT_PREFIX/envs/$MAMBA_ENV_NAME/lib:$LD_LIBRARY_PATH
 
 # build cmake packages
+
+mkdir -p $WS_BASEDIR/build/perf_sleep
+cd $WS_BASEDIR/build/perf_sleep
+cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON ../../src/PerfSleep/perf_sleep
+make -j8 install
+
 mkdir -p $WS_BASEDIR/build/EigenIPC
 cd $WS_BASEDIR/build/EigenIPC
 cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON ../../src/EigenIPC/EigenIPC
@@ -30,6 +36,11 @@ make -j8 install
 # cd $WS_BASEDIR/build/casadi
 # cmake -DCMAKE_BUILD_TYPE=Release -DWITH_OSQP=1 -DWITH_QPOASES=1 -DWITH_LAPACK=1 -DWITH_THREAD=1 -DWITH_PYTHON=1 -DWITH_PYTHON3=1 -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/casadi
 # make -j8 install
+
+mkdir -p $WS_BASEDIR/build/casadi_kin_dyn
+cd $WS_BASEDIR/build/casadi_kin_dyn
+cmake -DCMAKE_BUILD_TYPE=Release -DTESTS=OFF -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/casadi_kin_dyn/
+make -j8 install
 
 mkdir -p $WS_BASEDIR/build/horizon
 cd $WS_BASEDIR/build/horizon
