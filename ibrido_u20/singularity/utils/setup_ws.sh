@@ -13,7 +13,6 @@ source ${WS_BASEDIR}/setup.bash # ros2 setup
 rm -rf $WS_BASEDIR/build && mkdir $WS_BASEDIR/build
 rm -rf $WS_BASEDIR/install && mkdir $WS_BASEDIR/install
 
-
 # OUTSIDE MICROMAMBA ENV->
 
 mkdir -p $WS_BASEDIR/build/phase_manager
