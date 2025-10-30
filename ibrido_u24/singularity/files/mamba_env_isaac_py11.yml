@@ -1,4 +1,4 @@
-name: ibrido
+name: ibrido_isaac_py11
 
 channels: 
   - defaults
@@ -7,11 +7,9 @@ channels:
   - conda-forge
   - omnia
   - robostack-staging
-  # - francesco_ruscelli
-  # - AndrePatri
 
 dependencies: 
-  - python=3.12
+  - python=3.11
   - pytorch>2.5=*cuda*
   - torchvision
   # - torchaudio
@@ -36,7 +34,6 @@ dependencies:
   - pyqtgraph
   - pyside2
   # - perf_sleep
-  # - catkin_pkg=1.0.0
   - pip:
     - xacro
     - flit

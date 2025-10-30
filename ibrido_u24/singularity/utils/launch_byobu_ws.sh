@@ -12,13 +12,12 @@ export XMODIFIERS=@im=ibus
 export GTK_IM_MODULE=ibus
 export QT_IM_MODULE=ibus
 
-SLEEP_FOR=0.05
+SLEEP_FOR=0.02
 BYOBU_WS_NAME="ibrido_isaac_5x"
 WS_ROOT="$HOME/ibrido_ws"
 WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
 WORKING_DIR_OTHER="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
 
-MAMBAENVNAME="${MAMBA_ENV_NAME}"
 N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
 
 # Default configuration file
@@ -73,7 +72,14 @@ attach_to_session() {
 activate_mamba_env() {
 
     execute_command "eval \"\$(micromamba shell hook --shell bash)\""
-    execute_command "micromamba activate ${MAMBAENVNAME}"
+    execute_command "micromamba activate ${MAMBA_ENV_NAME}"
+
+}
+
+activate_mamba_env_isaacpy11() {
+
+    execute_command "eval \"\$(micromamba shell hook --shell bash)\""
+    execute_command "micromamba activate ${MAMBA_ENV_NAME_ISAAC}"
 
 }
 
@@ -150,7 +156,7 @@ byobu new-session -d -s ${BYOBU_WS_NAME} -c ${WORKING_DIR} -n ${BYOBU_WS_NAME} #
 
 # tab 0
 execute_command "cd ${WORKING_DIR}"
-activate_mamba_env
+activate_mamba_env_isaacpy11 # we need the conda env with python 3.11 for isaac sim
 #execute_command "source ~/.local/share/ov/pkg/isaac_sim-2023.1.1/setup_conda_env.sh"
 execute_command "source /isaac-sim/setup_conda_env.sh"
 execute_command "source $WS_ROOT/setup.bash"
@@ -283,7 +289,7 @@ prepare_command "reset && python launch_train_env.py $training_env_cmd --comment
 split_h
 execute_command "cd ${WORKING_DIR}"
 # execute_command "source /opt/ros/noetic/setup.bash"
-execute_command "source /opt/ros/humble/setup.bash"
+execute_command "source /opt/ros/jazzy/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
@@ -293,7 +299,7 @@ prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --rhc_refs_in_h
 split_h
 execute_command "cd ${WORKING_DIR}"
 # execute_command "source /opt/ros/noetic/setup.bash"
-execute_command "source /opt/ros/humble/setup.bash"
+execute_command "source /opt/ros/jazzy/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
@@ -306,7 +312,7 @@ prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_trainin
 split_h
 execute_command "cd ${WORKING_DIR}"
 # execute_command "source /opt/ros/noetic/setup.bash"
-execute_command "source /opt/ros/humble/setup.bash"
+execute_command "source /opt/ros/jazzy/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
@@ -319,7 +325,7 @@ prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_trainin
 split_v
 execute_command "cd ${WORKING_DIR}"
 # execute_command "source /opt/ros/noetic/setup.bash"
-execute_command "source /opt/ros/humble/setup.bash"
+execute_command "source /opt/ros/jazzy/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
@@ -333,14 +339,14 @@ prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_trainin
 new_tab
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
-execute_command "source /opt/ros/humble/setup.bash"
+execute_command "source /opt/ros/jazzy/setup.bash"
 prepare_command "reset && ./replay_bag.bash ~/training_data/{}"
 
 split_h
 execute_command "cd ${WORKING_DIR_OTHER}"
 # execute_command "source /opt/ros/noetic/setup.bash"
 activate_mamba_env
-execute_command "source /opt/ros/humble/setup.bash"
+execute_command "source /opt/ros/jazzy/setup.bash"
 prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
 
 # tab2

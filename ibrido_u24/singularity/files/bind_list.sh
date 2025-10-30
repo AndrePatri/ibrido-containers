@@ -100,7 +100,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/AugMPCEnvs.git*ibrido24"
     "git@github.com:AndrePatri/MPCHive.git*devel"
     "git@github.com:AndrePatri/EigenIPC.git*devel"
-    "git@github.com:AndrePatri/MPCViz.git*ros2_humble"
+    "git@github.com:AndrePatri/MPCViz.git*ros2_jazzy"
     "git@github.com:ADVRHumanoids/KyonRLStepping.git*ibrido"
     "git@github.com:ADVRHumanoids/CentauroHybridMPC.git*ibrido"
     "git@github.com:AndrePatri/horizon.git*ibrido"
@@ -113,6 +113,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/casadi.git*optional_float"
     "git@gitlab.com:crzz/adarl.git*andrepatri_dev"
     "git@github.com:AndrePatri/PerfSleep.git*main"
+    # "git@github.com:ros/xacro.git*ros2"
 )
 
 # Concatenate

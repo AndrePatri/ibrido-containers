@@ -53,7 +53,6 @@ fi
 
 # activate micromamba for this shell
 eval "$(micromamba shell hook --shell bash)"
-micromamba activate ${MAMBA_ENV_NAME}
 
 source /isaac-sim/setup_conda_env.sh
 source $HOME/ibrido_ws/setup.bash
@@ -104,7 +103,11 @@ fi
 if (( $USE_GPU_SIM )); then
 remote_env_cmd+="--use_gpu "
 fi 
+micromamba activate ${MAMBA_ENV_NAME_ISAAC} # use isaac sim compatible env
 python $LRHC_DIR/launch_remote_env.py $remote_env_cmd > "$log_remote" 2>&1 &
+micromamba deactivate ${MAMBA_ENV_NAME_ISAAC} # use isaac sim compatible env
+
+micromamba activate ${MAMBA_ENV_NAME} # switch to ibrido base env
 
 # cluster
 cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
@@ -196,7 +199,7 @@ fi
 
 # rosbag db
 if (( $ENV_IDX_BAG >= 0 && $CLUSTER_DB)); then
-  source /opt/ros/humble/setup.bash
+  source /opt/ros/jazzy/setup.bash
   rosbag_cmd="--ros2 --use_shared_drop_dir --pub_stime --is_training \
   --ns $SHM_NS --rhc_refs_in_h_frame \
   --srdf_path $SRDF_PATH_ROSBAG \
@@ -210,7 +213,7 @@ fi
 # demo env db
 sleep 2 # wait a bit
 if (( $ENV_IDX_BAG_DEMO >= 0 && $CLUSTER_DB)); then
-  source /opt/ros/humble/setup.bash
+  source /opt/ros/jazzy/setup.bash
   rosbag_cmd="--ros2 --use_shared_drop_dir --is_training \
   --ns $SHM_NS --remap_ns "${SHM_NS}_demo" \
   --rhc_refs_in_h_frame \
@@ -225,7 +228,7 @@ fi
 # expl env db
 sleep 2 # wait a bit
 if (( $ENV_IDX_BAG_EXPL >= 0 && $CLUSTER_DB)); then
-  source /opt/ros/humble/setup.bash
+  source /opt/ros/jazzy/setup.bash
   rosbag_cmd="--ros2 --use_shared_drop_dir --is_training \
   --ns $SHM_NS --remap_ns "${SHM_NS}_expl" \
   --rhc_refs_in_h_frame \

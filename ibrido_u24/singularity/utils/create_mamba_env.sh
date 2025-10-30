@@ -6,3 +6,9 @@ echo "Activating micromamba and creating ${MAMBA_ENV_NAME} environment..."
 source /root/ibrido_utils/mamba_utils/bin/_activate_current_env.sh # enable mamba for this shell
 
 micromamba env create -y --log-level error -f ${MAMBA_ENV_FPATH}
+
+MAMBA_ENV_FPATH_ISAAC=${HOME}/ibrido_files/mamba_env_isaac_py11.yml
+
+echo "Activating micromamba and creating auxiliary ${MAMBA_ENV_FPATH_ISAAC} environment..."
+
+micromamba env create -y --log-level error -f ${MAMBA_ENV_FPATH_ISAAC}
