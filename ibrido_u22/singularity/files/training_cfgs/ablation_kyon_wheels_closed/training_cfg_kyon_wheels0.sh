@@ -7,6 +7,8 @@ export OVERRIDE_AGENT_REFS=0
 export MPATH="/root/IBRIDO/"
 export MNAME=""
 
+export RESUME=0 # resume a previous training using a checkpoint
+
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
 export SHM_NS="kyon_wheels" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=800 # number of env to run in parallel

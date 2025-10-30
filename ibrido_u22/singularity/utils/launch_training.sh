@@ -172,6 +172,13 @@ fi
 if [[ -n "$RNAME" ]]; then
     training_env_cmd+="--run_name ${RNAME}_${TRAIN_ENV_CNAME} "
 fi
+if (( $RESUME )); then
+  # resume previous training 
+  training_env_cmd+="--resume --mpath $MPATH --mname $MNAME "
+  if (( $OVERRIDE_ENV )); then
+  training_env_cmd+="--override_env "
+  fi
+fi
 if (( $EVAL )); then
   # adding options if in eval mode
   training_env_cmd+="--eval --n_eval_timesteps $TOT_STEPS --mpath $MPATH --mname $MNAME "

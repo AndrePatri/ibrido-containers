@@ -27,6 +27,10 @@ else
   export ROS_IP="127.0.0.1"
 fi
 
+export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_wheels_no_yaw.yaml"
+export ROS_MASTER_URI="http://127.0.0.1:11311"
+export ROS_IP="127.0.0.1"
+
 # export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
 export SHM_NS="kyon_real_wheels_no_yaw" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=1 # number of env to run in parallel

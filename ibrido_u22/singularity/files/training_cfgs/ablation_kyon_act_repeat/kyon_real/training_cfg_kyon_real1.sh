@@ -7,6 +7,8 @@ export OVERRIDE_AGENT_REFS=1
 export MPATH="/root/training_data/"
 export MNAME=""
 
+export RESUME=0 # resume a previous training using a checkpoint
+
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
 export SHM_NS="kyon_real_no_wheels" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=800 # number of env to run in parallel
@@ -26,7 +28,7 @@ export LAYER_NORM=0
 export BATCH_NORM=0
 export IS_CLOSED_LOOP=1
 export DUMP_ENV_CHECKPOINTS=1
-export TOT_STEPS=6000000
+export TOT_STEPS=14000000
 export USE_RND=0
 export DEMO_ENVS_PERC=0.0
 export DEMO_STOP_THRESH=10.0
