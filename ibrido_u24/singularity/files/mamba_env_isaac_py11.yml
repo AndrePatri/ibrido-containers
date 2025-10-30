@@ -30,6 +30,7 @@ dependencies:
   - pyqt
   - pyqtgraph
   - pyside2
+  - catkin_pkg
   - pip:
     - xacro
     - flit

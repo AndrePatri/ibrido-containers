@@ -33,6 +33,10 @@ pip install -e MPCHive
 pip install -e AugMPCEnvs
 pip install -e AugMPC
 
+# clean cmake cache and builds
+rm -rf $WS_BASEDIR/build/perf_sleep && mkdir $WS_BASEDIR/build/perf_sleep
+rm -rf $WS_BASEDIR/build/EigenIPC && mkdir $WS_BASEDIR/build/EigenIPC
+
 micromamba deactivate 
 
 micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install packages

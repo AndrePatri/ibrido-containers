@@ -37,6 +37,7 @@ dependencies:
   - pyside2
   # - perf_sleep
   # - catkin_pkg=1.0.0
+  - catkin_pkg
   - pip:
     - xacro
     - flit
