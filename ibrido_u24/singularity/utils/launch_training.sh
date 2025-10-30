@@ -105,7 +105,7 @@ remote_env_cmd+="--use_gpu "
 fi 
 micromamba activate ${MAMBA_ENV_NAME_ISAAC} # use isaac sim compatible env
 python $LRHC_DIR/launch_remote_env.py $remote_env_cmd > "$log_remote" 2>&1 &
-micromamba deactivate ${MAMBA_ENV_NAME_ISAAC} # use isaac sim compatible env
+micromamba deactivate
 
 micromamba activate ${MAMBA_ENV_NAME} # switch to ibrido base env
 

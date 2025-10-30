@@ -33,7 +33,7 @@ pip install -e MPCHive
 pip install -e AugMPCEnvs
 pip install -e AugMPC
 
-micromamba deactivate ${MAMBA_ENV_NAME_ISAAC} 
+micromamba deactivate 
 
 micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly install packages
 

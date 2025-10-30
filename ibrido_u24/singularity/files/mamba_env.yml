@@ -28,7 +28,7 @@ dependencies:
   - python-devtools
   - casadi
   # - casadi_kin_dyn
-  - pinocchio
+  - pinocchio=2.6.*
   - quaternion
   - yaml-cpp
   - empy 
