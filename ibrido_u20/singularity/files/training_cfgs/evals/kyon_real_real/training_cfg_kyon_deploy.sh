@@ -7,8 +7,10 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/d2025_10_28_h23_m20_s48-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
-export MNAME="d2025_10_28_h23_m20_s48-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
+export MPATH="/root/training_data/d2025_10_29_h23_m12_s06-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
+export MNAME="d2025_10_29_h23_m12_s06-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
+
+export RESUME=0 # resume a previous training using a checkpoint
 
 export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_real.yaml"
 export XMJ_FILES_DIR="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real"
