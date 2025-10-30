@@ -38,13 +38,13 @@ dependencies:
   # - perf_sleep
   # - catkin_pkg=1.0.0
   - catkin_pkg
+  - scipy
   - pip:
     - xacro
     - flit
     - h5py
     - protobuf
     - matplotlib
-    - scipy
     - urdf-parser-py
     - multiprocess
     - pynput==1.6.6
