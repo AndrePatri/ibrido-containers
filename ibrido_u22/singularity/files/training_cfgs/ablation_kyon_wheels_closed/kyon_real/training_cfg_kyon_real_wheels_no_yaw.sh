@@ -46,7 +46,7 @@ if (( $IS_CLOSED_LOOP )); then
 fi
 
 export CLUSTER_CL_FNAME="kyonrlstepping.controllers.horizon_based.kyon_real_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.04
+export CLUSTER_DT=0.035
 export N_NODES=31
 export CLUSTER_DB=1
 export PHYSICS_DT=0.0005
@@ -76,7 +76,7 @@ export ENV_IDX_BAG_EXPL=-1
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/B2WRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
 export CUSTOM_ARGS_NAMES="step_height fix_yaw wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_flat_ground estimate_v_root use_jnt_v_feedback base_linkname self_collide" 
 export CUSTOM_ARGS_DTYPE="float bool xacro bool bool bool bool bool bool bool str bool"
-export CUSTOM_ARGS_VALS="0.18 true true true true false true true false false pelvis false" 
+export CUSTOM_ARGS_VALS="0.15 true true true true false true true false false pelvis false" 
 export SET_ULIM=1 
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=120000 # timeout after which each script autokills ([ms])
