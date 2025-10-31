@@ -21,7 +21,7 @@ cleanup() {
     # Loop until the process is no longer found in `ps` output
     while ps -p "$training_script_pid" > /dev/null; do
         echo "execute.sh: training script still alive."
-        sleep 1  # Check every second
+        sleep 2  # Check every second
     done
     echo "execute.sh: training script exited."
 }
