@@ -7,8 +7,11 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/d2025_10_29_h23_m12_s06-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
-export MNAME="d2025_10_29_h23_m12_s06-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
+# export MPATH="/root/training_data/d2025_10_29_h23_m12_s06-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
+# export MNAME="d2025_10_29_h23_m12_s06-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
+
+export MPATH="/root/training_data/d2025_10_30_h12_m44_s13-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
+export MNAME="d2025_10_30_h12_m44_s13-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
 
 if [[ $RT_DEPLOY -eq 1 ]]; then
   export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_real.yaml"
@@ -26,9 +29,6 @@ else
   export ROS_MASTER_URI="http://127.0.0.1:11311"
   export ROS_IP="127.0.0.1"
 fi
-export ROS_MASTER_URI="http://127.0.0.1:11311"
-export ROS_IP="127.0.0.1"
-export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic.yaml"
 
 # export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
 export SHM_NS="kyon_real_no_wheels" # shared mem namespace used for all shared data on CPU 
