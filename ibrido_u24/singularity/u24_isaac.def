@@ -68,18 +68,17 @@ From:nvcr.io/nvidia/isaac-sim:5.1.0
     # ensure decompression tools + file are present
     apt-get update && apt-get install -y --no-install-recommends bzip2 xz-utils gzip file curl && rm -rf /var/lib/apt/lists/*
 
-    MAMB_URL="https://micromamba.snakepit.net/api/micromamba/linux-64/latest"
+    MAMB_URL="https://micro.mamba.pm/api/micromamba/linux-64/latest"
     TMPF="/tmp/micromamba.tar"
-    mkdir -p ${MAMBA_EXE_PREFIX}
+    mkdir -p "${MAMBA_EXE_PREFIX}"
 
-    # download first so we can inspect
-    curl -sL "${MAMB_URL}" -o "${TMPF}" || { echo "download failed"; exit 1; }
+    # download (use --fail so HTTP errors make curl exit non-zero)
+    curl --fail -sSL "${MAMB_URL}" -o "${TMPF}" || { echo "micromamba download failed"; rm -f "${TMPF}"; exit 1; }
 
-    # detect type and extract only bin/micromamba
     mime="$(file -b --mime-type "${TMPF}" || true)"
-    echo "micromamba file mime-type: $mime"
+    echo "micromamba file mime-type: ${mime}"
 
-    case "$mime" in
+    case "${mime}" in
     application/x-bzip2|application/x-bz2)
         tar -xjf "${TMPF}" -C "${MAMBA_EXE_PREFIX}" --strip-components=1 "bin/micromamba"
         ;;
@@ -90,23 +89,22 @@ From:nvcr.io/nvidia/isaac-sim:5.1.0
         tar -xzf "${TMPF}" -C "${MAMBA_EXE_PREFIX}" --strip-components=1 "bin/micromamba"
         ;;
     application/x-tar|application/octet-stream)
-        # try plain tar extraction (fallback)
         tar -xvf "${TMPF}" -C "${MAMBA_EXE_PREFIX}" --strip-components=1 "bin/micromamba"
         ;;
     *)
-        echo "Unknown archive type ($mime) — attempting extraction with tar auto-detect"
-        tar -xvf "${TMPF}" -C "${MAMBA_EXE_PREFIX}" --strip-components=1 "bin/micromamba"
+        echo "Unknown archive type (${mime}) — attempting extraction with tar auto-detect"
+        tar -xvf "${TMPF}" -C "${MAMBA_EXE_PREFIX}" --strip-components=1 "bin/micromamba" || { echo "extraction failed"; ls -l "${TMPF}"; exit 1; }
         ;;
     esac
 
-    # sanity checks
-    if [ ! -x "${MAMBA_EXE_PREFIX}/micromamba" ]; then
-    echo "micromamba missing or not executable at ${MAMBA_EXE_PREFIX}/micromamba"
-    ls -l ${MAMBA_EXE_PREFIX} || true
-    exit 1
+    if [ ! -x "${MAMBA_EXE}" ]; then
+        echo "micromamba missing or not executable at ${MAMBA_EXE}"
+        ls -l "${MAMBA_EXE_PREFIX}" || true
+        rm -f "${TMPF}"
+        exit 1
     fi
 
-    chmod 755 "${MAMBA_EXE_PREFIX}/micromamba"
+    chmod 755 "${MAMBA_EXE}"
     rm -f "${TMPF}"
     
     # ROS 2 base setup
