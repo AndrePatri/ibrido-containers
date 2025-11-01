@@ -21,7 +21,7 @@ dependencies:
   - compilers 
   - cmake
   - make
-  - gtest
+  # - gtest
   - pybind11
   - eigen3
   - poetry

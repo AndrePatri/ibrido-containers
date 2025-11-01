@@ -43,6 +43,11 @@ micromamba activate ${MAMBA_ENV_NAME} # this has to be active to properly instal
 
 # build cmake packages
 
+mkdir -p $WS_BASEDIR/build/gtest
+cd $WS_BASEDIR/build/gtest
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/googletest
+make -j4 install
+
 mkdir -p $WS_BASEDIR/build/perf_sleep
 cd $WS_BASEDIR/build/perf_sleep
 cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON ../../src/PerfSleep/perf_sleep

@@ -26,7 +26,7 @@ dependencies:
   # - gcc_linux-64
   # - gxx_linux-64
   # - libgcc-devel_linux-64
-  - gtest
+  # - gtest
   - pybind11
   - eigen3
   - poetry

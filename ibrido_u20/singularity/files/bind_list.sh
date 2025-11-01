@@ -84,6 +84,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/casadi.git*optional_float"
     "git@gitlab.com:crzz/adarl.git*ibrido"
     "git@gitlab.com:crzz/adarl_ros.git*ibrido"
+    "git@github.com:google/googletest.git*main"
 )
 
 # Concatenate

@@ -114,6 +114,7 @@ IBRIDO_GITDIRS=(
     "git@gitlab.com:crzz/adarl.git*andrepatri_dev"
     "git@github.com:AndrePatri/PerfSleep.git*main"
     # "git@github.com:ros/xacro.git*ros2"
+    "git@github.com:google/googletest.git*main"
 )
 
 # Concatenate
