@@ -15,6 +15,12 @@ rm -rf $WS_BASEDIR/install && mkdir $WS_BASEDIR/install
 
 # OUTSIDE MICROMAMBA ENV->
 
+# adarl ros utils
+mkdir -p $WS_BASEDIR/build/adarl_ros_utils
+cd $WS_BASEDIR/build/adarl_ros_utils
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${WS_INSTALLDIR} -DWITH_MOVEIT=0 -DWITH_ROS_CONTROL=0 ../../src/adarl_ros/adarl_ros_utils/
+make -j8 install
+
 # build cmake packages
 mkdir -p $WS_BASEDIR/build/mujoco_cmake
 cd $WS_BASEDIR/build/mujoco_cmake
@@ -49,10 +55,10 @@ cd $WS_BASEDIR/build/EigenIPC
 cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON ../../src/EigenIPC/EigenIPC
 make -j8 install
 
-mkdir -p $WS_BASEDIR/build/casadi
-cd $WS_BASEDIR/build/casadi
-cmake -DCMAKE_BUILD_TYPE=Release -DWITH_OSQP=1 -DWITH_QPOASES=1 -DWITH_LAPACK=1 -DWITH_THREAD=1 -DWITH_PYTHON=1 -DWITH_PYTHON3=1 -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/casadi
-make -j8 install
+# mkdir -p $WS_BASEDIR/build/casadi
+# cd $WS_BASEDIR/build/casadi
+# cmake -DCMAKE_BUILD_TYPE=Release -DWITH_OSQP=1 -DWITH_QPOASES=1 -DWITH_LAPACK=1 -DWITH_THREAD=1 -DWITH_PYTHON=1 -DWITH_PYTHON3=1 -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/casadi
+# make -j8 install
 
 mkdir -p $WS_BASEDIR/build/phase_manager
 cd $WS_BASEDIR/build/phase_manager
@@ -62,12 +68,6 @@ make -j8 install
 mkdir -p $WS_BASEDIR/build/horizon
 cd $WS_BASEDIR/build/horizon
 cmake -DCMAKE_BUILD_TYPE=Release ../../src/horizon/horizon/cpp
-make -j8 install
-
-adarl ros utils
-mkdir -p $WS_BASEDIR/build/adarl_ros_utils
-cd $WS_BASEDIR/build/adarl_ros_utils
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${WS_INSTALLDIR} -DWITH_MOVEIT=0 -DWITH_ROS_CONTROL=0 ../../src/adarl_ros/adarl_ros_utils/
 make -j8 install
 
 # pip installations
@@ -80,7 +80,7 @@ pip install -e KyonRLStepping
 pip install -e MPCViz
 # pip install --no-deps -e horizon --install-option="--skip-build"
 pip install --no-deps -e horizon
-# pip install -e adarl
+pip install -e adarl
 pip install -e adarl_ros/adarl_ros
 micromamba install -y clang
 
