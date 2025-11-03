@@ -62,7 +62,13 @@ From:nvcr.io/nvidia/isaac-sim:5.1.0
         build-essential \
         htop \
         nvtop \
+        dbus \
         && rm -rf /var/lib/apt/lists/*
+
+    # Generate the machine-id
+    dbus-uuidgen --ensure=/var/lib/dbus/machine-id
+    # Create the /etc/machine-id symlink (common practice)
+    ln -sf /var/lib/dbus/machine-id /etc/machine-id
 
     # Micromamba setup
     # ensure decompression tools + file are present
