@@ -19,6 +19,7 @@ dependencies:
   - compilers 
   - cmake
   - make
+  - boost
   - gtest
   - pybind11
   - eigen3
