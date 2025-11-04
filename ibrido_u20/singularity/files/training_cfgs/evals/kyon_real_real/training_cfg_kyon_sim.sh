@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export RT_DEPLOY=1
+export RT_DEPLOY=0
 
 export EVAL=1
 export DET_EVAL=1
@@ -8,11 +8,11 @@ export EVAL_ON_CPU=1
 export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
 
-# export MPATH="/root/training_data/d2025_10_30_h12_m44_s13-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
-# export MNAME="d2025_10_30_h12_m44_s13-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
+export MPATH="/root/training_data/d2025_10_30_h12_m44_s13-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
+export MNAME="d2025_10_30_h12_m44_s13-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
 
-export MPATH="/root/training_data/d2025_11_03_h10_m18_s43-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
-export MNAME="d2025_11_03_h10_m18_s43-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
+# export MPATH="/root/training_data/d2025_11_03_h10_m18_s43-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
+# export MNAME="d2025_11_03_h10_m18_s43-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
 
 if [[ $RT_DEPLOY -eq 1 ]]; then
   export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_real.yaml"
@@ -21,15 +21,8 @@ else
 fi
 export XMJ_FILES_DIR="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real"
 
-if [[ $RT_DEPLOY -eq 1 ]]; then
-  # Set ROS_MASTER_URI and ROS_IP for deployment
-  export ROS_MASTER_URI="http://10.24.13.100:11311" # Centauro embedded
-  export ROS_IP=$(hostname -I | awk '{print $1}') # Extract first IP address
-else
-  # Set ROS_MASTER_URI and ROS_IP for local setup
-  export ROS_MASTER_URI="http://127.0.0.1:11311"
-  export ROS_IP="127.0.0.1"
-fi
+export ROS_MASTER_URI="http://127.0.0.1:11311"
+export ROS_IP="127.0.0.1"
 
 # export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
 export SHM_NS="kyon_real_no_wheels" # shared mem namespace used for all shared data on CPU 
@@ -94,6 +87,6 @@ if [[ $RT_DEPLOY -eq 1 ]]; then
 else
   export CUSTOM_ARGS_NAMES="step_height wheels fixed_flights adaptive_is lin_a_feedback closed_partial fully_closed estimate_v_root use_jnt_v_feedback base_linkname use_diff_vels xmj_timeout xmj_files_dir state_from_xbot rt_safety_perf_coeff use_mpc_pos_for_robot torque_correction xbot2_filter_prof" 
   export CUSTOM_ARGS_DTYPE="float xacro bool bool bool bool bool bool bool str bool int string bool float bool float str"
-  export CUSTOM_ARGS_VALS="0.18 false true true false true false false true pelvis false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true 1.0 true 1.0 fast" 
+  export CUSTOM_ARGS_VALS="0.18 false true true false true false false true pelvis false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR false 1.0 false 1.0 fast" 
   export REMOTE_ENV_FNAME="aug_mpc_envs.envs.xmj_env"  
 fi
