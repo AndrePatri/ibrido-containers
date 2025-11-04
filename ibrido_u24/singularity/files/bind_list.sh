@@ -97,7 +97,7 @@ ISAAC_BDIRS=(
 IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/IBRIDO.git*main"
     "git@github.com:AndrePatri/AugMPC.git*ibrido"
-    "git@github.com:AndrePatri/AugMPCEnvs.git*ibrido24"
+    "git@github.com:AndrePatri/AugMPCEnvs.git*ibrido"
     "git@github.com:AndrePatri/MPCHive.git*devel"
     "git@github.com:AndrePatri/EigenIPC.git*devel"
     "git@github.com:AndrePatri/MPCViz.git*ros2_jazzy"
