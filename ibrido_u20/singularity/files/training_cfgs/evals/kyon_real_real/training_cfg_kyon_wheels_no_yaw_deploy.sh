@@ -50,9 +50,9 @@ if (( $IS_CLOSED_LOOP )); then
   export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_kyon_real.yaml"
 fi
 export CLUSTER_CL_FNAME="kyonrlstepping.controllers.horizon_based.kyon_real_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.04
 export PHYSICS_DT=0.0005
 export N_NODES=31
+export CLUSTER_DT=0.035
 export CLUSTER_DB=1
 export CODEGEN_OVERRIDE_BDIR="none"
 # export TRAIN_ENV_FNAME="linvel_env_baseline"
@@ -72,5 +72,5 @@ export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 
 export CUSTOM_ARGS_NAMES="fix_yaw step_height wheels fixed_flights adaptive_is lin_a_feedback closed_partial fully_closed estimate_v_root use_jnt_v_feedback base_linkname use_diff_vels xmj_timeout xmj_files_dir state_from_xbot rt_safety_perf_coeff use_mpc_pos_for_robot xbot2_filter_prof" 
 export CUSTOM_ARGS_DTYPE="bool float xacro bool bool bool bool bool bool bool str bool int string bool float bool str"
-export CUSTOM_ARGS_VALS="true 0.18 true true true false true false false false pelvis false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true 1.35 true fast" 
+export CUSTOM_ARGS_VALS="true 0.15 true true true false true false false false pelvis false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true 1.35 true fast" 
 export REMOTE_ENV_FNAME="aug_mpc_envs.envs.rt_deploy_env" 
