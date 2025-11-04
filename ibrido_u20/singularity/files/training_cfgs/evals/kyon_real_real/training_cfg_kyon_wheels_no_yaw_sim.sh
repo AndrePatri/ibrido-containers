@@ -53,7 +53,7 @@ export DEMO_STOP_THRESH=10.0
 export TOT_STEPS=10000
 export DEMO_ENVS_PERC=0.0
 export EXPL_ENVS_PERC=0.0
-export ACTION_REPEAT=5
+export ACTION_REPEAT=3
 export USE_SAC=1
 export DISCOUNT_FACTOR=0.99
 export USE_PERIOD_RESETS=0
@@ -65,9 +65,9 @@ if (( $IS_CLOSED_LOOP )); then
   export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_kyon_real.yaml"
 fi
 export CLUSTER_CL_FNAME="kyonrlstepping.controllers.horizon_based.kyon_real_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.04
 export PHYSICS_DT=0.0005
 export N_NODES=31
+export CLUSTER_DT=0.035
 export CLUSTER_DB=1
 export CODEGEN_OVERRIDE_BDIR="none"
 # export TRAIN_ENV_FNAME="linvel_env_baseline"
