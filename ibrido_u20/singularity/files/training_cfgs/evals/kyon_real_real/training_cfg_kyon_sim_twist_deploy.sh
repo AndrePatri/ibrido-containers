@@ -5,7 +5,7 @@ export RT_DEPLOY=1
 export EVAL=1
 export DET_EVAL=1
 export EVAL_ON_CPU=1
-export OVERRIDE_ENV=0
+export OVERRIDE_ENV=1
 export OVERRIDE_AGENT_REFS=1
 
 # export MPATH="/root/training_data/d2025_10_30_h12_m44_s13-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
@@ -14,15 +14,12 @@ export OVERRIDE_AGENT_REFS=1
 export MPATH="/root/training_data/d2025_11_03_h10_m18_s43-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
 export MNAME="d2025_11_03_h10_m18_s43-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
 
-if [[ $RT_DEPLOY -eq 1 ]]; then
-  export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_real.yaml"
-else
-  export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic.yaml"
-fi
 export XMJ_FILES_DIR="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real"
 
-export ROS_MASTER_URI="http://127.0.0.1:11311"
-export ROS_IP="127.0.0.1"
+export ROS_MASTER_URI="http://10.24.13.100:11311" # Centauro embedded
+export ROS_IP=$(hostname -I | awk '{print $1}') # Extract first IP address
+
+export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_real.yaml"
 
 # export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
 export SHM_NS="kyon_real_no_wheels" # shared mem namespace used for all shared data on CPU 
@@ -63,10 +60,10 @@ export PHYSICS_DT=0.0005
 export N_NODES=31
 export CLUSTER_DB=1
 export CODEGEN_OVERRIDE_BDIR="none"
-# export TRAIN_ENV_FNAME="linvel_env_baseline"
-# export TRAIN_ENV_CNAME="LinVelTrackBaseline"
-export TRAIN_ENV_FNAME="fake_pos_env_baseline"
-export TRAIN_ENV_CNAME="FakePosEnvBaseline"
+export TRAIN_ENV_FNAME="linvel_env_baseline"
+export TRAIN_ENV_CNAME="LinVelTrackBaseline"
+# export TRAIN_ENV_FNAME="fake_pos_env_baseline"
+# export TRAIN_ENV_CNAME="FakePosEnvBaseline"
 # export TRAIN_ENV_FNAME="linvel_env_with_demo"
 # export TRAIN_ENV_CNAME="LinVelEnvWithDemo"
 export BAG_SDT=120.0
