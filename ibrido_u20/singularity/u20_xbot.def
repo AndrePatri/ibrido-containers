@@ -84,6 +84,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
         python3-pybind11 \
         gdb valgrind\
         libpugixml-dev \
+        libzmq3-dev \
         swig \
         ffmpeg && rm -rf /var/lib/apt/lists/*
     

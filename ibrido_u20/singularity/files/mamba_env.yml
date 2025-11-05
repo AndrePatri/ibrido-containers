@@ -27,6 +27,8 @@ dependencies:
   # - gxx_linux-64
   # - libgcc-devel_linux-64
   # - gtest
+  - zeromq
+  - protobuf
   - pybind11
   - eigen3
   - poetry
@@ -45,7 +47,6 @@ dependencies:
     - transforms3d
     - flit
     - h5py
-    - protobuf
     - matplotlib
     - scipy
     - urdf-parser-py
