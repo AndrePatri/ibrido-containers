@@ -85,6 +85,7 @@ IBRIDO_GITDIRS=(
     "git@gitlab.com:crzz/adarl.git*ibrido"
     "git@gitlab.com:crzz/adarl_ros.git*ibrido"
     "git@github.com:google/googletest.git*main"
+    "git@github.com:ADVRHumanoids/robot_monitoring.git*v2.7.5"
 )
 
 # Concatenate

@@ -27,7 +27,7 @@ dependencies:
   # - gxx_linux-64
   # - libgcc-devel_linux-64
   # - gtest
-  - zeromq
+  # - zeromq
   - protobuf
   - pybind11
   - eigen3
@@ -44,6 +44,7 @@ dependencies:
   # - perf_sleep
   - catkin_pkg=1.0.0
   - pip:
+    - pyzmq
     - transforms3d
     - flit
     - h5py
