@@ -56,6 +56,7 @@ IBRIDO_BDIRS=(
     "${IBRIDO_PREFIX}/.gazebo:/root/.gazebo:rw"
     "${IBRIDO_PREFIX}/.rviz2:/root/.rviz:rw"
     "${IBRIDO_PREFIX}/.mamba:/root/.mamba:rw"
+    "${IBRIDO_PREFIX}/.config:/root/.config:rw"
 )
 
 OTHER_BDIRS=(

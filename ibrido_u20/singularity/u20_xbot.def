@@ -86,6 +86,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
         libpugixml-dev \
         libzmq3-dev \
         swig \
+        joystick \
         ffmpeg && rm -rf /var/lib/apt/lists/*
     
     # ROS1 core

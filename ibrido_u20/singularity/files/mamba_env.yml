@@ -45,6 +45,7 @@ dependencies:
   - catkin_pkg=1.0.0
   - pip:
     - pyzmq
+    - pygame
     - transforms3d
     - flit
     - h5py
