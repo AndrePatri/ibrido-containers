@@ -82,7 +82,7 @@ pip install -e MPCViz
 pip install --no-deps -e horizon
 pip install -e adarl
 pip install -e adarl_ros/adarl_ros
-micromamba install -y clang
+# micromamba install -y clang
 
 # copying aug_mpc_envs isaac kit 
 # cd $WS_BASEDIR/src/AugMPCEnvs/aug_mpc_envs/cfg/omni_kits/  
