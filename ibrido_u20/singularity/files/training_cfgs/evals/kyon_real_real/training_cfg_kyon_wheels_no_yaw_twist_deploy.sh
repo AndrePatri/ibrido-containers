@@ -12,16 +12,11 @@ export OVERRIDE_AGENT_REFS=1
 export MPATH="/root/training_data/d2025_11_04_h17_m47_s49-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline"
 export MNAME="d2025_11_04_h17_m47_s49-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline_model"
 
-if [[ $RT_DEPLOY -eq 1 ]]; then
-  export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_wheels_no_yaw_real.yaml"
-else
-  export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_wheels_no_yaw.yaml"
-fi
+export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_wheels_no_yaw_real.yaml"
 export XMJ_FILES_DIR="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real"
 
-export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_wheels_no_yaw.yaml"
-export ROS_MASTER_URI="http://127.0.0.1:11311"
-export ROS_IP="127.0.0.1"
+export ROS_MASTER_URI="http://10.24.13.100:11311" # Centauro embedded
+export ROS_IP=$(hostname -I | awk '{print $1}') # Extract first IP address
 
 # export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
 export SHM_NS="kyon_real_wheels_no_yaw" # shared mem namespace used for all shared data on CPU 
@@ -49,7 +44,7 @@ export ACTION_REPEAT=3
 export USE_SAC=1
 export DISCOUNT_FACTOR=0.99
 export USE_PERIOD_RESETS=0
-export COMMENT='kyon REAL wheels no yaw CLOSED partial, UTD 8, action rep 5, target entropy -0.5, fake pos track max 1.0 m/s (action rate, NO CoT, dir track, 1.0 omega weight' # any training comment
+export COMMENT='kyon REAL wheels no yaw CLOSED partial, real deployment' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-description/kyon_urdf/urdf/kyon.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-description/kyon_srdf/srdf/kyon.srdf.xacro" # base path where the description package for the robot are located
 export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_kyon_real_open.yaml" # path to yaml file for jnt imp configuration
@@ -64,8 +59,8 @@ export CLUSTER_DB=1
 export CODEGEN_OVERRIDE_BDIR="none"
 # export TRAIN_ENV_FNAME="linvel_env_baseline"
 # export TRAIN_ENV_CNAME="LinVelTrackBaseline"
-export TRAIN_ENV_FNAME="fake_pos_env_baseline"
-export TRAIN_ENV_CNAME="FakePosEnvBaseline"
+export TRAIN_ENV_FNAME="linvel_env_baseline"
+export TRAIN_ENV_CNAME="LinVelTrackBaseline"
 # export TRAIN_ENV_FNAME="linvel_env_with_demo"
 # export TRAIN_ENV_CNAME="LinVelEnvWithDemo"
 export BAG_SDT=120.0
@@ -77,14 +72,7 @@ export SET_ULIM=1
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 
-if [[ $RT_DEPLOY -eq 1 ]]; then
-  export CUSTOM_ARGS_NAMES="fix_yaw step_height wheels fixed_flights adaptive_is lin_a_feedback closed_partial fully_closed estimate_v_root use_jnt_v_feedback base_linkname use_diff_vels xmj_timeout xmj_files_dir state_from_xbot rt_safety_perf_coeff use_mpc_pos_for_robot xbot2_filter_prof" 
-  export CUSTOM_ARGS_DTYPE="bool float xacro bool bool bool bool bool bool bool str bool int string bool float bool str"
-  export CUSTOM_ARGS_VALS="true 0.15 true true true false true false false false pelvis false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true 1.0 true fast" 
-  export REMOTE_ENV_FNAME="aug_mpc_envs.envs.rt_deploy_env" 
-else
-  export CUSTOM_ARGS_NAMES="fix_yaw step_height render_to_file render_fps wheels fixed_flights adaptive_is lin_a_feedback closed_partial fully_closed estimate_v_root use_jnt_v_feedback base_linkname use_diff_vels xmj_timeout xmj_files_dir state_from_xbot" 
-  export CUSTOM_ARGS_DTYPE="bool float bool float xacro bool bool bool bool bool bool bool str bool int string bool"
-  export CUSTOM_ARGS_VALS="true 0.15 false 60.0 true true true false true false false false pelvis false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR false" 
-  export REMOTE_ENV_FNAME="aug_mpc_envs.envs.xmj_env"  
-fi
+export CUSTOM_ARGS_NAMES="fix_yaw step_height wheels fixed_flights adaptive_is lin_a_feedback closed_partial fully_closed estimate_v_root use_jnt_v_feedback base_linkname use_diff_vels xmj_timeout xmj_files_dir state_from_xbot rt_safety_perf_coeff use_mpc_pos_for_robot xbot2_filter_prof" 
+export CUSTOM_ARGS_DTYPE="bool float xacro bool bool bool bool bool bool bool str bool int string bool float bool str"
+export CUSTOM_ARGS_VALS="true 0.15 true true true false true false false false pelvis false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true 1.35 true fast" 
+export REMOTE_ENV_FNAME="aug_mpc_envs.envs.rt_deploy_env" 

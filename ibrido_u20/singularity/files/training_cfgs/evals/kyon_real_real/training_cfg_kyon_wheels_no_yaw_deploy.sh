@@ -7,8 +7,10 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/d2025_11_04_h10_m29_s57-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline"
-export MNAME="d2025_11_04_h10_m29_s57-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline_model"
+# export MPATH="/root/training_data/d2025_11_04_h10_m29_s57-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline"
+# export MNAME="d2025_11_04_h10_m29_s57-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline_model"
+export MPATH="/root/training_data/d2025_11_04_h17_m47_s49-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline"
+export MNAME="d2025_11_04_h17_m47_s49-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline_model"
 
 export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_wheels_no_yaw_real.yaml"
 export XMJ_FILES_DIR="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real"
