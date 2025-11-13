@@ -38,6 +38,8 @@ dependencies:
   - perf_sleep
   - catkin_pkg=1.0.0
   - pip:
+    - pyzmq
+    - pygame
     - flit
     - h5py
     - protobuf

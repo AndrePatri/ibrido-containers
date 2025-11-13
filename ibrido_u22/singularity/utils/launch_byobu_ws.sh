@@ -200,16 +200,18 @@ increase_file_limits_locally
 prepare_command "reset && python launch_GUI.py --ns $SHM_NS"
 
 split_h
-execute_command "cd $WORKING_DIR"
+execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 increase_file_limits_locally
-prepare_command "reset && python launch_rhc_keybrd_cmds.py --ns $SHM_NS"
+clear_terminal
+prepare_command "reset && python launch_rhc_keybrd_cmds.py --ns $SHM_NS --env_idx 0 --from_stdin --add_remote_exit --joy"
 
 split_h
-execute_command "cd $WORKING_DIR"
+execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 increase_file_limits_locally
-prepare_command "reset && python launch_agent_keybrd_cmds.py --ns $SHM_NS"
+clear_terminal
+prepare_command "reset && python launch_agent_keybrd_cmds.py --ns $SHM_NS --env_idx 0 --agent_refs_world --from_stdin --add_remote_exit --joy"
 
 go_to_pane 0 
 

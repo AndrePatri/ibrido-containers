@@ -40,6 +40,8 @@ dependencies:
   - catkin_pkg
   - scipy
   - pip:
+    - pyzmq
+    - pygame
     - xacro
     - flit
     - h5py
