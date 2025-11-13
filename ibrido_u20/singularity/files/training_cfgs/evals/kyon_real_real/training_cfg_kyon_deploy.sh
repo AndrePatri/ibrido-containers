@@ -10,11 +10,11 @@ export OVERRIDE_AGENT_REFS=1
 # export MPATH="/root/training_data/d2025_10_30_h12_m44_s13-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
 # export MNAME="d2025_10_30_h12_m44_s13-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
 
-# export MPATH="/root/training_data/d2025_11_03_h10_m18_s43-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
-# export MNAME="d2025_11_03_h10_m18_s43-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
+export MPATH="/root/training_data/d2025_11_03_h10_m18_s43-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
+export MNAME="d2025_11_03_h10_m18_s43-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
 
-export MPATH="/root/training_data/d2025_11_10_h20_m57_s12-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
-export MNAME="d2025_11_10_h20_m57_s12-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
+# export MPATH="/root/training_data/d2025_11_10_h20_m57_s12-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
+# export MNAME="d2025_11_10_h20_m57_s12-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
 
 export RESUME=0 # resume a previous training using a checkpoint
 
