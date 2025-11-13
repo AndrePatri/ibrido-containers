@@ -155,7 +155,7 @@ activate_mamba_env
 execute_command "source /isaac-sim/setup_conda_env.sh"
 execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally 
-remote_env_cmd="--headless --use_gpu  --robot_name $SHM_NS \
+remote_env_cmd="--headless --robot_name $SHM_NS \
 --urdf_path $URDF_PATH --srdf_path  $SRDF_PATH \
 --use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH \
 --cluster_dt $CLUSTER_DT \
@@ -166,6 +166,9 @@ remote_env_cmd="--headless --use_gpu  --robot_name $SHM_NS \
 --custom_args_vals $CUSTOM_ARGS_VALS "
 if (( $REMOTE_STEPPING )); then
 remote_env_cmd+="--remote_stepping "
+fi 
+if (( $USE_GPU_SIM )); then
+remote_env_cmd+="--use_gpu "
 fi 
 prepare_command "reset && python launch_remote_env.py $remote_env_cmd"
 
