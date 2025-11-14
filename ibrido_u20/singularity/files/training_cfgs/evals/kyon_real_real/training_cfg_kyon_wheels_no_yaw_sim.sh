@@ -11,8 +11,10 @@ export OVERRIDE_AGENT_REFS=1
 # export MNAME="d2025_11_04_h10_m29_s57-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline_model"
 # export MPATH="/root/training_data/d2025_11_04_h17_m47_s49-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline"
 # export MNAME="d2025_11_04_h17_m47_s49-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline_model"
-export MPATH="/root/training_data/d2025_11_12_h12_m39_s24-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline"
-export MNAME="d2025_11_12_h12_m39_s24-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline_model"
+# export MPATH="/root/training_data/d2025_11_12_h12_m39_s24-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline"
+# export MNAME="d2025_11_12_h12_m39_s24-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline_model"
+export MPATH="/root/training_data/d2025_11_13_h20_m39_s42-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline"
+export MNAME="d2025_11_13_h20_m39_s42-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline_model"
 
 if [[ $RT_DEPLOY -eq 1 ]]; then
   export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_wheels_no_yaw_real.yaml"
