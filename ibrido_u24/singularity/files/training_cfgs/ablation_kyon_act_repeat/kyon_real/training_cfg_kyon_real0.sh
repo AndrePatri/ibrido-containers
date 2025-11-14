@@ -4,6 +4,9 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=1
 export OVERRIDE_AGENT_REFS=1
+
+export RESUME=0 # resume a previous training using a checkpoint
+
 export MPATH="/root/training_data/"
 export MNAME=""
 
@@ -26,7 +29,7 @@ export LAYER_NORM=0
 export BATCH_NORM=0
 export IS_CLOSED_LOOP=1
 export DUMP_ENV_CHECKPOINTS=1
-export TOT_STEPS=6000000
+export TOT_STEPS=14000000
 export USE_RND=0
 export DEMO_ENVS_PERC=0.0
 export DEMO_STOP_THRESH=10.0
@@ -44,14 +47,13 @@ if (( $IS_CLOSED_LOOP )); then
 fi
 
 export CLUSTER_CL_FNAME="kyonrlstepping.controllers.horizon_based.kyon_real_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.04
+export CLUSTER_DT=0.035
 export N_NODES=31
 export CLUSTER_DB=1
 export PHYSICS_DT=0.001
 export USE_GPU_SIM=1
 # export CODEGEN_OVERRIDE_BDIR="none"
 export CODEGEN_OVERRIDE_BDIR="${HOME}/aux_data/KyonRHCLusterClient_${SHM_NS}/CodeGen/${SHM_NS}Rhc"
-export REMOTE_ENV_FNAME="aug_mpc_envs.envs.isaac5x_env" 
 # export TRAIN_ENV_FNAME="linvel_env_baseline"
 # export TRAIN_ENV_CNAME="LinVelTrackBaseline"
 export TRAIN_ENV_FNAME="fake_pos_env_baseline"
@@ -75,7 +77,7 @@ export ENV_IDX_BAG_EXPL=-1
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/KyonRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
 export CUSTOM_ARGS_NAMES="step_height wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_flat_ground estimate_v_root use_jnt_v_feedback base_linkname self_collide" 
 export CUSTOM_ARGS_DTYPE="float xacro bool bool bool bool bool bool bool str bool"
-export CUSTOM_ARGS_VALS="0.18 false true true false true true false true pelvis false" 
+export CUSTOM_ARGS_VALS="0.18 false true true false true true false false pelvis false" 
 export SET_ULIM=1 
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=120000 # timeout after which each script autokills ([ms])

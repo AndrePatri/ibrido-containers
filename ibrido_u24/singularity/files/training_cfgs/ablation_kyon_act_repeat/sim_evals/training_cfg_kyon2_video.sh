@@ -7,6 +7,8 @@ export OVERRIDE_AGENT_REFS=1
 export MPATH="/root/training_data/d2025_04_01_h16_m49_s27-KyonPartialCloopNoWheelsActRepAblation_FakePosEnvBaseline"
 export MNAME="d2025_04_01_h16_m49_s27-KyonPartialCloopNoWheelsActRepAblation_FakePosEnvBaseline_model"
 
+export RESUME=0 # resume a previous training using a checkpoint
+
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
 export SHM_NS="kyon_no_wheels" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=1 # number of env to run in parallel

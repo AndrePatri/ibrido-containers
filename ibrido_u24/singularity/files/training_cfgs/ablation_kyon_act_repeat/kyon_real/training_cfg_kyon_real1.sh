@@ -7,6 +7,8 @@ export OVERRIDE_AGENT_REFS=1
 export MPATH="/root/training_data/"
 export MNAME=""
 
+export RESUME=0 # resume a previous training using a checkpoint
+
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
 export SHM_NS="kyon_real_no_wheels" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=800 # number of env to run in parallel
@@ -26,14 +28,14 @@ export LAYER_NORM=0
 export BATCH_NORM=0
 export IS_CLOSED_LOOP=1
 export DUMP_ENV_CHECKPOINTS=1
-export TOT_STEPS=6000000
+export TOT_STEPS=14000000
 export USE_RND=0
 export DEMO_ENVS_PERC=0.0
 export DEMO_STOP_THRESH=10.0
 export EXPL_ENVS_PERC=0.0
 export ACTION_REPEAT=3
 export USE_SAC=1
-export DISCOUNT_FACTOR=0.994
+export DISCOUNT_FACTOR=0.99
 export USE_PERIOD_RESETS=0
 export COMMENT='kyon REAL no wheels CLOSED partial, UTD 8, action rep 3, target entropy -0.5, fake pos track max 1.0 m/s (action rate, NO CoT, dir track, 1.0 omega weight' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-description/kyon_urdf/urdf/kyon.urdf.xacro" # name of the description package for the robot
@@ -44,7 +46,7 @@ if (( $IS_CLOSED_LOOP )); then
 fi
 
 export CLUSTER_CL_FNAME="kyonrlstepping.controllers.horizon_based.kyon_real_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.04
+export CLUSTER_DT=0.035
 export N_NODES=31
 export CLUSTER_DB=1
 export PHYSICS_DT=0.001
@@ -74,7 +76,7 @@ export ENV_IDX_BAG_EXPL=-1
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/KyonRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
 export CUSTOM_ARGS_NAMES="step_height wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_flat_ground estimate_v_root use_jnt_v_feedback base_linkname self_collide" 
 export CUSTOM_ARGS_DTYPE="float xacro bool bool bool bool bool bool bool str bool"
-export CUSTOM_ARGS_VALS="0.18 false true true false true true false true pelvis false" 
+export CUSTOM_ARGS_VALS="0.18 false true true false true true false false pelvis false" 
 export SET_ULIM=1 
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=120000 # timeout after which each script autokills ([ms])

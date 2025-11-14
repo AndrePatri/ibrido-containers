@@ -7,6 +7,8 @@ export OVERRIDE_AGENT_REFS=1
 export MPATH="/root/training_data/"
 export MNAME=""
 
+export RESUME=0 # resume a previous training using a checkpoint
+
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
 export SHM_NS="kyon_real_wheels_no_yaw" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=800 # number of env to run in parallel
@@ -31,11 +33,11 @@ export USE_RND=0
 export DEMO_ENVS_PERC=0.0
 export DEMO_STOP_THRESH=10.0
 export EXPL_ENVS_PERC=0.0
-export ACTION_REPEAT=5
+export ACTION_REPEAT=3
 export USE_SAC=1
 export DISCOUNT_FACTOR=0.99
 export USE_PERIOD_RESETS=0
-export COMMENT='kyon real wheels (no yaw) CLOSED LOOP partial, UTD 8, action rep 5, fake pos track (action rate, NO CoT, dir track, max_vref 1.0 m/s), trgt entropy -1.0' # any training comment
+export COMMENT='kyon real wheels (no yaw) CLOSED LOOP partial, joint pof0 fix (5%), UTD 8, action rep 3, gamma 0.99, fake pos track + yaw rate (action rate, CoT, dir track, max_vref 1.0 m/s, max omega 0.4 rad/s,), trgt entropy -0.5' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-description/kyon_urdf/urdf/kyon.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-description/kyon_srdf/srdf/kyon.srdf.xacro" # base path where the description package for the robot are located
 export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_kyon_real_no_yaw_open.yaml" # path to yaml file for jnt imp configuration
@@ -44,7 +46,7 @@ if (( $IS_CLOSED_LOOP )); then
 fi
 
 export CLUSTER_CL_FNAME="kyonrlstepping.controllers.horizon_based.kyon_real_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.04
+export CLUSTER_DT=0.035
 export N_NODES=31
 export CLUSTER_DB=1
 export PHYSICS_DT=0.0005
@@ -74,7 +76,7 @@ export ENV_IDX_BAG_EXPL=-1
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/B2WRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
 export CUSTOM_ARGS_NAMES="step_height fix_yaw wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_flat_ground estimate_v_root use_jnt_v_feedback base_linkname self_collide" 
 export CUSTOM_ARGS_DTYPE="float bool xacro bool bool bool bool bool bool bool str bool"
-export CUSTOM_ARGS_VALS="0.18 true true true true false true true false false pelvis false" 
+export CUSTOM_ARGS_VALS="0.15 true true true true false true true false false pelvis false" 
 export SET_ULIM=1 
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=120000 # timeout after which each script autokills ([ms])
