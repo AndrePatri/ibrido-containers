@@ -114,9 +114,9 @@ cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
 --custom_args_vals $CUSTOM_ARGS_VALS \
 --cluster_dt $CLUSTER_DT \
 --n_nodes $N_NODES "
-# if (( $CLUSTER_DB )); then
-# cluster_cmd+="--enable_debug "
-# fi
+if (( $CLUSTER_DB )); then
+cluster_cmd+="--enable_debug "
+fi
 if (( $IS_CLOSED_LOOP )); then
 cluster_cmd+="--cloop "
 fi
@@ -128,6 +128,7 @@ cluster_pid=$!
 if (( $REMOTE_STEPPING )); then
 training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data \
 --db --env_db \
+--step_while_setup \
 --seed $SEED --timeout_ms $TIMEOUT_MS \
 --env_fname $TRAIN_ENV_FNAME --env_classname $TRAIN_ENV_CNAME \
 --demo_stop_thresh $DEMO_STOP_THRESH  \
@@ -197,6 +198,7 @@ remote_env_cmd="--robot_name $SHM_NS \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
 --custom_args_vals $CUSTOM_ARGS_VALS \
+--physics_dt $PHYSICS_DT \
 --enable_debug "
 if (( $REMOTE_STEPPING )); then
 remote_env_cmd+="--remote_stepping "

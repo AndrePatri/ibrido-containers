@@ -173,6 +173,7 @@ execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally
 clear_terminal
 cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
+--codegen_override_dir $CODEGEN_OVERRIDE_BDIR \
 --urdf_path $URDF_PATH --srdf_path $SRDF_PATH --cluster_client_fname $CLUSTER_CL_FNAME \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
