@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export RT_DEPLOY=1
+export RT_DEPLOY=0
 
 export EVAL=1
 export DET_EVAL=1
@@ -17,8 +17,10 @@ export OVERRIDE_AGENT_REFS=1
 # export MNAME="d2025_11_13_h20_m39_s42-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline_model"
 # export MPATH="/root/training_data/d2025_11_15_h15_m08_s20-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline"
 # export MNAME="d2025_11_15_h15_m08_s20-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline_model"
-export MPATH="/root/training_data/d2025_11_16_h11_m44_s31-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline"
-export MNAME="d2025_11_16_h11_m44_s31-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline_model"
+# export MPATH="/root/training_data/d2025_11_16_h11_m44_s31-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline"
+# export MNAME="d2025_11_16_h11_m44_s31-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline_model"
+export MPATH="/root/training_data/d2025_11_17_h23_m07_s17-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline"
+export MNAME="d2025_11_17_h23_m07_s17-KyonRealPartialCloopWheelsNoYaw_FakePosEnvBaseline_model"
 
 if [[ $RT_DEPLOY -eq 1 ]]; then
   export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_wheels_no_yaw_real.yaml"
@@ -88,11 +90,11 @@ export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 if [[ $RT_DEPLOY -eq 1 ]]; then
   export CUSTOM_ARGS_NAMES="add_remote_exit_flag fix_yaw step_height wheels fixed_flights adaptive_is lin_a_feedback closed_partial fully_closed estimate_v_root use_jnt_v_feedback base_linkname use_diff_vels xmj_timeout xmj_files_dir state_from_xbot rt_safety_perf_coeff use_mpc_pos_for_robot xbot2_filter_prof" 
   export CUSTOM_ARGS_DTYPE="bool bool float xacro bool bool bool bool bool bool bool str bool int string bool float bool str"
-  export CUSTOM_ARGS_VALS="true true 0.18 true true true false true false false false pelvis false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true 1.0 true fast" 
+  export CUSTOM_ARGS_VALS="true true 0.15 true true true false true false false false pelvis false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true 1.0 true fast" 
   export REMOTE_ENV_FNAME="aug_mpc_envs.envs.rt_deploy_env" 
 else
   export CUSTOM_ARGS_NAMES="fix_yaw step_height render_to_file render_fps wheels fixed_flights adaptive_is lin_a_feedback closed_partial fully_closed estimate_v_root use_jnt_v_feedback base_linkname use_diff_vels xmj_timeout xmj_files_dir state_from_xbot" 
   export CUSTOM_ARGS_DTYPE="bool float bool float xacro bool bool bool bool bool bool bool str bool int string bool"
-  export CUSTOM_ARGS_VALS="true 0.18 false 60.0 true true true false true false false false pelvis false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR false" 
+  export CUSTOM_ARGS_VALS="true 0.15 false 60.0 true true true false true false false false pelvis false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR false" 
   export REMOTE_ENV_FNAME="aug_mpc_envs.envs.xmj_env"  
 fi
