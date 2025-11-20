@@ -179,7 +179,8 @@ cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
 --custom_args_vals $CUSTOM_ARGS_VALS \
 --cluster_dt $CLUSTER_DT \
---n_nodes $N_NODES "
+--n_nodes $N_NODES \
+--set_affinity "
 
 if (( $CLUSTER_DB )); then
 cluster_cmd+="--enable_debug "
