@@ -109,44 +109,70 @@ for entry in "${IBRIDO_BFILES[@]}"; do
     IBRIDO_BFILES_SRC+=("$filtered_entry")
 done
 
-# # extract git repo info
-# IBRIDO_GIT_SRC=()
-# IBRIDO_GIT_BRCH=()
-# for entry in "${IBRIDO_GITDIRS[@]}"; do
-#     # Split entry based on colon
-#     IFS='*' read -r src branch <<< "$entry"
-    
-#     # Add to respective arrays
-#     IBRIDO_GIT_SRC+=("$src")
-#     IBRIDO_GIT_BRCH+=("$branch")
-# done
+# Decide whether to convert git@ssh URLs to HTTPS
+# Accepts IBRIDO_USE_HTTP=true|1 (case insensitive) to enable conversion.
+USE_HTTP_RAW="${IBRIDO_USE_HTTP:-}"
+USE_HTTP="$(echo -n "$USE_HTTP_RAW" | tr '[:upper:]' '[:lower:]')"
+if [ "$USE_HTTP" = "true" ] || [ "$USE_HTTP" = "1" ]; then
+    CONVERT_TO_HTTP=true
+else
+    CONVERT_TO_HTTP=false
+fi
 
 # extract git repo info
 IBRIDO_GIT_SRC=()
 IBRIDO_GIT_BRCH=()
 IBRIDO_GIT_DIR=()
 for entry in "${IBRIDO_GITDIRS[@]}"; do
-# Split entry on first '*'
-IFS='*' read -r src rest <<< "$entry"
+    # Split entry on first '*'
+    IFS='*' read -r src rest <<< "$entry"
 
+    branch_and_dir="$rest"
+    branch="$branch_and_dir"
+    dir=""
 
-branch_and_dir="$rest"
-branch="$branch_and_dir"
-dir=""
+    # If a '&' is present in the rest, split into branch and dir
+    if [[ "$branch_and_dir" == *'&'* ]]; then
+        IFS='&' read -r branch dir <<< "$branch_and_dir"
+    fi
 
+    # Trim whitespace (in case of accidental spaces)
+    branch="$(echo -n "$branch" | xargs)"
+    dir="$(echo -n "$dir" | xargs)"
 
-# If a '->' is present in the rest, split into branch and dir
-if [[ "$branch_and_dir" == *'&'* ]]; then
-IFS='&' read -r branch dir <<< "$branch_and_dir"
-fi
+    # Optionally convert SSH 'git@host:owner/repo.git' style to HTTPS
+    if [ "$CONVERT_TO_HTTP" = true ]; then
+        converted="$src"
+        case "$src" in
+            git@github.com:*)
+                converted="https://github.com/${src#git@github.com:}"
+                ;;
+            git@gitlab.com:*)
+                converted="https://gitlab.com/${src#git@gitlab.com:}"
+                ;;
+            git@bitbucket.org:*)
+                converted="https://bitbucket.org/${src#git@bitbucket.org:}"
+                ;;
+            ssh://git@*)
+                # e.g. ssh://git@github.com/owner/repo.git -> https://github.com/owner/repo.git
+                # remove "ssh://git@" and prepend https://
+                host_and_path="${src#ssh://git@}"
+                converted="https://${host_and_path}"
+                ;;
+            # if it's already https or http, keep it as-is
+            http://*|https://*)
+                converted="$src"
+                ;;
+            *)
+                # unknown pattern: leave as-is
+                converted="$src"
+                ;;
+        esac
+        # assign the converted value
+        src="$converted"
+    fi
 
-
-# Trim whitespace (in case of accidental spaces)
-branch="$(echo -n "$branch" | xargs)"
-dir="$(echo -n "$dir" | xargs)"
-
-
-IBRIDO_GIT_SRC+=("$src")
-IBRIDO_GIT_BRCH+=("$branch")
-IBRIDO_GIT_DIR+=("$dir")
+    IBRIDO_GIT_SRC+=("$src")
+    IBRIDO_GIT_BRCH+=("$branch")
+    IBRIDO_GIT_DIR+=("$dir")
 done

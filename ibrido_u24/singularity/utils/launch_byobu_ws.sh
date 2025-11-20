@@ -18,6 +18,8 @@ WS_ROOT="$HOME/ibrido_ws"
 WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
 WORKING_DIR_OTHER="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
 
+export BYOBU_CONFIG_DIR=$HOME/.config
+
 N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
 
 # Default configuration file
