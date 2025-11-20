@@ -11,7 +11,7 @@ export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbo
 # export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
 export XMJ_FILES_DIR="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files"
 
-export RT_DEPLOY=1
+export RT_DEPLOY=0
 
 if [[ $RT_DEPLOY -eq 1 ]]; then
   # Set ROS_MASTER_URI and ROS_IP for deployment
@@ -60,9 +60,9 @@ if (( $IS_CLOSED_LOOP )); then
   export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config.yaml"
 fi
 export CLUSTER_CL_FNAME="centaurohybridmpc.controllers.horizon_based.centauro_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.05
+export CLUSTER_DT=0.04
 export PHYSICS_DT=0.0005
-export N_NODES=31
+export N_NODES=25
 export CLUSTER_DB=1
 export CODEGEN_OVERRIDE_BDIR="none"
 # export TRAIN_ENV_FNAME="linvel_env_baseline"

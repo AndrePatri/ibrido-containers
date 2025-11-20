@@ -51,9 +51,9 @@ if (( $IS_CLOSED_LOOP )); then
   export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config.yaml"
 fi
 export CLUSTER_CL_FNAME="centaurohybridmpc.controllers.horizon_based.centauro_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.05
+export CLUSTER_DT=0.04
 export PHYSICS_DT=0.0005
-export N_NODES=31
+export N_NODES=25
 export CLUSTER_DB=1
 export CODEGEN_OVERRIDE_BDIR="none"
 # export TRAIN_ENV_FNAME="linvel_env_baseline"
@@ -62,7 +62,7 @@ export TRAIN_ENV_FNAME="fake_pos_env_baseline"
 export TRAIN_ENV_CNAME="FakePosEnvBaseline"
 # export TRAIN_ENV_FNAME="linvel_env_with_demo"
 # export TRAIN_ENV_CNAME="LinVelEnvWithDemo"
-export BAG_SDT=120.0
+export BAG_SDT=3600.0
 export BRIDGE_DT=0.1
 export DUMP_DT=50.0
 export ENV_IDX_BAG=0
