@@ -49,9 +49,9 @@ if (( $IS_CLOSED_LOOP )); then
   export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_with_ub.yaml"
 fi
 export CLUSTER_CL_FNAME="centaurohybridmpc.controllers.horizon_based.centauro_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.03
+export CLUSTER_DT=0.035
 export PHYSICS_DT=0.0005
-export N_NODES=31
+export N_NODES=29
 export CLUSTER_DB=1
 export CODEGEN_OVERRIDE_BDIR="none"
 # export TRAIN_ENV_FNAME="linvel_env_baseline"
@@ -71,5 +71,5 @@ export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 
 export CUSTOM_ARGS_NAMES="add_remote_exit_flag step_height control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body use_mpc_pos_for_robot torque_correction xbot2_filter_prof use_jnt_v_feedback"
 export CUSTOM_ARGS_DTYPE="bool float bool bool bool bool bool bool bool float bool bool bool float str bool"
-export CUSTOM_ARGS_VALS="true 0.10 false true true false true false true 1.0 false true true 1.0 fast true"
+export CUSTOM_ARGS_VALS="true 0.10 false true true false true false true 0.94 false true true 1.0 fast true"
 export REMOTE_ENV_FNAME="aug_mpc_envs.envs.rt_deploy_env"
