@@ -5,7 +5,7 @@ export XMODIFIERS=@im=ibus
 export GTK_IM_MODULE=ibus
 export QT_IM_MODULE=ibus
 
-SLEEP_FOR=0.1
+SLEEP_FOR=0.02
 BYOBU_WS_NAME="ibrido_xbot"
 WS_ROOT="$HOME/ibrido_ws"
 WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
