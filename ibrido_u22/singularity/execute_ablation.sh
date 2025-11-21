@@ -16,7 +16,7 @@ fi
 # Find the directory where the current script is located
 script_dir=$(dirname "$0")
 
-cfg_dir="$script_dir/files/training_cfgs/$2"
+cfg_dir="$script_dir/files/training_cfgs/ablations/$2"
 
 if [ ! -d "$cfg_dir" ]; then
     echo "The directory $cfg_dir is not valid. Please provide a valid directory."
