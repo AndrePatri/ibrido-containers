@@ -72,7 +72,6 @@ if $do_setup; then
     #     --no-mount home,cwd \
     #     --nv --nvccli $IBRIDO_CONTAINERS_PREFIX/ibrido_xbot.sif post_build_setup.sh
     singularity exec \
-        -B /tmp/.X11-unix:/tmp/.X11-unix\
         -B /etc/localtime:/etc/localtime:ro \
         --bind $binddirs\
         --no-mount home,cwd \

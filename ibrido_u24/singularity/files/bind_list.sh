@@ -75,6 +75,7 @@ if [ "$IS_PBS_AVAILABLE" = false ]; then
     IBRIDO_BDIRS+=(
         "/dev/input:/dev/input:rw"
         "/tmp/.X11-unix:/tmp/.X11-unix"
+        "/run/user/1000:/run/user/1000"
     )
 fi
 
