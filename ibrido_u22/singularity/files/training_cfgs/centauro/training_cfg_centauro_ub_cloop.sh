@@ -8,7 +8,7 @@ export MPATH="/root/training_data/"
 export MNAME=""
 
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
-export SHM_NS="centauro_big_wheels" # shared mem namespace used for all shared data on CPU 
+export SHM_NS="centauro_big_wheels_ub" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=800 # number of env to run in parallel
 export RNAME="CentauroCloopPartialUbNoWheels" # a descriptive base name for this run
 export SEED=383 # random n generator seed to be used for this run
