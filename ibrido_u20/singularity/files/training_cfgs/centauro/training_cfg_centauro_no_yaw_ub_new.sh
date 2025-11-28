@@ -11,20 +11,8 @@ export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbo
 # export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
 export XMJ_FILES_DIR="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files"
 
-export RT_DEPLOY=0
-
-if [[ $RT_DEPLOY -eq 1 ]]; then
-  # Set ROS_MASTER_URI and ROS_IP for deployment
-  export ROS_MASTER_URI="http://10.24.4.100:11311" # Centauro embedded
+export ROS_MASTER_URI="http://10.24.4.100:11311" # Centauro embedded
   export ROS_IP=$(hostname -I | awk '{print $1}') # Extract first IP address
-else
-  # Set ROS_MASTER_URI and ROS_IP for local setup
-  export ROS_MASTER_URI="http://127.0.0.1:11311"
-  export ROS_IP="127.0.0.1"
-fi
-
-export ROS_MASTER_URI="http://127.0.0.1:11311"
-export ROS_IP="127.0.0.1"
 
 # export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
 export SHM_NS="centauro_big_wheels_no_yaw" # shared mem namespace used for all shared data on CPU 
@@ -80,14 +68,7 @@ export SET_ULIM=1
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 
-if [[ $RT_DEPLOY -eq 1 ]]; then
-  export CUSTOM_ARGS_NAMES="add_remote_exit_flag step_height control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body use_mpc_pos_for_robot fix_yaw torque_correction xbot2_filter_prof use_jnt_v_feedback"
-  export CUSTOM_ARGS_DTYPE="bool float bool bool bool bool bool bool bool float bool bool bool bool float str bool"
-  export CUSTOM_ARGS_VALS="true 0.10 true true true false true false true 1.0 false true true true 1.0 fast true"
-  export REMOTE_ENV_FNAME="aug_mpc_envs.envs.rt_deploy_env"
-else
-  export CUSTOM_ARGS_NAMES="step_height render_to_file render_fps control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot closed_partial fix_yaw add_upper_body torque_correction xbot2_filter_prof use_jnt_v_feedback"
-  export CUSTOM_ARGS_DTYPE="float bool float bool bool bool bool bool int string bool bool bool bool float str bool"
-  export CUSTOM_ARGS_VALS="0.10 false 60.0 true true true false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true true true true 1.0 fast true"
-  export REMOTE_ENV_FNAME="aug_mpc_envs.envs.xmj_env"  
-fi
+export CUSTOM_ARGS_NAMES="add_remote_exit_flag step_height control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body use_mpc_pos_for_robot fix_yaw torque_correction xbot2_filter_prof use_jnt_v_feedback"
+export CUSTOM_ARGS_DTYPE="bool float bool bool bool bool bool bool bool float bool bool bool bool float str bool"
+export CUSTOM_ARGS_VALS="true 0.10 true true true false true false true 1.0 false true true true 1.0 fast true"
+export REMOTE_ENV_FNAME="aug_mpc_envs.envs.rt_deploy_env"
