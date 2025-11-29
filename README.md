@@ -2,13 +2,19 @@
 
 ### 1) Setting up Singularity (now Apptainer)
 First, you need to install Apptainer on your host system. Detailed installation instructions can be found [here](https://apptainer.org/docs/admin/main/installation.html).
+
 On Ubuntu, for the non setuid installation:
 `sudo add-apt-repository -y ppa:apptainer/ppa`
+
 `sudo apt update`
+
 `sudo apt install -y apptainer`
+
 On some systems, you may need a setuid installation. If you encounter errors like "permission denied" related to groups when trying to execute the container, then run the following:
 `sudo add-apt-repository -y ppa:apptainer/ppa`
+
 `sudo apt update`
+
 `sudo apt install -y apptainer-suid`
 
 ### 2) Build and setup container
