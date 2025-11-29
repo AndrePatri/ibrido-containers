@@ -1,7 +1,7 @@
 ## Container utilities for [IBRIDO](https://github.com/AndrePatri/IBRIDO) rapid deployment
 
-### Singularity (now Apptainer)
-Detailed instructions [here](https://apptainer.org/docs/admin/main/installation.html).
+### 1) Setting up Singularity (now Apptainer)
+First, you need to install Apptainer on your host system. Detailed installation instructions can be found [here](https://apptainer.org/docs/admin/main/installation.html).
 On Ubuntu, for the non setuid installation:
 `sudo add-apt-repository -y ppa:apptainer/ppa`
 `sudo apt update`
@@ -9,21 +9,14 @@ On Ubuntu, for the non setuid installation:
 On some systems, you may need a setuid installation. If you encounter errors like "permission denied" related to groups when trying to execute the container, then run the following:
 `sudo add-apt-repository -y ppa:apptainer/ppa`
 `sudo apt update`
-`sudo apt install -y apptainer-suid'
+`sudo apt install -y apptainer-suid`
 
-### Docker (deprecated)
-
-To set up docker in rootless mode see the [how-to-rootless-docker](https://docs.docker.com/engine/security/rootless/) guide or run the `isaac_ubuntu22/docker/utils/docker_rootless_installation.sh` script.
-
-You can setup you workspace by running `isaac_ubuntu22/docker/create_ws.sh`. This script will create some directories used by the container + clone all the main packages of the echosystem. Please note that not all packages are currently publicly available (specifically the one hosting the employed RHC controller, which is owned by the [HHCM](https://hhcm.iit.it/) research line at IIT), so this step will fail if you don't have access to it. Basically, you need to be part of the [ADVR Humanoids](https://github.com/ADVRHumanoids) team.
-
-Before being able to run the `isaac_ubuntu22/docker/build_docker.sh` script (which builds the base image used by AugMPC), you need follow the instructions at [Omniverse's Isaac sim image](https://docs.omniverse.nvidia.com/isaacsim/latest/installation/install_container.html) and at [isaac-sim container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/isaac-sim), to get access to IsaacSim's container image. 
-
-Running `isaac_ubuntu22/docker/build_docker.sh` will build the base image, which is basically an image with [micromamba](https://github.com/mamba-org/micromamba-releases), [IsaacSim](https://developer.nvidia.com/isaac/sim) and [ros2-humble-base](https://docs.ros.org/en/humble/index.html).
-
-After the build process has completed, you can run the `isaac_ubuntu22/docker/launch_persistent_container.sh` script and then, from the just opened bash shell, the `post_build_setup.sh` script. This will create the necessary mamba environment (cannot be done at build time due to [this issue](https://github.com/NVIDIA/nvidia-container-toolkit/issues/221)) and build/install the echosystem packages in the created `ibrido` micromamba environment. You will additionally be asked to login to [wandb](https://wandb.ai) (used for remote debugging).
-
-You can now spawn the ibrido_ws [Byobu](https://www.byobu.org/) workspace by launching `launch_byobu_ws.sh`. From the workspace you can rapidly run all the main components of the echosystem. During a "minimal" training, you would just need to run the 3 already configured commands for the simulation environment, the control cluster and, finally, the training environment. Please note that the first time it may take a while due to IsaacSim's ray tracking shaders compilation and the RHC cluster having to codegenerate some symbolic function.
+### 2) Build and setup container
+- Clone this repo and then navigate to the container of choice. All the setup helper scripts follow the same API.
+    As of now there are 3 different folders, each correspoding to a separated container:
+    - `./ibrido_u22/singularity`: this container ships with Ubuntu 22 + IsaacSim + the IBRIDO framework + ROS2. This should be used to run trainings/evaluations exploiting the vectorized simulator's parallelization capabilities. 
+    - `./ibrido_u20/singularity`: this is a lighter container with Ubuntu 20 + MuJoCo (CPU) + [XBot2](https://advrhumanoids.github.io/xbot2/v2.12.0/index.html) + the IBRIDO framework + ROS1. This is intended for sim-to-sim and sim-to-real evaluations through the XMjSimEnv and RtDeploymentEnv world interfaces, respectively, and does not currently support vectorized environments.
+    - `./ibrido_u24/singularity`: same as `ibrido_u22`, but with Ubuntu 24 and the latest IsaacSim version (working, but integration with IBRIDO is WIP).
 
 ### Acknowledgements
-Thanks to [c-rizz](https://github.com/c-rizz) for the technical support in setting up the container.
+Thanks to [c-rizz](https://github.com/c-rizz) for the technical support in setting up the containers.
