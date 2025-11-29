@@ -10,7 +10,7 @@ export MNAME=""
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
 export SHM_NS="centauro_big_wheels_ub_open" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=800 # number of env to run in parallel
-export RNAME="CentauroOpenNoWheels" # a descriptive base name for this run
+export RNAME="CentauroOpenUbNoWheels" # a descriptive base name for this run
 export SEED=92 # random n generator seed to be used for this run
 export REMOTE_STEPPING=1
 export COMPRESSION_RATIO=0.6
@@ -44,8 +44,8 @@ if (( $IS_CLOSED_LOOP )); then
 fi
 
 export CLUSTER_CL_FNAME="centaurohybridmpc.controllers.horizon_based.centauro_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.03
-export N_NODES=31
+export CLUSTER_DT=0.04
+export N_NODES=25
 export CLUSTER_DB=1
 export PHYSICS_DT=0.0005
 export USE_GPU_SIM=1
