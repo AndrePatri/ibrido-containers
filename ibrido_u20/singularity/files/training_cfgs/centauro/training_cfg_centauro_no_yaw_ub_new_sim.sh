@@ -4,8 +4,8 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/d2025_11_28_h11_m38_s15-CentauroCloopPartialUbNoWheels_FakePosEnvBaseline"
-export MNAME="d2025_11_28_h11_m38_s15-CentauroCloopPartialUbNoWheels_FakePosEnvBaseline_model_checkpoint937"
+export MPATH="/root/training_data/d2025_11_29_h15_m01_s27-CentauroCloopPartialNoYawUb_FakePosEnvBaseline"
+export MNAME="d2025_11_29_h15_m01_s27-CentauroCloopPartialNoYawUb_FakePosEnvBaseline_model"
 
 export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbot2_basic.yaml"
 # export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
@@ -60,9 +60,9 @@ if (( $IS_CLOSED_LOOP )); then
   export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_no_yaw_ub.yaml"
 fi
 export CLUSTER_CL_FNAME="centaurohybridmpc.controllers.horizon_based.centauro_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.04
+export CLUSTER_DT=0.05
 export PHYSICS_DT=0.0005
-export N_NODES=25
+export N_NODES=20
 export CLUSTER_DB=1
 export CODEGEN_OVERRIDE_BDIR="none"
 # export TRAIN_ENV_FNAME="linvel_env_baseline"
