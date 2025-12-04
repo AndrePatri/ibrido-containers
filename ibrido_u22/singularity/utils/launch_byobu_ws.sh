@@ -307,7 +307,7 @@ execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
 prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --rhc_refs_in_h_frame \
---ns $SHM_NS --with_agent_refs --no_rhc_internal"
+--ns $SHM_NS --with_agent_refs --no_rhc_internal $( (( PUB_HEIGHTMAP )) && echo --show_heightmap )"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -320,7 +320,7 @@ prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_trainin
 --pub_stime \
 --ns $SHM_NS --rhc_refs_in_h_frame \
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG \
---srdf_path $SRDF_PATH_ROSBAG --with_agent_refs --no_rhc_internal"
+--srdf_path $SRDF_PATH_ROSBAG --with_agent_refs --no_rhc_internal $( (( PUB_HEIGHTMAP )) && echo --show_heightmap )"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -333,7 +333,7 @@ prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_trainin
 --ns $SHM_NS --remap_ns "${SHM_NS}_expl" \
 --rhc_refs_in_h_frame \
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_EXPL \
---srdf_path $SRDF_PATH_ROSBAG --with_agent_refs --no_rhc_internal"
+--srdf_path $SRDF_PATH_ROSBAG --with_agent_refs --no_rhc_internal $( (( PUB_HEIGHTMAP )) && echo --show_heightmap )"
 
 split_v
 execute_command "cd ${WORKING_DIR}"
@@ -346,7 +346,7 @@ prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_trainin
 --ns $SHM_NS --remap_ns "${SHM_NS}_demo" \
 --rhc_refs_in_h_frame \
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_DEMO \
---srdf_path $SRDF_PATH_ROSBAG --with_agent_refs --no_rhc_internal"
+--srdf_path $SRDF_PATH_ROSBAG --with_agent_refs --no_rhc_internal $( (( PUB_HEIGHTMAP )) && echo --show_heightmap )"
 
 # tab 1
 new_tab
@@ -360,7 +360,11 @@ execute_command "cd ${WORKING_DIR_OTHER}"
 # execute_command "source /opt/ros/noetic/setup.bash"
 activate_mamba_env
 execute_command "source /opt/ros/humble/setup.bash"
-prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
+if (( PUB_HEIGHTMAP )); then
+    prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --show_heightmap"
+else
+    prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
+fi
 
 # tab2
 new_tab

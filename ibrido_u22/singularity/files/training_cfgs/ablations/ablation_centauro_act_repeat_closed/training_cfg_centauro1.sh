@@ -69,6 +69,7 @@ export TRAIN_ENV_CNAME="FakePosEnvBaseline"
 # export TRAIN_ENV_CNAME="LinVelEnvWithDemo"
 # export TRAIN_ENV_FNAME="variable_flights_baseline"
 # export TRAIN_ENV_CNAME="VariableFlightsBaseline"
+export PUB_HEIGHTMAP=0
 export BAG_SDT=90.0
 export BRIDGE_DT=0.1
 export DUMP_DT=50.0

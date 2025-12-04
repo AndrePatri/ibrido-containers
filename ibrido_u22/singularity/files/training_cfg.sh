@@ -68,6 +68,7 @@ export TRAIN_ENV_CNAME="FakePosEnvBaseline" # name of  traininv class in env fil
 # export TRAIN_ENV_CNAME="LinVelEnvWithDemo"
 # export TRAIN_ENV_FNAME="variable_flights_baseline"
 # export TRAIN_ENV_CNAME="VariableFlightsBaseline"
+export PUB_HEIGHTMAP=0 # publish heightmap markers via ROS bridge / bag dump / mpcviz
 export BAG_SDT=90.0 # when recording bags while training, run for this amount of seconds
 export BRIDGE_DT=0.05 # rate at which data on shared mem is read and published through ROS
 export DUMP_DT=50.0 # lauch a bag every DUMP_DT [min]
@@ -87,4 +88,3 @@ export TIMEOUT_MS=120000 # timeout after which the simulator, cluster or trainin
 export CUSTOM_ARGS_NAMES="step_height wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_flat_ground estimate_v_root use_jnt_v_feedback base_linkname self_collide" 
 export CUSTOM_ARGS_DTYPE="float xacro bool bool bool bool bool bool bool str bool"
 export CUSTOM_ARGS_VALS="0.18 false true true false true true false false pelvis false" 
-

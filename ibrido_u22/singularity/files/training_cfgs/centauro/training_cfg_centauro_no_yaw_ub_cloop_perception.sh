@@ -66,6 +66,7 @@ export CODEGEN_OVERRIDE_BDIR="${HOME}/aux_data/CentauroRHCLusterClient_${SHM_NS}
 export TRAIN_ENV_CNAME="GaitSchedulingEnv"
 export TRAIN_ENV_FNAME="gait_scheduling_env"
 # export TRAIN_ENV_CNAME="LinVelEnvWithDemo"
+export PUB_HEIGHTMAP=0
 export BAG_SDT=90.0
 export BRIDGE_DT=0.1
 export DUMP_DT=50.0

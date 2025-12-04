@@ -215,6 +215,9 @@ if (( $ENV_IDX_BAG >= 0 && $CLUSTER_DB)); then
   --ns $SHM_NS --rhc_refs_in_h_frame \
   --srdf_path $SRDF_PATH_ROSBAG \
   --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG "
+  if (( $PUB_HEIGHTMAP )); then
+    rosbag_cmd+="--show_heightmap "
+  fi
   if (( $REMOTE_STEPPING )); then
   rosbag_cmd+="--with_agent_refs --no_rhc_internal "
   fi
@@ -230,6 +233,9 @@ if (( $ENV_IDX_BAG_DEMO >= 0 && $CLUSTER_DB)); then
   --rhc_refs_in_h_frame \
   --srdf_path $SRDF_PATH_ROSBAG \
   --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_DEMO "
+  if (( $PUB_HEIGHTMAP )); then
+    rosbag_cmd+="--show_heightmap "
+  fi
   if (( $REMOTE_STEPPING )); then
   rosbag_cmd+="--with_agent_refs --no_rhc_internal "
   fi
@@ -245,6 +251,9 @@ if (( $ENV_IDX_BAG_EXPL >= 0 && $CLUSTER_DB)); then
   --rhc_refs_in_h_frame \
   --srdf_path $SRDF_PATH_ROSBAG \
   --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_EXPL "
+  if (( $PUB_HEIGHTMAP )); then
+  rosbag_cmd+="--show_heightmap "
+  fi
   if (( $REMOTE_STEPPING )); then
   rosbag_cmd+="--with_agent_refs --no_rhc_internal "
   fi
