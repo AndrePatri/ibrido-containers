@@ -36,14 +36,14 @@ if (( LAUNCH_RHC )); then
     --ns "$NS" \
     --env_idx "$ENV_IDX" \
     --from_stdin \
-    --add_remote_exit_flag \
+    --add_remote_exit \
     --joy
 else
   python launch_agent_keybrd_cmds.py \
   --ns "$NS" \
   --env_idx "$ENV_IDX" \
   --agent_refs_world \
-  --add_remote_exit_flag \
+  --add_remote_exit \
   --from_stdin \
   --joy
 fi
