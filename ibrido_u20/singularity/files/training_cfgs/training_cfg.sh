@@ -36,6 +36,7 @@ export DEMO_STOP_THRESH=10.0
 export EXPL_ENVS_PERC=0.0
 export ACTION_REPEAT=5 # agent freq wrt cluster freq (1 -> same rate MPC, 2 -> 1 agent action every 2 MPC solutions)
 export USE_SAC=1 # use SAC, otherwise PPO
+export USE_DUMMY=0 # if set, overrides SAC/PPO and uses dummy agent
 export DISCOUNT_FACTOR=0.99
 export USE_PERIOD_RESETS=0 # reset periodically agent (can be useful to prevent overfitting to early experience due to net plasticity)
 export COMMENT='' # any comment to describe the training run
@@ -87,4 +88,3 @@ export TIMEOUT_MS=120000 # timeout after which the simulator, cluster or trainin
 export CUSTOM_ARGS_NAMES="step_height wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_flat_ground estimate_v_root use_jnt_v_feedback base_linkname self_collide" 
 export CUSTOM_ARGS_DTYPE="float xacro bool bool bool bool bool bool bool str bool"
 export CUSTOM_ARGS_VALS="0.18 false true true false true true false false pelvis false" 
-

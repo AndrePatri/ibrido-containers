@@ -41,6 +41,7 @@ export DEMO_ENVS_PERC=0.0
 export EXPL_ENVS_PERC=0.0
 export ACTION_REPEAT=3
 export USE_SAC=1
+export USE_DUMMY=0
 export DISCOUNT_FACTOR=0.99
 export USE_PERIOD_RESETS=0
 export COMMENT='kyon REAL wheels no yaw CLOSED partial, real deployment' # any training comment

@@ -40,6 +40,7 @@ export DEMO_ENVS_PERC=0.0
 export EXPL_ENVS_PERC=0.0
 export ACTION_REPEAT=5
 export USE_SAC=1
+export USE_DUMMY=0
 export DISCOUNT_FACTOR=0.998
 export USE_PERIOD_RESETS=0
 export COMMENT='unitree b2w, CLOSED partial, transfer eval on xbot_mujoco' # any training comment

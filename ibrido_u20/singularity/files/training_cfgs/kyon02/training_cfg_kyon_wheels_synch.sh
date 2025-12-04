@@ -51,6 +51,7 @@ export DEMO_ENVS_PERC=0.0
 export EXPL_ENVS_PERC=0.0
 export ACTION_REPEAT=5
 export USE_SAC=1
+export USE_DUMMY=0
 export DISCOUNT_FACTOR=0.99
 export USE_PERIOD_RESETS=0
 export COMMENT='kyon REAL wheels no yaw CLOSED partial, UTD 8, action rep 5, target entropy -0.5, fake pos track max 1.0 m/s (action rate, NO CoT, dir track, 1.0 omega weight' # any training comment
