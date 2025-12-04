@@ -80,7 +80,7 @@ export ENV_IDX_BAG_EXPL=-1
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/CentauroRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
 export CUSTOM_ARGS_NAMES="rendering_dt use_random_pertub use_jnt_v_feedback step_height control_wheels fixed_flights adaptive_is \
 lin_a_feedback closed_partial fix_yaw use_flat_ground estimate_v_root self_collide add_upper_body \
-ground_type enable_height_sensor height_shared_grid height_shared_resolution enable_height_vis"
+ground_type enable_height_sensor height_sensor_pixels height_sensor_resolution enable_height_vis"
 export CUSTOM_ARGS_DTYPE="float bool bool float bool bool bool bool bool bool bool bool bool bool str bool int float bool"
 export CUSTOM_ARGS_VALS="0.1 false false 0.1 false true true false true true false false false true stepup true 10 0.16 true"
 export SET_ULIM=1 
