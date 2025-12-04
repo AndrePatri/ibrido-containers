@@ -221,7 +221,6 @@ activate_mamba_env
 increase_file_limits_locally
 export EXP_PATH="$HOME/ibrido_files" # used by isaac sim for extensions loading
 training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data \
---db --env_db --rmdb \
 --seed $SEED --timeout_ms $TIMEOUT_MS \
 --env_fname $TRAIN_ENV_FNAME --env_classname $TRAIN_ENV_CNAME \
 --demo_stop_thresh $DEMO_STOP_THRESH  \
@@ -233,10 +232,18 @@ training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data
 --action_repeat $ACTION_REPEAT \
 --compression_ratio $COMPRESSION_RATIO \
 --discount_factor $DISCOUNT_FACTOR "
-if (( $USE_SAC )); then
+if (( $USE_DUMMY )); then
+training_env_cmd+="--dummy "
+elif (( $USE_SAC )); then
 training_env_cmd+="--sac "
 fi
-if (( $DUMP_ENV_CHECKPOINTS )); then
+if (( $DEBUG )); then
+training_env_cmd+="--db --env_db "
+fi
+if (( $RMDEBUG )); then
+training_env_cmd+="--rmdb "
+fi
+if (( $DUMP_ENV_CHECKPOINTS )) && (( $DEBUG )); then
 training_env_cmd+="--full_env_db "
 fi
 if (( $USE_RND )); then
