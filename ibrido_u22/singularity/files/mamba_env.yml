@@ -12,10 +12,10 @@ channels:
 
 dependencies: 
   - python=3.10
-  - pytorch>2.5=*cuda*
-  - torchvision
+  # - pytorch>2.5=*cuda*
+  # - torchvision
   # - torchaudio
-  - pytorch-cuda=12.1
+  # - pytorch-cuda=12.1
   # - cuda-toolkit
   # - clang
   # - compilers 
@@ -38,6 +38,9 @@ dependencies:
   - perf_sleep
   - catkin_pkg=1.0.0
   - pip:
+    - -f https://download.pytorch.org/whl/cu130
+    - torch
+    - torchvision
     - pyzmq
     - pygame
     - flit
