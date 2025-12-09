@@ -32,14 +32,14 @@ micromamba activate "${MAMBA_ENV_NAME}"
 cd "$HOME/ibrido_ws/src/AugMPC/aug_mpc/scripts" || exit 1
 
 if (( LAUNCH_RHC )); then
-  python launch_rhc_keybrd_cmds.py \
+  python utilities/launch_rhc_keybrd_cmds.py \
     --ns "$NS" \
     --env_idx "$ENV_IDX" \
     --from_stdin \
     --add_remote_exit \
     --joy
 else
-  python launch_agent_keybrd_cmds.py \
+  python utilities/launch_agent_keybrd_cmds.py \
   --ns "$NS" \
   --env_idx "$ENV_IDX" \
   --agent_refs_world \

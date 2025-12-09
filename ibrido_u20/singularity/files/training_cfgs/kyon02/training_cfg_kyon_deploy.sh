@@ -7,14 +7,14 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-# export MPATH="/root/training_data/d2025_10_30_h12_m44_s13-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
-# export MNAME="d2025_10_30_h12_m44_s13-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
+# export MPATH="/root/training_data/d2025_10_30_h12_m44_s13-KyonRealPartialCloopNoWheels_FakePosTrackingEnv"
+# export MNAME="d2025_10_30_h12_m44_s13-KyonRealPartialCloopNoWheels_FakePosTrackingEnv_model"
 
-export MPATH="/root/training_data/d2025_11_03_h10_m18_s43-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
-export MNAME="d2025_11_03_h10_m18_s43-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
+export MPATH="/root/training_data/d2025_11_03_h10_m18_s43-KyonRealPartialCloopNoWheels_FakePosTrackingEnv"
+export MNAME="d2025_11_03_h10_m18_s43-KyonRealPartialCloopNoWheels_FakePosTrackingEnv_model"
 
-# export MPATH="/root/training_data/d2025_11_10_h20_m57_s12-KyonRealPartialCloopNoWheels_FakePosEnvBaseline"
-# export MNAME="d2025_11_10_h20_m57_s12-KyonRealPartialCloopNoWheels_FakePosEnvBaseline_model"
+# export MPATH="/root/training_data/d2025_11_10_h20_m57_s12-KyonRealPartialCloopNoWheels_FakePosTrackingEnv"
+# export MNAME="d2025_11_10_h20_m57_s12-KyonRealPartialCloopNoWheels_FakePosTrackingEnv_model"
 
 export RESUME=0 # resume a previous training using a checkpoint
 
@@ -65,12 +65,12 @@ export PHYSICS_DT=0.0005
 export N_NODES=31
 export CLUSTER_DB=1
 export CODEGEN_OVERRIDE_BDIR="none"
-# export TRAIN_ENV_FNAME="linvel_env_baseline"
-# export TRAIN_ENV_CNAME="LinVelTrackBaseline"
-export TRAIN_ENV_FNAME="fake_pos_env_baseline"
-export TRAIN_ENV_CNAME="FakePosEnvBaseline"
+# export TRAIN_ENV_FNAME="twist_tracking_env"
+# export TRAIN_ENV_CNAME="TwistTrackingEnv"
+export TRAIN_ENV_FNAME="fake_pos_tracking_env"
+export TRAIN_ENV_CNAME="FakePosTrackingEnv"
 # export TRAIN_ENV_FNAME="linvel_env_with_demo"
-# export TRAIN_ENV_CNAME="LinVelEnvWithDemo"
+# export TRAIN_ENV_CNAME="TwistTrackingEnvWithDemo"
 export BAG_SDT=120.0
 export BRIDGE_DT=0.1
 export DUMP_DT=50.0

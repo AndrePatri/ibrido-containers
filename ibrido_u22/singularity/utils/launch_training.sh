@@ -104,7 +104,7 @@ fi
 if (( $USE_GPU_SIM )); then
 remote_env_cmd+="--use_gpu "
 fi 
-python $LRHC_DIR/launch_remote_env.py $remote_env_cmd > "$log_remote" 2>&1 &
+python $LRHC_DIR/launch_world_interface.py $remote_env_cmd > "$log_remote" 2>&1 &
 
 # cluster
 cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
@@ -221,7 +221,7 @@ if (( $ENV_IDX_BAG >= 0 && $CLUSTER_DB)); then
   if (( $REMOTE_STEPPING )); then
   rosbag_cmd+="--with_agent_refs --no_rhc_internal "
   fi
-  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+  python $LRHC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
 fi
 
 # demo env db
@@ -239,7 +239,7 @@ if (( $ENV_IDX_BAG_DEMO >= 0 && $CLUSTER_DB)); then
   if (( $REMOTE_STEPPING )); then
   rosbag_cmd+="--with_agent_refs --no_rhc_internal "
   fi
-  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+  python $LRHC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
 fi
 
 # expl env db
@@ -257,7 +257,7 @@ if (( $ENV_IDX_BAG_EXPL >= 0 && $CLUSTER_DB)); then
   if (( $REMOTE_STEPPING )); then
   rosbag_cmd+="--with_agent_refs --no_rhc_internal "
   fi
-  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+  python $LRHC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
 fi
 
 wait # wait for all to exit

@@ -170,7 +170,7 @@ fi
 if (( $USE_GPU_SIM )); then
 remote_env_cmd+="--use_gpu "
 fi 
-prepare_command "reset && python launch_remote_env.py $remote_env_cmd"
+prepare_command "reset && python launch_world_interface.py $remote_env_cmd"
 
 split_v
 execute_command "cd ${WORKING_DIR}"
@@ -197,21 +197,21 @@ split_h
 execute_command "cd $WORKING_DIR"
 activate_mamba_env
 increase_file_limits_locally
-prepare_command "reset && python launch_GUI.py --ns $SHM_NS"
+prepare_command "reset && python utilities/utilities/launch_GUI.py --ns $SHM_NS"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_rhc_keybrd_cmds.py --ns $SHM_NS --env_idx 0 --from_stdin --add_remote_exit --joy"
+prepare_command "reset && python utilities/launch_rhc_keybrd_cmds.py --ns $SHM_NS --env_idx 0 --from_stdin --add_remote_exit --joy"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_agent_keybrd_cmds.py --ns $SHM_NS --env_idx 0 --agent_refs_world --from_stdin --add_remote_exit --joy"
+prepare_command "reset && python utilities/launch_agent_keybrd_cmds.py --ns $SHM_NS --env_idx 0 --agent_refs_world --from_stdin --add_remote_exit --joy"
 
 go_to_pane 0 
 
@@ -306,7 +306,7 @@ execute_command "source /opt/ros/humble/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
-prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --rhc_refs_in_h_frame \
+prepare_command "reset && python utilities/launch_rhc2ros_bridge.py --ros2 --rhc_refs_in_h_frame \
 --ns $SHM_NS --with_agent_refs --no_rhc_internal $( (( PUB_HEIGHTMAP )) && echo --show_heightmap )"
 
 split_h
@@ -316,7 +316,7 @@ execute_command "source /opt/ros/humble/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
-prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir \
+prepare_command "reset && python utilities/launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir \
 --pub_stime \
 --ns $SHM_NS --rhc_refs_in_h_frame \
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG \
@@ -329,7 +329,7 @@ execute_command "source /opt/ros/humble/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
-prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir \
+prepare_command "reset && python utilities/launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir \
 --ns $SHM_NS --remap_ns "${SHM_NS}_expl" \
 --rhc_refs_in_h_frame \
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_EXPL \
@@ -342,7 +342,7 @@ execute_command "source /opt/ros/humble/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
-prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir \
+prepare_command "reset && python utilities/launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir \
 --ns $SHM_NS --remap_ns "${SHM_NS}_demo" \
 --rhc_refs_in_h_frame \
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_DEMO \
@@ -353,7 +353,7 @@ new_tab
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 execute_command "source /opt/ros/humble/setup.bash"
-prepare_command "reset && ./replay_bag.bash ~/training_data/{}"
+prepare_command "reset && ./utilities/replay_bag.bash ~/training_data/{}"
 
 split_h
 execute_command "cd ${WORKING_DIR_OTHER}"
@@ -361,9 +361,9 @@ execute_command "cd ${WORKING_DIR_OTHER}"
 activate_mamba_env
 execute_command "source /opt/ros/humble/setup.bash"
 if (( PUB_HEIGHTMAP )); then
-    prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --show_heightmap"
+    prepare_command "reset && python utilities/launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --show_heightmap"
 else
-    prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
+    prepare_command "reset && python utilities/launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
 fi
 
 # tab2

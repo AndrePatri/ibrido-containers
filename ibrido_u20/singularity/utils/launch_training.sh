@@ -10,7 +10,7 @@ bag_pid=""
 
 # Improved cleanup function — send SIGINT only to remote, then wait for all scripts
 cleanup() {
-    echo "launch_training.sh: sending SIGINT to launch_remote_env (if running)..."
+    echo "launch_training.sh: sending SIGINT to launch_world_interface (if running)..."
     if [ -n "$remote_pid" ] && kill -0 "$remote_pid" 2>/dev/null; then
         echo "launch_training.sh: sending SIGINT to PID $remote_pid"
         kill -INT "$remote_pid" 2>/dev/null || true
@@ -207,7 +207,7 @@ remote_env_cmd+="--remote_stepping "
 fi
 
 # Launch remote normally, capture its PID so cleanup can signal it
-python $LRHC_DIR/launch_remote_env.py $remote_env_cmd > "$log_remote" 2>&1 &
+python $LRHC_DIR/launch_world_interface.py $remote_env_cmd > "$log_remote" 2>&1 &
 remote_pid=$!
 
 # rosbag db
@@ -224,7 +224,7 @@ remote_pid=$!
 #   fi 
 #
 #   fi
-#   setsid python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+#   setsid python $LRHC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
 #   bag_pid=$!
 #
 #   # bridge_cmd="--ns $SHM_NS --rhc_refs_in_h_frame \
@@ -232,7 +232,7 @@ remote_pid=$!
 #   # if (( $REMOTE_STEPPING )); then
 #   # bridge_cmd+="--with_agent_refs --no_rhc_internal"
 #   # fi
-#   # python $LRHC_DIR/launch_rhc2ros_bridge.py $bridge_cmd > "$log_bag" 2>&1 &
+#   # python $LRHC_DIR/utilities/launch_rhc2ros_bridge.py $bridge_cmd > "$log_bag" 2>&1 &
 #  
 # fi
 
