@@ -57,7 +57,7 @@ export CLUSTER_DB=1
 export CODEGEN_OVERRIDE_BDIR="none"
 
 export TRAIN_ENV_CNAME="GaitSchedulingEnv"
-export TRAIN_ENV_FNAME="gait_scheduling_env"
+export TRAIN_ENV_FNAME="derived.gait_scheduling_env"
 
 export BAG_SDT=3600.0
 export BRIDGE_DT=0.05
