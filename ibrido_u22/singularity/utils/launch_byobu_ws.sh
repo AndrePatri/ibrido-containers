@@ -197,7 +197,7 @@ split_h
 execute_command "cd $WORKING_DIR"
 activate_mamba_env
 increase_file_limits_locally
-prepare_command "reset && python utilities/utilities/launch_GUI.py --ns $SHM_NS"
+prepare_command "reset && python utilities/launch_GUI.py --ns $SHM_NS"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
