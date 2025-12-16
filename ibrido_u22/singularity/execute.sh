@@ -10,7 +10,7 @@ source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
 
 # Function to print usage
 usage() {
-    echo "Usage: $0 [--use_sudo|-s] [--cfg <config_file>] [--wdb_key <wandb_key>]"
+    echo "Usage: $0 [--use_sudo|-s] [--cfg <config_file>] [--wdb_key <wandb_key>] [--ros_global]"
     exit 1
 }
 
@@ -31,6 +31,7 @@ trap cleanup SIGINT SIGTERM
 
 use_sudo=false # whether to use superuser privileges
 wandb_key_default="$WANDB_KEY" # Use the existing WANDB_KEY by default
+ros_localhost_only=1
 
 # Parse command line options
 while [[ "$#" -gt 0 ]]; do
@@ -38,6 +39,7 @@ while [[ "$#" -gt 0 ]]; do
         -s|--use_sudo) use_sudo=true ;;
         -cfg|--cfg) config_file="$2"; shift ;; # Set custom config file if provided
         -wdb_key|--wdb_key) wandb_key="$2"; shift ;; # Override WANDB_KEY if provided
+        --ros_global) ros_localhost_only=0 ;;
         -h|--help) usage ;;
         *) echo "Unknown parameter passed: $1"; usage ;;
     esac
@@ -62,7 +64,7 @@ training_cmd="$training_script --unique_id ${unique_id} --cfg $config_file"
 
 singularity_cmd="singularity exec \
     --env \"WANDB_KEY=$wandb_key\"\
-    --env \"ROS_LOCALHOST_ONLY=1\"\
+    --env \"ROS_LOCALHOST_ONLY=$ros_localhost_only\"\
     --bind $binddirs\
     --no-mount home,cwd \
     --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_cmd \
