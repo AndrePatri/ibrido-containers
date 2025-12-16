@@ -4,8 +4,8 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/"
-export MNAME=""
+export MPATH="/root/training_data/d2025_12_15_h18_m06_s38-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl"
+export MNAME="d2025_12_15_h18_m06_s38-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_model"
 
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
 export SHM_NS="centauro_big_wheels_no_yaw_ub" # shared mem namespace used for all shared data on CPU 
