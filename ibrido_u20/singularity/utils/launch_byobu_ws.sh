@@ -5,7 +5,7 @@ export XMODIFIERS=@im=ibus
 export GTK_IM_MODULE=ibus
 export QT_IM_MODULE=ibus
 
-SLEEP_FOR=0.1
+SLEEP_FOR=0.02
 BYOBU_WS_NAME="ibrido_xbot"
 WS_ROOT="$HOME/ibrido_ws"
 WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
@@ -164,7 +164,7 @@ remote_env_cmd="--robot_name $SHM_NS \
 if (( $REMOTE_STEPPING )); then
 remote_env_cmd+="--remote_stepping "
 fi 
-prepare_command "reset && python launch_remote_env.py $remote_env_cmd "
+prepare_command "reset && python launch_world_interface.py $remote_env_cmd "
 
 split_v
 execute_command "cd ${WORKING_DIR}"
@@ -173,12 +173,14 @@ execute_command "source $WS_ROOT/setup.bash"
 increase_file_limits_locally
 clear_terminal
 cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
+--codegen_override_dir $CODEGEN_OVERRIDE_BDIR \
 --urdf_path $URDF_PATH --srdf_path $SRDF_PATH --cluster_client_fname $CLUSTER_CL_FNAME \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
 --custom_args_vals $CUSTOM_ARGS_VALS \
 --cluster_dt $CLUSTER_DT \
---n_nodes $N_NODES "
+--n_nodes $N_NODES \
+--set_affinity "
 
 if (( $CLUSTER_DB )); then
 cluster_cmd+="--enable_debug "
@@ -205,20 +207,21 @@ execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_GUI.py --ns $SHM_NS"
+prepare_command "reset && python utilities/launch_GUI.py --ns $SHM_NS"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 increase_file_limits_locally
 clear_terminal
-prepare_command "reset && python launch_rhc_keybrd_cmds.py --ns $SHM_NS"
+prepare_command "reset && python utilities/launch_rhc_keybrd_cmds.py --ns $SHM_NS --env_idx 0 --from_stdin --add_remote_exit --joy"
 
 split_h
-execute_command "cd $WORKING_DIR"
+execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 increase_file_limits_locally
-prepare_command "reset && python launch_agent_keybrd_cmds.py --ns $SHM_NS"
+clear_terminal
+prepare_command "reset && python utilities/launch_agent_keybrd_cmds.py --ns $SHM_NS --env_idx 0 --agent_refs_world --from_stdin --add_remote_exit --joy"
 
 go_to_pane 0 
 
@@ -229,6 +232,7 @@ increase_file_limits_locally
 clear_terminal
 training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data \
 --db --env_db \
+--step_while_setup \
 --seed $SEED --timeout_ms $TIMEOUT_MS \
 --env_fname $TRAIN_ENV_FNAME --env_classname $TRAIN_ENV_CNAME \
 --demo_stop_thresh $DEMO_STOP_THRESH  \
@@ -239,7 +243,9 @@ training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data
 --expl_envs_perc $EXPL_ENVS_PERC \
 --action_repeat $ACTION_REPEAT \
 --compression_ratio $COMPRESSION_RATIO "
-if (( $USE_SAC )); then
+if (( $USE_DUMMY )); then
+training_env_cmd+="--dummy "
+elif (( $USE_SAC )); then
 training_env_cmd+="--sac "
 fi
 if (( $DUMP_ENV_CHECKPOINTS )); then
@@ -253,6 +259,9 @@ training_env_cmd+="--obs_rescale "
 fi
 if (( $WEIGHT_NORM )); then
 training_env_cmd+="--add_weight_norm "
+fi
+if [[ -n "$RNAME" ]]; then
+    training_env_cmd+="--run_name ${RNAME}_${TRAIN_ENV_CNAME} "
 fi
 if (( $EVAL )); then
   # adding options if in eval mode
@@ -293,7 +302,7 @@ increase_file_limits_locally
 export ROS_MASTER_URI=$ROS_MASTER_URI
 export ROS_IP=$ROS_IP
 clear_terminal
-prepare_command "reset && python launch_rhc2ros_bridge.py --rhc_refs_in_h_frame --ns $SHM_NS --with_agent_refs "
+prepare_command "reset && python utilities/launch_rhc2ros_bridge.py --rhc_refs_in_h_frame --ns $SHM_NS --with_agent_refs "
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -304,7 +313,7 @@ increase_file_limits_locally
 export ROS_MASTER_URI=$ROS_MASTER_URI
 export ROS_IP=$ROS_IP
 clear_terminal
-prepare_command "reset && python launch_periodic_bag_dump.py --use_shared_drop_dir \
+prepare_command "reset && python utilities/launch_periodic_bag_dump.py --use_shared_drop_dir \
 --ns $SHM_NS --rhc_refs_in_h_frame \
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG \
 --srdf_path $SRDF_PATH_ROSBAG --with_agent_refs \
@@ -320,7 +329,7 @@ execute_command "source /opt/ros/noetic/setup.bash"
 export ROS_MASTER_URI=$ROS_MASTER_URI
 export ROS_IP=$ROS_IP
 clear_terminal
-prepare_command "reset && ./replay_bag.bash $HOME/training_data/{}"
+prepare_command "reset && ./utilities/replay_bag.bash $HOME/training_data/{}"
 
 split_h
 execute_command "cd ${WORKING_DIR_OTHER}"
@@ -329,7 +338,7 @@ execute_command "source /opt/ros/noetic/setup.bash"
 export ROS_MASTER_URI=$ROS_MASTER_URI
 export ROS_IP=$ROS_IP
 clear_terminal
-prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
+prepare_command "reset && python utilities/launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
 
 split_h
 execute_command "cd ${WORKING_DIR}"

@@ -1,0 +1,21 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=32
+#SBATCH --gres=gpu:1
+#SBATCH --time=1:00:00
+#SBATCH --job-name=ibrido_run
+#SBATCH --partition=gpua
+#SBATCH --output=%x.%j.out
+#SBATCH --error=%x.%j.out
+
+# if [ -z "$NGC_KEY" ]; then
+#     echo "NGC_KEY variable has not been seen. Please set it to your generated NVIDIA NGC password/token."
+#     exit 1
+# fi
+
+module load apptainer-1.4.1
+
+# $IBRIDO_CONTAINERS_PREFIX/build_singularity_isaac.sh --init -b --do_setup --ngc_key $NGC_KEY
+$IBRIDO_CONTAINERS_PREFIX/build_singularity_isaac.sh --init --do_setup 
+

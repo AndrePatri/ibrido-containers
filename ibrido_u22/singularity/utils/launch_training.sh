@@ -104,7 +104,7 @@ fi
 if (( $USE_GPU_SIM )); then
 remote_env_cmd+="--use_gpu "
 fi 
-python $LRHC_DIR/launch_remote_env.py $remote_env_cmd > "$log_remote" 2>&1 &
+python $LRHC_DIR/launch_world_interface.py $remote_env_cmd > "$log_remote" 2>&1 &
 
 # cluster
 cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
@@ -127,7 +127,6 @@ python $LRHC_DIR/launch_control_cluster.py $cluster_cmd > "$log_cluster" 2>&1 &
 export EXP_PATH="$HOME/ibrido_files/" # used by isaac sim for extensions loading
 if (( $REMOTE_STEPPING )); then
 training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data \
---db --env_db --rmdb \
 --seed $SEED --timeout_ms $TIMEOUT_MS \
 --env_fname $TRAIN_ENV_FNAME --env_classname $TRAIN_ENV_CNAME \
 --demo_stop_thresh $DEMO_STOP_THRESH  \
@@ -139,11 +138,19 @@ training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data
 --action_repeat $ACTION_REPEAT \
 --compression_ratio $COMPRESSION_RATIO \
 --discount_factor $DISCOUNT_FACTOR "
-if (( $USE_SAC )); then
+if (( $USE_DUMMY )); then
+training_env_cmd+="--dummy "
+elif (( $USE_SAC )); then
 training_env_cmd+="--sac "
 fi
-if (( $DUMP_ENV_CHECKPOINTS )); then
-training_env_cmd+="--full_env_db "
+if (( $DEBUG )); then
+training_env_cmd+="--db --env_db "
+fi
+if (( $RMDEBUG )); then
+training_env_cmd+="--rmdb "
+fi
+if (( $DUMP_ENV_CHECKPOINTS )) && (( $DEBUG )); then
+  training_env_cmd+="--full_env_db "
 fi
 if (( $USE_RND )); then
 training_env_cmd+="--use_rnd "
@@ -171,6 +178,13 @@ training_env_cmd+="--use_period_resets "
 fi
 if [[ -n "$RNAME" ]]; then
     training_env_cmd+="--run_name ${RNAME}_${TRAIN_ENV_CNAME} "
+fi
+if (( $RESUME )); then
+  # resume previous training 
+  training_env_cmd+="--resume --mpath $MPATH --mname $MNAME "
+  if (( $OVERRIDE_ENV )); then
+  training_env_cmd+="--override_env "
+  fi
 fi
 if (( $EVAL )); then
   # adding options if in eval mode
@@ -201,10 +215,13 @@ if (( $ENV_IDX_BAG >= 0 && $CLUSTER_DB)); then
   --ns $SHM_NS --rhc_refs_in_h_frame \
   --srdf_path $SRDF_PATH_ROSBAG \
   --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG "
+  if (( $PUB_HEIGHTMAP )); then
+    rosbag_cmd+="--show_heightmap "
+  fi
   if (( $REMOTE_STEPPING )); then
   rosbag_cmd+="--with_agent_refs --no_rhc_internal "
   fi
-  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+  python $LRHC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
 fi
 
 # demo env db
@@ -216,10 +233,13 @@ if (( $ENV_IDX_BAG_DEMO >= 0 && $CLUSTER_DB)); then
   --rhc_refs_in_h_frame \
   --srdf_path $SRDF_PATH_ROSBAG \
   --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_DEMO "
+  if (( $PUB_HEIGHTMAP )); then
+    rosbag_cmd+="--show_heightmap "
+  fi
   if (( $REMOTE_STEPPING )); then
   rosbag_cmd+="--with_agent_refs --no_rhc_internal "
   fi
-  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+  python $LRHC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
 fi
 
 # expl env db
@@ -231,10 +251,13 @@ if (( $ENV_IDX_BAG_EXPL >= 0 && $CLUSTER_DB)); then
   --rhc_refs_in_h_frame \
   --srdf_path $SRDF_PATH_ROSBAG \
   --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_EXPL "
+  if (( $PUB_HEIGHTMAP )); then
+  rosbag_cmd+="--show_heightmap "
+  fi
   if (( $REMOTE_STEPPING )); then
   rosbag_cmd+="--with_agent_refs --no_rhc_internal "
   fi
-  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+  python $LRHC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
 fi
 
 wait # wait for all to exit

@@ -23,7 +23,7 @@ make -j8 install
 
 mkdir -p $WS_BASEDIR/build/phase_manager
 cd $WS_BASEDIR/build/phase_manager
-cmake -DCMAKE_BUILD_TYPE=Release ../../src/phase_manager/
+cmake -DCMAKE_BUILD_TYPE=Release -DTESTS=OFF ../../src/phase_manager/
 make -j8 install
 
 # mkdir -p $WS_BASEDIR/build/casadi
@@ -33,7 +33,7 @@ make -j8 install
 
 mkdir -p $WS_BASEDIR/build/horizon
 cd $WS_BASEDIR/build/horizon
-cmake -DCMAKE_BUILD_TYPE=Release ../../src/horizon/horizon/cpp
+cmake -DCMAKE_BUILD_TYPE=Release -DTESTS=OFF ../../src/horizon/horizon/cpp
 make -j8 install
 
 source /opt/ros/humble/setup.bash # ros2 setup

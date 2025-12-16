@@ -45,6 +45,7 @@ if $use_sudo; then
         --cleanenv \
         --net \
         --env "DISPLAY=${DISPLAY}"\
+        --env XAUTHORITY="$XAUTHORITY" \
         --env "WANDB_KEY=$wandb_key"\
         --bind $binddirs\
         --no-mount home,cwd \
@@ -54,6 +55,7 @@ else
         --cleanenv \
         --env "DISPLAY=${DISPLAY}"\
         --env "WANDB_KEY=$wandb_key"\
+        --env XAUTHORITY="$XAUTHORITY" \
         --bind $binddirs\
         --no-mount home,cwd \
         --nv ibrido_xbot.sif bash

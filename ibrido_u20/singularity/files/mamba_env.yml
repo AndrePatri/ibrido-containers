@@ -15,6 +15,7 @@ dependencies:
   # - torchvision
   # - torchaudio
   - pytorch-cuda
+  - clang
   # - cuda-toolkit
   # - clang
   # - compilers 
@@ -26,7 +27,9 @@ dependencies:
   # - gcc_linux-64
   # - gxx_linux-64
   # - libgcc-devel_linux-64
-  - gtest
+  # - gtest
+  # - zeromq
+  - protobuf
   - pybind11
   - eigen3
   - poetry
@@ -42,10 +45,11 @@ dependencies:
   # - perf_sleep
   - catkin_pkg=1.0.0
   - pip:
+    - pyzmq
+    - pygame
     - transforms3d
     - flit
     - h5py
-    - protobuf
     - matplotlib
     - scipy
     - urdf-parser-py
