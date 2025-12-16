@@ -11,7 +11,7 @@ export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbo
 # export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
 export XMJ_FILES_DIR="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files"
 
-export RT_DEPLOY=1
+export RT_DEPLOY=0
 
 if [[ $RT_DEPLOY -eq 1 ]]; then
   # Set ROS_MASTER_URI and ROS_IP for deployment
@@ -68,7 +68,7 @@ export CLUSTER_DB=1
 export CODEGEN_OVERRIDE_BDIR="none"
 
 export TRAIN_ENV_CNAME="GaitSchedulingEnv"
-export TRAIN_ENV_FNAME="gait_scheduling_env"
+export TRAIN_ENV_FNAME="derived.gait_scheduling_env"
 
 export BAG_SDT=3600.0
 export BRIDGE_DT=0.05
@@ -83,10 +83,10 @@ if [[ $RT_DEPLOY -eq 1 ]]; then
   export CUSTOM_ARGS_NAMES="add_remote_exit_flag step_height control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body use_mpc_pos_for_robot torque_correction xbot2_filter_prof use_jnt_v_feedback"
   export CUSTOM_ARGS_DTYPE="bool float bool bool bool bool bool bool bool float bool bool bool float str bool"
   export CUSTOM_ARGS_VALS="true 0.10 false true true false true false true 1.0 false true true 1.0 fast true"
-  export REMOTE_ENV_FNAME="aug_mpc_envs.envs.rt_deploy_env"
+  export REMOTE_ENV_FNAME="aug_mpc.world_interfaces.rt_deploy_env"
 else
   export CUSTOM_ARGS_NAMES="step_height render_to_file render_fps control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot closed_partial torque_correction xbot2_filter_prof use_jnt_v_feedback add_upper_body"
   export CUSTOM_ARGS_DTYPE="float bool float bool bool bool bool bool int string bool bool float str bool bool"
   export CUSTOM_ARGS_VALS="0.10 false 60.0 false true true false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true true 1.0 fast true true"
-  export REMOTE_ENV_FNAME="aug_mpc_envs.envs.xmj_env"  
+  export REMOTE_ENV_FNAME="aug_mpc.world_interfaces.xmj_env"  
 fi
