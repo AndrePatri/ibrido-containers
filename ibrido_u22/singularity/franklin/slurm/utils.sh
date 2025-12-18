@@ -7,7 +7,7 @@ local script_pattern=$2
 local signal=${3:-SIGINT}
 
 
-if [ -z "$job_id" ]; then
+if [ -z "$job_id" ] || [ -z "$script_pattern" ]; then
 echo "Usage: send_signal <jobid> <script_pattern> [SIGNAL]"
 return 1
 fi
@@ -16,11 +16,23 @@ fi
 # Prefer Slurm's scancel --signal mechanism (requires slurm version with --signal support)
 if command -v scancel >/dev/null 2>&1; then
 # Try sending the signal to the job
-scancel --signal="$signal" "$job_id" 2>/dev/null || true
+if scancel --signal="$signal" "$job_id" 2>/dev/null; then
+echo "Sent $signal to job $job_id via scancel."
+return 0
+fi
 fi
 
 
-# If scancel didn't do it (or to act on processes directly), try SSH to node and kill matching procs
+# If scancel didn't do it (or to act on processes directly), try srun inside allocation
+if command -v srun >/dev/null 2>&1; then
+if srun --jobid="$job_id" --ntasks=1 bash -lc "pkill -$signal -f '$script_pattern'" 2>/dev/null; then
+echo "Sent $signal to processes matching '$script_pattern' inside job $job_id via srun."
+return 0
+fi
+fi
+
+
+# Fallback: SSH to node and kill matching procs
 local node=$(squeue -j "$job_id" -h -o "%N" | cut -d',' -f1)
 if [ -z "$node" ]; then
 echo "Could not determine the execution host for job $job_id."
@@ -33,7 +45,7 @@ ssh -t "$node" "
 pids=\$(pgrep -f '${script_pattern}')
 echo 'Matching PIDs:' \"\$pids\"
 if [ -z \"\$pids\" ]; then
-echo 'No processes found matching pattern "${script_pattern}"'
+echo 'No processes found matching pattern \"${script_pattern}\"'
 exit 1
 fi
 for pid in \$pids; do

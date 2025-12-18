@@ -74,4 +74,4 @@ export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 export CUSTOM_ARGS_NAMES="render_to_file render_fps wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot estimate_v_root closed_partial fully_closed"
 export CUSTOM_ARGS_DTYPE="bool float xacro bool bool bool bool int string bool bool bool bool"
 export CUSTOM_ARGS_VALS="false 60.0 false true false false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR false false false true"
-export REMOTE_ENV_FNAME="aug_mpc.world_interfaces.xmj_env"  
+export REMOTE_ENV_FNAME="aug_mpc_envs.world_interfaces.xmj_env"  

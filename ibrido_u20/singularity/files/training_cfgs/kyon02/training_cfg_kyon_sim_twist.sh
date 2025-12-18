@@ -92,5 +92,5 @@ else
   export CUSTOM_ARGS_NAMES="step_height wheels fixed_flights adaptive_is lin_a_feedback closed_partial fully_closed estimate_v_root use_jnt_v_feedback base_linkname use_diff_vels xmj_timeout xmj_files_dir state_from_xbot rt_safety_perf_coeff use_mpc_pos_for_robot torque_correction xbot2_filter_prof" 
   export CUSTOM_ARGS_DTYPE="float xacro bool bool bool bool bool bool bool str bool int string bool float bool float str"
   export CUSTOM_ARGS_VALS="0.18 false true true false true false false true pelvis false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR false 1.0 false 1.0 fast" 
-  export REMOTE_ENV_FNAME="aug_mpc.world_interfaces.xmj_env"  
+  export REMOTE_ENV_FNAME="aug_mpc_envs.world_interfaces.xmj_env"  
 fi
