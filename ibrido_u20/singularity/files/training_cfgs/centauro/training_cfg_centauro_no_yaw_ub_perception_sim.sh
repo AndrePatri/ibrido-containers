@@ -81,10 +81,14 @@ if [[ $RT_DEPLOY -eq 1 ]]; then
   export CUSTOM_ARGS_NAMES="add_remote_exit_flag step_height control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body use_mpc_pos_for_robot fix_yaw torque_correction xbot2_filter_prof use_jnt_v_feedback"
   export CUSTOM_ARGS_DTYPE="bool float bool bool bool bool bool bool bool float bool bool bool bool float str bool"
   export CUSTOM_ARGS_VALS="true 0.10 true true true false true false true 1.0 false true true true 1.0 fast true"
-  export REMOTE_ENV_FNAME="aug_mpc.world_interfaces.rt_deploy_env"
+  export REMOTE_ENV_FNAME="aug_mpc.world_interfaces.rt_deploy_world_interface"
 else
   export CUSTOM_ARGS_NAMES="step_height render_to_file render_fps control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot closed_partial fix_yaw add_upper_body torque_correction xbot2_filter_prof use_jnt_v_feedback"
+  export CUSTOM_ARGS_NAMES+=" generate_stepup_terrain ground_type enable_height_sensor height_sensor_pixels height_sensor_resolution enable_height_vis"
   export CUSTOM_ARGS_DTYPE="float bool float bool bool bool bool bool int string bool bool bool bool float str bool"
+  export CUSTOM_ARGS_DTYPE+=" bool str bool int float bool"  
   export CUSTOM_ARGS_VALS="0.10 false 60.0 true true true false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true true true true 1.0 fast true"
-  export REMOTE_ENV_FNAME="aug_mpc_envs.world_interfaces.xmj_env"  
+  export CUSTOM_ARGS_VALS+=" true stepup_prim true 10 0.16 false"
+
+  export REMOTE_ENV_FNAME="aug_mpc_envs.world_interfaces.xmj_world_interface"  
 fi

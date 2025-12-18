@@ -7,3 +7,7 @@
 # scontrol show job $JOB_ID
 
 # squeue -w afnode01
+
+# srun --jobid=<jobid> --ntasks=1 --pty bash --> connect an interactive session
+
+# pkill -SIGINT -f launch_train_env.py
