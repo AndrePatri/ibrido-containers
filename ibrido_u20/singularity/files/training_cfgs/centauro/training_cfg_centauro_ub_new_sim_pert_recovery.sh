@@ -66,7 +66,7 @@ export PHYSICS_DT=0.0005
 export N_NODES=25
 export CLUSTER_DB=1
 export CODEGEN_OVERRIDE_BDIR="none"
-export TRAIN_ENV_FNAME="derived.staying_alive_env"
+export TRAIN_ENV_FNAME="staying_alive_env"
 export TRAIN_ENV_CNAME="StayingAliveEnv"
 export BAG_SDT=3600.0
 export BRIDGE_DT=0.05
@@ -84,7 +84,10 @@ if [[ $RT_DEPLOY -eq 1 ]]; then
   export REMOTE_ENV_FNAME="aug_mpc.world_interfaces.rt_deploy_env"
 else
   export CUSTOM_ARGS_NAMES="step_height render_to_file render_fps control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot closed_partial torque_correction xbot2_filter_prof use_jnt_v_feedback add_upper_body"
+  export CUSTOM_ARGS_NAMES+=" generate_stepup_terrain ground_type enable_height_sensor height_sensor_pixels height_sensor_resolution enable_height_vis"
   export CUSTOM_ARGS_DTYPE="float bool float bool bool bool bool bool int string bool bool float str bool bool"
+  export CUSTOM_ARGS_DTYPE+=" bool str bool int float bool"  
   export CUSTOM_ARGS_VALS="0.10 false 60.0 false true true false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true true 1.0 fast true true"
+  export CUSTOM_ARGS_VALS+=" false stepup_prim true 10 0.16 false"
   export REMOTE_ENV_FNAME="aug_mpc_envs.world_interfaces.xmj_env"  
 fi
