@@ -31,7 +31,7 @@ while true; do
     # Check if remaining time is less than PRESCIA_DT_SEC
     if [ "$remaining_time_sec" -le "$PRESCIA_DT_SEC" ]; then
         echo "Sending termination signal to job..."
-        send_signal_from_within $TERMINATION_SCRIPT $TERMINATION_SIGNAL
+        send_signal_from_within "$TERMINATION_SCRIPT" "$TERMINATION_SIGNAL"
         exit 0
     else
         echo "Remaining time to nominal termination deadline: $remaining_time_sec s."

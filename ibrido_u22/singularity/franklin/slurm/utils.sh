@@ -57,6 +57,36 @@ done
 
 alias send_signal_outside=send_signal
 
+function send_signal_from_within() {
+local script_pattern=$1
+local signal=${2:-SIGINT}  # Default to SIGINT if no signal is provided
+local job_id="${SLURM_JOB_ID:-unknown}"
+
+if [ -z "$script_pattern" ]; then
+echo "Usage: send_signal_from_within <script_pattern> [SIGNAL]"
+return 1
+fi
+
+# Strip any step suffix from the job id for logging purposes
+job_id=$(echo "$job_id" | cut -d'.' -f1)
+echo "Preparing to send $signal from within job $job_id to processes matching '$script_pattern'"
+
+# Find the PIDs of the scripts matching the pattern
+local pids
+pids=$(pgrep -f "$script_pattern")
+echo "Matching PIDs: $pids"
+if [ -z "$pids" ]; then
+echo "No processes found matching pattern \"$script_pattern\""
+return 1
+fi
+
+# Send the signal to each PID's process group to propagate to children
+for pid in $pids; do
+kill -s "$signal" -"$pid" 2>/dev/null || kill -s "$signal" "$pid"
+done
+}
+alias send_signal_from_within=send_signal_from_within
+
 
 # Get walltime (TimeLimit) for the current Slurm job
 function get_walltime() {

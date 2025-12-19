@@ -16,10 +16,16 @@ usage() {
 
 # Function to handle cleanup on exit
 cleanup() {
+    if [ -z "${training_script_pid:-}" ]; then
+        echo "execute.sh: No training PID recorded, nothing to clean up."
+        return
+    fi
+
     echo "execute.sh: Cleaning up and sending SIGINT to training process..."
-    kill -SIGINT "$training_script_pid"  # Send SIGINT to singularity process
+    # Send SIGINT to the process group to propagate to children; fall back to the PID
+    kill -SIGINT -"$training_script_pid" 2>/dev/null || kill -SIGINT "$training_script_pid" 2>/dev/null
     # Loop until the process is no longer found in `ps` output
-    while ps -p "$training_script_pid" > /dev/null; do
+    while ps -p "$training_script_pid" > /dev/null 2>&1; do
         echo "execute.sh: training script still alive."
         sleep 1  # Check every second
     done
@@ -71,10 +77,11 @@ singularity_cmd="singularity exec \
     "
 
 # Run the singularity command and get its PID
+# Launch the training inside its own session so we can signal the whole group
 if $use_sudo; then
-    sudo bash -c "$singularity_cmd" &
+    sudo setsid bash -c "$singularity_cmd" &
 else
-    bash -c "$singularity_cmd" &
+    setsid bash -c "$singularity_cmd" &
 fi
 
 # Capture the PID of the sudo or bash process
@@ -83,13 +90,15 @@ parent_pid=$!
 # Use pgrep to find the actual singularity process ID associated with the command
 # Give it a second to start to ensure the process is up and running
 sleep 3
-training_script_pid=$(pgrep -f "$training_cmd")
+training_script_pid=$(pgrep -f "$training_cmd" | head -n 1)
 
 # Check if the singularity PID was found and print it for debugging or logging
 if [ -n "$training_script_pid" ]; then
     echo "execute.sh: Training process PID: $training_script_pid"
 else
-    echo "execute.sh: Failed to locate training process PID."
+    # Fallback to the parent pid so cleanup still works
+    training_script_pid=$parent_pid
+    echo "execute.sh: Failed to locate training process PID, falling back to parent pid ${parent_pid}."
 fi
 
-wait
+wait "$parent_pid"
