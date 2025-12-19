@@ -1,0 +1,30 @@
+Loading go-1.19.4/apptainer-1.1.8
+  Loading requirement: go-1.19.4/go
+Remaining time to nominal termination deadline: 43200 s.
+INFO:    underlay of /usr/bin/nvidia-smi required more than 50 (732) bind mounts
+INFO:    underlay of /isaac-sim/kit/cache required more than 50 (63) bind mounts
+
+launch_training.sh: logging output to->
+remote env: /root/ibrido_logs/ibrido_run__2025_04_02_12_39_05_ID958346/ibrido_remote_env___2025_04_02_12_39_05_ID958346.log
+rhc cluster: /root/ibrido_logs/ibrido_run__2025_04_02_12_39_05_ID958346/ibrido_rhc_cluster___2025_04_02_12_39_05_ID958346.log
+train. env: /root/ibrido_logs/ibrido_run__2025_04_02_12_39_05_ID958346/ibrido_train_env___2025_04_02_12_39_05_ID958346.log
+log bag: /root/ibrido_logs/ibrido_run__2025_04_02_12_39_05_ID958346/ibrido_rosbag_env___2025_04_02_12_39_05_ID958346.log
+
+Will use shared memory namespace centauro_big_wheels_2025_04_02_12_39_05_ID958346
+execute.sh: Training process PID: 3541809
+wandb: WARNING Path /wandb/ wasn't writable, using system temp directory
+wandb: WARNING Path /wandb/ wasn't writable, using system temp directory.
+wandb: WARNING Path /wandb/ wasn't writable, using system temp directory
+wandb: Appending key for api.wandb.ai to your netrc file: /root/.netrc
+wandb: W&B API key is configured. Use `wandb login --relogin` to force relogin
+Remaining time to nominal termination deadline: 42960 s.
+Remaining time to nominal termination deadline: 42720 s.
+execute.sh: Cleaning up and sending SIGINT to training process...
+launch_training.sh: sending SIGINT to all child processes...
+launch_training.sh: waiting for child processes to exit...
+execute.sh: training script still alive.
+launch_training.sh: all child processes have exited.
+launch_training.sh: sending SIGINT to all child processes...
+launch_training.sh: waiting for child processes to exit...
+launch_training.sh: all child processes have exited.
+execute.sh: training script exited.

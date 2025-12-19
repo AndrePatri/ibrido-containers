@@ -11,3 +11,5 @@
 # srun --jobid=<jobid> --ntasks=1 --pty bash --> connect an interactive session
 
 # pkill -SIGINT -f launch_train_env.py
+
+# squeue --start --job $JOB_ID

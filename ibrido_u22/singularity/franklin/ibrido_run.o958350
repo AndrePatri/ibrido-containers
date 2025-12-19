@@ -1,0 +1,71 @@
+Loading go-1.19.4/apptainer-1.1.8
+  Loading requirement: go-1.19.4/go
+Remaining time to nominal termination deadline: 43200 s.
+INFO:    underlay of /usr/bin/nvidia-smi required more than 50 (732) bind mounts
+INFO:    underlay of /isaac-sim/kit/cache required more than 50 (63) bind mounts
+
+launch_training.sh: logging output to->
+remote env: /root/ibrido_logs/ibrido_run__2025_04_02_12_54_11_ID958350/ibrido_remote_env___2025_04_02_12_54_11_ID958350.log
+rhc cluster: /root/ibrido_logs/ibrido_run__2025_04_02_12_54_11_ID958350/ibrido_rhc_cluster___2025_04_02_12_54_11_ID958350.log
+train. env: /root/ibrido_logs/ibrido_run__2025_04_02_12_54_11_ID958350/ibrido_train_env___2025_04_02_12_54_11_ID958350.log
+log bag: /root/ibrido_logs/ibrido_run__2025_04_02_12_54_11_ID958350/ibrido_rosbag_env___2025_04_02_12_54_11_ID958350.log
+
+Will use shared memory namespace centauro_big_wheels_2025_04_02_12_54_11_ID958350
+execute.sh: Training process PID: 3556385
+wandb: WARNING Path /wandb/ wasn't writable, using system temp directory
+wandb: WARNING Path /wandb/ wasn't writable, using system temp directory.
+wandb: WARNING Path /wandb/ wasn't writable, using system temp directory
+wandb: Appending key for api.wandb.ai to your netrc file: /root/.netrc
+wandb: W&B API key is configured. Use `wandb login --relogin` to force relogin
+Remaining time to nominal termination deadline: 42960 s.
+Remaining time to nominal termination deadline: 42720 s.
+Remaining time to nominal termination deadline: 42480 s.
+Remaining time to nominal termination deadline: 42240 s.
+Remaining time to nominal termination deadline: 42000 s.
+Remaining time to nominal termination deadline: 41760 s.
+Remaining time to nominal termination deadline: 41520 s.
+Remaining time to nominal termination deadline: 41279 s.
+Remaining time to nominal termination deadline: 41039 s.
+Remaining time to nominal termination deadline: 40799 s.
+Remaining time to nominal termination deadline: 40559 s.
+Remaining time to nominal termination deadline: 40319 s.
+Remaining time to nominal termination deadline: 40079 s.
+Remaining time to nominal termination deadline: 39839 s.
+Remaining time to nominal termination deadline: 39599 s.
+Remaining time to nominal termination deadline: 39359 s.
+Remaining time to nominal termination deadline: 39119 s.
+Remaining time to nominal termination deadline: 38879 s.
+Remaining time to nominal termination deadline: 38639 s.
+Remaining time to nominal termination deadline: 38399 s.
+Remaining time to nominal termination deadline: 38159 s.
+Remaining time to nominal termination deadline: 37919 s.
+Remaining time to nominal termination deadline: 37678 s.
+Remaining time to nominal termination deadline: 37438 s.
+Remaining time to nominal termination deadline: 37198 s.
+Remaining time to nominal termination deadline: 36958 s.
+Remaining time to nominal termination deadline: 36718 s.
+Remaining time to nominal termination deadline: 36478 s.
+Remaining time to nominal termination deadline: 36238 s.
+execute.sh: Cleaning up and sending SIGINT to training process...
+launch_training.sh: sending SIGINT to all child processes...
+launch_training.sh: waiting for child processes to exit...
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.

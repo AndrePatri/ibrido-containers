@@ -1,0 +1,77 @@
+Loading go-1.19.4/apptainer-1.1.8
+  Loading requirement: go-1.19.4/go
+Remaining time to nominal termination deadline: 43200 s.
+INFO:    underlay of /usr/bin/nvidia-smi required more than 50 (732) bind mounts
+INFO:    underlay of /isaac-sim/kit/cache required more than 50 (63) bind mounts
+
+launch_training.sh: logging output to->
+remote env: /root/ibrido_logs/ibrido_run__2025_04_02_12_50_49_ID958349/ibrido_remote_env___2025_04_02_12_50_49_ID958349.log
+rhc cluster: /root/ibrido_logs/ibrido_run__2025_04_02_12_50_49_ID958349/ibrido_rhc_cluster___2025_04_02_12_50_49_ID958349.log
+train. env: /root/ibrido_logs/ibrido_run__2025_04_02_12_50_49_ID958349/ibrido_train_env___2025_04_02_12_50_49_ID958349.log
+log bag: /root/ibrido_logs/ibrido_run__2025_04_02_12_50_49_ID958349/ibrido_rosbag_env___2025_04_02_12_50_49_ID958349.log
+
+Will use shared memory namespace centauro_big_wheels_2025_04_02_12_50_49_ID958349
+execute.sh: Training process PID: 3551512
+wandb: WARNING Path /wandb/ wasn't writable, using system temp directory
+wandb: WARNING Path /wandb/ wasn't writable, using system temp directory.
+wandb: ERROR Find detailed error logs at: /tmp/debug-cli.apatrizi.log
+Error: Timed out waiting for wandb service to start after 30.0 seconds. Try increasing the timeout with the `_service_wait` setting.
+wandb: WARNING Path /wandb/ wasn't writable, using system temp directory
+Traceback (most recent call last):
+  File "/opt/conda/envs/ibrido/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/opt/conda/envs/ibrido/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/opt/conda/envs/ibrido/lib/python3.10/site-packages/wandb/__main__.py", line 3, in <module>
+    cli.cli(prog_name="python -m wandb")
+  File "/opt/conda/envs/ibrido/lib/python3.10/site-packages/click/core.py", line 1161, in __call__
+    return self.main(*args, **kwargs)
+  File "/opt/conda/envs/ibrido/lib/python3.10/site-packages/click/core.py", line 1082, in main
+    rv = self.invoke(ctx)
+  File "/opt/conda/envs/ibrido/lib/python3.10/site-packages/click/core.py", line 1697, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/opt/conda/envs/ibrido/lib/python3.10/site-packages/click/core.py", line 1443, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/opt/conda/envs/ibrido/lib/python3.10/site-packages/click/core.py", line 788, in invoke
+    return __callback(*args, **kwargs)
+  File "/opt/conda/envs/ibrido/lib/python3.10/site-packages/wandb/cli/cli.py", line 104, in wrapper
+    return func(*args, **kwargs)
+  File "/opt/conda/envs/ibrido/lib/python3.10/site-packages/wandb/cli/cli.py", line 290, in service
+    server.serve()
+  File "/opt/conda/envs/ibrido/lib/python3.10/site-packages/wandb/sdk/service/server.py", line 102, in serve
+    self._inform_used_ports(sock_port=sock_port)
+  File "/opt/conda/envs/ibrido/lib/python3.10/site-packages/wandb/sdk/service/server.py", line 48, in _inform_used_ports
+    pf.write(self._port_fname)
+  File "/opt/conda/envs/ibrido/lib/python3.10/site-packages/wandb/sdk/service/port_file.py", line 21, in write
+    f = tempfile.NamedTemporaryFile(prefix=bname, dir=dname, mode="w", delete=False)
+  File "/opt/conda/envs/ibrido/lib/python3.10/tempfile.py", line 575, in NamedTemporaryFile
+    file = _io.open(dir, mode, buffering=buffering,
+  File "/opt/conda/envs/ibrido/lib/python3.10/tempfile.py", line 572, in opener
+    fd, name = _mkstemp_inner(dir, prefix, suffix, flags, output_type)
+  File "/opt/conda/envs/ibrido/lib/python3.10/tempfile.py", line 256, in _mkstemp_inner
+    fd = _os.open(file, flags, 0o600)
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmp81kha6y_/port-3552082.txtffxlyfpo'
+launch_training.sh: sending SIGINT to all child processes...
+execute.sh: Cleaning up and sending SIGINT to training process...
+launch_training.sh: sending SIGINT to all child processes...
+launch_training.sh: sending SIGINT to all child processes...
+launch_training.sh: waiting for child processes to exit...
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.
+execute.sh: training script still alive.

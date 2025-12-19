@@ -1,0 +1,208 @@
+Remaining time to nominal termination deadline: 43200 s.
+execute.sh: Failed to locate training process PID.
+WARNING: Error changing the container working directory. Using '/' instead: chdir /home/apatrizi: no such file or directory
+
+launch_training.sh: logging output to->
+remote env: /root/ibrido_logs/ibrido_run__2025_12_18_12_07_52_ID177728/ibrido_remote_env___2025_12_18_12_07_52_ID177728.log
+rhc cluster: /root/ibrido_logs/ibrido_run__2025_12_18_12_07_52_ID177728/ibrido_rhc_cluster___2025_12_18_12_07_52_ID177728.log
+train. env: /root/ibrido_logs/ibrido_run__2025_12_18_12_07_52_ID177728/ibrido_train_env___2025_12_18_12_07_52_ID177728.log
+log bag: /root/ibrido_logs/ibrido_run__2025_12_18_12_07_52_ID177728/ibrido_rosbag_env___2025_12_18_12_07_52_ID177728.log
+
+Will use shared memory namespace centauro_big_wheels_ub_2025_12_18_12_07_52_ID177728
+wandb: WARNING Path /wandb/ wasn't writable, using system temp directory
+wandb: WARNING Failed to create global config settings in: /root/.config/wandb. Settings will not be persisted.
+wandb: Appending key for api.wandb.ai to your netrc file: /root/.netrc
+wandb: W&B API key is configured. Use `wandb login --relogin` to force relogin
+Remaining time to nominal termination deadline: 42957 s.
+Remaining time to nominal termination deadline: 42717 s.
+Remaining time to nominal termination deadline: 42477 s.
+Remaining time to nominal termination deadline: 42237 s.
+Remaining time to nominal termination deadline: 41997 s.
+Remaining time to nominal termination deadline: 41757 s.
+Remaining time to nominal termination deadline: 41517 s.
+Remaining time to nominal termination deadline: 41277 s.
+Remaining time to nominal termination deadline: 41037 s.
+Remaining time to nominal termination deadline: 40796 s.
+Remaining time to nominal termination deadline: 40556 s.
+Remaining time to nominal termination deadline: 40316 s.
+Remaining time to nominal termination deadline: 40076 s.
+Remaining time to nominal termination deadline: 39836 s.
+Remaining time to nominal termination deadline: 39596 s.
+Remaining time to nominal termination deadline: 39356 s.
+Remaining time to nominal termination deadline: 39116 s.
+Remaining time to nominal termination deadline: 38876 s.
+Remaining time to nominal termination deadline: 38636 s.
+Remaining time to nominal termination deadline: 38396 s.
+Remaining time to nominal termination deadline: 38156 s.
+Remaining time to nominal termination deadline: 37916 s.
+Remaining time to nominal termination deadline: 37676 s.
+Remaining time to nominal termination deadline: 37436 s.
+Remaining time to nominal termination deadline: 37196 s.
+Remaining time to nominal termination deadline: 36956 s.
+Remaining time to nominal termination deadline: 36716 s.
+Remaining time to nominal termination deadline: 36476 s.
+Remaining time to nominal termination deadline: 36236 s.
+Remaining time to nominal termination deadline: 35996 s.
+Remaining time to nominal termination deadline: 35756 s.
+Remaining time to nominal termination deadline: 35516 s.
+Remaining time to nominal termination deadline: 35276 s.
+Remaining time to nominal termination deadline: 35035 s.
+Remaining time to nominal termination deadline: 34795 s.
+Remaining time to nominal termination deadline: 34555 s.
+Remaining time to nominal termination deadline: 34315 s.
+Remaining time to nominal termination deadline: 34075 s.
+Remaining time to nominal termination deadline: 33835 s.
+Remaining time to nominal termination deadline: 33595 s.
+Remaining time to nominal termination deadline: 33355 s.
+Remaining time to nominal termination deadline: 33115 s.
+Remaining time to nominal termination deadline: 32875 s.
+Remaining time to nominal termination deadline: 32635 s.
+Remaining time to nominal termination deadline: 32395 s.
+Remaining time to nominal termination deadline: 32154 s.
+Remaining time to nominal termination deadline: 31914 s.
+Remaining time to nominal termination deadline: 31674 s.
+Remaining time to nominal termination deadline: 31434 s.
+Remaining time to nominal termination deadline: 31194 s.
+Remaining time to nominal termination deadline: 30954 s.
+Remaining time to nominal termination deadline: 30714 s.
+Remaining time to nominal termination deadline: 30474 s.
+Remaining time to nominal termination deadline: 30234 s.
+Remaining time to nominal termination deadline: 29994 s.
+Remaining time to nominal termination deadline: 29754 s.
+Remaining time to nominal termination deadline: 29513 s.
+Remaining time to nominal termination deadline: 29273 s.
+Remaining time to nominal termination deadline: 29033 s.
+Remaining time to nominal termination deadline: 28793 s.
+Remaining time to nominal termination deadline: 28553 s.
+Remaining time to nominal termination deadline: 28313 s.
+Remaining time to nominal termination deadline: 28073 s.
+Remaining time to nominal termination deadline: 27833 s.
+Remaining time to nominal termination deadline: 27593 s.
+Remaining time to nominal termination deadline: 27353 s.
+Remaining time to nominal termination deadline: 27113 s.
+Remaining time to nominal termination deadline: 26873 s.
+Remaining time to nominal termination deadline: 26633 s.
+Remaining time to nominal termination deadline: 26393 s.
+Remaining time to nominal termination deadline: 26153 s.
+Remaining time to nominal termination deadline: 25913 s.
+Remaining time to nominal termination deadline: 25673 s.
+Remaining time to nominal termination deadline: 25433 s.
+Remaining time to nominal termination deadline: 25193 s.
+Remaining time to nominal termination deadline: 24953 s.
+Remaining time to nominal termination deadline: 24713 s.
+Remaining time to nominal termination deadline: 24473 s.
+Remaining time to nominal termination deadline: 24233 s.
+Remaining time to nominal termination deadline: 23993 s.
+Remaining time to nominal termination deadline: 23753 s.
+Remaining time to nominal termination deadline: 23512 s.
+Remaining time to nominal termination deadline: 23272 s.
+Remaining time to nominal termination deadline: 23032 s.
+Remaining time to nominal termination deadline: 22792 s.
+Remaining time to nominal termination deadline: 22552 s.
+Remaining time to nominal termination deadline: 22312 s.
+Remaining time to nominal termination deadline: 22072 s.
+Remaining time to nominal termination deadline: 21832 s.
+Remaining time to nominal termination deadline: 21592 s.
+Remaining time to nominal termination deadline: 21352 s.
+Remaining time to nominal termination deadline: 21112 s.
+Remaining time to nominal termination deadline: 20872 s.
+Remaining time to nominal termination deadline: 20631 s.
+Remaining time to nominal termination deadline: 20391 s.
+Remaining time to nominal termination deadline: 20151 s.
+Remaining time to nominal termination deadline: 19911 s.
+Remaining time to nominal termination deadline: 19671 s.
+Remaining time to nominal termination deadline: 19431 s.
+Remaining time to nominal termination deadline: 19191 s.
+Remaining time to nominal termination deadline: 18951 s.
+Remaining time to nominal termination deadline: 18711 s.
+Remaining time to nominal termination deadline: 18471 s.
+Remaining time to nominal termination deadline: 18231 s.
+Remaining time to nominal termination deadline: 17991 s.
+Remaining time to nominal termination deadline: 17751 s.
+Remaining time to nominal termination deadline: 17511 s.
+Remaining time to nominal termination deadline: 17271 s.
+Remaining time to nominal termination deadline: 17031 s.
+Remaining time to nominal termination deadline: 16790 s.
+Remaining time to nominal termination deadline: 16550 s.
+Remaining time to nominal termination deadline: 16309 s.
+Remaining time to nominal termination deadline: 16069 s.
+Remaining time to nominal termination deadline: 15829 s.
+Remaining time to nominal termination deadline: 15589 s.
+Remaining time to nominal termination deadline: 15349 s.
+Remaining time to nominal termination deadline: 15109 s.
+Remaining time to nominal termination deadline: 14869 s.
+Remaining time to nominal termination deadline: 14629 s.
+Remaining time to nominal termination deadline: 14389 s.
+Remaining time to nominal termination deadline: 14149 s.
+Remaining time to nominal termination deadline: 13909 s.
+Remaining time to nominal termination deadline: 13669 s.
+Remaining time to nominal termination deadline: 13428 s.
+Remaining time to nominal termination deadline: 13188 s.
+Remaining time to nominal termination deadline: 12948 s.
+Remaining time to nominal termination deadline: 12708 s.
+Remaining time to nominal termination deadline: 12468 s.
+Remaining time to nominal termination deadline: 12228 s.
+Remaining time to nominal termination deadline: 11988 s.
+Remaining time to nominal termination deadline: 11748 s.
+Remaining time to nominal termination deadline: 11508 s.
+Remaining time to nominal termination deadline: 11267 s.
+Remaining time to nominal termination deadline: 11027 s.
+Remaining time to nominal termination deadline: 10787 s.
+Remaining time to nominal termination deadline: 10547 s.
+Remaining time to nominal termination deadline: 10307 s.
+Remaining time to nominal termination deadline: 10067 s.
+Remaining time to nominal termination deadline: 9827 s.
+Remaining time to nominal termination deadline: 9587 s.
+Remaining time to nominal termination deadline: 9347 s.
+Remaining time to nominal termination deadline: 9107 s.
+Remaining time to nominal termination deadline: 8867 s.
+Remaining time to nominal termination deadline: 8626 s.
+Remaining time to nominal termination deadline: 8386 s.
+Remaining time to nominal termination deadline: 8146 s.
+Remaining time to nominal termination deadline: 7906 s.
+Remaining time to nominal termination deadline: 7666 s.
+Remaining time to nominal termination deadline: 7426 s.
+Remaining time to nominal termination deadline: 7186 s.
+Remaining time to nominal termination deadline: 6946 s.
+Remaining time to nominal termination deadline: 6706 s.
+Remaining time to nominal termination deadline: 6466 s.
+Remaining time to nominal termination deadline: 6226 s.
+Remaining time to nominal termination deadline: 5986 s.
+Remaining time to nominal termination deadline: 5746 s.
+Remaining time to nominal termination deadline: 5506 s.
+Remaining time to nominal termination deadline: 5266 s.
+Remaining time to nominal termination deadline: 5026 s.
+Remaining time to nominal termination deadline: 4785 s.
+Remaining time to nominal termination deadline: 4545 s.
+Remaining time to nominal termination deadline: 4305 s.
+Remaining time to nominal termination deadline: 4065 s.
+Remaining time to nominal termination deadline: 3825 s.
+Remaining time to nominal termination deadline: 3585 s.
+Remaining time to nominal termination deadline: 3345 s.
+Remaining time to nominal termination deadline: 3105 s.
+Remaining time to nominal termination deadline: 2865 s.
+Remaining time to nominal termination deadline: 2625 s.
+Remaining time to nominal termination deadline: 2385 s.
+Remaining time to nominal termination deadline: 2145 s.
+Remaining time to nominal termination deadline: 1904 s.
+Remaining time to nominal termination deadline: 1664 s.
+Remaining time to nominal termination deadline: 1424 s.
+Remaining time to nominal termination deadline: 1184 s.
+Remaining time to nominal termination deadline: 944 s.
+Remaining time to nominal termination deadline: 704 s.
+Remaining time to nominal termination deadline: 464 s.
+Sending termination signal to job...
+/home/apatrizi/ibrido-containers/ibrido_u22/singularity/franklin/slurm/prescia_script.sh: line 34: send_signal_from_within: command not found
+slurmstepd: error: *** JOB 177728 ON afnode01 CANCELLED AT 2025-12-19T00:13:12 DUE TO TIME LIMIT ***
+execute.sh: Cleaning up and sending SIGINT to training process...
+launch_training.sh: sending SIGINT to all child processes...
+/home/apatrizi/ibrido-containers/ibrido_u22/singularity/execute.sh: line 20: kill: `': not a pid or valid job spec
+launch_training.sh: waiting for child processes to exit...
+error: list of process IDs must follow -p
+
+Usage:
+ ps [options]
+
+ Try 'ps --help <simple|list|output|threads|misc|all>'
+  or 'ps --help <s|l|o|t|m|a>'
+ for additional help text.
