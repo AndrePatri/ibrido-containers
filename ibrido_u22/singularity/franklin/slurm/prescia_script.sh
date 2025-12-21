@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PRESCIA_DT=5 # minutes
+PRESCIA_DT=10 # minutes
 CHECK_INTERVAL=4  # Check interval in minutes
 TERMINATION_SCRIPT="launch_train_env.py"
 TERMINATION_SIGNAL="SIGINT"
