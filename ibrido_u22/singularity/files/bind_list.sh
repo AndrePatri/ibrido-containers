@@ -69,15 +69,10 @@ IBRIDO_BDIRS=(
     "${IBRIDO_PREFIX}/.mamba:/root/.mamba:rw"
 )
 
-# Only add these bindings if PBS is NOT available (when runnin on cluster
+# Only add these bindings if PBS and SLURM is NOT available (when runnin on cluster
 # we don't need user input)
-if [ "$IS_PBS_AVAILABLE" = false ]; then
-    
-fi
 
-if [ "$IS_PBS_AVAILABLE" = true ]; then
-elif [ "$IS_SLURM_AVAILABLE" = true ]; then
-else
+if [ "$IS_PBS_AVAILABLE" != true ] && [ "$IS_SLURM_AVAILABLE" != true ]; then
     IBRIDO_BDIRS+=(
         "/dev/input:/dev/input:rw"
         "/run/udev:/run/udev:rw"
