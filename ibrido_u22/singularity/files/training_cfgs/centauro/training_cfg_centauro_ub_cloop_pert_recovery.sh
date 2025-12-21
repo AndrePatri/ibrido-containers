@@ -9,7 +9,7 @@ export MNAME=""
 
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
 export SHM_NS="centauro_big_wheels_ub" # shared mem namespace used for all shared data on CPU 
-export N_ENVS=800 # number of env to run in parallel
+export N_ENVS=2000 # number of env to run in parallel
 export RNAME="CentauroCloopPartialUbNoWheelsPertRecovery" # a descriptive base name for this run
 export SEED=7987 # random n generator seed to be used for this run
 export REMOTE_STEPPING=1
@@ -29,7 +29,7 @@ export DEBUG=1
 export RMDEBUG=1
 export DUMP_ENV_CHECKPOINTS=1
 export DEMO_STOP_THRESH=10.0
-export TOT_STEPS=15000000
+export TOT_STEPS=12000000
 export USE_RND=0
 export DEMO_ENVS_PERC=0.0
 export EXPL_ENVS_PERC=0.0
@@ -69,6 +69,6 @@ lin_a_feedback closed_partial fix_yaw use_flat_ground estimate_v_root self_colli
 ground_type enable_height_sensor height_sensor_pixels height_sensor_resolution enable_height_vis"
 export CUSTOM_ARGS_DTYPE="float bool bool float bool bool bool bool bool bool bool bool bool bool str bool int float bool"
 export CUSTOM_ARGS_VALS="0.1 true false 0.1 false true true false true true true false false true stepup_prim false 10 0.16 false"
-export SET_ULIM=1 
+export SET_ULIM=0 
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
-export TIMEOUT_MS=120000 # timeout after which each script autokills ([ms])
+export TIMEOUT_MS=480000 # timeout after which each script autokills ([ms])

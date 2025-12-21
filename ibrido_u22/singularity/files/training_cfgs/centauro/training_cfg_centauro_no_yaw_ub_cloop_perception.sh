@@ -38,7 +38,7 @@ export USE_SAC=1
 export USE_DUMMY=0
 export DISCOUNT_FACTOR=0.99
 export USE_PERIOD_RESETS=0
-export COMMENT='centauro big wheels (fixed ankle yaw) with upper body CLOOP, 8192 bsize, 1/3 replay bsize, clipping rewards lb, separate discrete/cont targets with annhealing([-0.1, -2.0], [-0.5, -4.0]), actions bounds refactor, flight info fix/addition, no rand pert, 10cm steps, smaller platforms (4m), multisteps, steup with coll prims, heightmap obs, flight control (apex, end), no omega tracking, UTD 8, track/CoT (0.9 scale, 0.3 offset)/a rate, logstd log(5), 0.25 max step height' # any training comment
+export COMMENT='centauro big wheels (fixed ankle yaw) with upper body CLOOP, 16392 bsize, UTD 4, 1/3 replay bsize, entropy annhealing, 5-15cm steps, 1-2 steps,  smaller platforms (4m), full flight control (apex, end[+-], length), no yaw rate randomization, track/CoT (0.9 scale, 0.3 offset)/a rate, logstd log(5), 0.35 max step height' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_urdf/urdf/centauro.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_srdf/srdf/centauro.srdf.xacro" # base path where the description package for the robot are located
 export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_no_yaw_open.yaml" # path to yaml file for jnt imp configuration
@@ -60,7 +60,7 @@ export PUB_HEIGHTMAP=1
 export BAG_SDT=90.0
 export BRIDGE_DT=0.1
 export DUMP_DT=30.0
-export ENV_IDX_BAG=10
+export ENV_IDX_BAG=79
 export ENV_IDX_BAG_DEMO=-1
 export ENV_IDX_BAG_EXPL=-1
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/CentauroRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
@@ -69,7 +69,7 @@ lin_a_feedback closed_partial fix_yaw use_flat_ground estimate_v_root self_colli
 ground_type enable_height_sensor height_sensor_pixels height_sensor_resolution enable_height_vis"
 export CUSTOM_ARGS_DTYPE="float bool bool float bool bool bool bool bool bool bool bool bool bool str bool int float bool"
 export CUSTOM_ARGS_VALS="0.1 false false 0.1 true true true false true true false false false true stepup_prim true 10 0.16 false"
-export SET_ULIM=1 
+export SET_ULIM=0 
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
-export TIMEOUT_MS=120000 # timeout after which each script autokills ([ms])
+export TIMEOUT_MS=480000 # timeout after which each script autokills ([ms])
 

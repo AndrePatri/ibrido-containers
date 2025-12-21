@@ -1,4 +1,4 @@
-# Utility helpers adapted from PBS-based helpers to Slurm equivalents.
+# Utility helpers adapted from PBS-based helpers to Slurm equivalent
 
 # Send a signal to a job (prefer scancel --signal if available)
 function send_signal() {
