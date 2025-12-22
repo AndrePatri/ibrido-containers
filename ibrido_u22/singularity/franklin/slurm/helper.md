@@ -13,3 +13,6 @@
 # pkill -SIGINT -f launch_train_env.py
 
 # squeue --start --job $JOB_ID
+
+# squeue -j $JOB_ID -o "%.18i %.2t %.10M %.10l %.10L"
+
