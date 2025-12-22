@@ -2,7 +2,8 @@
 
 PRESCIA_DT=10 # minutes
 CHECK_INTERVAL=4  # Check interval in minutes
-TERMINATION_SCRIPT="launch_train_env.py"
+# Match the main launcher started by execute_container.sh
+TERMINATION_SCRIPT="execute.sh --cfg"
 TERMINATION_SIGNAL="SIGINT"
 
 source "$IBRIDO_CONTAINERS_PREFIX/franklin/slurm/utils.sh"
