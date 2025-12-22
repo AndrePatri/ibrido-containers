@@ -105,10 +105,31 @@ alias get_walltime=get_walltime
 # Convert h:m:s to seconds
 function time_to_seconds() {
 local time=$1
-local h=$(echo $time | cut -d':' -f1)
-local m=$(echo $time | cut -d':' -f2)
-local s=$(echo $time | cut -d':' -f3)
+if [[ -z "$time" ]]; then
+return 1
+fi
+
+# Handle day format D-HH:MM:SS
+if [[ "$time" =~ ^([0-9]+)-([0-9]{2}):([0-9]{2}):([0-9]{2})$ ]]; then
+local d=${BASH_REMATCH[1]}
+local h=${BASH_REMATCH[2]}
+local m=${BASH_REMATCH[3]}
+local s=${BASH_REMATCH[4]}
+echo $((10#$d*86400 + 10#$h*3600 + 10#$m*60 + 10#$s))
+return 0
+fi
+
+# Handle HH:MM:SS
+if [[ "$time" =~ ^([0-9]{1,2}):([0-9]{2}):([0-9]{2})$ ]]; then
+local h=${BASH_REMATCH[1]}
+local m=${BASH_REMATCH[2]}
+local s=${BASH_REMATCH[3]}
 echo $((10#$h*3600 + 10#$m*60 + 10#$s))
+return 0
+fi
+
+# Unsupported or unlimited formats
+return 1
 }
 
 

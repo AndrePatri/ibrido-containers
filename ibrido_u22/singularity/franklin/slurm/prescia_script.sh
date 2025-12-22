@@ -18,7 +18,12 @@ CHECK_INTERVAL_SEC=$(minutes_to_seconds "$CHECK_INTERVAL")
 
 # Get total expected runtime in seconds
 expected_runtime=$(get_walltime)
-expected_runtime_sec=$(time_to_seconds "$expected_runtime")
+expected_runtime_sec=$(time_to_seconds "$expected_runtime") || expected_runtime_sec=0
+
+if [ "$expected_runtime_sec" -le 0 ]; then
+    echo "prescia_script: could not parse walltime ('$expected_runtime'); skipping early termination logic."
+    exit 0
+fi
 
 # # Get the start time in seconds since epoch
 start_time_sec=$(date +%s)
