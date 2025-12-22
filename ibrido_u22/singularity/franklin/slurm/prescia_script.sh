@@ -2,8 +2,13 @@
 
 PRESCIA_DT=10 # minutes
 CHECK_INTERVAL=4  # Check interval in minutes
-# Match the main launcher started by execute_container.sh
-TERMINATION_SCRIPT="execute.sh --cfg"
+# Match the main launcher started by execute_container.sh; tighten with run token if provided
+RUN_TOKEN="$1"
+if [ -n "$RUN_TOKEN" ]; then
+    TERMINATION_SCRIPT="execute.sh --run_token $RUN_TOKEN"
+else
+    TERMINATION_SCRIPT="execute.sh --cfg"
+fi
 TERMINATION_SIGNAL="SIGINT"
 
 source "$IBRIDO_CONTAINERS_PREFIX/franklin/slurm/utils.sh"

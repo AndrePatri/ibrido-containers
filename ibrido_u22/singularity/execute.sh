@@ -10,7 +10,7 @@ source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
 
 # Function to print usage
 usage() {
-    echo "Usage: $0 [--use_sudo|-s] [--cfg <config_file>] [--wdb_key <wandb_key>] [--ros_global]"
+    echo "Usage: $0 [--use_sudo|-s] [--cfg <config_file>] [--wdb_key <wandb_key>] [--ros_global] [--run_token <token>]"
     exit 1
 }
 
@@ -38,6 +38,7 @@ trap cleanup SIGINT SIGTERM
 use_sudo=false # whether to use superuser privileges
 wandb_key_default="$WANDB_KEY" # Use the existing WANDB_KEY by default
 ros_localhost_only=1
+run_token=""
 
 # Parse command line options
 while [[ "$#" -gt 0 ]]; do
@@ -46,6 +47,7 @@ while [[ "$#" -gt 0 ]]; do
         -cfg|--cfg) config_file="$2"; shift ;; # Set custom config file if provided
         -wdb_key|--wdb_key) wandb_key="$2"; shift ;; # Override WANDB_KEY if provided
         --ros_global) ros_localhost_only=0 ;;
+        --run_token) run_token="$2"; shift ;; # optional unique token for process identification
         -h|--help) usage ;;
         *) echo "Unknown parameter passed: $1"; usage ;;
     esac
