@@ -84,8 +84,8 @@ IBRIDO_GITDIRS=(
     "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros1&iit-kyon-description"
     "git@github.com:AndrePatri/PerfSleep.git*main"
     "git@github.com:AndrePatri/casadi.git*optional_float"
-    "git@gitlab.com:crzz/adarl.git*ibrido"
-    "git@gitlab.com:crzz/adarl_ros.git*ibrido"
+    "git@github.com:c-rizz/adarl.git*ibrido"
+    "git@github.com:c-rizz/adarl_ros.git*ibrido"
     "git@github.com:google/googletest.git*main"
     "git@github.com:ADVRHumanoids/robot_monitoring.git*v2.7.5"
 )

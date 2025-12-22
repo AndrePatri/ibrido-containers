@@ -113,7 +113,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros2_simple"
     "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros2&iit-kyon-description"
     "git@github.com:AndrePatri/casadi.git*optional_float"
-    "git@gitlab.com:crzz/adarl.git*andrepatri_dev"
+    "git@github.com:c-rizz/adarl.git*ibrido"
 )
 
 # Concatenate
