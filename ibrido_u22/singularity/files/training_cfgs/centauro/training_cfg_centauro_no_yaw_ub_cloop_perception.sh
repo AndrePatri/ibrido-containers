@@ -38,7 +38,7 @@ export USE_SAC=1
 export USE_DUMMY=0
 export DISCOUNT_FACTOR=0.99
 export USE_PERIOD_RESETS=0
-export COMMENT='centauro big wheels (fixed ankle yaw) with upper body CLOOP, 16392 bsize, UTD 4, 1/3 replay bsize, entropy annhealing, 5-15cm steps, 1-2 steps,  smaller platforms (4m), full flight control (apex, end[+-], length), no yaw rate randomization, track/CoT (0.9 scale, 0.3 offset)/a rate, logstd log(5), 0.35 max step height' # any training comment
+export COMMENT='centauro big wheels (fixed ankle yaw) with upper body CLOOP, 16392 bsize, UTD 2, 1/3 replay bsize, NO entropy annhealing ([-0.2, -0.5]), 5-15cm steps, 1-2 steps,  smaller platforms (4m), full flight control (apex, end[+-], length), no yaw rate randomization, track/CoT (0.9 scale, 0.3 offset)/a rate, 0.35 max step height' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_urdf/urdf/centauro.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_srdf/srdf/centauro.srdf.xacro" # base path where the description package for the robot are located
 export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_no_yaw_open.yaml" # path to yaml file for jnt imp configuration
@@ -69,9 +69,9 @@ lin_a_feedback closed_partial fix_yaw use_flat_ground estimate_v_root self_colli
 ground_type enable_height_sensor height_sensor_pixels height_sensor_resolution enable_height_vis"
 export CUSTOM_ARGS_DTYPE="float bool bool float bool bool bool bool bool bool bool bool bool bool str bool int float bool "
 export CUSTOM_ARGS_VALS="0.1 false false 0.1 true true true false true true false false false true stepup_prim true 10 0.16 false"
-export CUSTOM_ARGS_NAMES+=" contact_prims"
-export CUSTOM_ARGS_DTYPE+=" strlist"
-export CUSTOM_ARGS_VALS+=" wheel_1,wheel_2,wheel_3,wheel_4"
+# export CUSTOM_ARGS_NAMES+=" contact_prims"
+# export CUSTOM_ARGS_DTYPE+=" strlist"
+# export CUSTOM_ARGS_VALS+=" \"wheel_1,wheel_2,wheel_3,wheel_4\""
 export SET_ULIM=1
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=120000 # timeout after which each script autokills ([ms])
