@@ -3,9 +3,10 @@
 PRESCIA_DT=10 # minutes
 CHECK_INTERVAL=4  # Check interval in minutes
 # Match the main launcher started by execute_container.sh; tighten with run token if provided
-RUN_TOKEN="$1"
+CFG="$1"
+RUN_TOKEN="$2"
 if [ -n "$RUN_TOKEN" ]; then
-    TERMINATION_SCRIPT="execute.sh --run_token $RUN_TOKEN"
+    TERMINATION_SCRIPT="execute.sh --cfg $CFG --run_token $RUN_TOKEN"
 else
     TERMINATION_SCRIPT="execute.sh --cfg"
 fi

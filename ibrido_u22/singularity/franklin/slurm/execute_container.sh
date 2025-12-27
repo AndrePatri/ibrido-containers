@@ -17,5 +17,5 @@ export SCHED_JOBID="${SLURM_JOB_ID:-$PBS_JOBID}"
 # Generate a unique token to identify this execute.sh instance (avoids killing sibling runs)
 RUN_TOKEN="run_$(date +%Y%m%d_%H%M%S)_${SCHED_JOBID}"
 
-$IBRIDO_CONTAINERS_PREFIX/franklin/slurm/prescia_script.sh "$RUN_TOKEN" &
+$IBRIDO_CONTAINERS_PREFIX/franklin/slurm/prescia_script.sh "$1" "$RUN_TOKEN" &
 $IBRIDO_CONTAINERS_PREFIX/execute.sh --cfg "$1" --run_token "$RUN_TOKEN"
