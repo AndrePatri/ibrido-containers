@@ -4,9 +4,14 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
+# export MPATH="/root/training_data/d2025_12_15_h18_m06_s38-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl"
+# export MNAME="d2025_12_15_h18_m06_s38-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_model"
 
-# export MPATH="/root/training_data/d2026_01_04_h16_m20_s48-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_compressed"
-# export MNAME="d2026_01_04_h16_m20_s48-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_model"
+export MPATH="/root/training_data/d2026_01_05_h14_m07_s30-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_compressed"
+export MNAME="d2026_01_05_h14_m07_s30-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_model"
+
+# export MPATH="/root/training_data/d2026_01_06_h16_m03_s03-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_compressed"
+# export MNAME="d2026_01_06_h16_m03_s03-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_model"
 
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
 export SHM_NS="centauro_big_wheels_no_yaw_ub" # shared mem namespace used for all shared data on CPU 
@@ -69,7 +74,7 @@ export CUSTOM_ARGS_NAMES="rendering_dt use_random_pertub use_jnt_v_feedback step
 lin_a_feedback closed_partial fix_yaw use_flat_ground estimate_v_root self_collide add_upper_body \
 ground_type enable_height_sensor height_sensor_pixels height_sensor_resolution enable_height_vis height_sensor_forward_offset height_sensor_lateral_offset"
 export CUSTOM_ARGS_DTYPE="float bool bool float bool bool bool bool bool bool bool bool bool bool str bool int float bool float float "
-export CUSTOM_ARGS_VALS="0.1 false false 0.1 true true true false true true false false false true stepup_prim true 10 0.16 false 0.2 0.0"
+export CUSTOM_ARGS_VALS="0.05 false false 0.1 true true true false true true false false false true stepup_prim true 10 0.16 false 0.2 0.0"
 # export CUSTOM_ARGS_NAMES+=" contact_prims"
 # export CUSTOM_ARGS_DTYPE+=" strlist"
 # export CUSTOM_ARGS_VALS+=" wheel_1,wheel_2,wheel_3,wheel_4"

@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=64
+#SBATCH --cpus-per-task=48
 #SBATCH --gres=gpu:1
-#SBATCH --time=18:00:00
+#SBATCH --time=24:00:00
 #SBATCH --job-name=ibrido_run
 #SBATCH --partition=gpua
 #SBATCH --output=%x.%j.out
