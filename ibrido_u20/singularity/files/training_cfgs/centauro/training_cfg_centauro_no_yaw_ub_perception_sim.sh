@@ -69,7 +69,7 @@ export CUSTOM_ARGS_NAMES="render_to_file render_fps control_wheels fixed_flights
 export CUSTOM_ARGS_NAMES+=" generate_stepup_terrain stepup_terrain_size stepup_stairs_ratio stepup_platform_size stepup_step_height_lb stepup_step_height_ub stepup_step_width_lb stepup_step_width_ub stepup_n_steps stepup_area_factor stepup_res_low stepup_res_high stepup_random_n_steps stepup_wall_height stepup_seed enable_height_sensor height_sensor_pixels height_sensor_resolution height_sensor_forward_offset height_sensor_lateral_offset"
 export CUSTOM_ARGS_DTYPE="bool float bool bool bool bool bool int string bool bool bool bool float str bool"
 export CUSTOM_ARGS_DTYPE+=" bool float float float float float float float int float float float bool float int bool int float float float"  
-export CUSTOM_ARGS_VALS="false 60.0 true true true false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR false true true true 1.0 fast true"
+export CUSTOM_ARGS_VALS="false 60.0 true true true false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true true true true 1.0 fast true"
 export CUSTOM_ARGS_VALS+=" true 100.0 0.99 50.0 0.08 0.15 0.4 1.5 25 0.7 0.1 0.03 false 2.0 $SEED true 10 0.16 0.2 0.0"
 
 export REMOTE_ENV_FNAME="aug_mpc_envs.world_interfaces.xmj_world_interface"  
