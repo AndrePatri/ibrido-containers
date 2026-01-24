@@ -4,16 +4,17 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=1
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/"
-export MNAME=""
 
 export RESUME=0 # resume a previous training using a checkpoint
 
+export MPATH="/root/training_data/"
+export MNAME=""
+
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
-export SHM_NS="kyon02_wheels_no_yaw" # shared mem namespace used for all shared data on CPU 
+export SHM_NS="kyon02_no_wheels" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=800 # number of env to run in parallel
-export RNAME="Kyon02PartialCloopWheelsNoYaw" # a descriptive base name for this run
-export SEED=935 # random n generator seed to be used for this run
+export RNAME="Kyon02PartialCloopNoWheels" # a descriptive base name for this run
+export SEED=34 # random n generator seed to be used for this run
 export REMOTE_STEPPING=1
 export COMPRESSION_RATIO=0.6
 export ACTOR_LWIDTH=128
@@ -40,7 +41,7 @@ export USE_SAC=1
 export USE_DUMMY=0
 export DISCOUNT_FACTOR=0.99
 export USE_PERIOD_RESETS=0
-export COMMENT='kyon real wheels CLOSED LOOP, 16392 bsize, UTD 4, NO entropy annhealing, 8-15cm steps, 25 steps, 0.6-1.5 step width, flight control (apex 0.35, end[+0.2], length [8, ...]), no yaw rate randomization, track/CoT (0.3 scale, 0.3 offset)/a rate' # any training comment
+export COMMENT='kyon02 no wheels CLOSED partial, UTD 4, action rep 3, target entropy -0.5, fake pos track max 1.0 m/s (action rate, NO CoT, dir track, 1.0 omega weight' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-description/kyon_urdf/urdf/kyon.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-description/kyon_srdf/srdf/kyon.srdf.xacro" # base path where the description package for the robot are located
 export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_kyon_real_open.yaml" # path to yaml file for jnt imp configuration
@@ -49,26 +50,26 @@ if (( $IS_CLOSED_LOOP )); then
 fi
 
 export CLUSTER_CL_FNAME="kyonrlstepping.controllers.horizon_based.kyon_real_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.04
+export CLUSTER_DT=0.035
 export N_NODES=31
 export CLUSTER_DB=1
-export PHYSICS_DT=0.0005
+export PHYSICS_DT=0.001
 export USE_GPU_SIM=1
 # export CODEGEN_OVERRIDE_BDIR="none"
 export CODEGEN_OVERRIDE_BDIR="${HOME}/aux_data/KyonRHCLusterClient_${SHM_NS}/CodeGen/${SHM_NS}Rhc"
 export TRAIN_ENV_FNAME="fake_pos_track_env_phase_control"
 export TRAIN_ENV_CNAME="FakePosTrackEnvPhaseControl"
-export PUB_HEIGHTMAP=1
+export PUB_HEIGHTMAP=0
 export BAG_SDT=90.0
 export BRIDGE_DT=0.1
 export DUMP_DT=50.0
-export ENV_IDX_BAG=87
+export ENV_IDX_BAG=5
 export ENV_IDX_BAG_DEMO=-1
 export ENV_IDX_BAG_EXPL=-1
-export SRDF_PATH_ROSBAG="${HOME}/aux_data/B2WRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
-export CUSTOM_ARGS_NAMES="step_height fix_yaw wheels fixed_flights adaptive_is lin_a_feedback closed_partial estimate_v_root use_jnt_v_feedback base_linkname self_collide rendering_dt" 
-export CUSTOM_ARGS_DTYPE="float bool xacro bool bool bool bool bool bool str bool float"
-export CUSTOM_ARGS_VALS="0.10 true true true true false true false false pelvis false 0.1" 
+export SRDF_PATH_ROSBAG="${HOME}/aux_data/KyonRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
+export CUSTOM_ARGS_NAMES="rendering_dt step_height wheels fixed_flights adaptive_is lin_a_feedback closed_partial estimate_v_root use_jnt_v_feedback base_linkname self_collide" 
+export CUSTOM_ARGS_DTYPE="float float xacro bool bool bool bool bool bool str bool"
+export CUSTOM_ARGS_VALS="0.1 0.10 false true true false true false false pelvis false" 
 
 # add perception/terrain specific args
 export CUSTOM_ARGS_NAMES+=" use_flat_ground ground_type enable_height_sensor height_sensor_pixels height_sensor_resolution enable_height_vis height_sensor_forward_offset height_sensor_lateral_offset"

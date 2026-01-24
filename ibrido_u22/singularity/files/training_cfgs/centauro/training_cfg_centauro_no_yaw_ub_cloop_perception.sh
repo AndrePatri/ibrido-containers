@@ -4,14 +4,18 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-# export MPATH="/root/training_data/d2025_12_15_h18_m06_s38-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl"
-# export MNAME="d2025_12_15_h18_m06_s38-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_model"
 
-export MPATH="/root/training_data/d2026_01_05_h14_m07_s30-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_compressed"
-export MNAME="d2026_01_05_h14_m07_s30-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_model"
+# export MPATH="/root/training_data/d2026_01_09_h10_m52_s07-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_compressed"
+# export MNAME="d2026_01_09_h10_m52_s07-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_model"
 
-# export MPATH="/root/training_data/d2026_01_06_h16_m03_s03-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_compressed"
-# export MNAME="d2026_01_06_h16_m03_s03-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_model"
+# export MPATH="/root/training_data/d2026_01_10_h18_m55_s12-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_compressed"
+# export MNAME="d2026_01_10_h18_m55_s12-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_model"
+
+# export MPATH="/root/training_data/d2026_01_14_h12_m50_s52-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_compressed"
+# export MNAME="d2026_01_14_h12_m50_s52-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_model"
+
+export MPATH="/root/training_data/d2026_01_19_h14_m54_s32-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl"
+export MNAME="d2026_01_19_h14_m54_s32-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_model"
 
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
 export SHM_NS="centauro_big_wheels_no_yaw_ub" # shared mem namespace used for all shared data on CPU 
@@ -33,7 +37,7 @@ export BATCH_NORM=0
 export IS_CLOSED_LOOP=1
 export DEBUG=1
 export RMDEBUG=1
-export DUMP_ENV_CHECKPOINTS=1
+export DUMP_ENV_CHECKPOINTS=0
 export DEMO_STOP_THRESH=10.0
 export TOT_STEPS=30000000
 export USE_RND=0
@@ -44,7 +48,7 @@ export USE_SAC=1
 export USE_DUMMY=0
 export DISCOUNT_FACTOR=0.99
 export USE_PERIOD_RESETS=0
-export COMMENT='centauro big wheels (fixed ankle yaw) with upper body CLOOP, 16392 bsize, UTD 4, 1/3 replay bsize, entropy annhealing, 5-15cm steps, 1-2 steps,  smaller platforms (4m), full flight control (apex, end[+-], length), no yaw rate randomization, track/CoT (0.9 scale, 0.3 offset)/a rate, logstd log(5), 0.35 max step height' # any training comment
+export COMMENT='centauro big wheels (fixed ankle yaw) with upper body CLOOP, 16392 bsize, UTD 4, forward offset to heighmap, NO entropy annhealing [-0.2, -0.5], 8-15cm steps, 25 steps, 0.4/1.5 m width, flight control (apex 0.35, end[+-] 0.2/0, length (min 8), NO landing control), CoT 0.3 scale 0.3 offset, 1.0 forwrad tracking, 0.2 yaw rate directional no yaw rand' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_urdf/urdf/centauro.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_srdf/srdf/centauro.srdf.xacro" # base path where the description package for the robot are located
 export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_no_yaw_open.yaml" # path to yaml file for jnt imp configuration
@@ -70,14 +74,18 @@ export ENV_IDX_BAG=79
 export ENV_IDX_BAG_DEMO=-1
 export ENV_IDX_BAG_EXPL=-1
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/CentauroRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
-export CUSTOM_ARGS_NAMES="rendering_dt use_random_pertub use_jnt_v_feedback step_height control_wheels fixed_flights adaptive_is \
-lin_a_feedback closed_partial fix_yaw use_flat_ground estimate_v_root self_collide add_upper_body \
-ground_type enable_height_sensor height_sensor_pixels height_sensor_resolution enable_height_vis height_sensor_forward_offset height_sensor_lateral_offset"
-export CUSTOM_ARGS_DTYPE="float bool bool float bool bool bool bool bool bool bool bool bool bool str bool int float bool float float "
-export CUSTOM_ARGS_VALS="0.05 false false 0.1 true true true false true true false false false true stepup_prim true 10 0.16 false 0.2 0.0"
+export CUSTOM_ARGS_NAMES="rendering_dt use_random_pertub use_jnt_v_feedback step_height control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial fix_yaw estimate_v_root self_collide add_upper_body"
+export CUSTOM_ARGS_DTYPE="float bool bool float bool bool bool bool bool bool bool bool bool"
+export CUSTOM_ARGS_VALS="0.05 false false 0.1 true true true false true true false false true"
 # export CUSTOM_ARGS_NAMES+=" contact_prims"
 # export CUSTOM_ARGS_DTYPE+=" strlist"
 # export CUSTOM_ARGS_VALS+=" wheel_1,wheel_2,wheel_3,wheel_4"
+
+# add perception/terrain specific args
+export CUSTOM_ARGS_NAMES+=" use_flat_ground ground_type enable_height_sensor height_sensor_pixels height_sensor_resolution enable_height_vis height_sensor_forward_offset height_sensor_lateral_offset"
+export CUSTOM_ARGS_DTYPE+=" bool str bool float float bool float float"
+export CUSTOM_ARGS_VALS+=" false stepup_prim true 10 0.16 false 0.2 0.0"
+
 export SET_ULIM=1
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=120000 # timeout after which each script autokills ([ms])
