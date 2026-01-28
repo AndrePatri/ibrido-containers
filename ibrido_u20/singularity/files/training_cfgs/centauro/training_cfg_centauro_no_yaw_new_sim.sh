@@ -90,5 +90,5 @@ else
   export CUSTOM_ARGS_NAMES="step_height render_to_file render_fps control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot closed_partial fix_yaw"
   export CUSTOM_ARGS_DTYPE="float bool float bool bool bool bool bool int string bool bool bool"
   export CUSTOM_ARGS_VALS="0.10 false 60.0 true true true false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true true true"
-  export REMOTE_ENV_FNAME="aug_mpc_envs.world_interfaces.xmj_env"  
+  export REMOTE_ENV_FNAME="aug_mpc_envs.world_interfaces.xmj_world_interface"  
 fi
