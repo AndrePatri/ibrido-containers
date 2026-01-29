@@ -78,9 +78,9 @@ base_log_dir="${HOME}/ibrido_logs/ibrido_run_${unique_id}"
 mkdir -p "$base_log_dir"
 cp $config_file "${base_log_dir}/"
 
-log_remote="${base_log_dir}/ibrido_remote_env_${RUN_NAME}_${unique_id}.log"
-log_cluster="${base_log_dir}/ibrido_rhc_cluster_${RUN_NAME}_${unique_id}.log"
-log_train="${base_log_dir}/ibrido_train_env_${RUN_NAME}_${unique_id}.log"
+log_world="${base_log_dir}/ibrido_world_interface${RUN_NAME}_${unique_id}.log"
+log_cluster="${base_log_dir}/ibrido_mpc_cluster_${RUN_NAME}_${unique_id}.log"
+log_train="${base_log_dir}/ibrido_training_env_${RUN_NAME}_${unique_id}.log"
 log_bag="${base_log_dir}/ibrido_rosbag_env_${RUN_NAME}_${unique_id}.log"
 
 # Ensure the log directory exists
@@ -88,9 +88,9 @@ log_bag="${base_log_dir}/ibrido_rosbag_env_${RUN_NAME}_${unique_id}.log"
 # # Redirect stdout and stderr to both the terminal and the log file
 echo "
 launch_training.sh: logging output to->
-remote env: $log_remote
-rhc cluster: $log_cluster
-train. env: $log_train
+world interface: $log_world
+MPC cluster: $log_cluster
+training env: $log_train
 log bag: $log_bag
 "
 
@@ -207,7 +207,7 @@ remote_env_cmd+="--remote_stepping "
 fi
 
 # Launch remote normally, capture its PID so cleanup can signal it
-python $LRHC_DIR/launch_world_interface.py $remote_env_cmd > "$log_remote" 2>&1 &
+python $LRHC_DIR/launch_world_interface.py $remote_env_cmd > "$log_world" 2>&1 &
 remote_pid=$!
 
 # rosbag db
