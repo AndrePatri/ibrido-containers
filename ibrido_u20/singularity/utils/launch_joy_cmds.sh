@@ -2,19 +2,21 @@
 # Launch joystick/keyboard agent commands with a provided shared memory namespace (IsaacSim stack).
 
 usage() {
-  echo "Usage: $0 --ns <shm_namespace> [--env_idx <idx>] [--rhc]"
+  echo "Usage: $0 --ns <shm_namespace> [--env_idx <idx>] [--rhc] [--remote_exit]"
   exit 1
 }
 
 NS=""
 ENV_IDX=0
 LAUNCH_RHC=0
+REMOTE_EXIT=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --ns) NS="$2"; shift ;;
     --env_idx) ENV_IDX="$2"; shift ;;
     --rhc) LAUNCH_RHC=1 ;;
+    --remote_exit) REMOTE_EXIT=1 ;;
     *) echo "Unknown arg: $1"; usage ;;
   esac
   shift
@@ -36,14 +38,14 @@ if (( LAUNCH_RHC )); then
     --ns "$NS" \
     --env_idx "$ENV_IDX" \
     --from_stdin \
-    --add_remote_exit \
+    $([[ $REMOTE_EXIT -eq 1 ]] && echo --add_remote_exit) \
     --joy
 else
   python utilities/launch_agent_keybrd_cmds.py \
   --ns "$NS" \
   --env_idx "$ENV_IDX" \
   --agent_refs_world \
-  --add_remote_exit \
   --from_stdin \
+  $([[ $REMOTE_EXIT -eq 1 ]] && echo --add_remote_exit) \
   --joy
 fi
