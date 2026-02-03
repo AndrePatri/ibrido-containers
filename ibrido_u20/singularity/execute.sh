@@ -10,7 +10,7 @@ source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
 
 # Function to print usage
 usage() {
-    echo "Usage: $0 [--use_sudo|-s] [--cfg <config_file>] [--wdb_key <wandb_key>]"
+    echo "Usage: $0 [--use_sudo|-s] [--cfg <config_file>] [--wdb_key <wandb_key>] [--no_unique_id"
     exit 1
 }
 
@@ -31,6 +31,7 @@ trap cleanup SIGINT SIGTERM
 
 use_sudo=false # whether to use superuser privileges
 wandb_key_default="$WANDB_KEY" # Use the existing WANDB_KEY by default
+no_unique_id=0
 
 # Parse command line options
 while [[ "$#" -gt 0 ]]; do
@@ -38,6 +39,7 @@ while [[ "$#" -gt 0 ]]; do
         -s|--use_sudo) use_sudo=true ;;
         -cfg|--cfg) config_file="$2"; shift ;; # Set custom config file if provided
         -wdb_key|--wdb_key) wandb_key="$2"; shift ;; # Override WANDB_KEY if provided
+        --no_unique_id) no_unique_id=1 ;; # do not append unique id to the run
         -h|--help) usage ;;
         *) echo "Unknown parameter passed: $1"; usage ;;
     esac
@@ -56,7 +58,11 @@ training_script="launch_training.sh"
 
 # Generate a unique ID based on the current timestamp
 job_id=$(echo "$SCHEDULER_JOBID" | cut -d'.' -f1)
-unique_id="_$(date +%Y_%m_%d_%H_%M_%S)_ID${job_id}" # just used to retrive process ID
+if [ $no_unique_id -eq 1 ]; then
+    unique_id=""
+else
+    unique_id="_$(date +%Y_%m_%d_%H_%M_%S)_ID${job_id}" # just used to retrive process ID
+fi
 
 training_cmd="$training_script --unique_id ${unique_id} --cfg $config_file"
 
