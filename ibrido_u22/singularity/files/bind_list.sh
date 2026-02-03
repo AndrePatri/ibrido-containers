@@ -110,6 +110,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/phase_manager.git*ibrido"
     "git@github.com:AndrePatri/unitree_ros.git*ibrido"
     "git@github.com:AndrePatri/iit-centauro-ros-pkg.git*ibrido_ros2"
+    "git@github.com:AndrePatri/iit-dagana-ros-pkg.git*ibrido_ros2"
     "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros2_simple"
     "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros2&iit-kyon-description"
     "git@github.com:AndrePatri/casadi.git*optional_float"

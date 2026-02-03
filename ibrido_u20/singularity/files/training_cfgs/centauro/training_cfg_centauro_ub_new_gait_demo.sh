@@ -66,9 +66,10 @@ export ENV_IDX_BAG=0
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/CentauroRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
 export SET_ULIM=1 
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
-export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
+export TIMEOUT_MS=12000 # timeout after which each script autokills ([ms])
 
-export CUSTOM_ARGS_NAMES="add_remote_exit_flag step_height control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body use_mpc_pos_for_robot torque_correction xbot2_filter_prof use_jnt_v_feedback"
-export CUSTOM_ARGS_DTYPE="bool float bool bool bool bool bool bool bool float bool bool bool float str bool"
-export CUSTOM_ARGS_VALS="true 0.10 false true true false true false true 0.94 false true true 1.0 fast true"
+export DAGANA_ROOT="${HOME}/ibrido_ws/src/iit-dagana-ros-pkg/dagana_urdf"
+export CUSTOM_ARGS_NAMES="add_remote_exit_flag step_height control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body use_mpc_pos_for_robot torque_correction xbot2_filter_prof use_jnt_v_feedback end_effector_left end_effector_right dagana_root"
+export CUSTOM_ARGS_DTYPE="bool float bool bool bool bool bool bool bool float bool bool bool float str bool xacro xacro xacro"
+export CUSTOM_ARGS_VALS="true 0.10 false true true false true false true 0.94 false true true 1.0 fast true ball dagana $DAGANA_ROOT"
 export REMOTE_ENV_FNAME="aug_mpc_envs.world_interfaces.rt_deploy_world_interface"
