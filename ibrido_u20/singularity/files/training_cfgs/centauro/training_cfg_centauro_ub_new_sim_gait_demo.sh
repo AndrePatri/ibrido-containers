@@ -13,6 +13,10 @@ export XMJ_FILES_DIR="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files"
 
 export RT_DEPLOY=0
 
+export LAUNCH_JOY=0
+export XBOT2_JOY=0
+export AGENT_JOY=0
+
 if [[ $RT_DEPLOY -eq 1 ]]; then
   # Set ROS_MASTER_URI and ROS_IP for deployment
   export ROS_MASTER_URI="http://10.24.4.100:11311" # Centauro embedded
@@ -77,7 +81,7 @@ export ENV_IDX_BAG=0
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/CentauroRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
 export SET_ULIM=1 
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
-export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
+export TIMEOUT_MS=45000 # timeout after which each script autokills ([ms])
 
 export DAGANA_ROOT="${HOME}/ibrido_ws/src/iit-dagana-ros-pkg/dagana_urdf"
 

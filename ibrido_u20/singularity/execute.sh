@@ -10,7 +10,7 @@ source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
 
 # Function to print usage
 usage() {
-    echo "Usage: $0 [--use_sudo|-s] [--cfg <config_file>] [--wdb_key <wandb_key>] [--no_unique_id"
+    echo "Usage: $0 [--use_sudo|-s] [--cfg <config_file>] [--wdb_key <wandb_key>] [--no_unique_id]"
     exit 1
 }
 
@@ -32,12 +32,18 @@ trap cleanup SIGINT SIGTERM
 use_sudo=false # whether to use superuser privileges
 wandb_key_default="$WANDB_KEY" # Use the existing WANDB_KEY by default
 no_unique_id=0
+config_file=""
 
 # Parse command line options
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         -s|--use_sudo) use_sudo=true ;;
-        -cfg|--cfg) config_file="$2"; shift ;; # Set custom config file if provided
+        -cfg|--cfg)
+            if [[ -z "$2" ]]; then
+                echo "Missing value for --cfg"
+                usage
+            fi
+            config_file="$2"; shift ;; # Set custom config file if provided
         -wdb_key|--wdb_key) wandb_key="$2"; shift ;; # Override WANDB_KEY if provided
         --no_unique_id) no_unique_id=1 ;; # do not append unique id to the run
         -h|--help) usage ;;
@@ -64,7 +70,13 @@ else
     unique_id="_$(date +%Y_%m_%d_%H_%M_%S)_ID${job_id}" # just used to retrive process ID
 fi
 
-training_cmd="$training_script --unique_id ${unique_id} --cfg $config_file"
+training_cmd="$training_script"
+if [[ -n "$unique_id" ]]; then
+    training_cmd+=" --unique_id ${unique_id}"
+fi
+if [[ -n "$config_file" ]]; then
+    training_cmd+=" --cfg $config_file"
+fi
 
 singularity_cmd="singularity exec \
     --cleanenv \
@@ -97,4 +109,3 @@ else
 fi
 
 wait
-

@@ -1,12 +1,14 @@
 #!/bin/bash
 WS_ROOT="$HOME/ibrido_ws"
-LRHC_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
+AugMPC_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
+AugMPCEnvs_DIR="$WS_ROOT/src/AugMPCEnvs/aug_mpc_envs/scripts"
 
 # PID holders for launched processes
 cluster_pid=""
 train_pid=""
 remote_pid=""
 bag_pid=""
+joy_pid=""
 
 # Improved cleanup function — send SIGINT only to remote, then wait for all scripts
 cleanup() {
@@ -82,6 +84,7 @@ log_world="${base_log_dir}/ibrido_world_interface${RUN_NAME}_${unique_id}.log"
 log_cluster="${base_log_dir}/ibrido_mpc_cluster_${RUN_NAME}_${unique_id}.log"
 log_train="${base_log_dir}/ibrido_training_env_${RUN_NAME}_${unique_id}.log"
 log_bag="${base_log_dir}/ibrido_rosbag_env_${RUN_NAME}_${unique_id}.log"
+log_joy="${base_log_dir}/ibrido_joy_cmds_${RUN_NAME}_${unique_id}.log"
 
 # Ensure the log directory exists
 
@@ -92,6 +95,7 @@ world interface: $log_world
 MPC cluster: $log_cluster
 training env: $log_train
 log bag: $log_bag
+joy cmds: $log_joy
 "
 
 if (( $SET_ULIM )); then
@@ -121,7 +125,7 @@ if (( $IS_CLOSED_LOOP )); then
 cluster_cmd+="--cloop "
 fi
 # detach cluster into its own session; capture its pid
-setsid python $LRHC_DIR/launch_control_cluster.py $cluster_cmd > "$log_cluster" 2>&1 &
+setsid python $AugMPC_DIR/launch_control_cluster.py $cluster_cmd > "$log_cluster" 2>&1 &
 cluster_pid=$!
 
 # train env (still launched ignoring SIGINT, detached similarly)
@@ -178,7 +182,7 @@ fi
 
 # wandb login $WANDB_KEY # login to wandb
 
-setsid python $LRHC_DIR/launch_train_env.py $training_env_cmd --comment "\"$COMMENT\"" > "$log_train" 2>&1 &
+setsid python $AugMPC_DIR/launch_train_env.py $training_env_cmd --comment "\"$COMMENT\"" > "$log_train" 2>&1 &
 train_pid=$!
 fi
 
@@ -207,7 +211,7 @@ remote_env_cmd+="--remote_stepping "
 fi
 
 # Launch remote normally, capture its PID so cleanup can signal it
-python $LRHC_DIR/launch_world_interface.py $remote_env_cmd > "$log_world" 2>&1 &
+python $AugMPC_DIR/launch_world_interface.py $remote_env_cmd > "$log_world" 2>&1 &
 remote_pid=$!
 
 # rosbag db
@@ -224,7 +228,7 @@ remote_pid=$!
 #   fi 
 #
 #   fi
-#   setsid python $LRHC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+#   setsid python $AugMPC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
 #   bag_pid=$!
 #
 #   # bridge_cmd="--ns $SHM_NS --rhc_refs_in_h_frame \
@@ -232,9 +236,27 @@ remote_pid=$!
 #   # if (( $REMOTE_STEPPING )); then
 #   # bridge_cmd+="--with_agent_refs --no_rhc_internal"
 #   # fi
-#   # python $LRHC_DIR/utilities/launch_rhc2ros_bridge.py $bridge_cmd > "$log_bag" 2>&1 &
+#   # python $AugMPC_DIR/utilities/launch_rhc2ros_bridge.py $bridge_cmd > "$log_bag" 2>&1 &
 #  
 # fi
+
+if (( $LAUNCH_JOY )); then
+  if (( $AGENT_JOY )); then
+    joy_cmd="--ns $SHM_NS --env_idx 0 --agent_refs_world"
+    cmd="$AugMPC_DIR/utilities/launch_agent_keybrd_cmds.py $joy_cmd"
+  else
+    if (( $XBOT2_JOY )); then
+      joy_cmd="--ns $SHM_NS --env_idx 0"
+      cmd="$AugMPCEnvs_DIR/utilities/launch_xbot2_joy_cmds.py $joy_cmd"
+    else
+      joy_cmd="--ns $SHM_NS --env_idx 0 --joy"
+      cmd="$AugMPC_DIR/utilities/launch_rhc_keybrd_cmds.py $joy_cmd"
+    fi
+  fi
+fi
+
+python $cmd > "$log_joy" 2>&1 &
+joy_pid=$!
 
 # Wait for all launched processes (ensures script doesn't exit until everything has stopped)
 for pid in "$cluster_pid" "$train_pid" "$remote_pid" "$bag_pid"; do
@@ -242,3 +264,10 @@ for pid in "$cluster_pid" "$train_pid" "$remote_pid" "$bag_pid"; do
     wait "$pid" 2>/dev/null || true
   fi
 done
+
+# also wait for joy process if launched
+if (( $LAUNCH_JOY )); then
+  if [ -n "$joy_pid" ]; then
+    wait "$joy_pid" 2>/dev/null || true
+  fi
+fi
