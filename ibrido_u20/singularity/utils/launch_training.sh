@@ -194,7 +194,7 @@ source $HOME/ibrido_ws/setup.bash
 remote_env_cmd="--robot_name $SHM_NS \
 --urdf_path $URDF_PATH --srdf_path  $SRDF_PATH \
 --jnt_imp_config_path $JNT_IMP_CF_PATH \
---env_fname $REMOTE_ENV_FNAME \
+--world_iface_fname $REMOTE_ENV_FNAME \
 --cluster_dt $CLUSTER_DT \
 --num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
 --custom_args_names $CUSTOM_ARGS_NAMES \
