@@ -6,22 +6,22 @@ AugMPCEnvs_DIR="$WS_ROOT/src/AugMPCEnvs/aug_mpc_envs/scripts"
 # PID holders for launched processes
 cluster_pid=""
 train_pid=""
-remote_pid=""
+world_iface_pid=""
 bag_pid=""
 joy_pid=""
 
 # Improved cleanup function — send SIGINT only to remote, then wait for all scripts
 cleanup() {
     echo "launch_training.sh: sending SIGINT to launch_world_interface (if running)..."
-    if [ -n "$remote_pid" ] && kill -0 "$remote_pid" 2>/dev/null; then
-        echo "launch_training.sh: sending SIGINT to PID $remote_pid"
-        kill -INT "$remote_pid" 2>/dev/null || true
+    if [ -n "$world_iface_pid" ] && kill -0 "$world_iface_pid" 2>/dev/null; then
+        echo "launch_training.sh: sending SIGINT to PID $world_iface_pid"
+        kill -INT "$world_iface_pid" 2>/dev/null || true
     else
-        echo "launch_training.sh: no remote_pid to signal (or it's not running)."
+        echo "launch_training.sh: no world_iface_pid to signal (or it's not running)."
     fi
 
     echo "launch_training.sh: waiting for all launched scripts to exit..."
-    for pid in "$cluster_pid" "$train_pid" "$remote_pid" "$bag_pid"; do
+    for pid in "$cluster_pid" "$train_pid" "$world_iface_pid" "$bag_pid"; do
         if [ -n "$pid" ]; then
             echo "launch_training.sh: waiting for PID $pid ..."
             wait "$pid" 2>/dev/null || true
@@ -212,7 +212,7 @@ fi
 
 # Launch remote normally, capture its PID so cleanup can signal it
 python $AugMPC_DIR/launch_world_interface.py $remote_env_cmd > "$log_world" 2>&1 &
-remote_pid=$!
+world_iface_pid=$!
 
 # rosbag db
 # if (( $ENV_IDX_BAG >= 0 && $CLUSTER_DB)); then
@@ -259,7 +259,7 @@ python $cmd > "$log_joy" 2>&1 &
 joy_pid=$!
 
 # Wait for all launched processes (ensures script doesn't exit until everything has stopped)
-for pid in "$cluster_pid" "$train_pid" "$remote_pid" "$bag_pid"; do
+for pid in "$cluster_pid" "$train_pid" "$world_iface_pid" "$bag_pid"; do
   if [ -n "$pid" ]; then
     wait "$pid" 2>/dev/null || true
   fi

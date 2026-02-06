@@ -58,7 +58,8 @@ export CLUSTER_DT=0.04
 export PHYSICS_DT=0.0005
 export N_NODES=25
 export CLUSTER_DB=1
-export CODEGEN_OVERRIDE_BDIR="none"
+# export CODEGEN_OVERRIDE_BDIR="none"
+export CODEGEN_OVERRIDE_BDIR="${HOME}/aux_data/CentauroRHCLusterClient_${SHM_NS}/CodeGen/${SHM_NS}Rhc"
 
 export TRAIN_ENV_CNAME="GaitSchedulingEnv"
 export TRAIN_ENV_FNAME="derived.gait_scheduling_env"

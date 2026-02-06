@@ -11,7 +11,7 @@ export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbo
 # export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
 export XMJ_FILES_DIR="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files"
 
-export RT_DEPLOY=0
+export RT_DEPLOY=0 # set to 1 to test real asynchronous world-like deployment, but on simulation
 
 export LAUNCH_JOY=0
 export XBOT2_JOY=0
@@ -69,7 +69,9 @@ export CLUSTER_DT=0.04
 export PHYSICS_DT=0.0005
 export N_NODES=25
 export CLUSTER_DB=1
-export CODEGEN_OVERRIDE_BDIR="none"
+
+# export CODEGEN_OVERRIDE_BDIR="none"
+export CODEGEN_OVERRIDE_BDIR="${HOME}/aux_data/CentauroRHCLusterClient_${SHM_NS}/CodeGen/${SHM_NS}Rhc"
 
 export TRAIN_ENV_CNAME="GaitSchedulingEnv"
 export TRAIN_ENV_FNAME="derived.gait_scheduling_env"
@@ -81,7 +83,7 @@ export ENV_IDX_BAG=0
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/CentauroRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
 export SET_ULIM=1 
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
-export TIMEOUT_MS=45000 # timeout after which each script autokills ([ms])
+export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 
 export DAGANA_ROOT="${HOME}/ibrido_ws/src/iit-dagana-ros-pkg/dagana_urdf"
 
