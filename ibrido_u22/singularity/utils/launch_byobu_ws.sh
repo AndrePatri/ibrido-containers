@@ -222,6 +222,7 @@ increase_file_limits_locally
 export EXP_PATH="$HOME/ibrido_files" # used by isaac sim for extensions loading
 training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data \
 --seed $SEED --timeout_ms $TIMEOUT_MS \
+--reset_on_init \
 --env_fname $TRAIN_ENV_FNAME --env_classname $TRAIN_ENV_CNAME \
 --demo_stop_thresh $DEMO_STOP_THRESH  \
 --actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH \

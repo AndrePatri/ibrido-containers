@@ -10,6 +10,10 @@ export RESUME=0 # resume a previous training using a checkpoint
 export MPATH="/root/training_data/"
 export MNAME=""
 
+export LAUNCH_JOY=0
+export XBOT2_JOY=0
+export AGENT_JOY=0
+
 export WANDB_KEY="" # add your wandb key here
 export SHM_NS="my_robot" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=800 # number of env to run in parallel
