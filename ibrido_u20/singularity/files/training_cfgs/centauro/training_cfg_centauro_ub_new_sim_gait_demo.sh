@@ -90,7 +90,7 @@ export DAGANA_ROOT="${HOME}/ibrido_ws/src/iit-dagana-ros-pkg/dagana_urdf"
 if [[ $RT_DEPLOY -eq 1 ]]; then
   export CUSTOM_ARGS_NAMES="add_remote_exit_flag step_height control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body use_mpc_pos_for_robot torque_correction xbot2_filter_prof use_jnt_v_feedback end_effector_left end_effector_right dagana_root"
   export CUSTOM_ARGS_DTYPE="bool float bool bool bool bool bool bool bool float bool bool bool float str bool xacro xacro xacro"
-  export CUSTOM_ARGS_VALS="true 0.10 false true true false true false true 1.0 false true true 1.0 fast true ball dagana $DAGANA_ROOT"
+  export CUSTOM_ARGS_VALS="true 0.10 false true true false true true true 1.0 false true true 1.0 fast true ball dagana $DAGANA_ROOT"
   export REMOTE_ENV_FNAME="aug_mpc_envs.world_interfaces.rt_deploy_world_interface"
 
   export CUSTOM_ARGS_NAMES+=" is_sim" # we need to tell the interface we are in sim
@@ -100,6 +100,6 @@ if [[ $RT_DEPLOY -eq 1 ]]; then
 else
   export CUSTOM_ARGS_NAMES="step_height render_to_file render_fps control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot closed_partial torque_correction xbot2_filter_prof use_jnt_v_feedback add_upper_body end_effector_left end_effector_right dagana_root"
   export CUSTOM_ARGS_DTYPE="float bool float bool bool bool bool bool int string bool bool float str bool bool xacro xacro xacro"
-  export CUSTOM_ARGS_VALS="0.10 false 60.0 false true true false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true true 1.0 fast true true ball dagana $DAGANA_ROOT"
+  export CUSTOM_ARGS_VALS="0.10 false 60.0 false true true false true $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true true 1.0 fast true true ball dagana $DAGANA_ROOT"
   export REMOTE_ENV_FNAME="aug_mpc_envs.world_interfaces.xmj_world_interface"  
 fi
