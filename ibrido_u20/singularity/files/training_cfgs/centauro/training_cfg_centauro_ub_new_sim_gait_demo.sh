@@ -92,6 +92,11 @@ if [[ $RT_DEPLOY -eq 1 ]]; then
   export CUSTOM_ARGS_DTYPE="bool float bool bool bool bool bool bool bool float bool bool bool float str bool xacro xacro xacro"
   export CUSTOM_ARGS_VALS="true 0.10 false true true false true false true 1.0 false true true 1.0 fast true ball dagana $DAGANA_ROOT"
   export REMOTE_ENV_FNAME="aug_mpc_envs.world_interfaces.rt_deploy_world_interface"
+
+  export CUSTOM_ARGS_NAMES+=" is_sim" # we need to tell the interface we are in sim
+  export CUSTOM_ARGS_DTYPE+=" bool"
+  export CUSTOM_ARGS_VALS+=" true"
+
 else
   export CUSTOM_ARGS_NAMES="step_height render_to_file render_fps control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot closed_partial torque_correction xbot2_filter_prof use_jnt_v_feedback add_upper_body end_effector_left end_effector_right dagana_root"
   export CUSTOM_ARGS_DTYPE="float bool float bool bool bool bool bool int string bool bool float str bool bool xacro xacro xacro"
