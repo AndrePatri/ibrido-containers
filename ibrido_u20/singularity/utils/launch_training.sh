@@ -23,7 +23,7 @@ cleanup() {
     echo "launch_training.sh: sending SIGINT to rhc commands process (if running)..."
     if [ -n "$joy_pid" ] && kill -0 "$joy_pid" 2>/dev/null; then
         echo "launch_training.sh: sending SIGINT to PID $joy_pid"
-        kill -INT "$joy_pid" 2>/dev/null || true
+        kill -KILL "$joy_pid" 2>/dev/null || true
     else
         echo "launch_training.sh: no joy_pid to signal (or it's not running)."
     fi
@@ -88,8 +88,6 @@ eval "$(micromamba shell hook --shell bash)"
 micromamba activate ${MAMBA_ENV_NAME}
 
 source $HOME/ibrido_ws/setup.bash
-
-#!/bin/bash
 
 # Define the timestamp and log file based on RUN_NAME and unique id
 base_log_dir="${HOME}/ibrido_logs/ibrido_run_${unique_id}"
@@ -269,10 +267,9 @@ if (( $LAUNCH_JOY )); then
       cmd="$AugMPC_DIR/utilities/launch_rhc_keybrd_cmds.py $joy_cmd"
     fi
   fi
+  python $cmd > "$log_joy" 2>&1 &
+  joy_pid=$!
 fi
-
-python $cmd > "$log_joy" 2>&1 &
-joy_pid=$!
 
 # Wait for all launched processes (ensures script doesn't exit until everything has stopped)
 for pid in "$cluster_pid" "$train_pid" "$world_iface_pid" "$bag_pid"; do
