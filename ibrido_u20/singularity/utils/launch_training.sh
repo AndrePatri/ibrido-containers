@@ -20,6 +20,22 @@ cleanup() {
         echo "launch_training.sh: no world_iface_pid to signal (or it's not running)."
     fi
 
+    echo "launch_training.sh: sending SIGINT to rhc commands process (if running)..."
+    if [ -n "$joy_pid" ] && kill -0 "$joy_pid" 2>/dev/null; then
+        echo "launch_training.sh: sending SIGINT to PID $joy_pid"
+        kill -INT "$joy_pid" 2>/dev/null || true
+    else
+        echo "launch_training.sh: no joy_pid to signal (or it's not running)."
+    fi
+
+    echo "launch_training.sh: sending SIGINT to rosbag process (if running)..."
+    if [ -n "$bag_pid" ] && kill -0 "$bag_pid" 2>/dev/null; then
+        echo "launch_training.sh: sending SIGINT to PID $bag_pid"
+        kill -INT "$bag_pid" 2>/dev/null || true
+    else
+        echo "launch_training.sh: no bag_pid to signal (or it's not running)."
+    fi
+
     echo "launch_training.sh: waiting for all launched scripts to exit..."
     for pid in "$cluster_pid" "$train_pid" "$world_iface_pid" "$bag_pid"; do
         if [ -n "$pid" ]; then
