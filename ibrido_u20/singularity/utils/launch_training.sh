@@ -26,8 +26,8 @@ cleanup_graceful() {
     fi
 
     if [ -n "$joy_pid" ] && kill -0 "$joy_pid" 2>/dev/null; then
-        echo "launch_training.sh: sending SIGINT to joy PID $joy_pid"
-        kill -INT "$joy_pid" 2>/dev/null || true
+        echo "launch_training.sh: sending SIGKILL to joy PID $joy_pid"
+        kill -KILL "$joy_pid" 2>/dev/null || true
     else
         echo "launch_training.sh: no joy_pid to signal (or it's not running)."
     fi
