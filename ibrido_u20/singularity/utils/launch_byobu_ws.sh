@@ -302,7 +302,7 @@ increase_file_limits_locally
 export ROS_MASTER_URI=$ROS_MASTER_URI
 export ROS_IP=$ROS_IP
 clear_terminal
-prepare_command "reset && python utilities/launch_rhc2ros_bridge.py --rhc_refs_in_h_frame --ns $SHM_NS --with_agent_refs "
+prepare_command "reset && python utilities/launch_rhc2rviz_bridge.py --rhc_refs_in_h_frame --ns $SHM_NS --with_agent_refs "
 
 split_h
 execute_command "cd ${WORKING_DIR}"

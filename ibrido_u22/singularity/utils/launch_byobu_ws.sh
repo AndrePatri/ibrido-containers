@@ -307,7 +307,7 @@ execute_command "source /opt/ros/humble/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
-prepare_command "reset && python utilities/launch_rhc2ros_bridge.py --ros2 --rhc_refs_in_h_frame \
+prepare_command "reset && python utilities/launch_rhc2rviz_bridge.py --ros2 --rhc_refs_in_h_frame \
 --ns $SHM_NS --with_agent_refs --no_rhc_internal $( (( PUB_HEIGHTMAP )) && echo --show_heightmap )"
 
 split_h
