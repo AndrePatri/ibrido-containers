@@ -80,6 +80,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/mujoco_cmake.git*ibrido"
     "git@github.com:AndrePatri/unitree_ros.git*ibrido"
     "git@github.com:AndrePatri/iit-centauro-ros-pkg.git*ibrido_ros1"
+    "git@github.com:AndrePatri/iit-dagana-ros-pkg.git*ibrido_ros1"
     "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros1_simple"
     "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros1&iit-kyon-description"
     "git@github.com:AndrePatri/PerfSleep.git*main"

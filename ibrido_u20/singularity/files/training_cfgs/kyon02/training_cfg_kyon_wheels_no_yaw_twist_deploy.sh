@@ -2,6 +2,10 @@
 
 export RT_DEPLOY=1
 
+export LAUNCH_JOY=0
+export XBOT2_JOY=0
+export AGENT_JOY=0
+
 export EVAL=1
 export DET_EVAL=1
 export EVAL_ON_CPU=1

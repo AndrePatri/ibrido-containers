@@ -15,6 +15,10 @@ export XMJ_FILES_DIR="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files"
 export ROS_MASTER_URI="http://10.24.4.100:11311" # Centauro embedded
 export ROS_IP=$(hostname -I | awk '{print $1}') # Extract first IP address
 
+export LAUNCH_JOY=1
+export XBOT2_JOY=1
+export AGENT_JOY=0
+
 # export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
 export SHM_NS="centauro_big_wheels_ub" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=1 # number of env to run in parallel
@@ -32,7 +36,7 @@ export WEIGHT_NORM=1
 export LAYER_NORM=0
 export BATCH_NORM=0
 export IS_CLOSED_LOOP=1
-export DUMP_ENV_CHECKPOINTS=1
+export DUMP_ENV_CHECKPOINTS=0
 export DEMO_STOP_THRESH=10.0
 export TOT_STEPS=10000
 export DEMO_ENVS_PERC=1.0
@@ -54,7 +58,8 @@ export CLUSTER_DT=0.04
 export PHYSICS_DT=0.0005
 export N_NODES=25
 export CLUSTER_DB=1
-export CODEGEN_OVERRIDE_BDIR="none"
+# export CODEGEN_OVERRIDE_BDIR="none"
+export CODEGEN_OVERRIDE_BDIR="${HOME}/aux_data/CentauroRHCLusterClient_${SHM_NS}/CodeGen/${SHM_NS}Rhc"
 
 export TRAIN_ENV_CNAME="GaitSchedulingEnv"
 export TRAIN_ENV_FNAME="derived.gait_scheduling_env"
@@ -66,9 +71,10 @@ export ENV_IDX_BAG=0
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/CentauroRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
 export SET_ULIM=1 
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
-export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
+export TIMEOUT_MS=12000 # timeout after which each script autokills ([ms])
 
-export CUSTOM_ARGS_NAMES="add_remote_exit_flag step_height control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body use_mpc_pos_for_robot torque_correction xbot2_filter_prof use_jnt_v_feedback"
-export CUSTOM_ARGS_DTYPE="bool float bool bool bool bool bool bool bool float bool bool bool float str bool"
-export CUSTOM_ARGS_VALS="true 0.10 false true true false true false true 0.94 false true true 1.0 fast true"
+export DAGANA_ROOT="${HOME}/ibrido_ws/src/iit-dagana-ros-pkg/dagana_urdf"
+export CUSTOM_ARGS_NAMES="add_remote_exit_flag step_height control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body use_mpc_pos_for_robot torque_correction xbot2_filter_prof use_jnt_v_feedback end_effector_left end_effector_right dagana_root"
+export CUSTOM_ARGS_DTYPE="bool float bool bool bool bool bool bool bool float bool bool bool float str bool xacro xacro xacro"
+export CUSTOM_ARGS_VALS="true 0.10 false true true false true false true 0.94 false true true 1.0 fast true ball dagana $DAGANA_ROOT"
 export REMOTE_ENV_FNAME="aug_mpc_envs.world_interfaces.rt_deploy_world_interface"

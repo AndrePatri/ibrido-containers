@@ -153,7 +153,7 @@ clear_terminal
 remote_env_cmd="--robot_name $SHM_NS \
 --urdf_path $URDF_PATH --srdf_path  $SRDF_PATH \
 --jnt_imp_config_path $JNT_IMP_CF_PATH \
---env_fname $REMOTE_ENV_FNAME \
+--world_iface_fname $REMOTE_ENV_FNAME \
 --cluster_dt $CLUSTER_DT \
 --num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
 --custom_args_names $CUSTOM_ARGS_NAMES \
@@ -302,7 +302,7 @@ increase_file_limits_locally
 export ROS_MASTER_URI=$ROS_MASTER_URI
 export ROS_IP=$ROS_IP
 clear_terminal
-prepare_command "reset && python utilities/launch_rhc2ros_bridge.py --rhc_refs_in_h_frame --ns $SHM_NS --with_agent_refs "
+prepare_command "reset && python utilities/launch_rhc2rviz_bridge.py --rhc_refs_in_h_frame --ns $SHM_NS --with_agent_refs "
 
 split_h
 execute_command "cd ${WORKING_DIR}"

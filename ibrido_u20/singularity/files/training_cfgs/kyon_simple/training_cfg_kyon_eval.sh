@@ -12,6 +12,10 @@ export XMJ_FILES_DIR="KyonRLStepping/kyonrlstepping/config/xmj_env_files"
 
 export RT_DEPLOY=0
 
+export LAUNCH_JOY=0
+export XBOT2_JOY=0
+export AGENT_JOY=0
+
 # Set ROS_MASTER_URI and ROS_IP for local setup
 export ROS_MASTER_URI="http://127.0.0.1:11311"
 export ROS_IP="127.0.0.1"
