@@ -17,6 +17,7 @@ export ROS_IP="127.0.0.1"
 export LAUNCH_JOY=0
 export XBOT2_JOY=0
 export AGENT_JOY=0
+export JOY_MODE="linvel"
 
 # export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
 export SHM_NS="centauro_big_wheels_no_yaw_ub" # shared mem namespace used for all shared data on CPU 

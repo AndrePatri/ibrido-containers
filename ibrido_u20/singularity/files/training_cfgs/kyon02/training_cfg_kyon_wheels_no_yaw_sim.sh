@@ -5,6 +5,7 @@ export RT_DEPLOY=0
 export LAUNCH_JOY=0
 export XBOT2_JOY=0
 export AGENT_JOY=0
+export JOY_MODE="linvel"
 
 export EVAL=1
 export DET_EVAL=1

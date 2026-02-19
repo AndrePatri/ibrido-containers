@@ -276,8 +276,13 @@ world_iface_pid=$!
 
 if (( $LAUNCH_JOY )); then
   if (( $AGENT_JOY )); then
-    joy_cmd="--ns $SHM_NS --env_idx 0 --agent_refs_world"
-    cmd="$AugMPC_DIR/utilities/launch_agent_keybrd_cmds.py $joy_cmd"
+    if (( $XBOT2_JOY )); then
+      joy_cmd="--ns $SHM_NS --env_idx 0 --agent_refs --mode $JOY_MODE"
+      cmd="$AugMPCEnvs_DIR/launch_xbot2_joy_cmds.py $joy_cmd"
+    else
+      joy_cmd="--ns $SHM_NS --env_idx 0 --agent_refs_world --add_remote_exit"
+      cmd="$AugMPC_DIR/utilities/launch_agent_keybrd_cmds.py $joy_cmd"
+    fi
   else
     if (( $XBOT2_JOY )); then
       joy_cmd="--ns $SHM_NS --env_idx 0"

@@ -15,6 +15,7 @@ export RT_DEPLOY=0
 export LAUNCH_JOY=0
 export XBOT2_JOY=0
 export AGENT_JOY=0
+export JOY_MODE="linvel"
 
 # Set ROS_MASTER_URI and ROS_IP for local setup
 export ROS_MASTER_URI="http://127.0.0.1:11311"

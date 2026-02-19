@@ -16,6 +16,7 @@ export RT_DEPLOY=1 # set to 1 to test real asynchronous world-like deployment, b
 export LAUNCH_JOY=0
 export XBOT2_JOY=0
 export AGENT_JOY=0
+export JOY_MODE="linvel"
 
 if [[ $RT_DEPLOY -eq 1 ]]; then
   # Set ROS_MASTER_URI and ROS_IP for deployment
