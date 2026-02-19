@@ -2,10 +2,10 @@
 export EVAL=1
 export DET_EVAL=1
 export EVAL_ON_CPU=1
-export OVERRIDE_ENV=1
+export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/d2025_11_28_h11_m38_s15-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv"
-export MNAME="d2025_11_28_h11_m38_s15-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv_model_checkpoint937"
+export MPATH="/root/training_data/d2026_02_18_h19_m25_s47-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv"
+export MNAME="d2026_02_18_h19_m25_s47-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv_model_checkpoint2159"
 
 export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbot2_basic.yaml"
 # export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
@@ -52,7 +52,7 @@ export DEMO_STOP_THRESH=10.0
 export TOT_STEPS=10000
 export DEMO_ENVS_PERC=0.0
 export EXPL_ENVS_PERC=0.0
-export ACTION_REPEAT=4
+export ACTION_REPEAT=3
 export USE_SAC=1
 export USE_DUMMY=0
 export DISCOUNT_FACTOR=0.998
@@ -70,10 +70,10 @@ export PHYSICS_DT=0.0005
 export N_NODES=25
 export CLUSTER_DB=1
 export CODEGEN_OVERRIDE_BDIR="none"
-# export TRAIN_ENV_FNAME="twist_tracking_env"
-# export TRAIN_ENV_CNAME="TwistTrackingEnv"
-export TRAIN_ENV_FNAME="fake_pos_tracking_env"
-export TRAIN_ENV_CNAME="FakePosTrackingEnv"
+export TRAIN_ENV_FNAME="twist_tracking_env"
+export TRAIN_ENV_CNAME="TwistTrackingEnv"
+# export TRAIN_ENV_FNAME="fake_pos_tracking_env"
+# export TRAIN_ENV_CNAME="FakePosTrackingEnv"
 # export TRAIN_ENV_FNAME="linvel_env_with_demo"
 # export TRAIN_ENV_CNAME="TwistTrackingEnvWithDemo"
 export BAG_SDT=3600.0
@@ -84,6 +84,8 @@ export SRDF_PATH_ROSBAG="${HOME}/aux_data/CentauroRHClusterClient_${SHM_NS}/$SHM
 export SET_ULIM=1 
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
+
+export DAGANA_ROOT="${HOME}/ibrido_ws/src/iit-dagana-ros-pkg/dagana_urdf"
 
 if [[ $RT_DEPLOY -eq 1 ]]; then
   export CUSTOM_ARGS_NAMES="add_remote_exit_flag step_height control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body use_mpc_pos_for_robot torque_correction xbot2_filter_prof use_jnt_v_feedback"
