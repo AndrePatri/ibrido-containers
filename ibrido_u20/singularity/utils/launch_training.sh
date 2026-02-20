@@ -288,7 +288,7 @@ if (( $LAUNCH_JOY )); then
       joy_cmd="--ns $SHM_NS --env_idx 0"
       cmd="$AugMPCEnvs_DIR/launch_xbot2_joy_cmds.py $joy_cmd"
     else
-      joy_cmd="--ns $SHM_NS --env_idx 0 --joy"
+      joy_cmd="--ns $SHM_NS --env_idx 0 --joy --add_remote_exit"
       cmd="$AugMPC_DIR/utilities/launch_rhc_keybrd_cmds.py $joy_cmd"
     fi
   fi
