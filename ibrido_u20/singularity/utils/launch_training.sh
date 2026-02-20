@@ -251,9 +251,6 @@ if (( $REMOTE_STEPPING )); then
       training_env_cmd+="--override_env "
     fi
     if (( $OVERRIDE_AGENT_REFS )); then
-      training_env_cmd+="--override_env "
-    fi
-    if (( $OVERRIDE_AGENT_REFS )); then
       training_env_cmd+="--override_agent_refs "
     fi
   fi
@@ -290,7 +287,7 @@ if (( $LAUNCH_JOY )); then
       joy_cmd="--ns $SHM_NS --env_idx 0 --agent_refs --mode $JOY_MODE"
       cmd="$AugMPCEnvs_DIR/launch_xbot2_joy_cmds.py $joy_cmd"
     else
-      joy_cmd="--ns $SHM_NS --env_idx 0 --agent_refs_world --add_remote_exit"
+      joy_cmd="--ns $SHM_NS --env_idx 0 --agent_refs_world --from_stdin --add_remote_exit --joy"
       cmd="$AugMPC_DIR/utilities/launch_agent_keybrd_cmds.py $joy_cmd"
     fi
   else
