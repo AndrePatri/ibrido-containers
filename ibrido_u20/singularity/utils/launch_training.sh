@@ -34,8 +34,8 @@ cleanup_graceful() {
     fi
 
     if [ -n "$zmq_bridge_pid" ] && kill -0 "$zmq_bridge_pid" 2>/dev/null; then
-        echo "launch_training.sh: sending SIGINT to ZMQ bridge PID $zmq_bridge_pid"
-        kill -INT "$zmq_bridge_pid" 2>/dev/null || true
+        echo "launch_training.sh: sending SIGKILL to ZMQ bridge PID $zmq_bridge_pid"
+        kill -KILL "$zmq_bridge_pid" 2>/dev/null || true
     else
         echo "launch_training.sh: no zmq_bridge_pid to signal (or it's not running)."
     fi
