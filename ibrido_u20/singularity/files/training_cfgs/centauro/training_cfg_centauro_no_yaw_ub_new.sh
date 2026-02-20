@@ -1,13 +1,16 @@
 #!/bin/bash
 source /root/ibrido_files/training_cfgs/joy_cfg.sh
 source /root/ibrido_files/training_cfgs/zmq_cfg.sh
+export XBOT2_JOY=1 
+export AGENT_JOY=1 # we need to send refs to agent, not MPC
+
 export EVAL=1
 export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/d2025_11_12_h23_m34_s38-CentauroCloopANoYawActRepAblation_FakePosTrackingEnv"
-export MNAME="d2025_11_12_h23_m34_s38-CentauroCloopANoYawActRepAblation_FakePosTrackingEnv_model"
+export MPATH="/root/training_data/"
+export MNAME=""
 
 export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbot2_basic.yaml"
 # export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
@@ -36,7 +39,7 @@ export BATCH_NORM=0
 export IS_CLOSED_LOOP=1
 export DUMP_ENV_CHECKPOINTS=1
 export DEMO_STOP_THRESH=10.0
-export TOT_STEPS=10000
+export TOT_STEPS=60000
 export DEMO_ENVS_PERC=0.0
 export EXPL_ENVS_PERC=0.0
 export ACTION_REPEAT=5
