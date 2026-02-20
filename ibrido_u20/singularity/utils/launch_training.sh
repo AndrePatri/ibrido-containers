@@ -9,6 +9,7 @@ train_pid=""
 world_iface_pid=""
 bag_pid=""
 joy_pid=""
+zmq_bridge_pid=""
 
 # -------------------------
 # Cleanup logic (escalate only on 2nd+ signal)
@@ -32,6 +33,13 @@ cleanup_graceful() {
         echo "launch_training.sh: no joy_pid to signal (or it's not running)."
     fi
 
+    if [ -n "$zmq_bridge_pid" ] && kill -0 "$zmq_bridge_pid" 2>/dev/null; then
+        echo "launch_training.sh: sending SIGINT to ZMQ bridge PID $zmq_bridge_pid"
+        kill -INT "$zmq_bridge_pid" 2>/dev/null || true
+    else
+        echo "launch_training.sh: no zmq_bridge_pid to signal (or it's not running)."
+    fi
+
     if [ -n "$bag_pid" ] && kill -0 "$bag_pid" 2>/dev/null; then
         echo "launch_training.sh: sending SIGINT to rosbag PID $bag_pid"
         kill -INT "$bag_pid" 2>/dev/null || true
@@ -40,7 +48,7 @@ cleanup_graceful() {
     fi
 
     echo "launch_training.sh: waiting for launched processes to exit..."
-    for pid in "$cluster_pid" "$train_pid" "$world_iface_pid" "$bag_pid" "$joy_pid"; do
+    for pid in "$cluster_pid" "$train_pid" "$world_iface_pid" "$bag_pid" "$joy_pid" "$zmq_bridge_pid"; do
         if [ -n "$pid" ]; then
             echo "launch_training.sh: waiting for PID $pid ..."
             wait "$pid" 2>/dev/null || true
@@ -55,7 +63,7 @@ cleanup_hard() {
 
     # With setsid, killing the process group is often what you want.
     # Try PGID kill first (negative PID), fall back to PID kill.
-    for pid in "$cluster_pid" "$train_pid" "$world_iface_pid" "$bag_pid" "$joy_pid"; do
+    for pid in "$cluster_pid" "$train_pid" "$world_iface_pid" "$bag_pid" "$joy_pid" "$zmq_bridge_pid"; do
         if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
             echo "launch_training.sh: sending SIGKILL to PID/PGID $pid"
             kill -KILL -- "-$pid" 2>/dev/null || kill -KILL "$pid" 2>/dev/null || true
@@ -63,7 +71,7 @@ cleanup_hard() {
     done
 
     echo "launch_training.sh: waiting for processes to exit after SIGKILL..."
-    for pid in "$cluster_pid" "$train_pid" "$world_iface_pid" "$bag_pid" "$joy_pid"; do
+    for pid in "$cluster_pid" "$train_pid" "$world_iface_pid" "$bag_pid" "$joy_pid" "$zmq_bridge_pid"; do
         if [ -n "$pid" ]; then
             wait "$pid" 2>/dev/null || true
         fi
@@ -159,6 +167,7 @@ log_cluster="${base_log_dir}/ibrido_mpc_cluster_${RUN_NAME}_${unique_id}.log"
 log_train="${base_log_dir}/ibrido_training_env_${RUN_NAME}_${unique_id}.log"
 log_bag="${base_log_dir}/ibrido_rosbag_env_${RUN_NAME}_${unique_id}.log"
 log_joy="${base_log_dir}/ibrido_joy_cmds_${RUN_NAME}_${unique_id}.log"
+log_zmq="${base_log_dir}/ibrido_zmq_bridge_${RUN_NAME}_${unique_id}.log"
 
 echo "
 launch_training.sh: logging output to->
@@ -167,6 +176,7 @@ MPC cluster: $log_cluster
 training env: $log_train
 log bag: $log_bag
 joy cmds: $log_joy
+zmq bridge: $log_zmq
 "
 
 if (( $SET_ULIM )); then
@@ -296,8 +306,35 @@ if (( $LAUNCH_JOY )); then
   joy_pid=$!
 fi
 
+if (( ${LAUNCH_ZMQ_BRIDGE:-0} )); then
+  zmq_dt="${ZMQ_BRIDGE_DT:-0.01}"
+  if ! [[ "$zmq_dt" =~ ^[0-9]+([.][0-9]+)?$ ]] || [[ "$zmq_dt" == "0" || "$zmq_dt" == "0.0" || "$zmq_dt" == "0.00" ]]; then
+    echo "launch_training.sh: invalid ZMQ_BRIDGE_DT='${ZMQ_BRIDGE_DT}', using 0.01"
+    zmq_dt="0.01"
+  fi
+
+  zmq_cmd="--ns $SHM_NS --dt ${zmq_dt}"
+
+  if (( ${ZMQ_BRIDGE_FULL_DATA:-0} )); then
+    zmq_cmd+=" --add_training_data"
+  fi
+  if (( ${ZMQ_BRIDGE_RHC_INTERNAL:-0} )); then
+    zmq_cmd+=" --add_rhc_internal"
+  fi
+
+  cores_arg="${ZMQ_BRIDGE_CORES:--1}"
+  cores_arg="${cores_arg%\"}"
+  cores_arg="${cores_arg#\"}"
+  if [[ "$cores_arg" != "-1" ]]; then
+    zmq_cmd+=" --cores ${cores_arg}"
+  fi
+
+  python "$AugMPC_DIR/utilities/launch_rhc2zmq_bridge.py" $zmq_cmd > "$log_zmq" 2>&1 &
+  zmq_bridge_pid=$!
+fi
+
 # Wait for all launched processes (keeps script alive)
-for pid in "$cluster_pid" "$train_pid" "$world_iface_pid" "$bag_pid" "$joy_pid"; do
+for pid in "$cluster_pid" "$train_pid" "$world_iface_pid" "$bag_pid" "$joy_pid" "$zmq_bridge_pid"; do
   if [ -n "$pid" ]; then
     wait "$pid" 2>/dev/null || true
   fi

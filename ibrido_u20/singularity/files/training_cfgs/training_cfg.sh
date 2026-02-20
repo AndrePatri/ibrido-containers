@@ -1,4 +1,6 @@
 #!/bin/bash
+source /root/ibrido_files/training_cfgs/joy_cfg.sh
+source /root/ibrido_files/training_cfgs/zmq_cfg.sh
 export EVAL=0
 export DET_EVAL=1
 export EVAL_ON_CPU=1
@@ -10,10 +12,6 @@ export RESUME=0 # resume a previous training using a checkpoint
 export MPATH="/root/training_data/"
 export MNAME=""
 
-export LAUNCH_JOY=0
-export XBOT2_JOY=0
-export AGENT_JOY=0
-export JOY_MODE="linvel"
 
 export WANDB_KEY="" # add your wandb key here
 export SHM_NS="my_robot" # shared mem namespace used for all shared data on CPU 

@@ -1,4 +1,6 @@
 #!/bin/bash
+source /root/ibrido_files/training_cfgs/joy_cfg.sh
+source /root/ibrido_files/training_cfgs/zmq_cfg.sh
 export EVAL=1
 export DET_EVAL=1
 export EVAL_ON_CPU=1
@@ -15,10 +17,6 @@ export XMJ_FILES_DIR="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files"
 export ROS_MASTER_URI="http://10.24.4.100:11311" # Centauro embedded
 export ROS_IP=$(hostname -I | awk '{print $1}') # Extract first IP address
 
-export LAUNCH_JOY=1
-export XBOT2_JOY=1
-export AGENT_JOY=1
-export JOY_MODE="linvel"
 
 # export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
 export SHM_NS="centauro_big_wheels_ub" # shared mem namespace used for all shared data on CPU 

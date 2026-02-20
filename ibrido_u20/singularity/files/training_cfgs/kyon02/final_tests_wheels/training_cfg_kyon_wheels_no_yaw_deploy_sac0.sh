@@ -1,4 +1,6 @@
 #!/bin/bash
+source /root/ibrido_files/training_cfgs/joy_cfg.sh
+source /root/ibrido_files/training_cfgs/zmq_cfg.sh
 
 export RT_DEPLOY=1
 

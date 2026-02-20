@@ -1,11 +1,9 @@
 #!/bin/bash
+source /root/ibrido_files/training_cfgs/joy_cfg.sh
+source /root/ibrido_files/training_cfgs/zmq_cfg.sh
 
 export RT_DEPLOY=1
 
-export LAUNCH_JOY=0
-export XBOT2_JOY=0
-export AGENT_JOY=0
-export JOY_MODE="linvel"
 
 export EVAL=1
 export DET_EVAL=1

@@ -1,4 +1,6 @@
 #!/bin/bash
+source /root/ibrido_files/training_cfgs/joy_cfg.sh
+source /root/ibrido_files/training_cfgs/zmq_cfg.sh
 export EVAL=1
 export DET_EVAL=1
 export EVAL_ON_CPU=1
@@ -12,10 +14,6 @@ export XMJ_FILES_DIR="KyonRLStepping/kyonrlstepping/config/xmj_env_files"
 
 export RT_DEPLOY=0
 
-export LAUNCH_JOY=0
-export XBOT2_JOY=0
-export AGENT_JOY=0
-export JOY_MODE="linvel"
 
 # Set ROS_MASTER_URI and ROS_IP for local setup
 export ROS_MASTER_URI="http://127.0.0.1:11311"
