@@ -1,20 +1,23 @@
 #!/bin/bash
 source /root/ibrido_files/training_cfgs/joy_cfg.sh
 source /root/ibrido_files/training_cfgs/zmq_cfg.sh
+export XBOT2_JOY=0 # we need full joy to trigger stepping
+export AGENT_JOY=0
+
 export EVAL=1
 export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/d2026_01_19_h14_m54_s32-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl"
-export MNAME="d2026_01_19_h14_m54_s32-CentauroCloopPartialNoYawUbPercep_FakePosTrackEnvPhaseControl_model"
+export MPATH="/root/training_data/"
+export MNAME="none"
 
 export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbot2_basic.yaml"
 # export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
 export XMJ_FILES_DIR="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files"
 
-export ROS_MASTER_URI="http://127.0.0.1:11311"
-export ROS_IP="127.0.0.1"
+export ROS_MASTER_URI="http://10.24.4.100:11311" # Centauro embedded
+  export ROS_IP=$(hostname -I | awk '{print $1}') # Extract first IP address
 
 
 # export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
@@ -22,7 +25,7 @@ export SHM_NS="centauro_big_wheels_no_yaw_ub" # shared mem namespace used for al
 export N_ENVS=1 # number of env to run in parallel
 export RNAME="CentauroCloopNoYawUb" # a descriptive base name for this run
 export SEED=1 # random n generator seed to be used for this run
-export REMOTE_STEPPING=1
+export REMOTE_STEPPING=0
 export COMPRESSION_RATIO=0.6
 export ACTOR_LWIDTH=128
 export ACTOR_DEPTH=3
@@ -36,10 +39,10 @@ export BATCH_NORM=0
 export IS_CLOSED_LOOP=1
 export DUMP_ENV_CHECKPOINTS=1
 export DEMO_STOP_THRESH=10.0
-export TOT_STEPS=10000
+export TOT_STEPS=60000
 export DEMO_ENVS_PERC=0.0
 export EXPL_ENVS_PERC=0.0
-export ACTION_REPEAT=4
+export ACTION_REPEAT=5
 export USE_SAC=1
 export USE_DUMMY=0
 export DISCOUNT_FACTOR=0.998
@@ -52,14 +55,14 @@ if (( $IS_CLOSED_LOOP )); then
   export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_no_yaw_ub.yaml"
 fi
 export CLUSTER_CL_FNAME="centaurohybridmpc.controllers.horizon_based.centauro_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.05
+export CLUSTER_DT=0.04
 export PHYSICS_DT=0.0005
-export N_NODES=20
+export N_NODES=25
 export CLUSTER_DB=1
-export CODEGEN_OVERRIDE_BDIR="none"
-export TRAIN_ENV_FNAME="fake_pos_track_env_phase_control"
-export TRAIN_ENV_CNAME="FakePosTrackEnvPhaseControl"
-export BAG_SDT=90.0
+export CODEGEN_OVERRIDE_BDIR="${HOME}/aux_data/CentauroRHCLusterClient_${SHM_NS}/CodeGen/${SHM_NS}Rhc"
+export TRAIN_ENV_FNAME="fake_pos_tracking_env"
+export TRAIN_ENV_CNAME="FakePosTrackingEnv"
+export BAG_SDT=3600.0
 export BRIDGE_DT=0.05
 export DUMP_DT=50.0
 export ENV_IDX_BAG=0
@@ -68,11 +71,8 @@ export SET_ULIM=1
 export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 
-export CUSTOM_ARGS_NAMES="render_to_file render_fps control_wheels fixed_flights adaptive_is lin_a_feedback use_diff_vels xmj_timeout xmj_files_dir state_from_xbot closed_partial fix_yaw add_upper_body torque_correction xbot2_filter_prof use_jnt_v_feedback"
-export CUSTOM_ARGS_NAMES+=" generate_stepup_terrain stepup_terrain_size stepup_stairs_ratio stepup_platform_size stepup_step_height_lb stepup_step_height_ub stepup_step_width_lb stepup_step_width_ub stepup_n_steps stepup_area_factor stepup_res_low stepup_res_high stepup_random_n_steps stepup_wall_height stepup_seed enable_height_sensor height_sensor_pixels height_sensor_resolution height_sensor_forward_offset height_sensor_lateral_offset"
-export CUSTOM_ARGS_DTYPE="bool float bool bool bool bool bool int string bool bool bool bool float str bool"
-export CUSTOM_ARGS_DTYPE+=" bool float float float float float float float int float float float bool float int bool int float float float"  
-export CUSTOM_ARGS_VALS="false 60.0 true true true false false $TIMEOUT_MS $HOME/ibrido_ws/src/$XMJ_FILES_DIR true true true true 1.0 fast true"
-export CUSTOM_ARGS_VALS+=" true 100.0 0.99 50.0 0.08 0.15 0.4 1.5 25 0.7 0.1 0.03 false 2.0 $SEED true 10 0.16 0.2 0.0"
-
-export REMOTE_ENV_FNAME="aug_mpc_envs.world_interfaces.xmj_world_interface"  
+export DAGANA_ROOT="${HOME}/ibrido_ws/src/iit-dagana-ros-pkg/dagana_urdf"
+export CUSTOM_ARGS_NAMES="add_remote_exit_flag step_height control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body use_mpc_pos_for_robot fix_yaw torque_correction xbot2_filter_prof use_jnt_v_feedback end_effector_left end_effector_right dagana_root"
+export CUSTOM_ARGS_DTYPE="bool float bool bool bool bool bool bool bool float bool bool bool bool float str bool xacro xacro xacro"
+export CUSTOM_ARGS_VALS="true 0.10 true true true false true false true 1.0 false true true true 1.0 fast true ball dagana $DAGANA_ROOT"
+export REMOTE_ENV_FNAME="aug_mpc_envs.world_interfaces.rt_deploy_world_interface"

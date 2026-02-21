@@ -60,4 +60,3 @@ else
         --no-mount home,cwd \
         --nv ibrido_xbot.sif bash
 fi
-

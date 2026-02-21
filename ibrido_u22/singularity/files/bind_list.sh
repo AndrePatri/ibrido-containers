@@ -74,8 +74,8 @@ IBRIDO_BDIRS=(
 
 if [ "$IS_PBS_AVAILABLE" != true ] && [ "$IS_SLURM_AVAILABLE" != true ]; then
     IBRIDO_BDIRS+=(
-        "/dev/input:/dev/input:rw"
-        "/run/udev:/run/udev:rw"
+        # "/dev/input:/dev/input:rw"
+        # "/run/udev:/run/udev:ro"
         "/tmp/.X11-unix:/tmp/.X11-unix"
         "/run/user:/run/user"
     )

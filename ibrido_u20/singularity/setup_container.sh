@@ -76,7 +76,6 @@ if $do_setup; then
         --bind $binddirs\
         --no-mount home,cwd \
         --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_xbot.sif post_build_setup.sh
+
     echo 'Done. You can now either launch the container with run_interactive_xbot.sh or start the training with execute_xbot.sh'
 fi
-
-

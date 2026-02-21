@@ -1,4 +1,6 @@
 #!/bin/bash
+source /root/ibrido_files/training_cfgs/joy_cfg.sh
+source /root/ibrido_files/training_cfgs/zmq_cfg.sh
 export EVAL=1
 export DET_EVAL=1
 export EVAL_ON_CPU=1
@@ -13,9 +15,6 @@ export XMJ_FILES_DIR="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files"
 
 export RT_DEPLOY=0
 
-export LAUNCH_JOY=0
-export XBOT2_JOY=0
-export AGENT_JOY=0
 
 # Set ROS_MASTER_URI and ROS_IP for deployment
 export ROS_MASTER_URI="http://10.24.4.100:11311" # Centauro embedded
@@ -60,7 +59,7 @@ export CLUSTER_DT=0.03
 export PHYSICS_DT=0.0005
 export N_NODES=31
 export CLUSTER_DB=1
-export CODEGEN_OVERRIDE_BDIR="none"
+export CODEGEN_OVERRIDE_BDIR="${HOME}/aux_data/CentauroRHCLusterClient_${SHM_NS}/CodeGen/${SHM_NS}Rhc"
 # export TRAIN_ENV_FNAME="twist_tracking_env"
 # export TRAIN_ENV_CNAME="TwistTrackingEnv"
 export TRAIN_ENV_FNAME="fake_pos_tracking_env"

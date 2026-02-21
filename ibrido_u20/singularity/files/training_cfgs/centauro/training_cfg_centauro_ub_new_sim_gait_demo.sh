@@ -1,11 +1,13 @@
 #!/bin/bash
+source /root/ibrido_files/training_cfgs/joy_cfg.sh
+source /root/ibrido_files/training_cfgs/zmq_cfg.sh
 export EVAL=1
 export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=1
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/d2025_11_28_h11_m38_s15-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv"
-export MNAME="d2025_11_28_h11_m38_s15-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv_model_checkpoint937"
+export MPATH="/root/training_data/"
+export MNAME="none"
 
 export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbot2_basic.yaml"
 # export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
@@ -13,9 +15,6 @@ export XMJ_FILES_DIR="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files"
 
 export RT_DEPLOY=1 # set to 1 to test real asynchronous world-like deployment, but on simulation
 
-export LAUNCH_JOY=0
-export XBOT2_JOY=0
-export AGENT_JOY=0
 
 if [[ $RT_DEPLOY -eq 1 ]]; then
   # Set ROS_MASTER_URI and ROS_IP for deployment

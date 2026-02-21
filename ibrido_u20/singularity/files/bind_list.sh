@@ -35,7 +35,8 @@ IBRIDO_BFILES=(
 )
 # defining directories to be binded at runtime
 IBRIDO_BDIRS=(
-    "/dev/input:/dev/input:rw"
+    # "/dev/input:/dev/input:rw"
+    # "/run/udev:/run/udev:ro"
     "/tmp/.X11-unix:/tmp/.X11-unix"
     "/run/user:/run/user"
     # "/media/apatrizi/AP_ext/data/IBRIDO/:/root/IBRIDO"
