@@ -69,7 +69,7 @@ export DUMP_DT=50.0
 export ENV_IDX_BAG=0
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/CentauroRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
 export SET_ULIM=1 
-export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
+export ULIM_N=131072  # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 
 export CUSTOM_ARGS_NAMES="add_remote_exit_flag step_height control_wheels fixed_flights adaptive_is lin_a_feedback closed_partial use_diff_vels state_from_xbot rt_safety_perf_coeff estimate_v_root add_upper_body use_mpc_pos_for_robot fix_yaw"

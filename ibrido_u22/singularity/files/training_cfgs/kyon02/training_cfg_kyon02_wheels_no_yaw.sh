@@ -82,5 +82,5 @@ export CUSTOM_ARGS_NAMES="step_height fix_yaw wheels fixed_flights adaptive_is l
 export CUSTOM_ARGS_DTYPE="float bool xacro bool bool bool bool bool bool bool str bool"
 export CUSTOM_ARGS_VALS="0.15 true true true true false true true false false pelvis false" 
 export SET_ULIM=1 
-export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
+export ULIM_N=131072  # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=120000 # timeout after which each script autokills ([ms])

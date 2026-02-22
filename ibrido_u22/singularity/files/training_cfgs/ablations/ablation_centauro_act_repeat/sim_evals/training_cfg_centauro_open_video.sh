@@ -80,6 +80,6 @@ export CUSTOM_ARGS_NAMES="rendering_dt render_to_file control_wheels fixed_fligh
 export CUSTOM_ARGS_DTYPE="float bool bool bool bool bool bool bool bool bool str float bool"
 export CUSTOM_ARGS_VALS="0.05 true false true true false true false false true random_patches 0.02 false"
 export SET_ULIM=1 
-export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
+export ULIM_N=131072  # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 

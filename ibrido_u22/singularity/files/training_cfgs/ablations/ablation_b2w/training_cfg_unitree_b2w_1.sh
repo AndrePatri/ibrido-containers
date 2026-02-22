@@ -78,6 +78,6 @@ export CUSTOM_ARGS_NAMES="rendering_dt wheels fixed_flights adaptive_is lin_a_fe
 export CUSTOM_ARGS_DTYPE="float xacro bool bool bool bool bool bool bool bool bool str bool"
 export CUSTOM_ARGS_VALS="0.1 true true true false true true false false true true base true"
 export SET_ULIM=1 
-export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
+export ULIM_N=131072  # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=120000 # timeout after which each script autokills ([ms])
 

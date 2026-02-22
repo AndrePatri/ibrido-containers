@@ -80,6 +80,6 @@ export CUSTOM_ARGS_NAMES="use_jnt_v_feedback step_height rendering_dt control_wh
 export CUSTOM_ARGS_DTYPE="bool float float bool bool bool bool bool bool bool bool str float "
 export CUSTOM_ARGS_VALS="false 0.1 0.1 false true true false true false false true random_patches 0.02"
 export SET_ULIM=1 
-export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
+export ULIM_N=131072  # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=120000 # timeout after which each script autokills ([ms])
 

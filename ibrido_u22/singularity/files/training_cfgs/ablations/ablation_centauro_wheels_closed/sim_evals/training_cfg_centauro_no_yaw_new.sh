@@ -78,6 +78,6 @@ export CUSTOM_ARGS_NAMES="use_jnt_v_feedback step_height control_wheels fixed_fl
 export CUSTOM_ARGS_DTYPE="bool float bool bool bool bool bool bool bool bool bool"
 export CUSTOM_ARGS_VALS="false 0.1 true true true false true true true false false"
 export SET_ULIM=1 
-export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
+export ULIM_N=131072  # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=30000 # timeout after which each script autokills ([ms])
 
