@@ -81,5 +81,5 @@ export CUSTOM_ARGS_VALS="true false 0.1 true true true false true true true fals
 # export CUSTOM_ARGS_DTYPE+=" strlist"
 # export CUSTOM_ARGS_VALS+=" wheel_1,wheel_2,wheel_3,wheel_4"
 export SET_ULIM=1 
-export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
+export ULIM_N=131072  # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=120000 # timeout after which each script autokills ([ms])

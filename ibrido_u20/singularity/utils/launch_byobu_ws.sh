@@ -12,7 +12,6 @@ WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
 WORKING_DIR_OTHER="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
 
 MAMBAENVNAME="${MAMBA_ENV_NAME}"
-N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
 
 config_file="$HOME/ibrido_files/training_cfgs/training_cfg.sh"
 
@@ -130,6 +129,8 @@ else
 fi
 
 echo "Will preload script cmds from $config_file"
+
+N_FILES=$ULIM_N # to allow more open files (for semaphores/mutexes etc..)
 
 # clear tmp folder 
 # rm -r /tmp/*

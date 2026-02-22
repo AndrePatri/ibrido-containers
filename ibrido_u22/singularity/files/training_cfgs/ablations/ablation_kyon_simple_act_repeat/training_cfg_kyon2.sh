@@ -80,5 +80,5 @@ export CUSTOM_ARGS_NAMES="wheels fixed_flights adaptive_is lin_a_feedback closed
 export CUSTOM_ARGS_DTYPE="xacro bool bool bool bool bool bool bool"
 export CUSTOM_ARGS_VALS="false true true false true true false false" 
 export SET_ULIM=1 
-export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
+export ULIM_N=131072  # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=120000 # timeout after which each script autokills ([ms])

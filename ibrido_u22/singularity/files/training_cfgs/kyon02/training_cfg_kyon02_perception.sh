@@ -77,5 +77,5 @@ export CUSTOM_ARGS_DTYPE+=" bool str bool float float bool float float"
 export CUSTOM_ARGS_VALS+=" false stepup_prim true 10 0.16 false 0.0 0.0"
 
 export SET_ULIM=1 
-export ULIM_N=28672 # maximum number of open file descriptors for each process (shared memory)
+export ULIM_N=131072  # maximum number of open file descriptors for each process (shared memory)
 export TIMEOUT_MS=120000 # timeout after which each script autokills ([ms])

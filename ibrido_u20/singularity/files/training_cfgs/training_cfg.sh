@@ -81,7 +81,7 @@ export ENV_IDX_BAG_EXPL=-1 # same, but for exploration environments
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/KyonRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
 
 export SET_ULIM=1 # whether to set maximum number of open file descriptors for each process (shared memory)
-export ULIM_N=28672 # maximum number (might be necessary to increase due to heave shared memory usage by the framework and the
+export ULIM_N=131072 # maximum number (might be necessary to increase due to heave shared memory usage by the framework and the
 # control cluster specifically, when the number of environments is large)
 
 export TIMEOUT_MS=120000 # timeout after which the simulator, cluster or training env autokills if no signal is received ([ms])
