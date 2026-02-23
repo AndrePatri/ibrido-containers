@@ -41,14 +41,14 @@ export USE_PERIOD_RESETS=0
 export COMMENT='centauro big wheels (fixed ankle yaw) with upper body CLOOP, ' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_urdf/urdf/centauro.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_srdf/srdf/centauro.srdf.xacro" # base path where the description package for the robot are located
-export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_no_yaw_open.yaml" # path to yaml file for jnt imp configuration
+export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_no_yaw_ub_open.yaml" # path to yaml file for jnt imp configuration
 if (( $IS_CLOSED_LOOP )); then
-  export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_no_yaw.yaml"
+  export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_no_yaw_ub.yaml"
 fi
 
 export CLUSTER_CL_FNAME="centaurohybridmpc.controllers.horizon_based.centauro_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.05
-export N_NODES=20
+export CLUSTER_DT=0.04
+export N_NODES=25
 export CLUSTER_DB=1
 export PHYSICS_DT=0.0005
 export USE_GPU_SIM=1

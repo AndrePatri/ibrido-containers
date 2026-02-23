@@ -9,10 +9,15 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-# export MPATH="/root/training_data/d2026_02_18_h19_m25_s47-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv"
-# export MNAME="d2026_02_18_h19_m25_s47-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv_model"
-export MPATH="/root/training_data/d2026_02_18_h21_m26_s21-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv"
-export MNAME="d2026_02_18_h21_m26_s21-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv_model"
+export IS_CLOSED_LOOP=1
+
+if [[ $IS_CLOSED_LOOP -eq 1 ]]; then
+  export MPATH="/root/training_data/d2026_02_21_h14_m01_s10-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv"
+  export MNAME="d2026_02_21_h14_m01_s10-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv_model"
+else
+  export MPATH="/root/training_data/d2026_02_22_h16_m20_s41-CentauroOpenUbNoWheels_FakePosTrackingEnv"
+  export MNAME="d2026_02_22_h16_m20_s41-CentauroOpenUbNoWheels_FakePosTrackingEnv_model"
+fi
 
 export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbot2_basic.yaml"
 # export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
@@ -25,7 +30,7 @@ export ROS_IP=$(hostname -I | awk '{print $1}') # Extract first IP address
 # export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
 export SHM_NS="centauro_big_wheels_ub" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=1 # number of env to run in parallel
-export RNAME="CentauroCloopPartialUbNoWheels" # a descriptive base name for this run
+export RNAME="CentauroUbNoWheels" # a descriptive base name for this run
 export SEED=1 # random n generator seed to be used for this run
 export REMOTE_STEPPING=1
 export COMPRESSION_RATIO=0.6
@@ -38,8 +43,7 @@ export OBS_RESCALING=0
 export WEIGHT_NORM=1
 export LAYER_NORM=0
 export BATCH_NORM=0
-export IS_CLOSED_LOOP=1
-export DUMP_ENV_CHECKPOINTS=1
+export DUMP_ENV_CHECKPOINTS=0
 export DEMO_STOP_THRESH=10.0
 export TOT_STEPS=60000
 export DEMO_ENVS_PERC=0.0

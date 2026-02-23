@@ -6,15 +6,21 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/d2025_11_29_h15_m01_s27-CentauroCloopPartialNoYawUb_FakePosTrackingEnv"
-export MNAME="d2025_11_29_h15_m01_s27-CentauroCloopPartialNoYawUb_FakePosTrackingEnv_model"
+export IS_CLOSED_LOOP=0
+
+if [[ $IS_CLOSED_LOOP -eq 1 ]]; then
+  export MPATH="/root/training_data/"
+  export MNAME="_model"
+else
+  export MPATH="/root/training_data/d2026_02_22_h19_m47_s45-CentauroOpenNoYawUb_FakePosTrackingEnv"
+  export MNAME="d2026_02_22_h19_m47_s45-CentauroOpenNoYawUb_FakePosTrackingEnv_model_checkpoint1477"
+fi
 
 export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbot2_basic.yaml"
 # export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
 export XMJ_FILES_DIR="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files"
 
-export RT_DEPLOY=0
-
+export RT_DEPLOY=1
 
 if [[ $RT_DEPLOY -eq 1 ]]; then
   # Set ROS_MASTER_URI and ROS_IP for deployment
@@ -32,26 +38,25 @@ export ROS_IP="127.0.0.1"
 # export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
 export SHM_NS="centauro_big_wheels_no_yaw_ub" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=1 # number of env to run in parallel
-export RNAME="CentauroCloopNoYawUb" # a descriptive base name for this run
+export RNAME="CentauroNoYawUb" # a descriptive base name for this run
 export SEED=1 # random n generator seed to be used for this run
 export REMOTE_STEPPING=1
 export COMPRESSION_RATIO=0.6
 export ACTOR_LWIDTH=128
 export ACTOR_DEPTH=3
 export CRITIC_LWIDTH=256
-export CRITIC_DEPTH=3
+export CRITIC_DEPTH=4
 export OBS_NORM=1
 export OBS_RESCALING=0
 export WEIGHT_NORM=1
 export LAYER_NORM=0
 export BATCH_NORM=0
-export IS_CLOSED_LOOP=1
 export DUMP_ENV_CHECKPOINTS=1
 export DEMO_STOP_THRESH=10.0
 export TOT_STEPS=10000
 export DEMO_ENVS_PERC=0.0
 export EXPL_ENVS_PERC=0.0
-export ACTION_REPEAT=4
+export ACTION_REPEAT=3
 export USE_SAC=1
 export USE_DUMMY=0
 export DISCOUNT_FACTOR=0.998
@@ -68,7 +73,7 @@ export CLUSTER_DT=0.04
 export PHYSICS_DT=0.0005
 export N_NODES=25
 export CLUSTER_DB=1
-export CODEGEN_OVERRIDE_BDIR="none"
+export CODEGEN_OVERRIDE_BDIR="${HOME}/aux_data/CentauroRHCLusterClient_${SHM_NS}/CodeGen/${SHM_NS}Rhc"
 # export TRAIN_ENV_FNAME="twist_tracking_env"
 # export TRAIN_ENV_CNAME="TwistTrackingEnv"
 export TRAIN_ENV_FNAME="fake_pos_tracking_env"
