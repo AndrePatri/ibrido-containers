@@ -6,7 +6,7 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-export IS_CLOSED_LOOP=0
+export IS_CLOSED_LOOP=1
 
 if [[ $IS_CLOSED_LOOP -eq 1 ]]; then
   export MPATH="/root/training_data/d2026_02_21_h14_m01_s10-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv"
