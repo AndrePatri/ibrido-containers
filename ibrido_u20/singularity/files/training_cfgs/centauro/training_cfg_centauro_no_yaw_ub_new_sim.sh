@@ -20,7 +20,7 @@ export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbo
 # export XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
 export XMJ_FILES_DIR="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files"
 
-export RT_DEPLOY=0
+export RT_DEPLOY=1
 
 if [[ $RT_DEPLOY -eq 1 ]]; then
   # Set ROS_MASTER_URI and ROS_IP for deployment
@@ -35,7 +35,6 @@ fi
 export ROS_MASTER_URI="http://127.0.0.1:11311"
 export ROS_IP="127.0.0.1"
 
-
 # export SHM_NS+="_$(date '+%Y_%m_%d__%H_%M_%S')" # appending unique string to shm namespace 
 export SHM_NS="centauro_big_wheels_no_yaw_ub" # shared mem namespace used for all shared data on CPU 
 export N_ENVS=1 # number of env to run in parallel
@@ -46,7 +45,7 @@ export COMPRESSION_RATIO=0.6
 export ACTOR_LWIDTH=128
 export ACTOR_DEPTH=3
 export CRITIC_LWIDTH=256
-export CRITIC_DEPTH=3
+export CRITIC_DEPTH=4
 export OBS_NORM=1
 export OBS_RESCALING=0
 export WEIGHT_NORM=1
@@ -57,7 +56,7 @@ export DEMO_STOP_THRESH=10.0
 export TOT_STEPS=10000
 export DEMO_ENVS_PERC=0.0
 export EXPL_ENVS_PERC=0.0
-export ACTION_REPEAT=4
+export ACTION_REPEAT=3
 export USE_SAC=1
 export USE_DUMMY=0
 export DISCOUNT_FACTOR=0.998
@@ -74,7 +73,7 @@ export CLUSTER_DT=0.04
 export PHYSICS_DT=0.0005
 export N_NODES=25
 export CLUSTER_DB=1
-export CODEGEN_OVERRIDE_BDIR="none"
+export CODEGEN_OVERRIDE_BDIR="${HOME}/aux_data/CentauroRHCLusterClient_${SHM_NS}/CodeGen/${SHM_NS}Rhc"
 # export TRAIN_ENV_FNAME="twist_tracking_env"
 # export TRAIN_ENV_CNAME="TwistTrackingEnv"
 export TRAIN_ENV_FNAME="fake_pos_tracking_env"
