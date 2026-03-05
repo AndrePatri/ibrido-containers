@@ -1,6 +1,7 @@
 #!/bin/bash
 source /root/ibrido_files/training_cfgs/joy_cfg.sh
 source /root/ibrido_files/training_cfgs/zmq_cfg.sh
+export LAUNCH_JOY=1
 export XBOT2_JOY=1 
 export AGENT_JOY=0
 
