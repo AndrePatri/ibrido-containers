@@ -12,8 +12,8 @@ if [[ $IS_CLOSED_LOOP -eq 1 ]]; then
   export MPATH="/root/training_data/"
   export MNAME="_model"
 else
-  export MPATH="/root/training_data/d2026_02_22_h19_m47_s45-CentauroOpenNoYawUb_FakePosTrackingEnv"
-  export MNAME="d2026_02_22_h19_m47_s45-CentauroOpenNoYawUb_FakePosTrackingEnv_model_checkpoint1477"
+  export MPATH="/root/training_data/"
+  export MNAME="_model"
 fi
 
 export XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbot2_basic.yaml"
