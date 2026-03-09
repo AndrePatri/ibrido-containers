@@ -14,7 +14,7 @@ export IS_CLOSED_LOOP=1
 if [[ $IS_CLOSED_LOOP -eq 1 ]]; then
   export MPATH="/root/training_data/d2026_02_21_h14_m01_s10-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv"
   export MNAME="d2026_02_21_h14_m01_s10-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv_model"
-else
+else 
   export MPATH="/root/training_data/d2026_02_22_h16_m20_s41-CentauroOpenUbNoWheels_FakePosTrackingEnv"
   export MNAME="d2026_02_22_h16_m20_s41-CentauroOpenUbNoWheels_FakePosTrackingEnv_model"
 fi

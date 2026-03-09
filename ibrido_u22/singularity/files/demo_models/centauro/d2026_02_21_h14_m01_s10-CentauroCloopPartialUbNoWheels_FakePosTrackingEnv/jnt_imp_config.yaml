@@ -1,0 +1,46 @@
+XBotInterface: # just used for retrieving homing in sim with xbot_mujoco
+  urdf_path: $PWD/xmj_env_files/centauro.urdf
+  srdf_path: $PWD/xmj_env_files/centauro.srdf
+
+# defaults
+motor_pd:
+  "j_arm*_1": [500, 10]
+  "j_arm*_2": [500, 10]
+  "j_arm*_3": [500, 10]
+  "j_arm*_4": [500, 10]
+  "j_arm*_5": [100, 5]
+  "j_arm*_6": [100, 5]
+  "j_arm*_7": [100, 5]
+  "hip_yaw_*": [3000, 30]
+  "hip_pitch_*": [3000, 30]
+  "knee_pitch_*": [3000, 30]
+  "ankle_pitch_*": [1000, 10]
+  "ankle_yaw_*": [300, 10]
+  "neck_pitch": [10, 1]
+  "neck_yaw": [10, 1]
+  "torso_yaw": [1000, 30]
+  "j_wheel_*": [0, 30]
+  "velodyne_*": [10, 1]
+  "d435_*": [10, 1]
+  "dagana_*": [50, 1]
+
+startup_motor_pd: # iannis combo
+  "j_arm*_1": [500, 30]
+  "j_arm*_2": [500, 30]
+  "j_arm*_3": [500, 30]
+  "j_arm*_4": [500, 30]
+  "j_arm*_5": [100, 5]
+  "j_arm*_6": [100, 5]
+  "j_arm*_7": [100, 5]
+  "hip_yaw_*": [200, 60]
+  "hip_pitch_*": [200, 60]
+  "knee_pitch_*": [200, 60]
+  "ankle_pitch_*": [200, 60]
+  "ankle_yaw_*": [120, 30]
+  "neck_pitch": [10, 1]
+  "neck_yaw": [10, 1]
+  "torso_yaw": [1000, 30]
+  "j_wheel_*": [0, 30]
+  "velodyne_*": [10, 1]
+  "d435_*": [10, 1]
+  "dagana_*": [50, 1]
