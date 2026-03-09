@@ -9,8 +9,8 @@ export OVERRIDE_AGENT_REFS=1
 export IS_CLOSED_LOOP=0
 
 if [[ $IS_CLOSED_LOOP -eq 1 ]]; then
-  export MPATH="/root/training_data/"
-  export MNAME="_model"
+  export MPATH="/root/training_data/d2026_03_07_h19_m22_s30-CentauroCloopPartialNoYawUb_FakePosTrackingEnv"
+  export MNAME="d2026_03_07_h19_m22_s30-CentauroCloopPartialNoYawUb_FakePosTrackingEnv_model"
 else
   export MPATH="/root/training_data/d2026_02_23_h13_m33_s22-CentauroOpenNoYawUb_FakePosTrackingEnv"
   export MNAME="d2026_02_23_h13_m33_s22-CentauroOpenNoYawUb_FakePosTrackingEnv_model"
