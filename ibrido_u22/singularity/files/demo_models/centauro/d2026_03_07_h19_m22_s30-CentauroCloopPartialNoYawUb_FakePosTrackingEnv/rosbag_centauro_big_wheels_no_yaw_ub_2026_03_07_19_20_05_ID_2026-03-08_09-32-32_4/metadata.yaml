@@ -1,0 +1,68 @@
+rosbag2_bagfile_information:
+  version: 5
+  storage_identifier: sqlite3
+  duration:
+    nanoseconds: 89959960938
+  starting_time:
+    nanoseconds_since_epoch: 40039062
+  message_count: 120562
+  topics_with_message_count:
+    - topic_metadata:
+        name: /MPCViz_centauro_big_wheels_no_yaw_ub_2026_03_07_19_20_05_ID_robot_q
+        type: std_msgs/msg/Float64MultiArray
+        serialization_format: cdr
+        offered_qos_profiles: "- history: 3\n  depth: 0\n  reliability: 1\n  durability: 1\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
+      message_count: 17223
+    - topic_metadata:
+        name: /MPCViz_centauro_big_wheels_no_yaw_ub_2026_03_07_19_20_05_ID_robot_actuated_jointnames
+        type: std_msgs/msg/String
+        serialization_format: cdr
+        offered_qos_profiles: "- history: 3\n  depth: 0\n  reliability: 1\n  durability: 1\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
+      message_count: 17223
+    - topic_metadata:
+        name: /MPCViz_centauro_big_wheels_no_yaw_ub_2026_03_07_19_20_05_ID_rhc_refs
+        type: std_msgs/msg/Float64MultiArray
+        serialization_format: cdr
+        offered_qos_profiles: "- history: 3\n  depth: 0\n  reliability: 1\n  durability: 1\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
+      message_count: 17223
+    - topic_metadata:
+        name: /MPCViz_centauro_big_wheels_no_yaw_ub_2026_03_07_19_20_05_ID_rhc_q
+        type: std_msgs/msg/Float64MultiArray
+        serialization_format: cdr
+        offered_qos_profiles: "- history: 3\n  depth: 0\n  reliability: 1\n  durability: 1\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
+      message_count: 17223
+    - topic_metadata:
+        name: /MPCViz_centauro_big_wheels_no_yaw_ub_2026_03_07_19_20_05_ID_rhc_contacts
+        type: std_msgs/msg/Float64MultiArray
+        serialization_format: cdr
+        offered_qos_profiles: "- history: 3\n  depth: 0\n  reliability: 1\n  durability: 1\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
+      message_count: 17223
+    - topic_metadata:
+        name: /MPCViz_centauro_big_wheels_no_yaw_ub_2026_03_07_19_20_05_ID_rhc_actuated_jointnames
+        type: std_msgs/msg/String
+        serialization_format: cdr
+        offered_qos_profiles: "- history: 3\n  depth: 0\n  reliability: 1\n  durability: 1\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
+      message_count: 17223
+    - topic_metadata:
+        name: /MPCViz_centauro_big_wheels_no_yaw_ub_2026_03_07_19_20_05_ID_hl_refs
+        type: std_msgs/msg/Float64MultiArray
+        serialization_format: cdr
+        offered_qos_profiles: "- history: 3\n  depth: 0\n  reliability: 1\n  durability: 1\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
+      message_count: 17223
+    - topic_metadata:
+        name: /MPCViz_centauro_big_wheels_no_yaw_ub_2026_03_07_19_20_05_ID_HandShake
+        type: std_msgs/msg/Float64MultiArray
+        serialization_format: cdr
+        offered_qos_profiles: "- history: 3\n  depth: 0\n  reliability: 1\n  durability: 1\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
+      message_count: 1
+  compression_format: zstd
+  compression_mode: FILE
+  relative_file_paths:
+    - rosbag_centauro_big_wheels_no_yaw_ub_2026_03_07_19_20_05_ID_2026-03-08_09-32-32_4_0.db3.zstd
+  files:
+    - path: rosbag_centauro_big_wheels_no_yaw_ub_2026_03_07_19_20_05_ID_2026-03-08_09-32-32_4_0.db3
+      starting_time:
+        nanoseconds_since_epoch: 40039062
+      duration:
+        nanoseconds: 89959960938
+      message_count: 120562
