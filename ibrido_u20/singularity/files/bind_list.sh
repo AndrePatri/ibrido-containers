@@ -28,6 +28,7 @@ IBRIDO_PREFIX=$BASE_FOLDER/containers/ibrido-singularity-xbot
 IBRIDO_WS_PREFIX=${IBRIDO_PREFIX}/ibrido_ws/
 IBRIDO_WS_SRC=${IBRIDO_WS_PREFIX}/src
 IBRIDO_CONDA=${IBRIDO_PREFIX}/conda
+IBRIDO_TRAINING_DATA=${IBRIDO_PREFIX}/training_data
 
 # defining files to be binded at runtime
 IBRIDO_BFILES=(
@@ -46,7 +47,7 @@ IBRIDO_BDIRS=(
     "${IBRIDO_PREFIX}/tmp:/tmp:rw"
     "${IBRIDO_PREFIX}/config:/.config:rw"
     "${IBRIDO_PREFIX}/aux_data:/root/aux_data:rw"
-    "${IBRIDO_PREFIX}/training_data:/root/training_data:rw"
+    "${IBRIDO_TRAINING_DATA}:/root/training_data:rw"
     "${IBRIDO_WS_PREFIX}:/root/ibrido_ws:rw"
     "${IBRIDO_CONDA}:/opt/conda:rw"
     "${IBRIDO_PREFIX}/conda_hidden/.conda:/root/.conda:rw"
@@ -91,6 +92,33 @@ IBRIDO_GITDIRS=(
     "git@github.com:google/googletest.git*main"
     "git@github.com:ADVRHumanoids/robot_monitoring.git*v2.7.5"
 )
+
+# model repositories stored under training_data
+IBRIDO_MODELDIRS=(
+    "https://huggingface.co/AndrePatri/AugMPCModels*main"
+)
+
+IBRIDO_MODEL_SRC=()
+IBRIDO_MODEL_BRCH=()
+IBRIDO_MODEL_DIR=()
+for entry in "${IBRIDO_MODELDIRS[@]}"; do
+IFS='*' read -r src rest <<< "$entry"
+
+branch_and_dir="$rest"
+branch="$branch_and_dir"
+dir=""
+
+if [[ "$branch_and_dir" == *'&'* ]]; then
+IFS='&' read -r branch dir <<< "$branch_and_dir"
+fi
+
+branch="$(echo -n "$branch" | xargs)"
+dir="$(echo -n "$dir" | xargs)"
+
+IBRIDO_MODEL_SRC+=("$src")
+IBRIDO_MODEL_BRCH+=("$branch")
+IBRIDO_MODEL_DIR+=("$dir")
+done
 
 # Concatenate
 IBRIDO_BDIRS=("${IBRIDO_BDIRS[@]}" "${ISAAC_BDIRS[@]}")

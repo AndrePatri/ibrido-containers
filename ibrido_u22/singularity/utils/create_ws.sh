@@ -25,23 +25,12 @@ for item in "${IBRIDO_BFILES_SRC[@]}"; do
 done
 echo 'Done.'
 
-# echo 'Cloning repos...'
-# cd $IBRIDO_WS_SRC
-# for ((i = 0; i < ${#IBRIDO_GITDIRS[@]}; i++)); do
-#     src="${IBRIDO_GIT_SRC[$i]}"
-#     branch="${IBRIDO_GIT_BRCH[$i]}"
-#     echo "--> $src # $branch"
-#     git clone -q -b $branch $src &
-# done
-# wait
-
 echo 'Cloning repos...'
 cd "$IBRIDO_WS_SRC" || exit 1
 for ((i = 0; i < ${#IBRIDO_GITDIRS[@]}; i++)); do
 src="${IBRIDO_GIT_SRC[$i]}"
 branch="${IBRIDO_GIT_BRCH[$i]}"
 target_dir="${IBRIDO_GIT_DIR[$i]}"
-
 
 if [ -n "$target_dir" ]; then
 # clone into the requested directory under IBRIDO_WS_SRC
@@ -54,6 +43,25 @@ fi
 done
 wait
 
+echo 'Cloning model repositories...'
+mkdir -p "$IBRIDO_TRAINING_DATA"
+cd "$IBRIDO_TRAINING_DATA" || exit 1
+for ((i = 0; i < ${#IBRIDO_MODELDIRS[@]}; i++)); do
+src="${IBRIDO_MODEL_SRC[$i]}"
+branch="${IBRIDO_MODEL_BRCH[$i]}"
+target_dir="${IBRIDO_MODEL_DIR[$i]}"
+
+if [ -n "$target_dir" ]; then
+echo "--> $src # $branch -> $target_dir"
+git clone -q -b "$branch" "$src" "$IBRIDO_TRAINING_DATA/$target_dir" &
+else
+repo_name="${src##*/}"
+repo_name="${repo_name%.git}"
+echo "--> $src # $branch"
+git clone -q -b "$branch" "$src" "$IBRIDO_TRAINING_DATA/$repo_name" &
+fi
+done
+wait
 # copying some utility files
 cp ${root_folder}/files/setup.bash $IBRIDO_WS_PREFIX/
 cp ${root_folder}/files/mamba_env.yml $IBRIDO_CONDA/

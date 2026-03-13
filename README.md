@@ -35,6 +35,11 @@ On some systems, you may need a setuid installation. If you encounter errors lik
 
 Note that IBRIDO's workspace and code are cloned on the host, mounted within the container and setup from within it. The container also comes with a *ibrido* micromamba environment, shipped with all necessary dependencies, Torch included.
 
+### 2.1) Public model bundles
+Public AugMPC deployment bundles are stored in the [AugMPCModels](https://huggingface.co/AndrePatri/AugMPCModels) repository. During workspace initialization, this repository is cloned under the host-side `training_data/` folder and mounted inside the container at `/root/training_data`.
+
+This means that published bundles can be used through the same local path logic already used by the framework, for example by pointing model paths to `/root/training_data/AugMPCModels/bundles/<robot>/...`. For published models, this container-based setup is the preferred execution path, as it provides the expected runtime environment and workspace layout.
+
 ### 3) Run container
 - Navigate to the root folder corresponding to your chosen container (e.g. `./ibrido_u22/singularity`) and then run `export IBRIDO_CONTAINERS_PREFIX=$PWD`, if not already done.
 - There are two ways to run the containers, an *interactive* and *detached* move:
