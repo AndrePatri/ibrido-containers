@@ -62,6 +62,29 @@ git clone -q -b "$branch" "$src" "$IBRIDO_TRAINING_DATA/$repo_name" &
 fi
 done
 wait
+
+if git lfs version >/dev/null 2>&1; then
+    echo 'Fetching Git LFS objects for model repositories...'
+    for ((i = 0; i < ${#IBRIDO_MODELDIRS[@]}; i++)); do
+    src="${IBRIDO_MODEL_SRC[$i]}"
+    target_dir="${IBRIDO_MODEL_DIR[$i]}"
+
+    if [ -n "$target_dir" ]; then
+    repo_name="$target_dir"
+    else
+    repo_name="${src##*/}"
+    repo_name="${repo_name%.git}"
+    fi
+
+    repo_path="$IBRIDO_TRAINING_DATA/$repo_name"
+    if [ -d "$repo_path" ]; then
+    echo "--> git lfs pull $repo_name"
+    (cd "$repo_path" && git lfs pull)
+    fi
+    done
+else
+    echo 'git-lfs not available: model repositories may contain pointer files only.'
+fi
 # copying some utility files
 cp ${root_folder}/files/setup.bash $IBRIDO_WS_PREFIX/
 cp ${root_folder}/files/mamba_env.yml $IBRIDO_CONDA/

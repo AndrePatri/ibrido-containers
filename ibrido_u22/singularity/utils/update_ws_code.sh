@@ -68,6 +68,30 @@ for ((i = 0; i < ${#IBRIDO_MODELDIRS[@]}; i++)); do
 done
 
 wait
+
+if git lfs version >/dev/null 2>&1; then
+    echo 'Fetching Git LFS objects for model repositories...'
+    for ((i = 0; i < ${#IBRIDO_MODELDIRS[@]}; i++)); do
+        git_url="${IBRIDO_MODEL_SRC[$i]}"
+        custom_dir="${IBRIDO_MODEL_DIR[$i]}"
+
+        if [ -n "$custom_dir" ]; then
+            repo_name="$custom_dir"
+        else
+            repo_name="${git_url##*/}"
+            repo_name="${repo_name%.git}"
+        fi
+
+        repo_path="$IBRIDO_TRAINING_DATA/$repo_name"
+        if [ -d "$repo_path" ]; then
+            echo "  -> git lfs pull [$repo_name]"
+            (cd "$repo_path" && git lfs pull)
+        fi
+    done
+else
+    echo 'git-lfs not available: model repositories may contain pointer files only.'
+fi
+
 echo 'update done.'
 
 set -e
