@@ -35,12 +35,7 @@ On some systems, you may need a setuid installation. If you encounter errors lik
 
 Note that IBRIDO's workspace and code are cloned on the host, mounted within the container and setup from within it. The container also comes with a *ibrido* micromamba environment, shipped with all necessary dependencies, Torch included.
 
-### 2.1) Public model bundles
-Public AugMPC deployment bundles are stored in the [AugMPCModels](https://huggingface.co/AndrePatri/AugMPCModels) repository. During workspace initialization, this repository is cloned under the host-side `training_data/` folder and mounted inside the container at `/root/training_data`.
-
-This means that published bundles can be used through the same local path logic already used by the framework, for example by pointing model paths to `/root/training_data/AugMPCModels/bundles/<robot>/...`. For published models, this container-based setup is the preferred execution path, as it provides the expected runtime environment and workspace layout.
-
-### 3) Run container
+### 3) Run container and launch trainings/evaluations
 - Navigate to the root folder corresponding to your chosen container (e.g. `./ibrido_u22/singularity`) and then run `export IBRIDO_CONTAINERS_PREFIX=$PWD`, if not already done.
 - There are two ways to run the containers, an *interactive* and *detached* move:
     - For the interactive mode run:
@@ -49,7 +44,37 @@ This means that published bundles can be used through the same local path logic 
     - For the detached mode run:
         - `./execute.sh --cfg $MY_CFG_FILE_PATH`, where `MY_CFG_FILE_PATH` should be a valid relative config path within the `ibrido_u*/singularity/files/training_cfgs/` folder. This is the preferred mode to run training on remote servers. It will launch all the core components of IBRIDO (world, MPC cluster and training scripts) and automatically start the training. Logs for each of the components are dumped separately at `$HOME/ibrido_logs/ibrido_run_$UNIQUE_ID`.
 
-### 3) Run ablation studies
+### 4) Demo examples: public models
+Public AugMPC bundles (models + configuration files) are stored at [AugMPCModels](https://huggingface.co/AndrePatri/AugMPCModels). During workspace initialization, this repository is cloned under the host-side `training_data/` folder and mounted inside the container at `/root/training_data`.
+
+To run a specific model:
+1. First make sure you have set up the container
+2. Pick the desired container : for instance, `ibrido-containers/ibrido_u22` to use IsaacSim (and potentially multiple environments), `ibrido-containers/ibrido_u20` for "cheap" single environment transfer evaluations on MujoCo. 
+3. Pick a matching configuration file associated with the target model and robot under `ibrido-containers/ibrido_u*/singularity/files/training_cfgs/<robot_name>/`; configs for the same robot may change crucial MPC parameters, so it's important that this matches the one used during training.
+3. configure the config to load the chosen model bundle by modyfing these variables:
+
+```bash
+export EVAL=1 # run framework in eval mode
+export DET_EVAL=1 # run deterministic policy evaluation
+export EVAL_ON_CPU=1 # eval on CPU
+export OVERRIDE_ENV=0 # if 0, will load the exact same environment as used during training
+export OVERRIDE_AGENT_REFS=1 # if 1 user can send refs to the agent using the keyboard or joystick utilities in AugMPC
+export MPATH="/root/training_data/AugMPCModels/bundles/<robot_name>/<bundle_name>" # path to the bundle
+export MNAME="<bundle_name>_model" # torch model name within the bundle path
+#...
+export N_ENVS=1 # you can add more if you want to run multiple environments (if chosen world interface supports vectorized simulation)
+```
+
+For instance:
+
+```bash
+export MPATH="/root/training_data/AugMPCModels/bundles/centauro/d2026_03_07_h19_m22_s30-CentauroCloopPartialNoYawUb_FakePosTrackingEnv"
+export MNAME="d2026_03_07_h19_m22_s30-CentauroCloopPartialNoYawUb_FakePosTrackingEnv_model" # or any other checkpoint available
+```
+
+Within the existing `ibrido-containers` logic, `EVAL=1` triggers evaluation mode using the policy pointed to by `MPATH` and `MNAME`. Users can verify that the evaluation configuration is aligned with the original training setup by inspecting the preserved training script stored in the bundle under `bundles/<robot_name>/<bundle_name>/ibrido_run_*/training_cfg_*.sh`.
+
+### 4) Run ablation studies
 You can run ablation studies by executing `./execute_ablation.sh --cfg $MY_CFG_PATH`, where `MY_CFG_PATH` should be a valid relative directory path within the `ibrido_u*/singularity/files/training_cfgs/ablations/` folder, for instance `ablation_centauro_act_repeat_closed`. This will sequentially run a training for each config file found within `MY_CFG_PATH`.
 
 ### 4) Additional usage notes and HOWTOs
