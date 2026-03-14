@@ -72,12 +72,12 @@ export MPATH="/root/training_data/AugMPCModels/bundles/centauro/d2026_03_07_h19_
 export MNAME="d2026_03_07_h19_m22_s30-CentauroCloopPartialNoYawUb_FakePosTrackingEnv_model" # or any other checkpoint available
 ```
 
-Within the existing `ibrido-containers` logic, `EVAL=1` triggers evaluation mode using the policy pointed to by `MPATH` and `MNAME`. Users can verify that the evaluation configuration is aligned with the original training setup by inspecting the preserved training script stored in the bundle under `bundles/<robot_name>/<bundle_name>/ibrido_run_*/training_cfg_*.sh`.
+`EVAL=1` triggers evaluation mode using the policy pointed to by `MPATH` and `MNAME`. Users can verify that the evaluation configuration is aligned with the original training setup by inspecting the preserved training script stored in the bundle under `AugMPCModels/bundles/<robot_name>/<bundle_name>/ibrido_run_*/training_cfg_*.sh`.
 
-### 4) Run ablation studies
+### 5) Run ablation studies
 You can run ablation studies by executing `./execute_ablation.sh --cfg $MY_CFG_PATH`, where `MY_CFG_PATH` should be a valid relative directory path within the `ibrido_u*/singularity/files/training_cfgs/ablations/` folder, for instance `ablation_centauro_act_repeat_closed`. This will sequentially run a training for each config file found within `MY_CFG_PATH`.
 
-### 4) Additional usage notes and HOWTOs
+### 6) Additional usage notes and HOWTOs
 - Framework code, data, libraries, logs, etc...: everything will by default be located *on the HOST* at `$HOME/work/containers/$CONTAINER_NAME/`. You can change this location by editing the `BASE_FOLDER` variable in `$IBRIDO_CONTAINERS_PREFIX/files/bind_list.sh`.
 
 - Shared memory *namespace*: one -- if not the most -- important argument to the whole framework, is the `--ns` (`SHM_NS` in the config files). You'll notice all scripts will have at least this argument exposed. This is a unique namespace employed by all shared memory components and allows for safe and efficient communication between all the framework's components. This also means that multiple independent containers can run concurrently without issues, as long as a different namespace was set in the configuration files. It is also possible to launch an instance of the framework in *detached* mode on the host and then connect to it afterwards by launching a new interactive session with the same namespace. In this case, just run components of IBRIDO which are NOT already running in the detached instance.
