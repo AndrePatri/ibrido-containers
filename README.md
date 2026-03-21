@@ -16,7 +16,7 @@ On Ubuntu, for the non setuid installation:
 
 `sudo apt install -y apptainer`
 
-On some systems, you may need a setuid installation. If you encounter errors like "permission denied" related to groups when trying to execute the container, then run the following:
+IMPORTANT: On some systems, you may encounter errors or messages like "User not listed in /etc/subuid" or "Could not write info to setgroups: Permission denied" when trying to setup or execute the container. In such cases, you'll need the setuid installation of Apptainer:
 
 `sudo add-apt-repository -y ppa:apptainer/ppa`
 
