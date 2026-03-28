@@ -8,20 +8,24 @@ export QT_IM_MODULE=ibus
 SLEEP_FOR=0.02
 BYOBU_WS_NAME="ibrido_xbot"
 WS_ROOT="$HOME/ibrido_ws"
+DATA_ROOT="$HOME/training_data"
 WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
-WORKING_DIR_OTHER="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
+WORKING_DIR_QUAD="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
+WORKING_DIR_CENTAURO="$WS_ROOT/src/CentauroHybridMPC/CentauroHybridMPC/scripts"
 
 MAMBAENVNAME="${MAMBA_ENV_NAME}"
 
 config_file="$HOME/ibrido_files/training_cfgs/training_cfg.sh"
 
-# Array of directories
+# Main sources
 directories=(
-    "$WS_ROOT/src/KyonRLStepping"
     "$WS_ROOT/src/AugMPC"
-    "$WS_ROOT/src/MPCHive"
     "$WS_ROOT/src/AugMPCEnvs"
-    # Add more directories as needed
+    "$DATA_ROOT/AugMPCModels"
+    "$WS_ROOT/src/MPCHive"
+    "$WS_ROOT/src/KyonRLStepping"
+    "$WS_ROOT/src/CentauroHybridMPC"
+    "$WS_ROOT/src/MPCHive"
 )
 
 press_enter() {
@@ -333,15 +337,6 @@ clear_terminal
 prepare_command "reset && ./utilities/replay_bag.bash $HOME/training_data/{}"
 
 split_h
-execute_command "cd ${WORKING_DIR_OTHER}"
-activate_mamba_env
-execute_command "source /opt/ros/noetic/setup.bash"
-export ROS_MASTER_URI=$ROS_MASTER_URI
-export ROS_IP=$ROS_IP
-clear_terminal
-prepare_command "reset && python utilities/launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
-
-split_h
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 execute_command "source /opt/ros/noetic/setup.bash"
@@ -357,6 +352,24 @@ export ROS_MASTER_URI=$ROS_MASTER_URI
 export ROS_IP=$ROS_IP
 clear_terminal
 prepare_command "reset && roscore"
+
+split_h
+execute_command "cd ${WORKING_DIR_QUAD}"
+activate_mamba_env
+execute_command "source /opt/ros/noetic/setup.bash"
+export ROS_MASTER_URI=$ROS_MASTER_URI
+export ROS_IP=$ROS_IP
+clear_terminal
+prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --b2w"
+
+split_v
+execute_command "cd ${WORKING_DIR_CENTAURO}"
+activate_mamba_env
+execute_command "source /opt/ros/noetic/setup.bash"
+export ROS_MASTER_URI=$ROS_MASTER_URI
+export ROS_IP=$ROS_IP
+clear_terminal
+prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
 
 # tab2
 new_tab
