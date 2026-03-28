@@ -38,9 +38,9 @@ export EXPL_ENVS_PERC=0.0
 export ACTION_REPEAT=3
 export USE_SAC=1
 export USE_DUMMY=0
-export DISCOUNT_FACTOR=0.99
+export DISCOUNT_FACTOR=0.98
 export USE_PERIOD_RESETS=0
-export COMMENT='kyon real wheels CLOSED LOOP, 16392 bsize, UTD 4, NO entropy annhealing, 8-15cm steps, 25 steps, 0.6-1.5 step width, flight control (apex 0.35, end[+0.2], length [8, ...]), no yaw rate randomization, track/CoT (0.3 scale, 0.3 offset)/a rate' # any training comment
+export COMMENT='kyon02 wheels (no yaw) CLOSED LOOP, 16392 bsize, no self collide, self collide, UTD 4, NO entropy annhealing [-0.3, -0.5], 8-15cm steps, 25 steps, 0.6-1.5 step width, flight control (apex 0.35, end[+0.2], length [8, ...]), no yaw rate randomization, track/CoT [0.1, 0.]/a rate, max p 10 m' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-description/kyon_urdf/urdf/kyon.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-description/kyon_srdf/srdf/kyon.srdf.xacro" # base path where the description package for the robot are located
 export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_kyon_real_open.yaml" # path to yaml file for jnt imp configuration
@@ -49,7 +49,7 @@ if (( $IS_CLOSED_LOOP )); then
 fi
 
 export CLUSTER_CL_FNAME="kyonrlstepping.controllers.horizon_based.kyon_real_rhc_cluster_client" # base path where the description package for the robot are located
-export CLUSTER_DT=0.04
+export CLUSTER_DT=0.035
 export N_NODES=31
 export CLUSTER_DB=1
 export PHYSICS_DT=0.0005
@@ -68,7 +68,7 @@ export ENV_IDX_BAG_EXPL=-1
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/B2WRHClusterClient_${SHM_NS}/$SHM_NS.srdf" # base path where the description package for the robot are located
 export CUSTOM_ARGS_NAMES="step_height fix_yaw wheels fixed_flights adaptive_is lin_a_feedback closed_partial estimate_v_root use_jnt_v_feedback base_linkname self_collide rendering_dt" 
 export CUSTOM_ARGS_DTYPE="float bool xacro bool bool bool bool bool bool str bool float"
-export CUSTOM_ARGS_VALS="0.10 true true true true false true false false pelvis false 0.1" 
+export CUSTOM_ARGS_VALS="0.12 true true true true false true false false pelvis true 0.1" 
 
 # add perception/terrain specific args
 export CUSTOM_ARGS_NAMES+=" use_flat_ground ground_type enable_height_sensor height_sensor_pixels height_sensor_resolution enable_height_vis height_sensor_forward_offset height_sensor_lateral_offset"
