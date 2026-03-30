@@ -112,10 +112,13 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/unitree_ros.git*ibrido"
     "git@github.com:AndrePatri/iit-centauro-ros-pkg.git*ibrido_ros2"
     "git@github.com:AndrePatri/iit-dagana-ros-pkg.git*ibrido_ros2"
-    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros2_simple"
-    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros2&iit-kyon-description"
     "git@github.com:AndrePatri/casadi.git*optional_float"
     "git@github.com:c-rizz/adarl.git*ibrido"
+)
+
+IBRIDO_PRIV_GITDIRS=(
+    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros2_simple"
+    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros2&iit-kyon-description"
 )
 
 # model repositories stored under training_data
@@ -205,4 +208,30 @@ dir="$(echo -n "$dir" | xargs)"
 IBRIDO_GIT_SRC+=("$src")
 IBRIDO_GIT_BRCH+=("$branch")
 IBRIDO_GIT_DIR+=("$dir")
+done
+
+IBRIDO_PRIV_GIT_SRC=()
+IBRIDO_PRIV_GIT_BRCH=()
+IBRIDO_PRIV_GIT_DIR=()
+for entry in "${IBRIDO_PRIV_GITDIRS[@]}"; do
+IFS='*' read -r src rest <<< "$entry"
+
+
+branch_and_dir="$rest"
+branch="$branch_and_dir"
+dir=""
+
+
+if [[ "$branch_and_dir" == *'&'* ]]; then
+IFS='&' read -r branch dir <<< "$branch_and_dir"
+fi
+
+
+branch="$(echo -n "$branch" | xargs)"
+dir="$(echo -n "$dir" | xargs)"
+
+
+IBRIDO_PRIV_GIT_SRC+=("$src")
+IBRIDO_PRIV_GIT_BRCH+=("$branch")
+IBRIDO_PRIV_GIT_DIR+=("$dir")
 done

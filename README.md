@@ -33,6 +33,8 @@ IMPORTANT: On some systems, you may encounter errors or messages like "User not 
 - Navigate to `./ibrido_u*/singularity` and run `export IBRIDO_CONTAINERS_PREFIX=$PWD`
 - Run `setup_container.sh -i -b -stp`. The arguments will first clone all the framework repos on the host, build the container, and then set up the workspace together with a dedicated micromamba environment. Even though this process may take some time, it only needs to be run once. Additionally, all containers that use an IsaacSim image also need a `-ngc $MY_NGC_KEY` argument, where `MY_NGC_KEY` should be set to your [NVIDIA NGC API key](https://docs.nvidia.com/ngc/latest/ngc-user-guide.html#generating-api-key) to pull IsaacSim Docker images. The container will be dumped at `IBRIDO_CONTAINERS_PREFIX` with a `.sif` extension.
 
+Private robot-description repositories for Kyon are skipped by default during workspace initialization, so public users can still complete the setup. If you have access and want to attempt cloning them as well, run the setup script with `--with_private_gitdirs`. If cloning those repositories fails, the setup will only print which repositories are private and continue with the public workspace.
+
 Note that IBRIDO's workspace and code are cloned on the host, mounted within the container and setup from within it. The container also comes with a *ibrido* micromamba environment, shipped with all necessary dependencies, Torch included.
 
 ### 3) Run container and launch trainings/evaluations
@@ -80,6 +82,8 @@ $HOME/ibrido_ws/src/KyonRLStepping/kyonrlstepping/scripts/viz_bag.sh <path_to_ro
 ```
 
 The `viz_bag.sh` script automatically extracts the shared-memory namespace from the rosbag directory name and launches both bag replay and `launch_mpcviz.py`.
+
+At the moment, Kyon visualization and Kyon evaluations still depend on private robot-description repositories and are therefore not available to users without access. Centauro and B2W bag visualization through the public bundles remains available.
 
 To run an evaluation with a specific model:
 1. First make sure you have set up the container

@@ -83,14 +83,17 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/unitree_ros.git*ibrido"
     "git@github.com:AndrePatri/iit-centauro-ros-pkg.git*ibrido_ros1"
     "git@github.com:AndrePatri/iit-dagana-ros-pkg.git*ibrido_ros1"
-    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros1_simple"
-    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros1&iit-kyon-description"
     "git@github.com:AndrePatri/PerfSleep.git*main"
     "git@github.com:AndrePatri/casadi.git*optional_float"
     "git@github.com:c-rizz/adarl.git*ibrido"
     "git@github.com:c-rizz/adarl_ros.git*ibrido"
     "git@github.com:google/googletest.git*main"
     "git@github.com:ADVRHumanoids/robot_monitoring.git*v2.7.5"
+)
+
+IBRIDO_PRIV_GITDIRS=(
+    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros1_simple"
+    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros1&iit-kyon-description"
 )
 
 # model repositories stored under training_data
@@ -118,6 +121,54 @@ dir="$(echo -n "$dir" | xargs)"
 IBRIDO_MODEL_SRC+=("$src")
 IBRIDO_MODEL_BRCH+=("$branch")
 IBRIDO_MODEL_DIR+=("$dir")
+done
+
+IBRIDO_PRIV_GIT_SRC=()
+IBRIDO_PRIV_GIT_BRCH=()
+IBRIDO_PRIV_GIT_DIR=()
+for entry in "${IBRIDO_PRIV_GITDIRS[@]}"; do
+    IFS='*' read -r src rest <<< "$entry"
+
+    branch_and_dir="$rest"
+    branch="$branch_and_dir"
+    dir=""
+
+    if [[ "$branch_and_dir" == *'&'* ]]; then
+        IFS='&' read -r branch dir <<< "$branch_and_dir"
+    fi
+
+    branch="$(echo -n "$branch" | xargs)"
+    dir="$(echo -n "$dir" | xargs)"
+
+    if [ "$CONVERT_TO_HTTP" = true ]; then
+        converted="$src"
+        case "$src" in
+            git@github.com:*)
+                converted="https://github.com/${src#git@github.com:}"
+                ;;
+            git@gitlab.com:*)
+                converted="https://gitlab.com/${src#git@gitlab.com:}"
+                ;;
+            git@bitbucket.org:*)
+                converted="https://bitbucket.org/${src#git@bitbucket.org:}"
+                ;;
+            ssh://git@*)
+                host_and_path="${src#ssh://git@}"
+                converted="https://${host_and_path}"
+                ;;
+            http://*|https://*)
+                converted="$src"
+                ;;
+            *)
+                converted="$src"
+                ;;
+        esac
+        src="$converted"
+    fi
+
+    IBRIDO_PRIV_GIT_SRC+=("$src")
+    IBRIDO_PRIV_GIT_BRCH+=("$branch")
+    IBRIDO_PRIV_GIT_DIR+=("$dir")
 done
 
 # Concatenate
