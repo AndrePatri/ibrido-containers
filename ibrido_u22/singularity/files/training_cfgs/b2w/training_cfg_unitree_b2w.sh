@@ -4,8 +4,8 @@ export DET_EVAL=1
 export EVAL_ON_CPU=1
 export OVERRIDE_ENV=1
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/"
-export MNAME=""
+export MPATH="/root/training_data/AugMPCModels/bundles/b2w/d2026_03_28_h11_m11_s07-B2WPartialCloopWheels_FakePosTrackingEnv"
+export MNAME="d2026_03_28_h11_m11_s07-B2WPartialCloopWheels_FakePosTrackingEnv_model"
 
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
 export SHM_NS="unitree_b2w" # shared mem namespace used for all shared data on CPU 
