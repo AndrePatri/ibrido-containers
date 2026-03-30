@@ -11,7 +11,7 @@ WS_ROOT="$HOME/ibrido_ws"
 DATA_ROOT="$HOME/training_data"
 WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
 WORKING_DIR_QUAD="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
-WORKING_DIR_CENTAURO="$WS_ROOT/src/CentauroHybridMPC/CentauroHybridMPC/scripts"
+WORKING_DIR_CENTAURO="$WS_ROOT/src/CentauroHybridMPC/centaurohybridmpc/scripts"
 
 MAMBAENVNAME="${MAMBA_ENV_NAME}"
 
