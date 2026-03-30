@@ -3,7 +3,7 @@
 ### 0) Why not Docker?
 Even though Docker is a very popular choice, IBRIDO uses Apptainer. Why?
 
-Apptainer is designed for HPC environments, which usually do not allow Docker usage at all. It emphasizes integration with the host system (VS Docker's isolation), offers stronger security through non-privileged container execution, and easier integration with batch schedulers and parallel computing workflows.
+Apptainer is designed for HPC environments, which usually do not allow Docker usage at all. It emphasizes integration with the host system, as opposed to Docker's stronger isolation, and offers stronger security through non-privileged container execution together with easier integration with batch schedulers and parallel computing workflows.
 
 ### 1) Setting up Singularity (now Apptainer)
 First, you need to install Apptainer on your host system. Detailed installation instructions can be found [here](https://apptainer.org/docs/admin/main/installation.html).
@@ -31,13 +31,13 @@ IMPORTANT: On some systems, you may encounter errors or messages like "User not 
     - `./ibrido_u20/singularity`: this is a lighter container with Ubuntu 20 + MuJoCo (CPU) + [XBot2](https://advrhumanoids.github.io/xbot2/v2.12.0/index.html) + the IBRIDO framework + ROS1. This is intended for sim-to-sim and sim-to-real evaluations through the XMjSimEnv and RtDeploymentEnv world interfaces, respectively, and does not currently support vectorized environments. 
     - `./ibrido_u24/singularity`: same as `ibrido_u22`, but with Ubuntu 24 and the latest IsaacSim version (working, but integration with IBRIDO is WIP).
 - Navigate to `./ibrido_u*/singularity` and run `export IBRIDO_CONTAINERS_PREFIX=$PWD`
-- Run `setup_container.sh -i -b -stp`. The arguments will first clone all the framework repos on the host, build the container and then setup the workspace, as well as a dedicated micromamba environment. Note that even though this process make take so time, it only needs to be run once. Additionally, all containers which use an IsaacSim image will also need a `-ngc $MY_NGC_KEY` argument, where `MY_NGC_KEY` should be set to your [nvidia NGC api-key](https://docs.nvidia.com/ngc/latest/ngc-user-guide.html#generating-api-key) to be able to pull IsaacSim docker images. The container will be dumped at `IBRIDO_CONTAINERS_PREFIX` with a `.sif` extension.
+- Run `setup_container.sh -i -b -stp`. The arguments will first clone all the framework repos on the host, build the container, and then set up the workspace together with a dedicated micromamba environment. Even though this process may take some time, it only needs to be run once. Additionally, all containers that use an IsaacSim image also need a `-ngc $MY_NGC_KEY` argument, where `MY_NGC_KEY` should be set to your [NVIDIA NGC API key](https://docs.nvidia.com/ngc/latest/ngc-user-guide.html#generating-api-key) to pull IsaacSim Docker images. The container will be dumped at `IBRIDO_CONTAINERS_PREFIX` with a `.sif` extension.
 
 Note that IBRIDO's workspace and code are cloned on the host, mounted within the container and setup from within it. The container also comes with a *ibrido* micromamba environment, shipped with all necessary dependencies, Torch included.
 
 ### 3) Run container and launch trainings/evaluations
 - Navigate to the root folder corresponding to your chosen container (e.g. `./ibrido_u22/singularity`) and then run `export IBRIDO_CONTAINERS_PREFIX=$PWD`, if not already done.
-- There are two ways to run the containers, an *interactive* and *detached* move:
+- There are two ways to run the containers, an *interactive* and a *detached* mode:
     - For the interactive mode run:
         - `./run_interactive.sh`: you're now inside the container
         - `launch_byobu_ws.sh --cfg /root/ibrido_files/training_cfgs/$MY_CFG_FILE_PATH`: this will launch a [Byobu](https://www.byobu.org/) workspace (may take a couple of seconds) with multiple windows and all the necessary commands already preloaded on the right terminals. Commands are loaded based on the provided `MY_CFG_FILE_PATH` file, for instance `MY_CFG_FILE_PATH=centauro/training_cfg_centauro_cloop.sh`. The interactive mode is mainly useful for running single-environment evaluations and testing/developing the framework. 
@@ -47,11 +47,45 @@ Note that IBRIDO's workspace and code are cloned on the host, mounted within the
 ### 4) Demo examples: public models
 Public AugMPC bundles (models + configuration files) are stored at [AugMPCModels](https://huggingface.co/AndrePatri/AugMPCModels). During workspace initialization, this repository is cloned under the host-side `training_data/` folder and mounted inside the container at `/root/training_data`.
 
-To run a specific model:
+You can quickly visualize the behavior stored in a public bundle without launching a simulation. Each bundle also contains a ROS2 bag recorded near the end of training; some trajectories may appear noisy because the training policy is stochastic.
+
+To replay a bag and launch the MPC visualizer:
+1. Start an interactive container session with `./run_interactive.sh` followed by `launch_byobu_ws.sh`.
+2. In any shell where ROS2 and the workspace are sourced, select a bundle bag. For example, `$HOME/training_data/AugMPCModels/bundles/centauro/d2026_02_21_h14_m01_s10-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv/rosbag_centauro_big_wheels_ub_2026_02_21_13_59_20_ID_2026-02-22_10-51-13_5`
+3. Launch the robot-specific visualization script:
+
+For Centauro:
+
+```bash
+$HOME/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/scripts/viz_bag.sh \
+  $HOME/training_data/AugMPCModels/bundles/centauro/d2026_02_21_h14_m01_s10-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv/rosbag_centauro_big_wheels_ub_2026_02_21_13_59_20_ID_2026-02-22_10-51-13_5
+```
+
+For Kyon with wheels:
+
+```bash
+$HOME/ibrido_ws/src/KyonRLStepping/kyonrlstepping/scripts/viz_bag.sh <path_to_rosbag>
+```
+
+For Kyon legged:
+
+```bash
+$HOME/ibrido_ws/src/KyonRLStepping/kyonrlstepping/scripts/viz_bag.sh <path_to_rosbag> --legged
+```
+
+For B2W:
+
+```bash
+$HOME/ibrido_ws/src/KyonRLStepping/kyonrlstepping/scripts/viz_bag.sh <path_to_rosbag> --b2w
+```
+
+The `viz_bag.sh` script automatically extracts the shared-memory namespace from the rosbag directory name and launches both bag replay and `launch_mpcviz.py`.
+
+To run an evaluation with a specific model:
 1. First make sure you have set up the container
 2. Pick the desired container : for instance, `ibrido-containers/ibrido_u22` to use IsaacSim (and potentially multiple environments), `ibrido-containers/ibrido_u20` for "cheap" single environment transfer evaluations on MujoCo. 
 3. Pick a matching configuration file associated with the target model and robot under `ibrido-containers/ibrido_u*/singularity/files/training_cfgs/<robot_name>/`; configs for the same robot may change crucial MPC parameters, so it's important that this matches the one used during training.
-3. configure the config to load the chosen model bundle by modyfing these variables:
+4. Configure the config to load the chosen model bundle by modifying these variables:
 
 ```bash
 export EVAL=1 # run framework in eval mode
@@ -78,9 +112,11 @@ export MNAME="d2026_03_07_h19_m22_s30-CentauroCloopPartialNoYawUb_FakePosTrackin
 You can run ablation studies by executing `./execute_ablation.sh --cfg $MY_CFG_PATH`, where `MY_CFG_PATH` should be a valid relative directory path within the `ibrido_u*/singularity/files/training_cfgs/ablations/` folder, for instance `ablation_centauro_act_repeat_closed`. This will sequentially run a training for each config file found within `MY_CFG_PATH`.
 
 ### 6) Additional usage notes and HOWTOs
-- Framework code, data, libraries, logs, etc...: everything will by default be located *on the HOST* at `$HOME/work/containers/$CONTAINER_NAME/`. You can change this location by editing the `BASE_FOLDER` variable in `$IBRIDO_CONTAINERS_PREFIX/files/bind_list.sh`.
+- Framework code, data, libraries, logs, etc.: everything will by default be located *on the HOST* at `$HOME/work/containers/$CONTAINER_NAME/`. You can change this location by editing the `BASE_FOLDER` variable in `$IBRIDO_CONTAINERS_PREFIX/files/bind_list.sh`.
 
-- Shared memory *namespace*: one -- if not the most -- important argument to the whole framework, is the `--ns` (`SHM_NS` in the config files). You'll notice all scripts will have at least this argument exposed. This is a unique namespace employed by all shared memory components and allows for safe and efficient communication between all the framework's components. This also means that multiple independent containers can run concurrently without issues, as long as a different namespace was set in the configuration files. It is also possible to launch an instance of the framework in *detached* mode on the host and then connect to it afterwards by launching a new interactive session with the same namespace. In this case, just run components of IBRIDO which are NOT already running in the detached instance.
+- Shared memory *namespace*: `--ns` (`SHM_NS` in the config files) is one of the most important arguments in the whole framework. All core scripts expose it. It identifies the shared-memory resources used by the framework and allows safe, efficient communication between components.
+
+- Because the namespace isolates shared-memory resources, multiple independent containers can run concurrently as long as each uses a different namespace. It is also possible to launch an instance of the framework in *detached* mode on the host and then connect to it afterwards by launching a new interactive session with the same namespace. In that case, only start IBRIDO components that are not already running in the detached instance.
 
 - When launching a training job on a remote server, it is often useful to run it as a background process and maintain the ability to reconnect to it at any time. To achieve this, we recommend starting the container inside a Byobu session on the host machine (e.g. `byobu new-session -n my_new_byobu_session`). This ensures that the session remains active even if your terminal disconnects. If you need to nest multiple Byobu sessions, note that you should press `Shift+F12` in the outer (root) session to disable its function keys, allowing the nested session to receive them properly.
 
