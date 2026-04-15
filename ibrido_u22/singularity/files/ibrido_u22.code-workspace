@@ -1,0 +1,50 @@
+// VS Code workspace for an Apptainer + micromamba + install-space development workflow.
+{
+  "folders": [
+    {
+      // This file is meant to live in singularity/files and open the host-mounted workspace under $HOME/work.
+      "path": "../../../../work/containers/ibrido-singularity/ibrido_ws"
+    }
+  ],
+  "settings": {
+    // Use the micromamba/mamba interpreter for this workspace.
+    // Container inspection shows the env is named "ibrido". Update this path if the env uses a different prefix layout.
+    "python.defaultInterpreterPath": "${workspaceFolder}/../conda/envs/ibrido/bin/python",
+
+    // These paths are for Pylance import resolution only, especially for generated bindings,
+    // install-space packages, and other non-standard package roots.
+    "python.analysis.extraPaths": [
+      // Source tree imports from editable packages in the workspace.
+      "${workspaceFolder}/src",
+      // Install-space Python packages usually live under python3.x/site-packages.
+      "${workspaceFolder}/install/lib/python3.10/site-packages",
+      // The container setup also exports this ROS-style install root when present.
+      "${workspaceFolder}/install/lib/python3/dist-packages",
+      // phase_manager keeps pure Python modules outside the standard editable package roots.
+      "${workspaceFolder}/src/phase_manager/python",
+      // Generated phase_manager bindings are built here.
+      "${workspaceFolder}/build/phase_manager/bindings/python",
+      // EigenIPC exposes PyEigenIPC from this generated bindings root.
+      "${workspaceFolder}/build/EigenIPC/bindings"
+    ],
+
+    // Improve analysis for packages installed with pip install -e .
+    "python.analysis.enableEditableInstalls": true,
+    // Surface auto-import suggestions from indexed project libraries.
+    "python.analysis.autoImportCompletions": true,
+    // Fall back to library source when stub coverage is incomplete.
+    "python.analysis.useLibraryCodeForTypes": true,
+    // Index the workspace for faster symbol and import discovery.
+    "python.analysis.indexing": true,
+    // Auto-activate the selected Python environment in the integrated terminal.
+    "python.terminal.activateEnvironment": true,
+    // Load project-local environment variables when present.
+    "python.envFile": "${workspaceFolder}/.env"
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-python.python",
+      "ms-python.vscode-pylance"
+    ]
+  }
+}
