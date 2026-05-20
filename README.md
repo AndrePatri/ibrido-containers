@@ -46,6 +46,30 @@ Note that IBRIDO's workspace and code are cloned on the host, mounted within the
     - For the detached mode run:
         - `./execute.sh --cfg $MY_CFG_FILE_PATH`, where `MY_CFG_FILE_PATH` should be a valid relative config path within the `ibrido_u*/singularity/files/training_cfgs/` folder. This is the preferred mode to run training on remote servers. It will launch all the core components of IBRIDO (world, MPC cluster and training scripts) and automatically start the training. Logs for each of the components are dumped separately at `$HOME/ibrido_logs/ibrido_run_$UNIQUE_ID`.
 
+### 3.1) Develop inside the container with VS Code Desktop
+The container utilities provide a VS Code Remote-SSH helper so that code navigation, Pylance analysis and terminals run inside the same Apptainer environment used by IBRIDO. This is the recommended way to browse and develop the framework from VS Code, because the workspace sees the container paths, the `ibrido` micromamba environment and the editable package installs.
+
+After the normal setup has completed, run:
+
+```bash
+cd ibrido_u**/singularity
+export IBRIDO_CONTAINERS_PREFIX=$PWD
+./launch_vscode_ssh_ws.sh
+```
+
+The launcher starts an SSH server inside the container on `127.0.0.1`, installs the generated `ibrido-u**` host alias in `~/.ssh/config`, ensures the local Remote-SSH extension plus the remote Python and Pylance extensions are installed, and opens `files/ibrido_u**.code-workspace` through VS Code Desktop. The workspace is defined from the container point of view, with `/root/ibrido_ws` as the project folder and `/opt/conda/envs/ibrido/bin/python` as the interpreter.
+
+Useful development commands:
+
+```bash
+./launch_vscode_ssh_ws.sh --status        # check whether the container SSH endpoint is running
+./launch_vscode_ssh_ws.sh --kill          # stop the container SSH endpoint
+./launch_vscode_ssh_ws.sh --no-open-code  # start/check SSH without opening VS Code
+./launch_vscode_ssh_ws.sh --check         # validate the generated sshd config inside the container
+```
+
+Use `--no-install-extensions` if you want to manage VS Code extensions manually.
+
 ### 4) Demo examples: public models
 Public AugMPC bundles (models + configuration files) are stored at [AugMPCModels](https://huggingface.co/AndrePatri/AugMPCModels). During workspace initialization, this repository is cloned under the host-side `training_data/` folder and mounted inside the container at `/root/training_data`.
 

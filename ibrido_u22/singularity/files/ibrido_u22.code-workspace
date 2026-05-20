@@ -1,15 +1,16 @@
-// VS Code workspace for an Apptainer + micromamba + install-space development workflow.
+// VS Code workspace for the IBRIDO U22 Apptainer Remote-SSH workflow.
+// This file is intended to be opened through launch_vscode_ssh_ws.sh, which
+// opens it from inside the container via Remote-SSH.
 {
   "folders": [
     {
-      // This file is meant to live in singularity/files and open the host-mounted workspace under $HOME/work.
-      "path": "../../../../work/containers/ibrido-singularity/ibrido_ws"
+      "name": "ibrido_ws (U22 container)",
+      "path": "/root/ibrido_ws"
     }
   ],
   "settings": {
-    // Use the micromamba/mamba interpreter for this workspace.
-    // Container inspection shows the env is named "ibrido". Update this path if the env uses a different prefix layout.
-    "python.defaultInterpreterPath": "${workspaceFolder}/../conda/envs/ibrido/bin/python",
+    // Remote-SSH runs Pylance in the container, so these are container paths.
+    "python.defaultInterpreterPath": "/opt/conda/envs/ibrido/bin/python",
 
     // These paths are for Pylance import resolution only, especially for generated bindings,
     // install-space packages, and other non-standard package roots.
@@ -37,9 +38,7 @@
     // Index the workspace for faster symbol and import discovery.
     "python.analysis.indexing": true,
     // Auto-activate the selected Python environment in the integrated terminal.
-    "python.terminal.activateEnvironment": true,
-    // Load project-local environment variables when present.
-    "python.envFile": "${workspaceFolder}/.env"
+    "python.terminal.activateEnvironment": true
   },
   "extensions": {
     "recommendations": [
