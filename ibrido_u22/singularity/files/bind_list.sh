@@ -115,6 +115,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/iit-dagana-ros-pkg.git*ibrido_ros2"
     "git@github.com:AndrePatri/casadi.git*optional_float"
     "git@github.com:c-rizz/adarl.git*ibrido"
+    "git@github.com:AndrePatri/talos-description.git*humble-devel"
 )
 
 IBRIDO_PRIV_GITDIRS=(
