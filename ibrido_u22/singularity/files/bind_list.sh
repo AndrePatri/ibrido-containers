@@ -63,6 +63,7 @@ IBRIDO_BDIRS=(
     "${IBRIDO_WS_PREFIX}:/root/ibrido_ws:rw"
     "${IBRIDO_CONDA}:/opt/conda:rw"
     "${IBRIDO_PREFIX}/conda_hidden/.conda:/root/.conda:rw"
+    "${IBRIDO_PREFIX}/.cache/conda:/root/.cache/conda:rw"
     "${IBRIDO_PREFIX}/.cache/wandb:/root/.cache/wandb:rw"
     "${IBRIDO_PREFIX}/.byobu:/root/.byobu:rw"
     "${IBRIDO_PREFIX}/.ros:/root/.ros:rw"
