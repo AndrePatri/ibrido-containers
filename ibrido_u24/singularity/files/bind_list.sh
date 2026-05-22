@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$IBRIDO_CONTAINERS_PREFIX" ]; then
-    echo "IBRIDO_CONTAINERS_PREFIX variable has not been seen. Please set it to \${path_to_ibrido-containers}/ibrido_24/singularity."
+    echo "IBRIDO_CONTAINERS_PREFIX variable has not been seen. Please set it to \${path_to_ibrido-containers}/ibrido_u24/singularity."
     exit 1
 fi
 
@@ -63,6 +63,7 @@ IBRIDO_BDIRS=(
     "${IBRIDO_WS_PREFIX}:/root/ibrido_ws:rw"
     "${IBRIDO_CONDA}:/opt/conda:rw"
     "${IBRIDO_PREFIX}/conda_hidden/.conda:/root/.conda:rw"
+    "${IBRIDO_PREFIX}/.cache/conda:/root/.cache/conda:rw"
     "${IBRIDO_PREFIX}/.cache/wandb:/root/.cache/wandb:rw"
     "${IBRIDO_PREFIX}/.byobu:/root/.byobu:rw"
     "${IBRIDO_PREFIX}/.ros:/root/.ros:rw"
@@ -70,11 +71,12 @@ IBRIDO_BDIRS=(
     "${IBRIDO_PREFIX}/.mamba:/root/.mamba:rw"
 )
 
-# Only add these bindings if PBS is NOT available (when runnin on cluster
+# Only add these bindings if PBS and SLURM are NOT available (when running on a cluster
 # we don't need user input)
-if [ "$IS_PBS_AVAILABLE" = false ]; then
+if [ "$IS_PBS_AVAILABLE" != true ] && [ "$IS_SLURM_AVAILABLE" != true ]; then
     IBRIDO_BDIRS+=(
-        "/dev/input:/dev/input:rw"
+        # "/dev/input:/dev/input:rw"
+        # "/run/udev:/run/udev:ro"
         "/tmp/.X11-unix:/tmp/.X11-unix"
         "/run/user:/run/user"
     )
@@ -105,15 +107,19 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/MPCViz.git*ros2_jazzy"
     "git@github.com:ADVRHumanoids/KyonRLStepping.git*ibrido"
     "git@github.com:ADVRHumanoids/CentauroHybridMPC.git*ibrido"
+    "git@github.com:ADVRHumanoids/TalosHybridMPC.git*main"
     "git@github.com:AndrePatri/horizon.git*ibrido"
-    "git@github.com:AndrePatri/casadi_kin_dyn.git*ibrido"
     "git@github.com:AndrePatri/phase_manager.git*ibrido"
     "git@github.com:AndrePatri/unitree_ros.git*ibrido"
     "git@github.com:AndrePatri/iit-centauro-ros-pkg.git*ibrido_ros2"
+    "git@github.com:AndrePatri/iit-dagana-ros-pkg.git*ibrido_ros2"
+    "git@github.com:AndrePatri/talos-description.git*ibrido_ros2"
+    "git@github.com:AndrePatri/pal_urdf_utils.git*ibrido_ros2"
     "git@github.com:AndrePatri/casadi.git*optional_float"
-    "git@gitlab.com:crzz/adarl.git*andrepatri_dev"
-    "git@github.com:AndrePatri/PerfSleep.git*main"
-    # "git@github.com:ros/xacro.git*ros2"
+    "git@github.com:c-rizz/adarl.git*crzz-dev"
+    "git@github.com:ADVRHumanoids/xbot2_zmq.git*crzz-dev"
+    "git@github.com:AndrePatri/xbot2_mujoco.git*ibrido"
+    "git@github.com:AndrePatri/mujoco_cmake.git*ibrido"
     "git@github.com:google/googletest.git*main"
 )
 
@@ -175,7 +181,7 @@ done
 # for entry in "${IBRIDO_GITDIRS[@]}"; do
 #     # Split entry based on colon
 #     IFS='*' read -r src branch <<< "$entry"
-    
+
 #     # Add to respective arrays
 #     IBRIDO_GIT_SRC+=("$src")
 #     IBRIDO_GIT_BRCH+=("$branch")

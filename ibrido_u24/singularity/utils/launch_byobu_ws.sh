@@ -12,26 +12,38 @@ export XMODIFIERS=@im=ibus
 export GTK_IM_MODULE=ibus
 export QT_IM_MODULE=ibus
 
+CONTAINER_HOME="${IBRIDO_CONTAINER_HOME:-/root}"
+if [ -d "${CONTAINER_HOME}/ibrido_ws" ]; then
+    export HOME="${CONTAINER_HOME}"
+fi
+
+export BYOBU_CONFIG_DIR="${HOME}/.byobu"
+export BYOBU_RUN_DIR="/tmp/byobu-${USER:-ibrido}"
+mkdir -p "${BYOBU_CONFIG_DIR}/bin" "${BYOBU_RUN_DIR}"
+
 SLEEP_FOR=0.02
 BYOBU_WS_NAME="ibrido_isaac_5x"
 WS_ROOT="$HOME/ibrido_ws"
+DATA_ROOT="$HOME/training_data"
 WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
-WORKING_DIR_OTHER="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
+WORKING_DIR_QUAD="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
+WORKING_DIR_CENTAURO="$WS_ROOT/src/CentauroHybridMPC/centaurohybridmpc/scripts"
 
-export BYOBU_CONFIG_DIR=$HOME/.config
-
-N_FILES=28672 # to allow more open files (for semaphores/mutexes etc..)
+MAMBAENVNAME="${MAMBA_ENV_NAME}"
+MAMBAENVNAME_ISAAC="${MAMBA_ENV_NAME_ISAAC}"
 
 # Default configuration file
 config_file="$HOME/ibrido_files/training_cfg.sh"
 
-# Array of directories
+# Main sources
 directories=(
-    "$WS_ROOT/src/KyonRLStepping"
     "$WS_ROOT/src/AugMPC"
-    "$WS_ROOT/src/MPCHive"
     "$WS_ROOT/src/AugMPCEnvs"
-    # Add more directories as needed
+    "$DATA_ROOT/AugMPCModels"
+    "$WS_ROOT/src/MPCHive"
+    "$WS_ROOT/src/KyonRLStepping"
+    "$WS_ROOT/src/CentauroHybridMPC"
+    "$WS_ROOT/src/MPCHive"
 )
 
 press_enter() {
@@ -67,21 +79,21 @@ go_to_window() {
 
 attach_to_session() {
 
-    byobu attach-session -t ${BYOBU_WS_NAME} 
+    byobu attach-session -t ${BYOBU_WS_NAME}
 
 }
 
 activate_mamba_env() {
 
     execute_command "eval \"\$(micromamba shell hook --shell bash)\""
-    execute_command "micromamba activate ${MAMBA_ENV_NAME}"
+    execute_command "micromamba activate ${MAMBAENVNAME}"
 
 }
 
-activate_mamba_env_isaacpy11() {
+activate_mamba_env_isaac() {
 
     execute_command "eval \"\$(micromamba shell hook --shell bash)\""
-    execute_command "micromamba activate ${MAMBA_ENV_NAME_ISAAC}"
+    execute_command "micromamba activate ${MAMBAENVNAME_ISAAC}"
 
 }
 
@@ -101,13 +113,13 @@ increase_file_limits_locally() {
 
 split_h() {
 
-    byobu split-window -v
+    byobu split-window -v -l 50%
 
 }
 
 split_v() {
 
-    byobu split-window -h
+    byobu split-window -h -l 50%
 
 }
 
@@ -121,10 +133,10 @@ new_tab() {
 cd_and_split() {
 
     execute_command "cd $1"
-    
+
     # Check if it's the last directory before splitting
     if [ "$1" != "${directories[-1]}" ]; then
-    
+
         split_h
 
     fi
@@ -148,7 +160,9 @@ fi
 
 echo "Will preload script cmds from $config_file"
 
-# clear tmp folder 
+N_FILES=$ULIM_N # to allow more open files (for semaphores/mutexes etc..)
+
+# clear tmp folder
 # rm -r /tmp/*
 
 # launch terminator window
@@ -158,25 +172,30 @@ byobu new-session -d -s ${BYOBU_WS_NAME} -c ${WORKING_DIR} -n ${BYOBU_WS_NAME} #
 
 # tab 0
 execute_command "cd ${WORKING_DIR}"
-activate_mamba_env_isaacpy11 # we need the conda env with python 3.11 for isaac sim
+activate_mamba_env_isaac
 #execute_command "source ~/.local/share/ov/pkg/isaac_sim-2023.1.1/setup_conda_env.sh"
 execute_command "source /isaac-sim/setup_conda_env.sh"
 execute_command "source $WS_ROOT/setup.bash"
-increase_file_limits_locally 
-remote_env_cmd="--headless --use_gpu  --robot_name $SHM_NS \
+execute_command "export EXP_PATH=/isaac-sim/apps"
+increase_file_limits_locally
+remote_env_cmd="--headless --robot_name $SHM_NS \
 --urdf_path $URDF_PATH --srdf_path  $SRDF_PATH \
 --use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH \
 --cluster_dt $CLUSTER_DT \
 --physics_dt $PHYSICS_DT \
+--n_contacts ${N_CONTACTS:-4} \
 --num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
---env_fname "aug_mpc_envs.envs.isaac5x_env" \
+--world_iface_fname aug_mpc_envs.world_interfaces.isaac5x_world_interface \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
 --custom_args_vals $CUSTOM_ARGS_VALS "
 if (( $REMOTE_STEPPING )); then
 remote_env_cmd+="--remote_stepping "
-fi 
-prepare_command "reset && python launch_remote_env.py $remote_env_cmd"
+fi
+if (( $USE_GPU_SIM )); then
+remote_env_cmd+="--use_gpu "
+fi
+prepare_command "reset && python launch_world_interface.py $remote_env_cmd"
 
 split_v
 execute_command "cd ${WORKING_DIR}"
@@ -203,30 +222,31 @@ split_h
 execute_command "cd $WORKING_DIR"
 activate_mamba_env
 increase_file_limits_locally
-prepare_command "reset && python launch_GUI.py --ns $SHM_NS"
-
-split_h
-execute_command "cd $WORKING_DIR"
-activate_mamba_env
-increase_file_limits_locally
-prepare_command "reset && python launch_rhc_keybrd_cmds.py --ns $SHM_NS"
-
-split_h
-execute_command "cd $WORKING_DIR"
-activate_mamba_env
-increase_file_limits_locally
-prepare_command "reset && python launch_agent_keybrd_cmds.py --ns $SHM_NS"
-
-go_to_pane 0 
+prepare_command "reset && python utilities/launch_GUI.py --ns $SHM_NS"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 increase_file_limits_locally
-export EXP_PATH="$HOME/ibrido_files" # used by isaac sim for extensions loading
+clear_terminal
+prepare_command "reset && python utilities/launch_rhc_keybrd_cmds.py --ns $SHM_NS --env_idx 0 --from_stdin --add_remote_exit --joy"
+
+split_h
+execute_command "cd ${WORKING_DIR}"
+activate_mamba_env
+increase_file_limits_locally
+clear_terminal
+prepare_command "reset && python utilities/launch_agent_keybrd_cmds.py --ns $SHM_NS --env_idx 0 --agent_refs_world --from_stdin --add_remote_exit --joy"
+
+go_to_pane 0
+
+split_h
+execute_command "cd ${WORKING_DIR}"
+activate_mamba_env
+increase_file_limits_locally
 training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data \
---db --env_db --rmdb \
 --seed $SEED --timeout_ms $TIMEOUT_MS \
+--reset_on_init \
 --env_fname $TRAIN_ENV_FNAME --env_classname $TRAIN_ENV_CNAME \
 --demo_stop_thresh $DEMO_STOP_THRESH  \
 --actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH \
@@ -237,10 +257,18 @@ training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data
 --action_repeat $ACTION_REPEAT \
 --compression_ratio $COMPRESSION_RATIO \
 --discount_factor $DISCOUNT_FACTOR "
-if (( $USE_SAC )); then
+if (( $USE_DUMMY )); then
+training_env_cmd+="--dummy "
+elif (( $USE_SAC )); then
 training_env_cmd+="--sac "
 fi
-if (( $DUMP_ENV_CHECKPOINTS )); then
+if (( $DEBUG )); then
+training_env_cmd+="--db --env_db "
+fi
+if (( $RMDEBUG )); then
+training_env_cmd+="--rmdb "
+fi
+if (( $DUMP_ENV_CHECKPOINTS )) && (( $DEBUG )); then
 training_env_cmd+="--full_env_db "
 fi
 if (( $USE_RND )); then
@@ -270,6 +298,13 @@ fi
 if [[ -n "$RNAME" ]]; then
     training_env_cmd+="--run_name ${RNAME}_${TRAIN_ENV_CNAME} "
 fi
+if (( $RESUME )); then
+  # resume previous training
+  training_env_cmd+="--resume --mpath $MPATH --mname $MNAME "
+  if (( $OVERRIDE_ENV )); then
+  training_env_cmd+="--override_env "
+  fi
+fi
 if (( $EVAL )); then
   # adding options if in eval mode
   training_env_cmd+="--eval --n_eval_timesteps $TOT_STEPS --mpath $MPATH --mname $MNAME "
@@ -286,6 +321,7 @@ if (( $EVAL )); then
   training_env_cmd+="--override_agent_refs "
   fi
 fi
+
 prepare_command "reset && python launch_train_env.py $training_env_cmd --comment \"$COMMENT\""
 
 split_h
@@ -295,8 +331,8 @@ execute_command "source /opt/ros/jazzy/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
-prepare_command "reset && python launch_rhc2ros_bridge.py --ros2 --rhc_refs_in_h_frame \
---ns $SHM_NS --with_agent_refs --no_rhc_internal"
+prepare_command "reset && python utilities/launch_rhc2rviz_bridge.py --ros2 --rhc_refs_in_h_frame \
+--ns $SHM_NS --with_agent_refs --no_rhc_internal $( (( PUB_HEIGHTMAP )) && echo --show_heightmap )"
 
 split_h
 execute_command "cd ${WORKING_DIR}"
@@ -305,51 +341,38 @@ execute_command "source /opt/ros/jazzy/setup.bash"
 execute_command "source $WS_ROOT/setup.bash"
 activate_mamba_env
 increase_file_limits_locally
-prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir \
+prepare_command "reset && python utilities/launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir \
 --pub_stime \
 --ns $SHM_NS --rhc_refs_in_h_frame \
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG \
---srdf_path $SRDF_PATH_ROSBAG --with_agent_refs --no_rhc_internal"
-
-split_h
-execute_command "cd ${WORKING_DIR}"
-# execute_command "source /opt/ros/noetic/setup.bash"
-execute_command "source /opt/ros/jazzy/setup.bash"
-execute_command "source $WS_ROOT/setup.bash"
-activate_mamba_env
-increase_file_limits_locally
-prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir \
---ns $SHM_NS --remap_ns "${SHM_NS}_expl" \
---rhc_refs_in_h_frame \
---bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_EXPL \
---srdf_path $SRDF_PATH_ROSBAG --with_agent_refs --no_rhc_internal"
-
-split_v
-execute_command "cd ${WORKING_DIR}"
-# execute_command "source /opt/ros/noetic/setup.bash"
-execute_command "source /opt/ros/jazzy/setup.bash"
-execute_command "source $WS_ROOT/setup.bash"
-activate_mamba_env
-increase_file_limits_locally
-prepare_command "reset && python launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir \
---ns $SHM_NS --remap_ns "${SHM_NS}_demo" \
---rhc_refs_in_h_frame \
---bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_DEMO \
---srdf_path $SRDF_PATH_ROSBAG --with_agent_refs --no_rhc_internal"
+--srdf_path $SRDF_PATH_ROSBAG --with_agent_refs --no_rhc_internal $( (( PUB_HEIGHTMAP )) && echo --show_heightmap )"
 
 # tab 1
 new_tab
 execute_command "cd ${WORKING_DIR}"
 activate_mamba_env
 execute_command "source /opt/ros/jazzy/setup.bash"
-prepare_command "reset && ./replay_bag.bash ~/training_data/{}"
+prepare_command "reset && ./utilities/replay_bag.bash ~/training_data/{}"
 
 split_h
-execute_command "cd ${WORKING_DIR_OTHER}"
-# execute_command "source /opt/ros/noetic/setup.bash"
+execute_command "cd ${WORKING_DIR_QUAD}"
 activate_mamba_env
 execute_command "source /opt/ros/jazzy/setup.bash"
-prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
+if (( PUB_HEIGHTMAP )); then
+    prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --show_heightmap --b2w"
+else
+    prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --b2w"
+fi
+
+split_v
+execute_command "cd ${WORKING_DIR_CENTAURO}"
+activate_mamba_env
+execute_command "source /opt/ros/jazzy/setup.bash"
+if (( PUB_HEIGHTMAP )); then
+    prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --show_heightmap"
+else
+    prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
+fi
 
 # tab2
 new_tab
@@ -359,13 +382,13 @@ split_h
 execute_command "cd ${WORKING_DIR}"
 execute_command "nvtop"
 
-# tab 3
-new_tab
+# # tab 3
+# new_tab
 
-# Loop through directories and navigate to each one
-for dir in "${directories[@]}"; do
-    cd_and_split "$dir"
-done
+# # Loop through directories and navigate to each one
+# for dir in "${directories[@]}"; do
+#     cd_and_split "$dir"
+# done
 
 # we attach to the detached session
 attach_to_session

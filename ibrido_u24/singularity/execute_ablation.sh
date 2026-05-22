@@ -3,20 +3,25 @@
 
 # Check if IBRIDO_CONTAINERS_PREFIX is set
 if [ -z "$IBRIDO_CONTAINERS_PREFIX" ]; then
-    echo "IBRIDO_CONTAINERS_PREFIX variable has not been set. Please set it to \${path_to_ibrido-containers}/ibrido_22/singularity."
+    echo "IBRIDO_CONTAINERS_PREFIX variable has not been set. Please set it to \${path_to_ibrido-containers}/ibrido_u24/singularity."
     exit 1
 fi
 
 # Check if --cfg_dir is provided and is a valid directory
-if [ -z "$1" ]; then
-    echo "Please provide the --cfg_dir argument."
+if [ "$1" != "--cfg_dir" ] || [ -z "$2" ]; then
+    echo "Usage: $0 --cfg_dir <ablation_dir>"
     exit 1
 fi
 
 # Find the directory where the current script is located
 script_dir=$(dirname "$0")
 
-cfg_dir="$script_dir/files/training_cfgs/$2"
+cfg_rel="$2"
+if [[ "$cfg_rel" != ablations/* ]]; then
+    cfg_rel="ablations/$cfg_rel"
+fi
+
+cfg_dir="$script_dir/files/training_cfgs/$cfg_rel"
 
 if [ ! -d "$cfg_dir" ]; then
     echo "The directory $cfg_dir is not valid. Please provide a valid directory."
@@ -45,6 +50,6 @@ for file in "${cfg_files[@]}"; do
     # Use basename to strip the path and only print the file name
     file_name=$(basename "$file")
     # Run the ./execute command with the configuration file name
-    "$script_dir/execute.sh" --cfg "${2}/${file_name}"
+    "$script_dir/execute.sh" --cfg "${cfg_rel}/${file_name}"
 done
 echo "Ablation study completed."

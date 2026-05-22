@@ -48,14 +48,11 @@ else
     exit 1
 fi
 
-# clear tmp folder 
+# clear tmp folder
 # rm -r /tmp/*
 
 # activate micromamba for this shell
 eval "$(micromamba shell hook --shell bash)"
-
-source /isaac-sim/setup_conda_env.sh
-source $HOME/ibrido_ws/setup.bash
 
 #!/bin/bash
 
@@ -64,10 +61,11 @@ base_log_dir="${HOME}/ibrido_logs/ibrido_run_${unique_id}"
 mkdir -p "$base_log_dir"
 cp $config_file "${base_log_dir}/"
 
-log_world="${base_log_dir}/ibrido_world_interface${RUN_NAME}_${unique_id}.log"
-log_cluster="${base_log_dir}/ibrido_mpc_cluster_${RUN_NAME}_${unique_id}.log"
-log_train="${base_log_dir}/ibrido_training_env_${RUN_NAME}_${unique_id}.log"
-log_bag="${base_log_dir}/ibrido_rosbag_env_${RUN_NAME}_${unique_id}.log"
+run_label="${RUN_NAME:-${RNAME:-IbridoRun}}"
+log_world="${base_log_dir}/ibrido_world_interface_${run_label}_${unique_id}.log"
+log_cluster="${base_log_dir}/ibrido_mpc_cluster_${run_label}_${unique_id}.log"
+log_train="${base_log_dir}/ibrido_training_env_${run_label}_${unique_id}.log"
+log_bag="${base_log_dir}/ibrido_rosbag_env_${run_label}_${unique_id}.log"
 
 # Ensure the log directory exists
 
@@ -84,7 +82,7 @@ if (( $SET_ULIM )); then
   ulimit -n $ULIM_N
 fi
 
-SHM_NS+="${unique_id}" # appending unique string to actual shm namespace 
+SHM_NS+="${unique_id}" # appending unique string to actual shm namespace
 echo "Will use shared memory namespace ${SHM_NS}"
 
 # remote env
@@ -93,21 +91,25 @@ remote_env_cmd="--headless --robot_name $SHM_NS \
 --use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH \
 --cluster_dt $CLUSTER_DT \
 --physics_dt $PHYSICS_DT \
+--n_contacts ${N_CONTACTS:-4} \
 --num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
+--world_iface_fname aug_mpc_envs.world_interfaces.isaac5x_world_interface \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
 --custom_args_vals $CUSTOM_ARGS_VALS "
 if (( $REMOTE_STEPPING )); then
 remote_env_cmd+="--remote_stepping "
-fi 
+fi
 if (( $USE_GPU_SIM )); then
 remote_env_cmd+="--use_gpu "
-fi 
-micromamba activate ${MAMBA_ENV_NAME_ISAAC} # use isaac sim compatible env
-python $LRHC_DIR/launch_remote_env.py $remote_env_cmd > "$log_world" 2>&1 &
-micromamba deactivate
-
-micromamba activate ${MAMBA_ENV_NAME} # switch to ibrido base env
+fi
+(
+  micromamba activate ${MAMBA_ENV_NAME_ISAAC}
+  source /isaac-sim/setup_conda_env.sh
+  source $HOME/ibrido_ws/setup.bash
+  export EXP_PATH="/isaac-sim/apps"
+  python $LRHC_DIR/launch_world_interface.py $remote_env_cmd
+) > "$log_world" 2>&1 &
 
 # cluster
 cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
@@ -124,14 +126,17 @@ cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
 if (( $IS_CLOSED_LOOP )); then
 cluster_cmd+="--cloop "
 fi
-python $LRHC_DIR/launch_control_cluster.py $cluster_cmd > "$log_cluster" 2>&1 &
+(
+  micromamba activate ${MAMBA_ENV_NAME}
+  source $HOME/ibrido_ws/setup.bash
+  python $LRHC_DIR/launch_control_cluster.py $cluster_cmd
+) > "$log_cluster" 2>&1 &
 
 # train env
-export EXP_PATH="$HOME/ibrido_files/" # used by isaac sim for extensions loading
 if (( $REMOTE_STEPPING )); then
 training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data \
---db --env_db --rmdb \
 --seed $SEED --timeout_ms $TIMEOUT_MS \
+--reset_on_init \
 --env_fname $TRAIN_ENV_FNAME --env_classname $TRAIN_ENV_CNAME \
 --demo_stop_thresh $DEMO_STOP_THRESH  \
 --actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH \
@@ -142,11 +147,19 @@ training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data
 --action_repeat $ACTION_REPEAT \
 --compression_ratio $COMPRESSION_RATIO \
 --discount_factor $DISCOUNT_FACTOR "
-if (( $USE_SAC )); then
+if (( $USE_DUMMY )); then
+training_env_cmd+="--dummy "
+elif (( $USE_SAC )); then
 training_env_cmd+="--sac "
 fi
-if (( $DUMP_ENV_CHECKPOINTS )); then
-training_env_cmd+="--full_env_db "
+if (( $DEBUG )); then
+training_env_cmd+="--db --env_db "
+fi
+if (( $RMDEBUG )); then
+training_env_cmd+="--rmdb "
+fi
+if (( $DUMP_ENV_CHECKPOINTS )) && (( $DEBUG )); then
+  training_env_cmd+="--full_env_db "
 fi
 if (( $USE_RND )); then
 training_env_cmd+="--use_rnd "
@@ -175,6 +188,13 @@ fi
 if [[ -n "$RNAME" ]]; then
     training_env_cmd+="--run_name ${RNAME}_${TRAIN_ENV_CNAME} "
 fi
+if (( $RESUME )); then
+  # resume previous training
+  training_env_cmd+="--resume --mpath $MPATH --mname $MNAME "
+  if (( $OVERRIDE_ENV )); then
+  training_env_cmd+="--override_env "
+  fi
+fi
 if (( $EVAL )); then
   # adding options if in eval mode
   training_env_cmd+="--eval --n_eval_timesteps $TOT_STEPS --mpath $MPATH --mname $MNAME "
@@ -192,52 +212,78 @@ if (( $EVAL )); then
   fi
 fi
 
-wandb login $WANDB_KEY # login to wandb
-
-python $LRHC_DIR/launch_train_env.py $training_env_cmd --comment "\"$COMMENT\"" > "$log_train" 2>&1 &
+(
+  micromamba activate ${MAMBA_ENV_NAME}
+  source $HOME/ibrido_ws/setup.bash
+  if [ -n "$WANDB_KEY" ]; then
+    wandb login $WANDB_KEY
+  fi
+  python $LRHC_DIR/launch_train_env.py $training_env_cmd --comment "\"$COMMENT\""
+) > "$log_train" 2>&1 &
 fi
 
 # rosbag db
 if (( $ENV_IDX_BAG >= 0 && $CLUSTER_DB)); then
-  source /opt/ros/jazzy/setup.bash
   rosbag_cmd="--ros2 --use_shared_drop_dir --pub_stime --is_training \
   --ns $SHM_NS --rhc_refs_in_h_frame \
   --srdf_path $SRDF_PATH_ROSBAG \
   --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG "
+  if (( $PUB_HEIGHTMAP )); then
+    rosbag_cmd+="--show_heightmap "
+  fi
   if (( $REMOTE_STEPPING )); then
   rosbag_cmd+="--with_agent_refs --no_rhc_internal "
   fi
-  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+  (
+    micromamba activate ${MAMBA_ENV_NAME}
+    source /opt/ros/jazzy/setup.bash
+    source $HOME/ibrido_ws/setup.bash
+    python $LRHC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd
+  ) > "$log_bag" 2>&1 &
 fi
 
 # demo env db
 sleep 2 # wait a bit
 if (( $ENV_IDX_BAG_DEMO >= 0 && $CLUSTER_DB)); then
-  source /opt/ros/jazzy/setup.bash
   rosbag_cmd="--ros2 --use_shared_drop_dir --is_training \
   --ns $SHM_NS --remap_ns "${SHM_NS}_demo" \
   --rhc_refs_in_h_frame \
   --srdf_path $SRDF_PATH_ROSBAG \
   --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_DEMO "
+  if (( $PUB_HEIGHTMAP )); then
+    rosbag_cmd+="--show_heightmap "
+  fi
   if (( $REMOTE_STEPPING )); then
   rosbag_cmd+="--with_agent_refs --no_rhc_internal "
   fi
-  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+  (
+    micromamba activate ${MAMBA_ENV_NAME}
+    source /opt/ros/jazzy/setup.bash
+    source $HOME/ibrido_ws/setup.bash
+    python $LRHC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd
+  ) > "$log_bag" 2>&1 &
 fi
 
 # expl env db
 sleep 2 # wait a bit
 if (( $ENV_IDX_BAG_EXPL >= 0 && $CLUSTER_DB)); then
-  source /opt/ros/jazzy/setup.bash
   rosbag_cmd="--ros2 --use_shared_drop_dir --is_training \
   --ns $SHM_NS --remap_ns "${SHM_NS}_expl" \
   --rhc_refs_in_h_frame \
   --srdf_path $SRDF_PATH_ROSBAG \
   --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_EXPL "
+  if (( $PUB_HEIGHTMAP )); then
+  rosbag_cmd+="--show_heightmap "
+  fi
   if (( $REMOTE_STEPPING )); then
   rosbag_cmd+="--with_agent_refs --no_rhc_internal "
   fi
-  python $LRHC_DIR/launch_periodic_bag_dump.py $rosbag_cmd > "$log_bag" 2>&1 &
+  (
+    micromamba activate ${MAMBA_ENV_NAME}
+    source /opt/ros/jazzy/setup.bash
+    source $HOME/ibrido_ws/setup.bash
+    python $LRHC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd
+  ) > "$log_bag" 2>&1 &
 fi
 
 wait # wait for all to exit
