@@ -108,16 +108,21 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/MPCViz.git*ros2_humble"
     "git@github.com:ADVRHumanoids/KyonRLStepping.git*ibrido"
     "git@github.com:ADVRHumanoids/CentauroHybridMPC.git*ibrido"
+    "git@github.com:ADVRHumanoids/TalosHybridMPC.git*main"
     "git@github.com:AndrePatri/horizon.git*ibrido"
     "git@github.com:AndrePatri/phase_manager.git*ibrido"
+    "git@github.com:ADVRHumanoids/horizon_rti.git*master"
     "git@github.com:AndrePatri/unitree_ros.git*ibrido"
     "git@github.com:AndrePatri/iit-centauro-ros-pkg.git*ibrido_ros2"
     "git@github.com:AndrePatri/iit-dagana-ros-pkg.git*ibrido_ros2"
+    "git@github.com:AndrePatri/talos-description.git*ibrido_ros2"
+    "git@github.com:AndrePatri/pal_urdf_utils.git*ibrido_ros2"
     "git@github.com:AndrePatri/casadi.git*optional_float"
     "git@github.com:c-rizz/adarl.git*crzz-dev"
     "git@github.com:ADVRHumanoids/xbot2_zmq.git*crzz-dev"
-    "git@github.com:AndrePatri/talos-description.git*ibrido_ros2"
-    "git@github.com:AndrePatri/pal_urdf_utils.git*ibrido_ros2"
+    "git@github.com:AndrePatri/xbot2_mujoco.git*ibrido"
+    "git@github.com:AndrePatri/mujoco_cmake.git*ibrido"
+    "git@github.com:google/googletest.git*main"
 )
 
 IBRIDO_PRIV_GITDIRS=(

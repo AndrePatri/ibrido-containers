@@ -52,7 +52,7 @@ if (( $IS_CLOSED_LOOP )); then
 fi
 
 export CLUSTER_CL_FNAME="taloshybridmpc.controllers.horizon_based.talos_rhc_cluster_client"
-export CLUSTER_DT=0.03
+export CLUSTER_DT=0.05
 export N_NODES=31
 export CLUSTER_DB=1
 export PHYSICS_DT=0.001
@@ -74,9 +74,11 @@ export ENV_IDX_BAG_DEMO=-1
 export ENV_IDX_BAG_EXPL=-1
 export SRDF_PATH_ROSBAG="${HOME}/aux_data/TalosRHCLusterClient_${SHM_NS}/$SHM_NS.srdf"
 
-export CUSTOM_ARGS_NAMES="foot_collision head_type flexibility use_fixed_base use_sim enable_crane disable_gazebo_camera use_capsule_collision multiple gazebo_version step_height add_upper_body initial_force_load_divisor adaptive_is closed_partial estimate_v_root spawning_height use_flat_ground ground_type self_collide"
-export CUSTOM_ARGS_DTYPE="xacro xacro xacro xacro xacro xacro xacro xacro xacro xacro float bool float bool bool bool float bool str bool"
-export CUSTOM_ARGS_VALS="thinbox default False false true false true false false classic 0.08 true 2.0 false true false 0.95 true flat false"
+# Match the effective Centauro closed-loop mode: partial closed loop. Keep
+# adaptive_is disabled explicitly to avoid relying on HybridQuadRhc precedence.
+export CUSTOM_ARGS_NAMES="foot_collision head_type flexibility use_fixed_base use_sim enable_crane disable_gazebo_camera use_capsule_collision multiple gazebo_version step_height add_upper_body initial_force_load_divisor adaptive_is closed_partial fully_closed estimate_v_root use_jnt_v_feedback spawning_height use_flat_ground ground_type self_collide"
+export CUSTOM_ARGS_DTYPE="xacro xacro xacro xacro xacro xacro xacro xacro xacro xacro float bool float bool bool bool bool bool float bool str bool"
+export CUSTOM_ARGS_VALS="thinbox default False false true false true false false classic 0.08 true 2.0 false true false false false 0.95 true flat false"
 
 export SET_ULIM=1
 export ULIM_N=131072 # maximum number of open file descriptors for each process (shared memory)
