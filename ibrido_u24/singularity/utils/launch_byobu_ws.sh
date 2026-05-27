@@ -47,17 +47,23 @@ press_enter() {
 execute_command() {
     byobu send-keys "$1"
     press_enter
-    sleep $SLEEP_FOR
 }
 
 prepare_command() {
+    local cmd="$1"
+
+    cmd="${cmd#reset && }"
     clear_terminal
-    byobu send-keys "$1"
+    byobu send-keys "$cmd"
     sleep $SLEEP_FOR
 }
 
 go_to_pane() {
     byobu select-pane -t "$1"
+}
+
+current_pane_id() {
+    byobu display-message -p '#{pane_id}'
 }
 
 attach_to_session() {
@@ -75,7 +81,8 @@ activate_mamba_env_isaac() {
 }
 
 clear_terminal() {
-    execute_command "reset"
+    byobu send-keys C-l
+    sleep $SLEEP_FOR
 }
 
 increase_file_limits_locally() {
@@ -115,32 +122,25 @@ EOF
 }
 
 install_terminal_helpers() {
-    execute_command "export IBRIDO_BYOBU_WS_NAME=\"${IBRIDO_BYOBU_WS_NAME}\""
-    execute_command "export BYOBU_WS_NAME=\"${BYOBU_WS_NAME}\""
-    execute_command "export PATH=\"${BYOBU_CONFIG_DIR}/bin:\${PATH}\""
+    execute_command "export IBRIDO_BYOBU_WS_NAME=\"${IBRIDO_BYOBU_WS_NAME}\"; export BYOBU_WS_NAME=\"${BYOBU_WS_NAME}\"; export PATH=\"${BYOBU_CONFIG_DIR}/bin:\${PATH}\""
 }
 
 setup_main_env_pane() {
     local workdir="$1"
+    local setup_cmd
+    local extra_cmd
     shift
 
-    install_terminal_helpers
-    execute_command "cd ${workdir}"
-    activate_mamba_env
-    for setup_cmd in "$@"; do
-        execute_command "$setup_cmd"
+    setup_cmd="export IBRIDO_BYOBU_WS_NAME=\"${IBRIDO_BYOBU_WS_NAME}\"; export BYOBU_WS_NAME=\"${BYOBU_WS_NAME}\"; export PATH=\"${BYOBU_CONFIG_DIR}/bin:\${PATH}\"; cd ${workdir}; eval \"\$(micromamba shell hook --shell bash)\"; micromamba activate ${MAMBAENVNAME}"
+    for extra_cmd in "$@"; do
+        setup_cmd+="; $extra_cmd"
     done
-    increase_file_limits_locally
+    setup_cmd+="; ulimit -n ${N_FILES}"
+    execute_command "$setup_cmd"
 }
 
 setup_isaac_env_pane() {
-    install_terminal_helpers
-    execute_command "cd ${WORKING_DIR}"
-    activate_mamba_env_isaac
-    execute_command "source /isaac-sim/setup_conda_env.sh"
-    execute_command "source ${WS_ROOT}/setup.bash"
-    execute_command "export EXP_PATH=/isaac-sim/apps"
-    increase_file_limits_locally
+    execute_command "export IBRIDO_BYOBU_WS_NAME=\"${IBRIDO_BYOBU_WS_NAME}\"; export BYOBU_WS_NAME=\"${BYOBU_WS_NAME}\"; export PATH=\"${BYOBU_CONFIG_DIR}/bin:\${PATH}\"; cd ${WORKING_DIR}; eval \"\$(micromamba shell hook --shell bash)\"; micromamba activate ${MAMBAENVNAME_ISAAC}; source /isaac-sim/setup_conda_env.sh; source ${WS_ROOT}/setup.bash; export EXP_PATH=/isaac-sim/apps; ulimit -n ${N_FILES}"
 }
 
 build_world_cmd() {
@@ -333,6 +333,48 @@ prepare_bag_dump_pane() {
 --srdf_path $SRDF_PATH_ROSBAG --with_agent_refs --no_rhc_internal $(enabled "$PUB_HEIGHTMAP" && echo --show_heightmap)"
 }
 
+prepare_zmq_bridge_pane() {
+    local zmq_cmd="--ns $SHM_NS --dt ${ZMQ_BRIDGE_DT:-0.05}"
+    local cores_arg="${ZMQ_BRIDGE_CORES:--1}"
+
+    if enabled "${ZMQ_BRIDGE_FULL_DATA:-1}"; then
+        zmq_cmd="$zmq_cmd --add_training_data"
+    fi
+    if enabled "${ZMQ_BRIDGE_RHC_INTERNAL:-1}"; then
+        zmq_cmd="$zmq_cmd --add_rhc_internal"
+    fi
+    if [ -n "${ZMQ_BRIDGE_ENV_IDX:-}" ]; then
+        zmq_cmd="$zmq_cmd --env_idx ${ZMQ_BRIDGE_ENV_IDX}"
+    fi
+    if [ -n "${ZMQ_BRIDGE_BIND_IP:-}" ]; then
+        zmq_cmd="$zmq_cmd --bind_ip ${ZMQ_BRIDGE_BIND_IP}"
+    fi
+    if [ -n "${ZMQ_BRIDGE_SOURCE_IP:-}" ]; then
+        zmq_cmd="$zmq_cmd --source_ip ${ZMQ_BRIDGE_SOURCE_IP}"
+    fi
+    if [ -n "${ZMQ_BRIDGE_PORT_BASE:-}" ]; then
+        zmq_cmd="$zmq_cmd --port_base ${ZMQ_BRIDGE_PORT_BASE}"
+    fi
+    if [ -n "${ZMQ_BRIDGE_PORT_SPAN:-}" ]; then
+        zmq_cmd="$zmq_cmd --port_span ${ZMQ_BRIDGE_PORT_SPAN}"
+    fi
+    if [ -n "${ZMQ_BRIDGE_TIMEOUT_MS:-}" ]; then
+        zmq_cmd="$zmq_cmd --timeout_ms ${ZMQ_BRIDGE_TIMEOUT_MS}"
+    fi
+    if enabled "${ZMQ_BRIDGE_NO_CONFLATE:-0}"; then
+        zmq_cmd="$zmq_cmd --no_conflate"
+    fi
+    if enabled "${ZMQ_BRIDGE_VERBOSE:-0}"; then
+        zmq_cmd="$zmq_cmd --verbose"
+    fi
+    if [ "$cores_arg" != "-1" ]; then
+        zmq_cmd="$zmq_cmd --cores ${cores_arg}"
+    fi
+
+    setup_main_env_pane "${WORKING_DIR}" "source ${WS_ROOT}/setup.bash"
+    prepare_command "reset && python utilities/launch_rhc2zmq_bridge.py $zmq_cmd"
+}
+
 add_isaac5x_tab() {
     create_execution_layout
 
@@ -388,12 +430,71 @@ resolve_xmj_files_dir() {
     fi
 }
 
+resolve_rt_xmj_launcher() {
+    local cfg_key
+    local rt_factor="${RT_XMJ_RT_FACTOR:-1.0}"
+    local ros_version="${RT_XMJ_ROS_VERSION:-ros2}"
+
+    RESOLVED_RT_XMJ_WORKDIR="${RT_XMJ_WORKDIR:-}"
+    RESOLVED_RT_XMJ_CMD="${RT_XMJ_CMD:-${RT_XMJ_LAUNCH_CMD:-}}"
+    if [ -n "$RESOLVED_RT_XMJ_CMD" ]; then
+        RESOLVED_RT_XMJ_WORKDIR="${RESOLVED_RT_XMJ_WORKDIR:-$WORKING_DIR}"
+        return
+    fi
+
+    cfg_key="${SHM_NS:-} ${RNAME:-} ${URDF_PATH:-} ${CLUSTER_CL_FNAME:-} ${CUSTOM_ARGS_VALS:-}"
+    cfg_key="${cfg_key,,}"
+
+    if [[ "$cfg_key" == *centauro* ]]; then
+        RESOLVED_RT_XMJ_WORKDIR="$WORKING_DIR_CENTAURO"
+        RESOLVED_RT_XMJ_CMD="./launch_xmj_centauro.sh --rt_factor ${rt_factor} --ros-version ${ros_version}"
+    elif [[ "$cfg_key" == *kyon* ]]; then
+        RESOLVED_RT_XMJ_WORKDIR="$WORKING_DIR_QUAD"
+        if [[ "$cfg_key" == *no_wheels* ]]; then
+            RESOLVED_RT_XMJ_CMD="./launch_xmj_kyon_real_no_wheels.sh --rt_factor ${rt_factor} --ros-version ${ros_version}"
+        else
+            RESOLVED_RT_XMJ_CMD="./launch_xmj_kyon_real_wheels.sh --rt_factor ${rt_factor} --ros-version ${ros_version}"
+        fi
+    else
+        RESOLVED_RT_XMJ_WORKDIR="$WORKING_DIR"
+        RESOLVED_RT_XMJ_CMD=""
+    fi
+}
+
+prepare_rt_xmj_sim_pane() {
+    resolve_rt_xmj_launcher
+    setup_main_env_pane "${RESOLVED_RT_XMJ_WORKDIR}" \
+        "source /opt/xbot/setup.sh" \
+        "source ${WS_ROOT}/setup.bash"
+
+    if [ -z "${RESOLVED_RT_XMJ_CMD:-}" ]; then
+        prepare_command "echo 'No RT XMJ launch command resolved for this cfg. Set RT_XMJ_CMD or RT_XMJ_LAUNCH_CMD.'"
+    else
+        prepare_command "${RESOLVED_RT_XMJ_CMD}"
+    fi
+}
+
 add_rt_deployment_tab() {
     local rt_n_envs="${RT_N_ENVS:-1}"
+    local rt_world_pane
+    local rt_sim_pane
+    local rt_cluster_pane
+    local rt_training_pane
 
     create_execution_layout
 
+    go_to_pane 1
+    rt_cluster_pane="$(current_pane_id)"
+
+    go_to_pane 2
+    rt_training_pane="$(current_pane_id)"
+
     go_to_pane 0
+    rt_world_pane="$(current_pane_id)"
+    split_v
+    rt_sim_pane="$(current_pane_id)"
+
+    go_to_pane "$rt_world_pane"
     resolve_xbot_config
     setup_main_env_pane "${WORKING_DIR}" \
         "source /opt/ros/jazzy/setup.bash" \
@@ -406,10 +507,13 @@ add_rt_deployment_tab() {
         prepare_command "reset && set_xbot2_config \"${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}\" && (xbot2-core -S &) && python launch_world_interface.py $world_cmd"
     fi
 
-    go_to_pane 1
+    go_to_pane "$rt_sim_pane"
+    prepare_rt_xmj_sim_pane
+
+    go_to_pane "$rt_cluster_pane"
     prepare_cluster_pane "$rt_n_envs"
 
-    go_to_pane 2
+    go_to_pane "$rt_training_pane"
     prepare_training_pane
 }
 
@@ -492,6 +596,10 @@ add_debug_tab() {
 
     split_h
     prepare_bag_dump_pane
+
+    go_to_pane 0
+    split_h
+    prepare_zmq_bridge_pane
 }
 
 add_teleop_tab() {
