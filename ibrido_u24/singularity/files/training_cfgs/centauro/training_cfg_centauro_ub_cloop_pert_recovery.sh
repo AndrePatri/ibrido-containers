@@ -68,7 +68,7 @@ export CUSTOM_ARGS_NAMES="rendering_dt use_random_pertub use_jnt_v_feedback step
 lin_a_feedback closed_partial fix_yaw use_flat_ground estimate_v_root self_collide add_upper_body \
 ground_type enable_height_sensor height_sensor_pixels height_sensor_resolution enable_height_vis"
 export CUSTOM_ARGS_DTYPE="float bool bool float bool bool bool bool bool bool bool bool bool bool str bool int float bool "
-export CUSTOM_ARGS_VALS="0.1 true false 0.1 false true true false true true true false false true stepup_prim false 10 0.16 false"
+export CUSTOM_ARGS_VALS="0.1 true true 0.1 false true true false true true true false false true stepup_prim false 10 0.16 false"
 # export CUSTOM_ARGS_NAMES+=" contact_prims"
 # export CUSTOM_ARGS_DTYPE+=" strlist"
 # export CUSTOM_ARGS_VALS+=" wheel_1,wheel_2,wheel_3,wheel_4"
