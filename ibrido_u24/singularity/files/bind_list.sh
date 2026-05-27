@@ -111,6 +111,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:ADVRHumanoids/TalosHybridMPC.git*main"
     "git@github.com:AndrePatri/horizon.git*ibrido"
     "git@github.com:AndrePatri/phase_manager.git*ibrido"
+    "git@github.com:AndrePatri/horizon_rti.git*ibrido"
     "git@github.com:AndrePatri/casadi_kin_dyn.git*ibrido"
     "git@github.com:AndrePatri/unitree_ros.git*ibrido"
     "git@github.com:AndrePatri/iit-centauro-ros-pkg.git*ibrido_ros2"
