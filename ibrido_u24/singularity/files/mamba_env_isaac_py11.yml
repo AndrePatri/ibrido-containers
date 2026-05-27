@@ -33,6 +33,8 @@ dependencies:
   - pyside2
   - catkin_pkg
   - pip:
+    - pyzmq
+    - pyyaml
     - xacro
     - flit
     - h5py
