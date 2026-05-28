@@ -165,7 +165,7 @@ resolve_xbot_config() {
     cfg_key="${cfg_key,,}"
 
     if [[ "$cfg_key" == *centauro* ]]; then
-        RESOLVED_XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/centauro_ibrido.yaml"
+        RESOLVED_XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbot2_basic.yaml"
     elif [[ "$cfg_key" == *b2w* ]]; then
         RESOLVED_XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/b2w/xbot2_basic.yaml"
     elif [[ "$cfg_key" == *kyon* ]]; then
@@ -314,7 +314,7 @@ case "$intent" in
         world_iface_fname="aug_mpc_envs.world_interfaces.xmj_world_interface"
         world_headless="${XMJ_HEADLESS:-0}"
         world_use_gpu=0
-        world_use_custom_jnt_imp=1
+        world_use_custom_jnt_imp=0
         world_env_profile="xmj"
         ;;
 esac
@@ -372,6 +372,13 @@ if [ "$intent" = "eval_cross_sim" ]; then
     export XMJ_FILES_DIR="$RESOLVED_XMJ_FILES_DIR_PATH"
     export USE_GPU_SIM="0"
     append_custom_arg "xmj_files_dir" "str" "$RESOLVED_XMJ_FILES_DIR_PATH"
+    append_custom_arg "xmj_timeout" "int" "${XMJ_TIMEOUT_MS:-30000}"
+    append_custom_arg "add_remote_exit_flag" "bool" "${ADD_REMOTE_EXIT_FLAG:-true}"
+    append_custom_arg "enable_height_sensor" "bool" "${XMJ_ENABLE_HEIGHT_SENSOR:-true}"
+    append_custom_arg "height_sensor_pixels" "int" "${XMJ_HEIGHT_SENSOR_PIXELS:-10}"
+    append_custom_arg "height_sensor_resolution" "float" "${XMJ_HEIGHT_SENSOR_RESOLUTION:-0.16}"
+    append_custom_arg "height_sensor_forward_offset" "float" "${XMJ_HEIGHT_SENSOR_FORWARD_OFFSET:-0.0}"
+    append_custom_arg "height_sensor_lateral_offset" "float" "${XMJ_HEIGHT_SENSOR_LATERAL_OFFSET:-0.0}"
 fi
 
 case "$intent" in
@@ -451,7 +458,6 @@ if [ "$world_env_profile" = "isaac5x" ]; then
 else
     (
         micromamba activate "${MAMBA_ENV_NAME:-ibrido}"
-        source /opt/xbot/setup.sh || exit 1
         source "$HOME/ibrido_ws/setup.bash" || exit 1
         exec python "$LRHC_DIR/launch_world_interface.py" $remote_env_cmd
     ) > "$log_world" 2>&1 &

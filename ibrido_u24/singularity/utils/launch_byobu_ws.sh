@@ -348,8 +348,18 @@ build_xmj_world_cmd_for_metadata() {
         xmj_custom_args_dtype+=" str"
         xmj_custom_args_vals+=" ${WS_ROOT}/src/${RESOLVED_XMJ_FILES_DIR}"
     fi
+    if [[ " ${xmj_custom_args_names} " != *" xmj_timeout "* ]]; then
+        xmj_custom_args_names+=" xmj_timeout"
+        xmj_custom_args_dtype+=" int"
+        xmj_custom_args_vals+=" ${XMJ_TIMEOUT_MS:-30000}"
+    fi
+    if [[ " ${xmj_custom_args_names} " != *" add_remote_exit_flag "* ]]; then
+        xmj_custom_args_names+=" add_remote_exit_flag"
+        xmj_custom_args_dtype+=" bool"
+        xmj_custom_args_vals+=" true"
+    fi
 
-    build_world_cmd "aug_mpc_envs.world_interfaces.xmj_world_interface" "$xmj_n_envs" "$xmj_headless" 1 0 \
+    build_world_cmd "aug_mpc_envs.world_interfaces.xmj_world_interface" "$xmj_n_envs" "$xmj_headless" 0 0 \
         "$xmj_jnt_imp_config_path" "$xmj_custom_args_names" "$xmj_custom_args_dtype" "$xmj_custom_args_vals"
     IBRIDO_XMJ_WORLD_CMD="python launch_world_interface.py $world_cmd"
 }
@@ -361,6 +371,10 @@ record_byobu_aux_metadata() {
     local rt_sim_cmd
     local rt_cluster_cmd
     local rt_training_cmd
+    local rt_jnt_imp_config_path="$JNT_IMP_CONFIG_PATH"
+    local rt_custom_args_names="$CUSTOM_ARGS_NAMES"
+    local rt_custom_args_dtype="$CUSTOM_ARGS_DTYPE"
+    local rt_custom_args_vals="$CUSTOM_ARGS_VALS"
     local xmj_cluster_cmd
     local xmj_training_cmd
     local mpcviz_heightmap_arg=""
@@ -370,13 +384,38 @@ record_byobu_aux_metadata() {
     fi
 
     resolve_xbot_config
-    build_world_cmd "aug_mpc_envs.world_interfaces.rt_deploy_world_interface" "$rt_n_envs" 0 0 0
+    if [ -n "${RESOLVED_XBOT_CONFIG:-}" ]; then
+        rt_jnt_imp_config_path="${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}"
+    fi
+    if [[ " ${rt_custom_args_names} " != *" is_sim "* ]]; then
+        rt_custom_args_names+=" is_sim"
+        rt_custom_args_dtype+=" bool"
+        rt_custom_args_vals+=" true"
+    fi
+    if [[ " ${rt_custom_args_names} " != *" time_source "* ]]; then
+        rt_custom_args_names+=" time_source"
+        rt_custom_args_dtype+=" str"
+        rt_custom_args_vals+=" sim"
+    fi
+    if [[ " ${rt_custom_args_names} " != *" add_remote_exit_flag "* ]]; then
+        rt_custom_args_names+=" add_remote_exit_flag"
+        rt_custom_args_dtype+=" bool"
+        rt_custom_args_vals+=" true"
+    fi
+    build_world_cmd "aug_mpc_envs.world_interfaces.rt_deploy_world_interface" "$rt_n_envs" 0 0 0 \
+        "$rt_jnt_imp_config_path" "$rt_custom_args_names" "$rt_custom_args_dtype" "$rt_custom_args_vals"
     if [ -z "${RESOLVED_XBOT_CONFIG:-}" ]; then
         rt_world_cmd="echo 'XBOT_CONFIG is not set in the selected cfg'"
     else
-        rt_world_cmd="set_xbot2_config \"${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}\" && (xbot2-core -S &) && python launch_world_interface.py $world_cmd"
+        rt_world_cmd="set_xbot2_config \"${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}\" && python launch_world_interface.py $world_cmd"
     fi
     record_byobu_launch_command "rt_deploy_world_interface" "$WORKING_DIR" "$rt_world_cmd"
+
+    if [ -z "${RESOLVED_XBOT_CONFIG:-}" ]; then
+        record_byobu_launch_command "xbot2_core_simtime" "$WORKING_DIR" "echo 'XBOT_CONFIG is not set in the selected cfg'"
+    else
+        record_byobu_launch_command "xbot2_core_simtime" "$WORKING_DIR" "source /opt/ros/jazzy/setup.bash && source /opt/xbot/setup.sh && xbot2-core -S -C ${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}"
+    fi
 
     resolve_rt_xmj_launcher
     if [ -z "${RESOLVED_RT_XMJ_CMD:-}" ]; then
@@ -468,7 +507,7 @@ resolve_xbot_config() {
     cfg_key="${cfg_key,,}"
 
     if [[ "$cfg_key" == *centauro* ]]; then
-        RESOLVED_XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/centauro_ibrido.yaml"
+        RESOLVED_XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbot2_basic.yaml"
     elif [[ "$cfg_key" == *b2w* ]]; then
         RESOLVED_XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/b2w/xbot2_basic.yaml"
     elif [[ "$cfg_key" == *kyon* ]]; then
@@ -500,6 +539,11 @@ resolve_rt_xmj_launcher() {
     local cfg_key
     local rt_factor="${RT_XMJ_RT_FACTOR:-1.0}"
     local ros_version="${RT_XMJ_ROS_VERSION:-ros2}"
+    local rostime_args=""
+
+    if enabled "${RT_XMJ_PUB_ROSTIME:-0}"; then
+        rostime_args=" --pub-rostime --ros-version ${ros_version}"
+    fi
 
     RESOLVED_RT_XMJ_WORKDIR="${RT_XMJ_WORKDIR:-}"
     RESOLVED_RT_XMJ_CMD="${RT_XMJ_CMD:-${RT_XMJ_LAUNCH_CMD:-}}"
@@ -513,13 +557,13 @@ resolve_rt_xmj_launcher() {
 
     if [[ "$cfg_key" == *centauro* ]]; then
         RESOLVED_RT_XMJ_WORKDIR="$WORKING_DIR_CENTAURO"
-        RESOLVED_RT_XMJ_CMD="./launch_xmj_centauro.sh --rt_factor ${rt_factor} --ros-version ${ros_version}"
+        RESOLVED_RT_XMJ_CMD="./launch_xmj_centauro.sh --rt_factor ${rt_factor}${rostime_args}"
     elif [[ "$cfg_key" == *kyon* ]]; then
         RESOLVED_RT_XMJ_WORKDIR="$WORKING_DIR_QUAD"
         if [[ "$cfg_key" == *no_wheels* ]]; then
-            RESOLVED_RT_XMJ_CMD="./launch_xmj_kyon_real_no_wheels.sh --rt_factor ${rt_factor} --ros-version ${ros_version}"
+            RESOLVED_RT_XMJ_CMD="./launch_xmj_kyon_real_no_wheels.sh --rt_factor ${rt_factor}${rostime_args}"
         else
-            RESOLVED_RT_XMJ_CMD="./launch_xmj_kyon_real_wheels.sh --rt_factor ${rt_factor} --ros-version ${ros_version}"
+            RESOLVED_RT_XMJ_CMD="./launch_xmj_kyon_real_wheels.sh --rt_factor ${rt_factor}${rostime_args}"
         fi
     else
         RESOLVED_RT_XMJ_WORKDIR="$WORKING_DIR"
@@ -542,6 +586,10 @@ prepare_rt_xmj_sim_pane() {
 
 add_rt_deployment_tab() {
     local rt_n_envs="${RT_N_ENVS:-1}"
+    local rt_jnt_imp_config_path="$JNT_IMP_CONFIG_PATH"
+    local rt_custom_args_names="$CUSTOM_ARGS_NAMES"
+    local rt_custom_args_dtype="$CUSTOM_ARGS_DTYPE"
+    local rt_custom_args_vals="$CUSTOM_ARGS_VALS"
     local rt_world_pane
     local rt_sim_pane
     local rt_cluster_pane
@@ -562,15 +610,32 @@ add_rt_deployment_tab() {
 
     go_to_pane "$rt_world_pane"
     resolve_xbot_config
+    if [ -n "${RESOLVED_XBOT_CONFIG:-}" ]; then
+        rt_jnt_imp_config_path="${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}"
+    fi
+    if [[ " ${rt_custom_args_names} " != *" is_sim "* ]]; then
+        rt_custom_args_names+=" is_sim"
+        rt_custom_args_dtype+=" bool"
+        rt_custom_args_vals+=" true"
+    fi
+    if [[ " ${rt_custom_args_names} " != *" time_source "* ]]; then
+        rt_custom_args_names+=" time_source"
+        rt_custom_args_dtype+=" str"
+        rt_custom_args_vals+=" sim"
+    fi
+    if [[ " ${rt_custom_args_names} " != *" add_remote_exit_flag "* ]]; then
+        rt_custom_args_names+=" add_remote_exit_flag"
+        rt_custom_args_dtype+=" bool"
+        rt_custom_args_vals+=" true"
+    fi
     setup_main_env_pane "${WORKING_DIR}" \
-        "source /opt/ros/jazzy/setup.bash" \
-        "source /opt/xbot/setup.sh" \
         "source ${WS_ROOT}/setup.bash"
-    build_world_cmd "aug_mpc_envs.world_interfaces.rt_deploy_world_interface" "$rt_n_envs" 0 0 0
+    build_world_cmd "aug_mpc_envs.world_interfaces.rt_deploy_world_interface" "$rt_n_envs" 0 0 0 \
+        "$rt_jnt_imp_config_path" "$rt_custom_args_names" "$rt_custom_args_dtype" "$rt_custom_args_vals"
     if [ -z "${RESOLVED_XBOT_CONFIG:-}" ]; then
         prepare_command "reset && echo 'XBOT_CONFIG is not set in the selected cfg'"
     else
-        prepare_command "reset && set_xbot2_config \"${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}\" && (xbot2-core -S &) && python launch_world_interface.py $world_cmd"
+        prepare_command "reset && set_xbot2_config \"${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}\" && python launch_world_interface.py $world_cmd"
     fi
 
     go_to_pane "$rt_sim_pane"
@@ -581,6 +646,28 @@ add_rt_deployment_tab() {
 
     go_to_pane "$rt_training_pane"
     prepare_training_pane
+}
+
+add_xbot2_tab() {
+    resolve_xbot_config
+
+    setup_main_env_pane "${WORKING_DIR}" \
+        "source /opt/ros/jazzy/setup.bash" \
+        "source /opt/xbot/setup.sh" \
+        "source ${WS_ROOT}/setup.bash"
+
+    if [ -z "${RESOLVED_XBOT_CONFIG:-}" ]; then
+        prepare_command "reset && echo 'XBOT_CONFIG is not set in the selected cfg'"
+    else
+        prepare_command "reset && xbot2-core -S -C ${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}"
+    fi
+
+    split_h
+    setup_main_env_pane "${WORKING_DIR}" \
+        "source /opt/ros/jazzy/setup.bash" \
+        "source /opt/xbot/setup.sh" \
+        "source ${WS_ROOT}/setup.bash"
+    prepare_command "reset && xbot2-gui"
 }
 
 add_xmj_tab() {
@@ -603,14 +690,23 @@ add_xmj_tab() {
         xmj_custom_args_dtype+=" str"
         xmj_custom_args_vals+=" ${WS_ROOT}/src/${RESOLVED_XMJ_FILES_DIR}"
     fi
+    if [[ " ${xmj_custom_args_names} " != *" xmj_timeout "* ]]; then
+        xmj_custom_args_names+=" xmj_timeout"
+        xmj_custom_args_dtype+=" int"
+        xmj_custom_args_vals+=" ${XMJ_TIMEOUT_MS:-30000}"
+    fi
+    if [[ " ${xmj_custom_args_names} " != *" add_remote_exit_flag "* ]]; then
+        xmj_custom_args_names+=" add_remote_exit_flag"
+        xmj_custom_args_dtype+=" bool"
+        xmj_custom_args_vals+=" true"
+    fi
 
     create_execution_layout
 
     go_to_pane 0
     setup_main_env_pane "${WORKING_DIR}" \
-        "source /opt/xbot/setup.sh" \
         "source ${WS_ROOT}/setup.bash"
-    build_world_cmd "aug_mpc_envs.world_interfaces.xmj_world_interface" "$xmj_n_envs" "$xmj_headless" 1 0 \
+    build_world_cmd "aug_mpc_envs.world_interfaces.xmj_world_interface" "$xmj_n_envs" "$xmj_headless" 0 0 \
         "$xmj_jnt_imp_config_path" "$xmj_custom_args_names" "$xmj_custom_args_dtype" "$xmj_custom_args_vals"
     prepare_command "reset && python launch_world_interface.py $world_cmd"
 
@@ -752,6 +848,9 @@ add_mpcviz_tab
 
 new_tab teleop
 add_teleop_tab
+
+new_tab xbot2
+add_xbot2_tab
 
 new_tab resources
 add_resource_monitoring_tab
