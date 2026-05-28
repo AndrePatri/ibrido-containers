@@ -133,11 +133,6 @@ source /root/ibrido_utils/mamba_utils/bin/_activate_current_env.sh # enable mamb
 micromamba activate ${MAMBA_ENV_NAME_ISAAC}
 export LD_LIBRARY_PATH=$MAMBA_ROOT_PREFIX/envs/$MAMBA_ENV_NAME_ISAAC/lib:$LD_LIBRARY_PATH
 
-# mkdir -p $WS_BASEDIR/build/perf_sleep
-# cd $WS_BASEDIR/build/perf_sleep
-# cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON ../../src/PerfSleep/perf_sleep
-# make -j8 install
-
 mkdir -p $WS_BASEDIR/build/EigenIPC
 cd $WS_BASEDIR/build/EigenIPC
 cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON ../../src/EigenIPC/EigenIPC
@@ -151,7 +146,6 @@ pip install -e AugMPCEnvs
 pip install -e AugMPC
 
 # clean cmake cache and builds
-rm -rf $WS_BASEDIR/build/perf_sleep && mkdir $WS_BASEDIR/build/perf_sleep
 rm -rf $WS_BASEDIR/build/EigenIPC && mkdir $WS_BASEDIR/build/EigenIPC
 
 micromamba deactivate
@@ -165,11 +159,6 @@ mkdir -p $WS_BASEDIR/build/gtest
 cd $WS_BASEDIR/build/gtest
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$HOME/ibrido_ws/install" ../../src/googletest
 make -j4 install
-
-# mkdir -p $WS_BASEDIR/build/perf_sleep
-# cd $WS_BASEDIR/build/perf_sleep
-# cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON ../../src/PerfSleep/perf_sleep
-# make -j8 install
 
 mkdir -p $WS_BASEDIR/build/EigenIPC
 cd $WS_BASEDIR/build/EigenIPC

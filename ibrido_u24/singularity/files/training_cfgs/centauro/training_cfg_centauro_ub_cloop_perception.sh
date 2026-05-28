@@ -41,9 +41,9 @@ export USE_PERIOD_RESETS=0
 export COMMENT='centauro big wheels CLOSED with upper body, clipping rewards lb, separate discrete/cont targets (-0.1, -2.0), actions bounds refactor, flight info fix/addition, no rand pert, 10cm steps, smaller platforms, steup with coll prims, heightmap obs, FULL flight control, no omega tracking, UTD 8, track/CoT (x3 scale)/a rate, logstd log(5), 0.25 max step height' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_urdf/urdf/centauro.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_srdf/srdf/centauro.srdf.xacro" # base path where the description package for the robot are located
-export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_open.yaml" # path to yaml file for jnt imp configuration
+export JNT_IMP_CONFIG_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_open.yaml" # path to yaml file for jnt imp configuration
 if (( $IS_CLOSED_LOOP )); then
-    export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config.yaml"
+    export JNT_IMP_CONFIG_PATH="${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config.yaml"
 fi
 
 export CLUSTER_CL_FNAME="centaurohybridmpc.controllers.horizon_based.centauro_rhc_cluster_client" # base path where the description package for the robot are located

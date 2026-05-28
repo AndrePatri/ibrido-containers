@@ -43,9 +43,9 @@ export USE_PERIOD_RESETS=0
 export COMMENT='kyon02 wheels (no yaw) CLOSED LOOP partial, gamma 0.98, NO entropy annheal [-0.3, -0.5], CoT [0.1, 0.1], self coll, 1.0 yaw rate track, 1.0 max cmd v, 0.5 max cmd omega' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-description/kyon_urdf/urdf/kyon.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-description/kyon_srdf/srdf/kyon.srdf.xacro" # base path where the description package for the robot are located
-export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_kyon_real_no_yaw_open.yaml" # path to yaml file for jnt imp configuration
+export JNT_IMP_CONFIG_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_kyon_real_no_yaw_open.yaml" # path to yaml file for jnt imp configuration
 if (( $IS_CLOSED_LOOP )); then
-  export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_kyon_real_no_yaw.yaml"
+  export JNT_IMP_CONFIG_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_kyon_real_no_yaw.yaml"
 fi
 
 export CLUSTER_CL_FNAME="kyonrlstepping.controllers.horizon_based.kyon_real_rhc_cluster_client" # base path where the description package for the robot are located

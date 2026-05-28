@@ -10,7 +10,7 @@ source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
 
 # Function to print usage
 usage() {
-    echo "Usage: $0 [--use_sudo|-s] [--cfg <config_file>] [--wdb_key <wandb_key>] [--ros_global] [--run_token <token>]"
+    echo "Usage: $0 [--use_sudo|-s] [--cfg <config_file>] [--wdb_key <wandb_key>] [--ros_global] [--run_token <token>] [--set VAR=VALUE] [--dry-run]"
     exit 1
 }
 
@@ -39,6 +39,8 @@ use_sudo=false # whether to use superuser privileges
 wandb_key_default="$WANDB_KEY" # Use the existing WANDB_KEY by default
 ros_localhost_only=1
 run_token=""
+dry_run=0
+cfg_overrides=()
 
 # Parse command line options
 while [[ "$#" -gt 0 ]]; do
@@ -48,6 +50,8 @@ while [[ "$#" -gt 0 ]]; do
         -wdb_key|--wdb_key) wandb_key="$2"; shift ;; # Override WANDB_KEY if provided
         --ros_global) ros_localhost_only=0 ;;
         --run_token) run_token="$2"; shift ;; # optional unique token for process identification
+        --set) cfg_overrides+=("$2"); shift ;;
+        --dry-run) dry_run=1 ;;
         -h|--help) usage ;;
         *) echo "Unknown parameter passed: $1"; usage ;;
     esac
@@ -69,6 +73,18 @@ job_id=$(echo "$SCHED_JOBID" | cut -d'.' -f1)
 unique_id="_$(date +%Y_%m_%d_%H_%M_%S)_ID${job_id}" # just used to retrive process ID
 
 training_cmd="$training_script --unique_id ${unique_id} --cfg $config_file"
+for cfg_override in "${cfg_overrides[@]}"; do
+    cfg_override_name="${cfg_override%%=*}"
+    if [[ "$cfg_override" != *=* || ! "$cfg_override_name" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]]; then
+        echo "Invalid --set override: $cfg_override"
+        exit 1
+    fi
+    printf -v cfg_override_quoted '%q' "$cfg_override"
+    training_cmd+=" --set ${cfg_override_quoted}"
+done
+if (( dry_run )); then
+    training_cmd+=" --dry-run"
+fi
 
 singularity_cmd="singularity exec \
     --env \"WANDB_KEY=$wandb_key\"\
@@ -90,6 +106,11 @@ fi
 
 # Capture the PID of the sudo or bash process
 parent_pid=$!
+
+if (( dry_run )); then
+    wait "$parent_pid"
+    exit $?
+fi
 
 # Use pgrep to find the actual singularity process ID associated with the command
 # Give it a second to start to ensure the process is up and running

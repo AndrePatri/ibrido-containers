@@ -41,9 +41,9 @@ export USE_PERIOD_RESETS=0 # reset periodically agent (can be useful to prevent 
 export COMMENT='' # any comment to describe the training run
 export URDF_PATH="${HOME}/ibrido_ws/src/myrobot-description/robot_urdf/urdf/my_robot.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/myrobot-description/robot_urdf/urdf/my_robot.srdf.xacro" # base path where the semantic description package for the robot are located (used for homing)
-export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/MyRobotCfg/config/jnt_imp_config_open.yaml" # path to yaml file for jnt imp configuration
+export JNT_IMP_CONFIG_PATH="${HOME}/ibrido_ws/src/MyRobotCfg/config/jnt_imp_config_open.yaml" # path to yaml file for jnt imp configuration
 if (( $IS_CLOSED_LOOP )); then # jnt imp cfg for closed loop operation
-  export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/MyRobotCfg/config/jnt_imp_config_cloop.yaml"
+  export JNT_IMP_CONFIG_PATH="${HOME}/ibrido_ws/src/MyRobotCfg/config/jnt_imp_config_cloop.yaml"
 fi
 
 export CLUSTER_CL_FNAME="myrobotcontrol.controllers.horizon_based.my_robot_cluster_client" # file name where cluster client implementation is located (package should be installed)

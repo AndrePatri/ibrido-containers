@@ -1,44 +1,121 @@
 #!/bin/bash
 WS_ROOT="$HOME/ibrido_ws"
 LRHC_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
+UTILS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${UTILS_DIR}/ibrido_command_builder.sh"
 
-# Improved cleanup function
+child_pids=()
+cleanup_started=0
+
+signal_process_tree() {
+    local signal="$1"
+    shift
+
+    local pid child_pids child_pid
+    for pid in "$@"; do
+        if ! kill -0 "$pid" 2>/dev/null; then
+            continue
+        fi
+
+        child_pids="$(pgrep -P "$pid" 2>/dev/null || true)"
+        for child_pid in $child_pids; do
+            signal_process_tree "$signal" "$child_pid"
+        done
+
+        kill "-${signal}" "$pid" 2>/dev/null || true
+    done
+}
+
+wait_for_children_exit() {
+    local timeout_s="$1"
+    local elapsed_s=0
+    local child_pid any_alive
+
+    while (( elapsed_s < timeout_s )); do
+        any_alive=0
+        for child_pid in "${child_pids[@]}"; do
+            if kill -0 "$child_pid" 2>/dev/null; then
+                any_alive=1
+                break
+            fi
+        done
+        if (( ! any_alive )); then
+            return 0
+        fi
+        sleep 1
+        elapsed_s=$((elapsed_s + 1))
+    done
+
+    return 1
+}
+
 cleanup() {
+    if (( cleanup_started )); then
+        return
+    fi
+    cleanup_started=1
+
     echo "launch_training.sh: sending SIGINT to all child processes..."
-    # Send SIGINT to all child processes
-    kill -INT $(jobs -p) 2>/dev/null
+    if ((${#child_pids[@]})); then
+        signal_process_tree INT "${child_pids[@]}"
+        if ! wait_for_children_exit 8; then
+            echo "launch_training.sh: children still alive, sending SIGTERM..."
+            signal_process_tree TERM "${child_pids[@]}"
+        fi
+        if ! wait_for_children_exit 8; then
+            echo "launch_training.sh: children still alive, sending SIGKILL..."
+            signal_process_tree KILL "${child_pids[@]}"
+        fi
+    fi
 
     echo "launch_training.sh: waiting for child processes to exit..."
-    # Wait for all background jobs to exit
-    wait
+    for child_pid in "${child_pids[@]}"; do
+        wait "$child_pid" 2>/dev/null
+    done
 
     echo "launch_training.sh: all child processes have exited."
 }
 
 # Trap EXIT, INT (Ctrl+C), and TERM signals to trigger cleanup
-trap cleanup EXIT INT TERM
+trap cleanup EXIT
+trap 'cleanup; exit 130' INT TERM
 
 usage() {
   echo "Usage: $0
     [--cfg CFG] \
     [--unique_id UNIQUE_ID] \
+    [--set VAR=VALUE] \
+    [--dry-run] \
     "
   exit 1
 }
 
-cfg_file_basepath="/root/ibrido_files/training_cfgs"
+cfg_file_basepath="${IBRIDO_CFG_BASEPATH:-/root/ibrido_files/training_cfgs}"
 
 # Default configuration file
 config_file="${cfg_file_basepath}/training_cfg.sh"
+dry_run=0
+cfg_overrides=()
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
     --unique_id) unique_id="$2"; shift ;;
-    -cfg|--cfg) config_file="${cfg_file_basepath}/$2"; shift ;;
+    -cfg|--cfg)
+      if [[ "$2" = /* ]]; then
+        config_file="$2"
+      else
+        config_file="${cfg_file_basepath}/$2"
+      fi
+      shift
+      ;;
+    --set) cfg_overrides+=("$2"); shift ;;
+    --dry-run) dry_run=1 ;;
     *) echo "Unknown parameter passed: $1"; usage ;;
   esac
   shift
 done
+
+unique_id="${unique_id:-$(date '+%Y_%m_%d__%H_%M_%S')}"
 
 # Source the configuration file
 if [ -f "$config_file" ]; then
@@ -48,18 +125,35 @@ else
     exit 1
 fi
 
+for cfg_override in "${cfg_overrides[@]}"; do
+  cfg_override_name="${cfg_override%%=*}"
+  if [[ "$cfg_override" != *=* || ! "$cfg_override_name" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]]; then
+    echo "Invalid --set override: $cfg_override"
+    exit 1
+  fi
+  export "$cfg_override"
+done
+
+ibrido_normalize_runtime_config || exit 1
+ibrido_validate_runtime_config || exit 1
+
 # clear tmp folder
 # rm -r /tmp/*
 
 # activate micromamba for this shell
-eval "$(micromamba shell hook --shell bash)"
+if command -v micromamba >/dev/null 2>&1; then
+  eval "$(micromamba shell hook --shell bash)"
+elif (( ! dry_run )); then
+  echo "launch_training.sh: micromamba is not available on PATH"
+  exit 1
+fi
 
 #!/bin/bash
 
 # Define the timestamp and log file based on RUN_NAME and unique id
 base_log_dir="${HOME}/ibrido_logs/ibrido_run_${unique_id}"
 mkdir -p "$base_log_dir"
-cp $config_file "${base_log_dir}/"
+cp "$config_file" "${base_log_dir}/"
 
 run_label="${RUN_NAME:-${RNAME:-IbridoRun}}"
 log_world="${base_log_dir}/ibrido_world_interface_${run_label}_${unique_id}.log"
@@ -85,132 +179,57 @@ fi
 SHM_NS+="${unique_id}" # appending unique string to actual shm namespace
 echo "Will use shared memory namespace ${SHM_NS}"
 
-# remote env
-remote_env_cmd="--headless --robot_name $SHM_NS \
---urdf_path $URDF_PATH --srdf_path  $SRDF_PATH \
---use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH \
---cluster_dt $CLUSTER_DT \
---physics_dt $PHYSICS_DT \
---n_contacts ${N_CONTACTS:-4} \
---num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
---world_iface_fname aug_mpc_envs.world_interfaces.isaac5x_world_interface \
---custom_args_names $CUSTOM_ARGS_NAMES \
---custom_args_dtype $CUSTOM_ARGS_DTYPE \
---custom_args_vals $CUSTOM_ARGS_VALS "
+export IBRIDO_RUN_META_DIR="${IBRIDO_RUN_META_DIR:-${base_log_dir}/metadata}"
+
+ibrido_build_world_cmd "aug_mpc_envs.world_interfaces.isaac5x_world_interface" "$N_ENVS" 1 1 "$USE_GPU_SIM"
+remote_env_cmd="$IBRIDO_WORLD_CMD"
+
+ibrido_build_cluster_cmd "$N_ENVS" 1 0
+cluster_cmd="$IBRIDO_CLUSTER_CMD"
+
+training_env_cmd=""
 if (( $REMOTE_STEPPING )); then
-remote_env_cmd+="--remote_stepping "
+  ibrido_build_training_cmd
+  training_env_cmd="$IBRIDO_TRAINING_CMD"
 fi
-if (( $USE_GPU_SIM )); then
-remote_env_cmd+="--use_gpu "
+
+world_launch_cmd="python $LRHC_DIR/launch_world_interface.py $remote_env_cmd"
+cluster_launch_cmd="python $LRHC_DIR/launch_control_cluster.py $cluster_cmd"
+training_launch_cmd=""
+if [ -n "$training_env_cmd" ]; then
+  training_launch_cmd="python $LRHC_DIR/launch_train_env.py $training_env_cmd --comment \"\\\"$COMMENT\\\"\""
 fi
+
+ibrido_prepare_run_metadata "$config_file" "$world_launch_cmd" "$cluster_launch_cmd" "$training_launch_cmd" "$unique_id"
+
+if (( dry_run )); then
+  ibrido_print_dry_run "$world_launch_cmd" "$cluster_launch_cmd" "$training_launch_cmd"
+  trap - EXIT INT TERM
+  exit 0
+fi
+
+# remote env
 (
   micromamba activate ${MAMBA_ENV_NAME_ISAAC}
   source /isaac-sim/setup_conda_env.sh
   source $HOME/ibrido_ws/setup.bash
   export EXP_PATH="/isaac-sim/apps"
-  python $LRHC_DIR/launch_world_interface.py $remote_env_cmd
+  exec python $LRHC_DIR/launch_world_interface.py $remote_env_cmd
 ) > "$log_world" 2>&1 &
+world_pid=$!
+child_pids+=("$world_pid")
 
 # cluster
-cluster_cmd="--ns $SHM_NS --size $N_ENVS --timeout_ms $TIMEOUT_MS \
---codegen_override_dir $CODEGEN_OVERRIDE_BDIR \
---urdf_path $URDF_PATH --srdf_path $SRDF_PATH --cluster_client_fname $CLUSTER_CL_FNAME \
---custom_args_names $CUSTOM_ARGS_NAMES \
---custom_args_dtype $CUSTOM_ARGS_DTYPE \
---custom_args_vals $CUSTOM_ARGS_VALS \
---cluster_dt $CLUSTER_DT \
---n_nodes $N_NODES "
-# if (( $CLUSTER_DB )); then
-# cluster_cmd+="--enable_debug "
-# fi
-if (( $IS_CLOSED_LOOP )); then
-cluster_cmd+="--cloop "
-fi
 (
   micromamba activate ${MAMBA_ENV_NAME}
   source $HOME/ibrido_ws/setup.bash
-  python $LRHC_DIR/launch_control_cluster.py $cluster_cmd
+  exec python $LRHC_DIR/launch_control_cluster.py $cluster_cmd
 ) > "$log_cluster" 2>&1 &
+cluster_pid=$!
+child_pids+=("$cluster_pid")
 
 # train env
 if (( $REMOTE_STEPPING )); then
-training_env_cmd="--dump_checkpoints --ns $SHM_NS --drop_dir $HOME/training_data \
---seed $SEED --timeout_ms $TIMEOUT_MS \
---reset_on_init \
---env_fname $TRAIN_ENV_FNAME --env_classname $TRAIN_ENV_CNAME \
---demo_stop_thresh $DEMO_STOP_THRESH  \
---actor_lwidth $ACTOR_LWIDTH --actor_n_hlayers $ACTOR_DEPTH \
---critic_lwidth $CRITIC_LWIDTH --critic_n_hlayers $CRITIC_DEPTH \
---tot_tsteps $TOT_STEPS \
---demo_envs_perc $DEMO_ENVS_PERC \
---expl_envs_perc $EXPL_ENVS_PERC \
---action_repeat $ACTION_REPEAT \
---compression_ratio $COMPRESSION_RATIO \
---discount_factor $DISCOUNT_FACTOR "
-if (( $USE_DUMMY )); then
-training_env_cmd+="--dummy "
-elif (( $USE_SAC )); then
-training_env_cmd+="--sac "
-fi
-if (( $DEBUG )); then
-training_env_cmd+="--db --env_db "
-fi
-if (( $RMDEBUG )); then
-training_env_cmd+="--rmdb "
-fi
-if (( $DUMP_ENV_CHECKPOINTS )) && (( $DEBUG )); then
-  training_env_cmd+="--full_env_db "
-fi
-if (( $USE_RND )); then
-training_env_cmd+="--use_rnd "
-fi
-if (( $OBS_NORM )); then
-training_env_cmd+="--obs_norm "
-fi
-if (( $OBS_RESCALING )); then
-training_env_cmd+="--obs_rescale "
-fi
-if (( $WEIGHT_NORM )); then
-training_env_cmd+="--add_weight_norm "
-fi
-if (( $LAYER_NORM )); then
-training_env_cmd+="--add_layer_norm "
-fi
-if (( $BATCH_NORM )); then
-training_env_cmd+="--add_batch_norm "
-fi
-if (( $CRITIC_ACTION_RESCALE )); then
-training_env_cmd+="--act_rescale_critic "
-fi
-if (( $USE_PERIOD_RESETS )); then
-training_env_cmd+="--use_period_resets "
-fi
-if [[ -n "$RNAME" ]]; then
-    training_env_cmd+="--run_name ${RNAME}_${TRAIN_ENV_CNAME} "
-fi
-if (( $RESUME )); then
-  # resume previous training
-  training_env_cmd+="--resume --mpath $MPATH --mname $MNAME "
-  if (( $OVERRIDE_ENV )); then
-  training_env_cmd+="--override_env "
-  fi
-fi
-if (( $EVAL )); then
-  # adding options if in eval mode
-  training_env_cmd+="--eval --n_eval_timesteps $TOT_STEPS --mpath $MPATH --mname $MNAME "
-  if (( $DET_EVAL )); then
-  training_env_cmd+="--det_eval "
-  fi
-  if (( $EVAL_ON_CPU )); then
-  training_env_cmd+="--use_cpu "
-  fi
-  if (( $OVERRIDE_ENV )); then
-  training_env_cmd+="--override_env "
-  fi
-  if (( $OVERRIDE_AGENT_REFS )); then
-  training_env_cmd+="--override_agent_refs "
-  fi
-fi
 
 (
   micromamba activate ${MAMBA_ENV_NAME}
@@ -218,8 +237,10 @@ fi
   if [ -n "$WANDB_KEY" ]; then
     wandb login $WANDB_KEY
   fi
-  python $LRHC_DIR/launch_train_env.py $training_env_cmd --comment "\"$COMMENT\""
+  exec python $LRHC_DIR/launch_train_env.py $training_env_cmd --comment "\"$COMMENT\""
 ) > "$log_train" 2>&1 &
+training_env_pid=$!
+child_pids+=("$training_env_pid")
 fi
 
 # rosbag db
@@ -238,8 +259,9 @@ if (( $ENV_IDX_BAG >= 0 && $CLUSTER_DB)); then
     micromamba activate ${MAMBA_ENV_NAME}
     source /opt/ros/jazzy/setup.bash
     source $HOME/ibrido_ws/setup.bash
-    python $LRHC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd
+    exec python $LRHC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd
   ) > "$log_bag" 2>&1 &
+  child_pids+=("$!")
 fi
 
 # demo env db
@@ -260,8 +282,9 @@ if (( $ENV_IDX_BAG_DEMO >= 0 && $CLUSTER_DB)); then
     micromamba activate ${MAMBA_ENV_NAME}
     source /opt/ros/jazzy/setup.bash
     source $HOME/ibrido_ws/setup.bash
-    python $LRHC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd
+    exec python $LRHC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd
   ) > "$log_bag" 2>&1 &
+  child_pids+=("$!")
 fi
 
 # expl env db
@@ -282,8 +305,17 @@ if (( $ENV_IDX_BAG_EXPL >= 0 && $CLUSTER_DB)); then
     micromamba activate ${MAMBA_ENV_NAME}
     source /opt/ros/jazzy/setup.bash
     source $HOME/ibrido_ws/setup.bash
-    python $LRHC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd
+    exec python $LRHC_DIR/utilities/launch_periodic_bag_dump.py $rosbag_cmd
   ) > "$log_bag" 2>&1 &
+  child_pids+=("$!")
 fi
 
-wait # wait for all to exit
+if (( $REMOTE_STEPPING )); then
+  wait "$training_env_pid"
+  training_env_status=$?
+  cleanup
+  trap - EXIT INT TERM
+  exit "$training_env_status"
+fi
+
+wait "${child_pids[@]}"

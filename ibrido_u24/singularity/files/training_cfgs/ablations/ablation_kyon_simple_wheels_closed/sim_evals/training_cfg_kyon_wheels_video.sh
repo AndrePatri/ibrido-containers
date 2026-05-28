@@ -41,9 +41,9 @@ export USE_PERIOD_RESETS=0
 export COMMENT='kyon wheels FULLY CLOSED, UTD 8, action rep 5, fake pos track (action rate, NO CoT, dir track, max_vref 0.8 m/s), trgt entropy -1.0' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-ros-pkg/kyon_urdf/urdf/kyon.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/iit-kyon-ros-pkg/kyon_srdf/srdf/kyon.srdf.xacro" # base path where the description package for the robot are located
-export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_open.yaml" # path to yaml file for jnt imp configuration
+export JNT_IMP_CONFIG_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_open.yaml" # path to yaml file for jnt imp configuration
 if (( $IS_CLOSED_LOOP )); then
-  export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config.yaml"
+  export JNT_IMP_CONFIG_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config.yaml"
 fi
 
 export CLUSTER_CL_FNAME="kyonrlstepping.controllers.horizon_based.kyon_rhc_cluster_client" # base path where the description package for the robot are located

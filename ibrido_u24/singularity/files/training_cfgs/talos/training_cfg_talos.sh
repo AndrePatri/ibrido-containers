@@ -46,9 +46,9 @@ export COMMENT='talos scaffold, one env, no remote stepping'
 export URDF_PATH="${HOME}/ibrido_ws/src/talos-description/talos_description/robots/talos_full_v2.urdf.xacro"
 export SRDF_PATH="${HOME}/ibrido_ws/src/talos-description/talos_description/srdf/talos.srdf"
 
-export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/TalosHybridMPC/taloshybridmpc/config/jnt_imp_config_open.yaml"
+export JNT_IMP_CONFIG_PATH="${HOME}/ibrido_ws/src/TalosHybridMPC/taloshybridmpc/config/jnt_imp_config_open.yaml"
 if (( $IS_CLOSED_LOOP )); then
-  export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/TalosHybridMPC/taloshybridmpc/config/jnt_imp_config.yaml"
+  export JNT_IMP_CONFIG_PATH="${HOME}/ibrido_ws/src/TalosHybridMPC/taloshybridmpc/config/jnt_imp_config.yaml"
 fi
 
 export CLUSTER_CL_FNAME="taloshybridmpc.controllers.horizon_based.talos_rhc_cluster_client"

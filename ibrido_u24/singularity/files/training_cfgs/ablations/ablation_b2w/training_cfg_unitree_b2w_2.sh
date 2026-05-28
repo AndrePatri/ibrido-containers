@@ -41,9 +41,9 @@ export USE_PERIOD_RESETS=0
 export COMMENT='unitree b2w, CLOSED partial, UTD 8, action rep 5, update_freq 16, fake pos track (action rate, NO CoT, dir track, max_vref 1.0 m/s), trgt entropy -0.5' # any training comment
 export URDF_PATH="${HOME}/ibrido_ws/src/unitree_ros/robots/b2w_description/xacro/robot.urdf.xacro" # name of the description package for the robot
 export SRDF_PATH="${HOME}/ibrido_ws/src/unitree_ros/robots/b2w_description/xacro/robot.srdf.xacro" # base path where the description package for the robot are located
-export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_open_b2w.yaml" # path to yaml file for jnt imp configuration
+export JNT_IMP_CONFIG_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_open_b2w.yaml" # path to yaml file for jnt imp configuration
 if (( $IS_CLOSED_LOOP )); then
-  export JNT_IMP_CF_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_b2w.yaml"
+  export JNT_IMP_CONFIG_PATH="${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_b2w.yaml"
 fi
 
 export CLUSTER_CL_FNAME="kyonrlstepping.controllers.horizon_based.b2w_rhc_cluster_client" # base path where the description package for the robot are located
