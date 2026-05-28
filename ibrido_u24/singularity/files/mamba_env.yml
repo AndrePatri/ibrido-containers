@@ -24,6 +24,7 @@ dependencies:
   # - gtest
   - pybind11
   - eigen3
+  - numpy<2
   - poetry
   - python-devtools
   - casadi
@@ -39,6 +40,7 @@ dependencies:
   - catkin_pkg
   - scipy
   - pip:
+    - numpy<2
     - pyzmq
     - pyyaml
     - pygame

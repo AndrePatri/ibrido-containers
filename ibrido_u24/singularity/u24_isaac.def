@@ -53,7 +53,7 @@ From:nvcr.io/nvidia/isaac-sim:5.1.0
     echo "export MAMBA_EXE=\"${MAMBA_EXE}\"" >> $SINGULARITY_ENVIRONMENT
     echo "export MAMBA_ROOT_PREFIX=\"${MAMBA_ROOT_PREFIX}\"" >> $SINGULARITY_ENVIRONMENT
     
-    apt-get update && apt-get install -y --no-install-recommends byobu nano cmake clang cmake-curses-gui curl swig ffmpeg zstd tzdata \
+    apt-get update && apt-get install -y --no-install-recommends byobu nano cmake clang cmake-curses-gui curl swig ffmpeg zstd tzdata unzip \
         python3 python3-venv python-is-python3 \
         git wget sudo vim iputils-ping ssh rsync \
         plocate \
@@ -69,6 +69,25 @@ From:nvcr.io/nvidia/isaac-sim:5.1.0
         htop \
         nvtop \
         dbus \
+        libasound2t64 \
+        libatk-bridge2.0-0t64 \
+        libgbm1 \
+        libnss3 \
+        libpulse0 \
+        libxcomposite1 \
+        libxdamage1 \
+        libxkbcommon-x11-0 \
+        libxrandr2 \
+        libxcb-cursor0 \
+        libxcb-icccm4 \
+        libxcb-image0 \
+        libxcb-keysyms1 \
+        libxcb-randr0 \
+        libxcb-render-util0 \
+        libxcb-shape0 \
+        libxcb-util1 \
+        libxcb-xfixes0 \
+        libxcb-xkb1 \
         && rm -rf /var/lib/apt/lists/*
 
     # Generate the machine-id
@@ -164,6 +183,31 @@ From:nvcr.io/nvidia/isaac-sim:5.1.0
         exit 1
     fi
     apt-get install -y --no-install-recommends xbot2_desktop_full && rm -rf /var/lib/apt/lists/*
+
+    # Robot Monitoring GUI setup. The release is distributed as a self-contained
+    # Qt bundle, not as a deb package, so keep it pinned and checksum-verified.
+    ROBOT_MONITORING_VERSION='v2.7.5'
+    ROBOT_MONITORING_SHA256='d689db57308bf866289b6639db7347d02f076319b350ff21eaa89fb3f4b67aeb'
+    ROBOT_MONITORING_ARCHIVE='/tmp/xbot2_gui_client_x86_64.zip'
+    ROBOT_MONITORING_URL="https://github.com/ADVRHumanoids/robot_monitoring/releases/download/${ROBOT_MONITORING_VERSION}/xbot2_gui_client_x86_64.zip"
+    ROBOT_MONITORING_INSTALL_DIR='/opt/robot_monitoring'
+    mkdir -p "${ROBOT_MONITORING_INSTALL_DIR}"
+    curl --fail -L "${ROBOT_MONITORING_URL}" -o "${ROBOT_MONITORING_ARCHIVE}"
+    echo "${ROBOT_MONITORING_SHA256}  ${ROBOT_MONITORING_ARCHIVE}" | sha256sum -c -
+    unzip -q "${ROBOT_MONITORING_ARCHIVE}" -d "${ROBOT_MONITORING_INSTALL_DIR}"
+    rm -f "${ROBOT_MONITORING_ARCHIVE}"
+    chmod -R a+rX "${ROBOT_MONITORING_INSTALL_DIR}"
+    cat > /usr/local/bin/xbot2-gui <<'EOF'
+#!/usr/bin/env bash
+set -e
+APP_DIR="/opt/robot_monitoring/xbot2_gui_client_x86_64"
+export QTWEBENGINE_DISABLE_SANDBOX="${QTWEBENGINE_DISABLE_SANDBOX:-1}"
+unset QT_PLUGIN_PATH
+unset QML2_IMPORT_PATH
+export LD_LIBRARY_PATH="${APP_DIR}/lib:${LD_LIBRARY_PATH:-}"
+exec "${APP_DIR}/bin/xbot2_gui" "$@"
+EOF
+    chmod 755 /usr/local/bin/xbot2-gui
     
     # give access to /isaac-sim folder to anybody (root only by default)
     chmod --recursive 777 /isaac-sim
@@ -171,6 +215,7 @@ From:nvcr.io/nvidia/isaac-sim:5.1.0
 %test
     echo 'Testing if MicroMamba is present...'
     ${MAMBA_EXE} --version
+    test -x /usr/local/bin/xbot2-gui
     # echo 'Testing byobu is installed...'
     # which byobu || { echo "byobu missing"; exit 1; }
 

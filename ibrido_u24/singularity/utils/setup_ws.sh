@@ -37,6 +37,49 @@ pip_install_if_present() {
     pip install -e "$package_dir"
 }
 
+install_mamba_runtime_hook() {
+    local env_name="$1"
+    local env_prefix="$MAMBA_ROOT_PREFIX/envs/$env_name"
+    local hook_dir="$env_prefix/etc/conda/activate.d"
+
+    if [ ! -d "$env_prefix" ]; then
+        echo "--> Cannot install runtime hook: mamba env not found at $env_prefix"
+        exit 1
+    fi
+
+    mkdir -p "$hook_dir"
+    cat > "$hook_dir/ibrido_runtime_paths.sh" <<'EOF'
+_ibrido_prepend_path() {
+    local var_name="$1"
+    local new_path="$2"
+    local current_value="${!var_name:-}"
+
+    [ -d "$new_path" ] || return 0
+    case ":${current_value}:" in
+        *":${new_path}:"*) ;;
+        *) export "${var_name}=${new_path}${current_value:+:${current_value}}" ;;
+    esac
+}
+
+_ibrido_prepend_path LD_LIBRARY_PATH "/opt/ros/${ROS_DISTRO:-jazzy}/lib"
+_ibrido_prepend_path LD_LIBRARY_PATH "/opt/xbot/lib"
+_ibrido_prepend_path LD_LIBRARY_PATH "${HOME}/ibrido_ws/install/lib"
+_ibrido_prepend_path CMAKE_PREFIX_PATH "/opt/xbot"
+_ibrido_prepend_path CMAKE_PREFIX_PATH "${HOME}/ibrido_ws/install"
+_ibrido_prepend_path PATH "${HOME}/ibrido_ws/install/bin"
+_ibrido_prepend_path PYTHONPATH "${HOME}/ibrido_ws/install/lib/python3.12/site-packages"
+_ibrido_prepend_path PYTHONPATH "${HOME}/ibrido_ws/install/lib/python3.11/site-packages"
+_ibrido_prepend_path PYTHONPATH "${HOME}/ibrido_ws/install/lib/python3/dist-packages"
+_ibrido_prepend_path ROS_PACKAGE_PATH "${HOME}/ibrido_ws/ros_src"
+_ibrido_prepend_path ROS_PACKAGE_PATH "${HOME}/ibrido_ws/install/share"
+_ibrido_prepend_path ROS_PACKAGE_PATH "${HOME}/ibrido_ws/install/lib"
+_ibrido_prepend_path AMENT_PREFIX_PATH "${HOME}/ibrido_ws/install"
+_ibrido_prepend_path PKG_CONFIG_PATH "${HOME}/ibrido_ws/install/lib/pkgconfig"
+
+unset -f _ibrido_prepend_path
+EOF
+}
+
 resolve_xbot2_setup() {
     local xbot2_setup="$XBOT2_SETUP"
 
@@ -127,6 +170,9 @@ rm -rf $WS_BASEDIR/install && mkdir $WS_BASEDIR/install
 
 source /root/ibrido_utils/mamba_utils/bin/_activate_current_env.sh # enable mamba for this shell
 
+install_mamba_runtime_hook "$MAMBA_ENV_NAME"
+install_mamba_runtime_hook "$MAMBA_ENV_NAME_ISAAC"
+
 # due to Isaac 5.1 only supporting python 3.11, we use two separate mamba envs, one for isaac and one for the rest
 # which can also be used with prebuilt ros2 jazzy packages. This means we need to install the base ibrido packages
 # in both envs.
@@ -140,7 +186,7 @@ make -j8 install
 
 # pip installations
 cd $WS_BASEDIR/src
-pip install -e xbot2_zmq/pyxbot
+pip install --no-deps -e xbot2_zmq/pyxbot
 pip install -e MPCHive
 pip install -e AugMPCEnvs
 pip install -e AugMPC
@@ -211,7 +257,7 @@ install_xbot2_zmq "$RESOLVED_XBOT2_SETUP"
 
 # pip installations into mamba env
 cd $WS_BASEDIR/src
-pip install -e xbot2_zmq/pyxbot
+pip install --no-deps -e xbot2_zmq/pyxbot
 pip install -e MPCHive
 pip install -e AugMPCEnvs
 pip install -e AugMPC
