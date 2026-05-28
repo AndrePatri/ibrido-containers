@@ -10,7 +10,7 @@ source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
 
 # Function to print usage
 usage() {
-    echo "Usage: $0 [--use_sudo|-s] [--cfg <config_file>] [--wdb_key <wandb_key>] [--ros_global] [--run_token <token>] [--set VAR=VALUE] [--dry-run]"
+    echo "Usage: $0 [--use_sudo|-s] [--cfg <config_file> | --bundle <bundle_dir_or_bundle_yaml>] [--intent <run_intent>] [--wdb_key <wandb_key>] [--ros_global] [--run_token <token>] [--set VAR=VALUE] [--allow_contract_override] [--dry-run]"
     exit 1
 }
 
@@ -40,6 +40,9 @@ wandb_key_default="$WANDB_KEY" # Use the existing WANDB_KEY by default
 ros_localhost_only=1
 run_token=""
 dry_run=0
+bundle_path=""
+run_intent=""
+allow_contract_override=0
 cfg_overrides=()
 
 # Parse command line options
@@ -47,10 +50,13 @@ while [[ "$#" -gt 0 ]]; do
     case $1 in
         -s|--use_sudo) use_sudo=true ;;
         -cfg|--cfg) config_file="$2"; shift ;; # Set custom config file if provided
+        --bundle) bundle_path="$2"; shift ;;
+        --intent) run_intent="$2"; shift ;;
         -wdb_key|--wdb_key) wandb_key="$2"; shift ;; # Override WANDB_KEY if provided
         --ros_global) ros_localhost_only=0 ;;
         --run_token) run_token="$2"; shift ;; # optional unique token for process identification
         --set) cfg_overrides+=("$2"); shift ;;
+        --allow_contract_override) allow_contract_override=1 ;;
         --dry-run) dry_run=1 ;;
         -h|--help) usage ;;
         *) echo "Unknown parameter passed: $1"; usage ;;
@@ -66,13 +72,39 @@ IFS=',' # Set the internal field separator to a comma
 binddirs="${IBRIDO_B_ALL[*]}"
 unset IFS # Reset the internal field separator
 
-training_script="launch_training.sh"
-
 # Generate a unique ID based on the current timestamp
 job_id=$(echo "$SCHED_JOBID" | cut -d'.' -f1)
 unique_id="_$(date +%Y_%m_%d_%H_%M_%S)_ID${job_id}" # just used to retrive process ID
 
-training_cmd="$training_script --unique_id ${unique_id} --cfg $config_file"
+if [ -n "${bundle_path:-}" ] && [ -n "${config_file:-}" ]; then
+    echo "execute.sh: use either --cfg or --bundle, not both"
+    exit 1
+fi
+
+if [ -n "${bundle_path:-}" ]; then
+    training_script="launch_bundle.sh"
+    container_bundle_path="$bundle_path"
+    if [[ -n "${IBRIDO_TRAINING_DATA:-}" && "$container_bundle_path" == "${IBRIDO_TRAINING_DATA}"* ]]; then
+        container_bundle_path="/root/training_data${container_bundle_path#"${IBRIDO_TRAINING_DATA}"}"
+    fi
+    printf -v container_bundle_path_quoted '%q' "$container_bundle_path"
+    training_cmd="$training_script --unique_id ${unique_id} --bundle ${container_bundle_path_quoted}"
+    if [ -n "${run_intent:-}" ]; then
+        printf -v run_intent_quoted '%q' "$run_intent"
+        training_cmd+=" --intent ${run_intent_quoted}"
+    fi
+    if (( allow_contract_override )); then
+        training_cmd+=" --allow_contract_override"
+    fi
+else
+    training_script="launch_training.sh"
+    training_cmd="$training_script --unique_id ${unique_id}"
+    if [ -n "${config_file:-}" ]; then
+        printf -v config_file_quoted '%q' "$config_file"
+        training_cmd+=" --cfg ${config_file_quoted}"
+    fi
+fi
+
 for cfg_override in "${cfg_overrides[@]}"; do
     cfg_override_name="${cfg_override%%=*}"
     if [[ "$cfg_override" != *=* || ! "$cfg_override_name" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]]; then

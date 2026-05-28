@@ -577,6 +577,21 @@ ibrido_prepare_run_metadata() {
             ibrido_yaml_quote "$config_snapshot_rel"
             printf '\n'
         fi
+        if [ -n "${SOURCE_BUNDLE_PATH:-}" ]; then
+            printf 'source_bundle: '
+            ibrido_yaml_quote "$SOURCE_BUNDLE_PATH"
+            printf '\n'
+        fi
+        if [ -n "${SOURCE_BUNDLE_FILE:-}" ]; then
+            printf 'source_bundle_file: '
+            ibrido_yaml_quote "$SOURCE_BUNDLE_FILE"
+            printf '\n'
+        fi
+        if [ -n "${SOURCE_RUN_METADATA_DIR:-}" ]; then
+            printf 'source_run_metadata: '
+            ibrido_yaml_quote "$SOURCE_RUN_METADATA_DIR"
+            printf '\n'
+        fi
         printf 'shm_namespace: '
         ibrido_yaml_quote "$SHM_NS"
         printf '\n'
@@ -603,6 +618,21 @@ ibrido_prepare_run_metadata() {
         printf 'backend: '
         ibrido_yaml_quote "$resolved_backend"
         printf '\n'
+        if [ -n "${SOURCE_BUNDLE_PATH:-}" ]; then
+            printf 'source:\n'
+            printf '  bundle_path: '
+            ibrido_yaml_quote "$SOURCE_BUNDLE_PATH"
+            printf '\n'
+            printf '  bundle_file: '
+            ibrido_yaml_quote "${SOURCE_BUNDLE_FILE:-}"
+            printf '\n'
+            printf '  run_metadata: '
+            ibrido_yaml_quote "${SOURCE_RUN_METADATA_DIR:-}"
+            printf '\n'
+            printf '  resolved_config: '
+            ibrido_yaml_quote "${SOURCE_RESOLVED_CONFIG_PATH:-}"
+            printf '\n'
+        fi
         printf 'robot:\n'
         printf '  name: '
         ibrido_yaml_quote "$SHM_NS"
