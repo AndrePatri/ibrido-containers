@@ -87,7 +87,7 @@ trap 'cleanup; exit 130' INT TERM
 usage() {
     echo "Usage: $0
     --bundle BUNDLE_DIR_OR_BUNDLE_YAML \
-    [--intent eval_same_domain] \
+    [--intent eval_same_domain|eval_cross_sim] \
     [--unique_id UNIQUE_ID] \
     [--set VAR=VALUE] \
     [--allow_contract_override] \
@@ -118,7 +118,87 @@ sanitize_token() {
     printf '%s' "$token"
 }
 
-is_same_domain_contract_var() {
+resolve_ws_src_path() {
+    local path="$1"
+    if [[ "$path" = /* ]]; then
+        printf '%s' "$path"
+    else
+        printf '%s/src/%s' "$WS_ROOT" "$path"
+    fi
+}
+
+custom_args_has() {
+    local name="$1"
+    [[ " ${CUSTOM_ARGS_NAMES:-} " == *" ${name} "* ]]
+}
+
+append_custom_arg() {
+    local name="$1"
+    local dtype="$2"
+    local value="$3"
+
+    if custom_args_has "$name"; then
+        return 0
+    fi
+
+    CUSTOM_ARGS_NAMES="${CUSTOM_ARGS_NAMES:-} ${name}"
+    CUSTOM_ARGS_DTYPE="${CUSTOM_ARGS_DTYPE:-} ${dtype}"
+    CUSTOM_ARGS_VALS="${CUSTOM_ARGS_VALS:-} ${value}"
+    export CUSTOM_ARGS_NAMES CUSTOM_ARGS_DTYPE CUSTOM_ARGS_VALS
+}
+
+resolve_xbot_config() {
+    local cfg_key
+
+    RESOLVED_XBOT_CONFIG_PATH="${XBOT_CONFIG_PATH:-}"
+    if [ -n "$RESOLVED_XBOT_CONFIG_PATH" ]; then
+        return
+    fi
+
+    RESOLVED_XBOT_CONFIG="${XBOT_CONFIG:-}"
+    if [ -n "$RESOLVED_XBOT_CONFIG" ]; then
+        RESOLVED_XBOT_CONFIG_PATH="$(resolve_ws_src_path "$RESOLVED_XBOT_CONFIG")"
+        return
+    fi
+
+    cfg_key="${SHM_NS:-} ${RNAME:-} ${URDF_PATH:-} ${CLUSTER_CL_FNAME:-} ${CUSTOM_ARGS_VALS:-}"
+    cfg_key="${cfg_key,,}"
+
+    if [[ "$cfg_key" == *centauro* ]]; then
+        RESOLVED_XBOT_CONFIG="CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/centauro_ibrido.yaml"
+    elif [[ "$cfg_key" == *b2w* ]]; then
+        RESOLVED_XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/b2w/xbot2_basic.yaml"
+    elif [[ "$cfg_key" == *kyon* ]]; then
+        if [[ "$cfg_key" == *wheels_no_yaw* || "$cfg_key" == *no_yaw* ]]; then
+            RESOLVED_XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_wheels_no_yaw.yaml"
+        elif [[ "$cfg_key" == *wheels* && "$cfg_key" != *no_wheels* ]]; then
+            RESOLVED_XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_wheels.yaml"
+        else
+            RESOLVED_XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic.yaml"
+        fi
+    elif [[ "$cfg_key" == *talos* ]]; then
+        RESOLVED_XBOT_CONFIG="TalosHybridMPC/taloshybridmpc/config/xmj_env_files/xbot2_basic.yaml"
+    fi
+
+    if [ -n "$RESOLVED_XBOT_CONFIG" ]; then
+        RESOLVED_XBOT_CONFIG_PATH="$(resolve_ws_src_path "$RESOLVED_XBOT_CONFIG")"
+    fi
+}
+
+resolve_xmj_files_dir() {
+    RESOLVED_XMJ_FILES_DIR_PATH="${XMJ_FILES_DIR:-}"
+    if [ -n "$RESOLVED_XMJ_FILES_DIR_PATH" ]; then
+        RESOLVED_XMJ_FILES_DIR_PATH="$(resolve_ws_src_path "$RESOLVED_XMJ_FILES_DIR_PATH")"
+        return
+    fi
+
+    resolve_xbot_config
+    if [ -n "${RESOLVED_XBOT_CONFIG:-}" ]; then
+        RESOLVED_XMJ_FILES_DIR_PATH="$(resolve_ws_src_path "${RESOLVED_XBOT_CONFIG%/*}")"
+    fi
+}
+
+is_contract_var() {
     case "$1" in
         RUN_INTENT|WORLD_BACKEND|WORLD_INTERFACE|REMOTE_ENV_FNAME|IBRIDO_WORLD_INTERFACE|\
         URDF_PATH|SRDF_PATH|JNT_IMP_CONFIG_PATH|CLUSTER_CL_FNAME|CLUSTER_DT|PHYSICS_DT|\
@@ -158,10 +238,13 @@ if [ -z "$bundle_path" ]; then
     usage
 fi
 
-if [ "$intent" != "eval_same_domain" ]; then
-    echo "launch_bundle.sh: unsupported intent '$intent'. Only eval_same_domain is wired for now."
-    exit 1
-fi
+case "$intent" in
+    eval_same_domain|eval_cross_sim) ;;
+    *)
+        echo "launch_bundle.sh: unsupported intent '$intent'. Supported: eval_same_domain, eval_cross_sim."
+        exit 1
+        ;;
+esac
 
 if [ -f "$bundle_path" ]; then
     bundle_file="$(readlink -f "$bundle_path")"
@@ -209,8 +292,32 @@ export SOURCE_BUNDLE_FILE="$bundle_file"
 export SOURCE_RUN_METADATA_DIR="$source_run_metadata_dir"
 export SOURCE_RESOLVED_CONFIG_PATH="$source_resolved_config"
 
-export RUN_INTENT="eval_same_domain"
-export WORLD_BACKEND="isaac5x"
+case "$intent" in
+    eval_same_domain)
+        export RUN_INTENT="eval_same_domain"
+        export WORLD_BACKEND="isaac5x"
+        export N_ENVS="${EVAL_N_ENVS:-2}"
+        export RNAME="${run_label}_EvalSameDomain"
+        export COMMENT="eval_same_domain from ${bundle_name}"
+        world_iface_fname="aug_mpc_envs.world_interfaces.isaac5x_world_interface"
+        world_headless=1
+        world_use_gpu="${USE_GPU_SIM:-1}"
+        world_use_custom_jnt_imp=1
+        world_env_profile="isaac5x"
+        ;;
+    eval_cross_sim)
+        export RUN_INTENT="eval_cross_sim"
+        export WORLD_BACKEND="xmj"
+        export N_ENVS="${EVAL_N_ENVS:-1}"
+        export RNAME="${run_label}_EvalCrossSim"
+        export COMMENT="eval_cross_sim from ${bundle_name}"
+        world_iface_fname="aug_mpc_envs.world_interfaces.xmj_world_interface"
+        world_headless="${XMJ_HEADLESS:-0}"
+        world_use_gpu=0
+        world_use_custom_jnt_imp=1
+        world_env_profile="xmj"
+        ;;
+esac
 export TIME_SOURCE="sim"
 export EVAL="1"
 export RESUME="0"
@@ -226,12 +333,9 @@ export CLUSTER_DB="0"
 export ENV_IDX_BAG="-1"
 export ENV_IDX_BAG_DEMO="-1"
 export ENV_IDX_BAG_EXPL="-1"
-export N_ENVS="${EVAL_N_ENVS:-2}"
 export TOT_STEPS="${EVAL_TOT_STEPS:-1000}"
 export MPATH="$bundle_dir"
 export MNAME="$checkpoint_file"
-export RNAME="${run_label}_EvalSameDomain"
-export COMMENT="eval_same_domain from ${bundle_name}"
 export SHM_NS="${SHM_NS_EVAL_BASE:-eval_${bundle_token}}${unique_id}"
 
 for cfg_override in "${cfg_overrides[@]}"; do
@@ -240,13 +344,46 @@ for cfg_override in "${cfg_overrides[@]}"; do
         echo "Invalid --set override: $cfg_override"
         exit 1
     fi
-    if (( ! allow_contract_override )) && is_same_domain_contract_var "$cfg_override_name"; then
-        echo "launch_bundle.sh: refusing same-domain contract override '$cfg_override_name'."
+    if (( ! allow_contract_override )) && is_contract_var "$cfg_override_name"; then
+        echo "launch_bundle.sh: refusing bundle contract override '$cfg_override_name'."
         echo "launch_bundle.sh: pass --allow_contract_override if this mismatch is intentional."
         exit 1
     fi
     export "$cfg_override"
 done
+
+if [ "$intent" = "eval_cross_sim" ]; then
+    if [ "$N_ENVS" != "1" ]; then
+        echo "launch_bundle.sh: eval_cross_sim currently supports only N_ENVS=1 for XMjSimEnv."
+        exit 1
+    fi
+    resolve_xbot_config
+    resolve_xmj_files_dir
+    if [ -z "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
+        echo "launch_bundle.sh: could not resolve an XBot2 config for eval_cross_sim. Set XBOT_CONFIG or XBOT_CONFIG_PATH."
+        exit 1
+    fi
+    if [ -z "${RESOLVED_XMJ_FILES_DIR_PATH:-}" ]; then
+        echo "launch_bundle.sh: could not resolve xmj files dir for eval_cross_sim. Set XMJ_FILES_DIR."
+        exit 1
+    fi
+    export XBOT_CONFIG_PATH="$RESOLVED_XBOT_CONFIG_PATH"
+    export JNT_IMP_CONFIG_PATH="$RESOLVED_XBOT_CONFIG_PATH"
+    export XMJ_FILES_DIR="$RESOLVED_XMJ_FILES_DIR_PATH"
+    export USE_GPU_SIM="0"
+    append_custom_arg "xmj_files_dir" "str" "$RESOLVED_XMJ_FILES_DIR_PATH"
+fi
+
+case "$intent" in
+    eval_same_domain)
+        world_headless=1
+        world_use_gpu="${USE_GPU_SIM:-1}"
+        ;;
+    eval_cross_sim)
+        world_headless="${XMJ_HEADLESS:-$world_headless}"
+        world_use_gpu=0
+        ;;
+esac
 
 ibrido_normalize_runtime_config || exit 1
 ibrido_validate_runtime_config || exit 1
@@ -282,7 +419,7 @@ echo "Will use shared memory namespace ${SHM_NS}"
 
 export IBRIDO_RUN_META_DIR="${base_log_dir}/metadata"
 
-ibrido_build_world_cmd "aug_mpc_envs.world_interfaces.isaac5x_world_interface" "$N_ENVS" 1 1 "$USE_GPU_SIM"
+ibrido_build_world_cmd "$world_iface_fname" "$N_ENVS" "$world_headless" "$world_use_custom_jnt_imp" "$world_use_gpu"
 remote_env_cmd="$IBRIDO_WORLD_CMD"
 
 ibrido_build_cluster_cmd "$N_ENVS" 1 0
@@ -303,13 +440,22 @@ if (( dry_run )); then
     exit 0
 fi
 
-(
-    micromamba activate "${MAMBA_ENV_NAME_ISAAC:-ibrido_isaac_py11}"
-    source /isaac-sim/setup_conda_env.sh
-    source "$HOME/ibrido_ws/setup.bash"
-    export EXP_PATH="/isaac-sim/apps"
-    exec python "$LRHC_DIR/launch_world_interface.py" $remote_env_cmd
-) > "$log_world" 2>&1 &
+if [ "$world_env_profile" = "isaac5x" ]; then
+    (
+        micromamba activate "${MAMBA_ENV_NAME_ISAAC:-ibrido_isaac_py11}"
+        source /isaac-sim/setup_conda_env.sh || exit 1
+        source "$HOME/ibrido_ws/setup.bash" || exit 1
+        export EXP_PATH="/isaac-sim/apps"
+        exec python "$LRHC_DIR/launch_world_interface.py" $remote_env_cmd
+    ) > "$log_world" 2>&1 &
+else
+    (
+        micromamba activate "${MAMBA_ENV_NAME:-ibrido}"
+        source /opt/xbot/setup.sh || exit 1
+        source "$HOME/ibrido_ws/setup.bash" || exit 1
+        exec python "$LRHC_DIR/launch_world_interface.py" $remote_env_cmd
+    ) > "$log_world" 2>&1 &
+fi
 world_pid=$!
 child_pids+=("$world_pid")
 
