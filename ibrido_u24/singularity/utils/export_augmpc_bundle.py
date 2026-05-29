@@ -78,7 +78,7 @@ def copy_filtered_bundle(
             dirs[:] = [d for d in dirs if not should_ignore_dir(d, rel_root_str)]
 
         if rel_root_str.startswith("ibrido_run_"):
-            files = [f for f in files if fnmatch.fnmatch(f, "training_cfg_*")]
+            files = [f for f in files if fnmatch.fnmatch(f, "*.yaml") or f in {"resolved_env.sh", "cfg_stack.txt"}]
         else:
             files = [f for f in files if not should_ignore_file(f)]
 

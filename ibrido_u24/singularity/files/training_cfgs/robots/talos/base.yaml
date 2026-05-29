@@ -1,0 +1,4 @@
+vars:
+  ROBOT_FAMILY: talos
+  URDF_PATH: ${HOME}/ibrido_ws/src/talos-description/talos_description/robots/talos_full_v2.urdf.xacro
+  SRDF_PATH: ${HOME}/ibrido_ws/src/talos-description/talos_description/srdf/talos.srdf

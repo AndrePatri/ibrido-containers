@@ -61,16 +61,14 @@ cleanup() {
     fi
 
     echo "launch_bundle.sh: sending SIGINT to all child processes..."
-    if ((${#child_pids[@]})); then
-        signal_process_tree INT "${child_pids[@]}"
-        if ! wait_for_children_exit 8; then
-            echo "launch_bundle.sh: children still alive, sending SIGTERM..."
-            signal_process_tree TERM "${child_pids[@]}"
-        fi
-        if ! wait_for_children_exit 8; then
-            echo "launch_bundle.sh: children still alive, sending SIGKILL..."
-            signal_process_tree KILL "${child_pids[@]}"
-        fi
+    signal_process_tree INT "${child_pids[@]}"
+    if ! wait_for_children_exit 8; then
+        echo "launch_bundle.sh: children still alive, sending SIGTERM..."
+        signal_process_tree TERM "${child_pids[@]}"
+    fi
+    if ! wait_for_children_exit 8; then
+        echo "launch_bundle.sh: children still alive, sending SIGKILL..."
+        signal_process_tree KILL "${child_pids[@]}"
     fi
 
     echo "launch_bundle.sh: waiting for child processes to exit..."
@@ -87,7 +85,7 @@ trap 'cleanup; exit 130' INT TERM
 usage() {
     echo "Usage: $0
     --bundle BUNDLE_DIR_OR_BUNDLE_YAML \
-    [--intent eval_same_domain|eval_cross_sim] \
+    --cfg TRANSFER_CFG \
     [--unique_id UNIQUE_ID] \
     [--set VAR=VALUE] \
     [--allow_contract_override] \
@@ -141,10 +139,39 @@ append_custom_arg() {
         return 0
     fi
 
-    CUSTOM_ARGS_NAMES="${CUSTOM_ARGS_NAMES:-} ${name}"
-    CUSTOM_ARGS_DTYPE="${CUSTOM_ARGS_DTYPE:-} ${dtype}"
-    CUSTOM_ARGS_VALS="${CUSTOM_ARGS_VALS:-} ${value}"
+    if [ -z "${CUSTOM_ARGS_NAMES:-}" ]; then
+        CUSTOM_ARGS_NAMES="$name"
+        CUSTOM_ARGS_DTYPE="$dtype"
+        CUSTOM_ARGS_VALS="$value"
+    else
+        CUSTOM_ARGS_NAMES="${CUSTOM_ARGS_NAMES} ${name}"
+        CUSTOM_ARGS_DTYPE="${CUSTOM_ARGS_DTYPE} ${dtype}"
+        CUSTOM_ARGS_VALS="${CUSTOM_ARGS_VALS} ${value}"
+    fi
     export CUSTOM_ARGS_NAMES CUSTOM_ARGS_DTYPE CUSTOM_ARGS_VALS
+}
+
+append_custom_args_triplets() {
+    local names_s="$1"
+    local dtype_s="$2"
+    local vals_s="$3"
+    local names=()
+    local dtypes=()
+    local vals=()
+    local i
+
+    read -r -a names <<< "$names_s"
+    read -r -a dtypes <<< "$dtype_s"
+    read -r -a vals <<< "$vals_s"
+
+    if [ "${#names[@]}" -ne "${#dtypes[@]}" ] || [ "${#names[@]}" -ne "${#vals[@]}" ]; then
+        echo "launch_bundle.sh: transfer custom args triplet length mismatch"
+        exit 1
+    fi
+
+    for i in "${!names[@]}"; do
+        append_custom_arg "${names[$i]}" "${dtypes[$i]}" "${vals[$i]}"
+    done
 }
 
 resolve_xbot_config() {
@@ -161,7 +188,7 @@ resolve_xbot_config() {
         return
     fi
 
-    cfg_key="${SHM_NS:-} ${RNAME:-} ${URDF_PATH:-} ${CLUSTER_CL_FNAME:-} ${CUSTOM_ARGS_VALS:-}"
+    cfg_key="${ROBOT_FAMILY:-} ${ROBOT_VARIANT:-} ${SHM_NS:-} ${RNAME:-} ${URDF_PATH:-} ${CLUSTER_CL_FNAME:-} ${CUSTOM_ARGS_VALS:-}"
     cfg_key="${cfg_key,,}"
 
     if [[ "$cfg_key" == *centauro* ]]; then
@@ -169,7 +196,13 @@ resolve_xbot_config() {
     elif [[ "$cfg_key" == *b2w* ]]; then
         RESOLVED_XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/b2w/xbot2_basic.yaml"
     elif [[ "$cfg_key" == *kyon* ]]; then
-        if [[ "$cfg_key" == *wheels_no_yaw* || "$cfg_key" == *no_yaw* ]]; then
+        if [[ "$cfg_key" == *iit-kyon-ros-pkg* || "$cfg_key" == *kyon_simple* ]]; then
+            if [[ "$cfg_key" == *wheels* && "$cfg_key" != *no_wheels* ]]; then
+                RESOLVED_XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
+            else
+                RESOLVED_XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic.yaml"
+            fi
+        elif [[ "$cfg_key" == *wheels_no_yaw* || "$cfg_key" == *no_yaw* ]]; then
             RESOLVED_XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_wheels_no_yaw.yaml"
         elif [[ "$cfg_key" == *wheels* && "$cfg_key" != *no_wheels* ]]; then
             RESOLVED_XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_wheels.yaml"
@@ -186,6 +219,11 @@ resolve_xbot_config() {
 }
 
 resolve_xmj_files_dir() {
+    RESOLVED_XMJ_FILES_DIR_PATH="${XMJ_FILES_DIR_PATH:-}"
+    if [ -n "$RESOLVED_XMJ_FILES_DIR_PATH" ]; then
+        return
+    fi
+
     RESOLVED_XMJ_FILES_DIR_PATH="${XMJ_FILES_DIR:-}"
     if [ -n "$RESOLVED_XMJ_FILES_DIR_PATH" ]; then
         RESOLVED_XMJ_FILES_DIR_PATH="$(resolve_ws_src_path "$RESOLVED_XMJ_FILES_DIR_PATH")"
@@ -200,7 +238,7 @@ resolve_xmj_files_dir() {
 
 is_contract_var() {
     case "$1" in
-        RUN_INTENT|WORLD_BACKEND|WORLD_INTERFACE|REMOTE_ENV_FNAME|IBRIDO_WORLD_INTERFACE|\
+        WORLD_INTERFACE|IBRIDO_WORLD_INTERFACE|\
         URDF_PATH|SRDF_PATH|JNT_IMP_CONFIG_PATH|CLUSTER_CL_FNAME|CLUSTER_DT|PHYSICS_DT|\
         N_NODES|TRAIN_ENV_FNAME|TRAIN_ENV_CNAME|ACTION_REPEAT|CUSTOM_ARGS_NAMES|\
         CUSTOM_ARGS_DTYPE|CUSTOM_ARGS_VALS)
@@ -213,7 +251,8 @@ is_contract_var() {
 }
 
 bundle_path=""
-intent="eval_same_domain"
+cfg_file_basepath="${IBRIDO_CFG_BASEPATH:-/root/ibrido_files/training_cfgs}"
+config_file=""
 unique_id=""
 dry_run=0
 allow_contract_override=0
@@ -222,7 +261,14 @@ cfg_overrides=()
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         --bundle) bundle_path="$2"; shift ;;
-        --intent) intent="$2"; shift ;;
+        -cfg|--cfg)
+            if [[ "$2" = /* ]]; then
+                config_file="$2"
+            else
+                config_file="${cfg_file_basepath}/$2"
+            fi
+            shift
+            ;;
         --unique_id) unique_id="$2"; shift ;;
         --set) cfg_overrides+=("$2"); shift ;;
         --allow_contract_override) allow_contract_override=1 ;;
@@ -237,14 +283,14 @@ if [ -z "$bundle_path" ]; then
     echo "launch_bundle.sh: --bundle is required"
     usage
 fi
-
-case "$intent" in
-    eval_same_domain|eval_cross_sim) ;;
-    *)
-        echo "launch_bundle.sh: unsupported intent '$intent'. Supported: eval_same_domain, eval_cross_sim."
-        exit 1
-        ;;
-esac
+if [ -z "$config_file" ]; then
+    echo "launch_bundle.sh: --cfg is required"
+    usage
+fi
+if [ ! -f "$config_file" ]; then
+    echo "launch_bundle.sh: transfer cfg not found: $config_file"
+    exit 1
+fi
 
 if [ -f "$bundle_path" ]; then
     bundle_file="$(readlink -f "$bundle_path")"
@@ -278,65 +324,71 @@ if [ ! -f "$source_resolved_env" ]; then
     exit 1
 fi
 
-# Restore the training-time config, then intentionally override only the eval layer.
+runtime_home="$HOME"
+runtime_path="$PATH"
+runtime_ld_library_path_is_set=0
+runtime_ld_library_path=""
+if [ "${LD_LIBRARY_PATH+x}" = x ]; then
+    runtime_ld_library_path_is_set=1
+    runtime_ld_library_path="$LD_LIBRARY_PATH"
+fi
+runtime_pythonpath_is_set=0
+runtime_pythonpath=""
+if [ "${PYTHONPATH+x}" = x ]; then
+    runtime_pythonpath_is_set=1
+    runtime_pythonpath="$PYTHONPATH"
+fi
+
 source "$source_resolved_env"
+
+export HOME="$runtime_home"
+export PATH="$runtime_path"
+if (( runtime_ld_library_path_is_set )); then
+    export LD_LIBRARY_PATH="$runtime_ld_library_path"
+else
+    unset LD_LIBRARY_PATH
+fi
+if (( runtime_pythonpath_is_set )); then
+    export PYTHONPATH="$runtime_pythonpath"
+else
+    unset PYTHONPATH
+fi
 unset IBRIDO_RUN_META_DIR
+
+source_custom_args_names="${CUSTOM_ARGS_NAMES:-}"
+source_custom_args_dtype="${CUSTOM_ARGS_DTYPE:-}"
+source_custom_args_vals="${CUSTOM_ARGS_VALS:-}"
+
+config_exports="$("${UTILS_DIR}/ibrido_config_loader.py" --shell "$config_file")" || exit 1
+eval "$config_exports"
+
+transfer_custom_args_names="${CUSTOM_ARGS_NAMES:-}"
+transfer_custom_args_dtype="${CUSTOM_ARGS_DTYPE:-}"
+transfer_custom_args_vals="${CUSTOM_ARGS_VALS:-}"
+CUSTOM_ARGS_NAMES="$source_custom_args_names"
+CUSTOM_ARGS_DTYPE="$source_custom_args_dtype"
+CUSTOM_ARGS_VALS="$source_custom_args_vals"
+export CUSTOM_ARGS_NAMES CUSTOM_ARGS_DTYPE CUSTOM_ARGS_VALS
+append_custom_args_triplets "$transfer_custom_args_names" "$transfer_custom_args_dtype" "$transfer_custom_args_vals"
 
 unique_id="${unique_id:-$(date '+%Y_%m_%d__%H_%M_%S')}"
 bundle_name="$(basename "$bundle_dir")"
 bundle_token="$(sanitize_token "$bundle_name")"
 run_label="${RNAME:-${RUN_NAME:-BundleRun}}"
+suffix="${RNAME_SUFFIX:-Transfer}"
 
 export SOURCE_BUNDLE_PATH="$bundle_dir"
 export SOURCE_BUNDLE_FILE="$bundle_file"
 export SOURCE_RUN_METADATA_DIR="$source_run_metadata_dir"
 export SOURCE_RESOLVED_CONFIG_PATH="$source_resolved_config"
 
-case "$intent" in
-    eval_same_domain)
-        export RUN_INTENT="eval_same_domain"
-        export WORLD_BACKEND="isaac5x"
-        export N_ENVS="${EVAL_N_ENVS:-2}"
-        export RNAME="${run_label}_EvalSameDomain"
-        export COMMENT="eval_same_domain from ${bundle_name}"
-        world_iface_fname="aug_mpc_envs.world_interfaces.isaac5x_world_interface"
-        world_headless=1
-        world_use_gpu="${USE_GPU_SIM:-1}"
-        world_use_custom_jnt_imp=1
-        world_env_profile="isaac5x"
-        ;;
-    eval_cross_sim)
-        export RUN_INTENT="eval_cross_sim"
-        export WORLD_BACKEND="xmj"
-        export N_ENVS="${EVAL_N_ENVS:-1}"
-        export RNAME="${run_label}_EvalCrossSim"
-        export COMMENT="eval_cross_sim from ${bundle_name}"
-        world_iface_fname="aug_mpc_envs.world_interfaces.xmj_world_interface"
-        world_headless="${XMJ_HEADLESS:-0}"
-        world_use_gpu=0
-        world_use_custom_jnt_imp=0
-        world_env_profile="xmj"
-        ;;
-esac
-export TIME_SOURCE="sim"
-export EVAL="1"
-export RESUME="0"
-export REMOTE_STEPPING="1"
-export DET_EVAL="${DET_EVAL:-1}"
-export EVAL_ON_CPU="${EVAL_ON_CPU:-1}"
-export OVERRIDE_ENV="${OVERRIDE_ENV:-0}"
-export OVERRIDE_AGENT_REFS="${OVERRIDE_AGENT_REFS:-0}"
-export DEBUG="0"
-export RMDEBUG="0"
-export DUMP_ENV_CHECKPOINTS="0"
-export CLUSTER_DB="0"
-export ENV_IDX_BAG="-1"
-export ENV_IDX_BAG_DEMO="-1"
-export ENV_IDX_BAG_EXPL="-1"
-export TOT_STEPS="${EVAL_TOT_STEPS:-1000}"
+export EVAL="${EVAL:-1}"
+export RESUME="${RESUME:-0}"
 export MPATH="$bundle_dir"
 export MNAME="$checkpoint_file"
 export SHM_NS="${SHM_NS_EVAL_BASE:-eval_${bundle_token}}${unique_id}"
+export RNAME="${run_label}_${suffix}"
+export COMMENT="${COMMENT_PREFIX:-bundle_transfer} from ${bundle_name}"
 
 for cfg_override in "${cfg_overrides[@]}"; do
     cfg_override_name="${cfg_override%%=*}"
@@ -352,43 +404,71 @@ for cfg_override in "${cfg_overrides[@]}"; do
     export "$cfg_override"
 done
 
-if [ "$intent" = "eval_cross_sim" ]; then
-    if [ "$N_ENVS" != "1" ]; then
-        echo "launch_bundle.sh: eval_cross_sim currently supports only N_ENVS=1 for XMjSimEnv."
-        exit 1
-    fi
-    resolve_xbot_config
-    resolve_xmj_files_dir
-    if [ -z "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
-        echo "launch_bundle.sh: could not resolve an XBot2 config for eval_cross_sim. Set XBOT_CONFIG or XBOT_CONFIG_PATH."
-        exit 1
-    fi
-    if [ -z "${RESOLVED_XMJ_FILES_DIR_PATH:-}" ]; then
-        echo "launch_bundle.sh: could not resolve xmj files dir for eval_cross_sim. Set XMJ_FILES_DIR."
-        exit 1
-    fi
-    export XBOT_CONFIG_PATH="$RESOLVED_XBOT_CONFIG_PATH"
-    export JNT_IMP_CONFIG_PATH="$RESOLVED_XBOT_CONFIG_PATH"
-    export XMJ_FILES_DIR="$RESOLVED_XMJ_FILES_DIR_PATH"
-    export USE_GPU_SIM="0"
-    append_custom_arg "xmj_files_dir" "str" "$RESOLVED_XMJ_FILES_DIR_PATH"
-    append_custom_arg "xmj_timeout" "int" "${XMJ_TIMEOUT_MS:-30000}"
-    append_custom_arg "add_remote_exit_flag" "bool" "${ADD_REMOTE_EXIT_FLAG:-true}"
-    append_custom_arg "enable_height_sensor" "bool" "${XMJ_ENABLE_HEIGHT_SENSOR:-true}"
-    append_custom_arg "height_sensor_pixels" "int" "${XMJ_HEIGHT_SENSOR_PIXELS:-10}"
-    append_custom_arg "height_sensor_resolution" "float" "${XMJ_HEIGHT_SENSOR_RESOLUTION:-0.16}"
-    append_custom_arg "height_sensor_forward_offset" "float" "${XMJ_HEIGHT_SENSOR_FORWARD_OFFSET:-0.0}"
-    append_custom_arg "height_sensor_lateral_offset" "float" "${XMJ_HEIGHT_SENSOR_LATERAL_OFFSET:-0.0}"
-fi
+world_iface_fname="${WORLD_INTERFACE:-}"
+world_headless="${WORLD_HEADLESS:-1}"
+world_use_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-1}"
+world_use_gpu="${USE_GPU_SIM:-1}"
+world_env_profile="isaac5x"
+world_jnt_imp_config_path="${JNT_IMP_CONFIG_PATH:-}"
 
-case "$intent" in
-    eval_same_domain)
-        world_headless=1
-        world_use_gpu="${USE_GPU_SIM:-1}"
-        ;;
-    eval_cross_sim)
-        world_headless="${XMJ_HEADLESS:-$world_headless}"
+case "$world_iface_fname" in
+    *xmj_world_interface*)
+        if [ "$N_ENVS" != "1" ]; then
+            echo "launch_bundle.sh: XMJ transfer supports only N_ENVS=1."
+            exit 1
+        fi
+        resolve_xbot_config
+        resolve_xmj_files_dir
+        if [ -z "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
+            echo "launch_bundle.sh: could not resolve an XBot2 config. Set XBOT_CONFIG or XBOT_CONFIG_PATH."
+            exit 1
+        fi
+        if [ -z "${RESOLVED_XMJ_FILES_DIR_PATH:-}" ]; then
+            echo "launch_bundle.sh: could not resolve XMJ files dir. Set XMJ_FILES_DIR or XMJ_FILES_DIR_PATH."
+            exit 1
+        fi
+        export XBOT_CONFIG_PATH="$RESOLVED_XBOT_CONFIG_PATH"
+        export XMJ_FILES_DIR_PATH="$RESOLVED_XMJ_FILES_DIR_PATH"
+        export USE_GPU_SIM="0"
+        world_jnt_imp_config_path="$RESOLVED_XBOT_CONFIG_PATH"
+        world_headless="${XMJ_HEADLESS:-0}"
+        world_use_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-0}"
         world_use_gpu=0
+        world_env_profile="xbot"
+        append_custom_arg "xmj_files_dir" "str" "$RESOLVED_XMJ_FILES_DIR_PATH"
+        append_custom_arg "xmj_timeout" "int" "${XMJ_TIMEOUT_MS:-30000}"
+        append_custom_arg "add_remote_exit_flag" "bool" "${ADD_REMOTE_EXIT_FLAG:-true}"
+        ;;
+    *rt_deploy_world_interface*)
+        if [ "$N_ENVS" != "1" ]; then
+            echo "launch_bundle.sh: RT transfer supports only N_ENVS=1."
+            exit 1
+        fi
+        resolve_xbot_config
+        if [ -z "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
+            echo "launch_bundle.sh: could not resolve an XBot2 config. Set XBOT_CONFIG or XBOT_CONFIG_PATH."
+            exit 1
+        fi
+        export XBOT_CONFIG_PATH="$RESOLVED_XBOT_CONFIG_PATH"
+        export RT_XBOT_CONFIG_PATH="$RESOLVED_XBOT_CONFIG_PATH"
+        export USE_GPU_SIM="0"
+        world_jnt_imp_config_path="$RESOLVED_XBOT_CONFIG_PATH"
+        world_headless="${RT_HEADLESS:-0}"
+        world_use_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-0}"
+        world_use_gpu=0
+        world_env_profile="xbot"
+        append_custom_arg "time_source" "str" "${TIME_SOURCE:-sim}"
+        append_custom_arg "add_remote_exit_flag" "bool" "${ADD_REMOTE_EXIT_FLAG:-true}"
+        ;;
+    *isaac5x_world_interface*)
+        world_headless="${WORLD_HEADLESS:-1}"
+        world_use_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-1}"
+        world_use_gpu="${USE_GPU_SIM:-1}"
+        world_env_profile="isaac5x"
+        ;;
+    *)
+        echo "launch_bundle.sh: unsupported WORLD_INTERFACE: $world_iface_fname"
+        exit 1
         ;;
 esac
 
@@ -405,6 +485,7 @@ fi
 base_log_dir="${HOME}/ibrido_logs/ibrido_eval_${unique_id}"
 mkdir -p "$base_log_dir"
 cp "$bundle_file" "${base_log_dir}/"
+cp "$config_file" "${base_log_dir}/"
 
 log_world="${base_log_dir}/ibrido_world_interface_${run_label}_${unique_id}.log"
 log_cluster="${base_log_dir}/ibrido_mpc_cluster_${run_label}_${unique_id}.log"
@@ -413,6 +494,7 @@ log_eval="${base_log_dir}/ibrido_eval_env_${run_label}_${unique_id}.log"
 echo "
 launch_bundle.sh: logging output to->
 source bundle: $bundle_file
+transfer cfg: $config_file
 remote env: $log_world
 rhc cluster: $log_cluster
 eval env: $log_eval
@@ -426,7 +508,7 @@ echo "Will use shared memory namespace ${SHM_NS}"
 
 export IBRIDO_RUN_META_DIR="${base_log_dir}/metadata"
 
-ibrido_build_world_cmd "$world_iface_fname" "$N_ENVS" "$world_headless" "$world_use_custom_jnt_imp" "$world_use_gpu"
+ibrido_build_world_cmd "$world_iface_fname" "$N_ENVS" "$world_headless" "$world_use_custom_jnt_imp" "$world_use_gpu" "$world_jnt_imp_config_path"
 remote_env_cmd="$IBRIDO_WORLD_CMD"
 
 ibrido_build_cluster_cmd "$N_ENVS" 1 0
@@ -439,7 +521,7 @@ world_launch_cmd="python $LRHC_DIR/launch_world_interface.py $remote_env_cmd"
 cluster_launch_cmd="python $LRHC_DIR/launch_control_cluster.py $cluster_cmd"
 eval_launch_cmd="python $LRHC_DIR/launch_train_env.py $eval_env_cmd --comment \"\\\"$COMMENT\\\"\""
 
-ibrido_prepare_run_metadata "$bundle_file" "$world_launch_cmd" "$cluster_launch_cmd" "$eval_launch_cmd" "$unique_id"
+ibrido_prepare_run_metadata "$config_file" "$world_launch_cmd" "$cluster_launch_cmd" "$eval_launch_cmd" "$unique_id"
 
 if (( dry_run )); then
     ibrido_print_dry_run "$world_launch_cmd" "$cluster_launch_cmd" "$eval_launch_cmd"

@@ -1,0 +1,56 @@
+vars:
+  ROBOT_VARIANT: centauro_open
+  ACTION_REPEAT: 4
+  COMMENT: centauro big wheels OPEN
+  ENV_IDX_BAG: 23
+  N_ENVS: 800
+  RNAME: CentauroOpenNoWheels
+  SEED: 7383
+  SHM_NS: centauro_big_wheels_open
+  TOT_STEPS: 10000000
+  TRAIN_ENV_CNAME: FakePosTrackingEnv
+  TRAIN_ENV_FNAME: fake_pos_tracking_env
+custom_args:
+  control:
+    use_jnt_v_feedback:
+      dtype: bool
+      value: false
+    control_wheels:
+      dtype: bool
+      value: false
+    fixed_flights:
+      dtype: bool
+      value: true
+    adaptive_is:
+      dtype: bool
+      value: true
+    lin_a_feedback:
+      dtype: bool
+      value: false
+    closed_partial:
+      dtype: bool
+      value: true
+    estimate_v_root:
+      dtype: bool
+      value: false
+  training:
+    step_height:
+      dtype: float
+      value: 0.1
+  world_interface:
+    rendering_dt:
+      dtype: float
+      value: 0.1
+    use_flat_ground:
+      dtype: bool
+      value: true
+    ground_type:
+      dtype: str
+      value: random_patches
+    dh_ground:
+      dtype: float
+      value: 0.02
+  robot_description:
+    add_upper_body:
+      dtype: bool
+      value: false

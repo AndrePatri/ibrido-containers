@@ -1,0 +1,80 @@
+vars:
+  ROBOT_VARIANT: kyon02_wheels_no_yaw_perception
+  ACTION_REPEAT: 3
+  COMMENT: kyon02 wheels (no yaw) CLOSED LOOP, 16392 bsize, no self collide, self collide, UTD 4, NO entropy annhealing [-0.3, -0.5], 8-15cm steps, 25 steps, 0.6-1.5 step width, flight control (apex 0.35, end[+0.2], length [8, ...]), no yaw rate randomization, track/CoT [0.1, 0.]/a rate, max p 10 m
+  DUMP_ENV_CHECKPOINTS: 0
+  ENV_IDX_BAG: 87
+  N_ENVS: 800
+  PUB_HEIGHTMAP: 1
+  RNAME: Kyon02PartialCloopWheelsNoYaw
+  SEED: 935
+  SHM_NS: kyon02_wheels_no_yaw
+  TOT_STEPS: 20000000
+  TRAIN_ENV_CNAME: FakePosTrackEnvPhaseControl
+  TRAIN_ENV_FNAME: fake_pos_track_env_phase_control
+custom_args:
+  training:
+    step_height:
+      dtype: float
+      value: 0.12
+  robot_description:
+    fix_yaw:
+      dtype: bool
+      value: true
+    wheels:
+      dtype: xacro
+      value: true
+    base_linkname:
+      dtype: str
+      value: pelvis
+    self_collide:
+      dtype: bool
+      value: true
+  control:
+    fixed_flights:
+      dtype: bool
+      value: true
+    adaptive_is:
+      dtype: bool
+      value: true
+    lin_a_feedback:
+      dtype: bool
+      value: false
+    closed_partial:
+      dtype: bool
+      value: true
+    estimate_v_root:
+      dtype: bool
+      value: false
+    use_jnt_v_feedback:
+      dtype: bool
+      value: false
+  world_interface:
+    rendering_dt:
+      dtype: float
+      value: 0.1
+    use_flat_ground:
+      dtype: bool
+      value: false
+    ground_type:
+      dtype: str
+      value: stepup_prim
+  perception:
+    enable_height_sensor:
+      dtype: bool
+      value: true
+    height_sensor_pixels:
+      dtype: float
+      value: 10
+    height_sensor_resolution:
+      dtype: float
+      value: 0.16
+    enable_height_vis:
+      dtype: bool
+      value: false
+    height_sensor_forward_offset:
+      dtype: float
+      value: 0.0
+    height_sensor_lateral_offset:
+      dtype: float
+      value: 0.0

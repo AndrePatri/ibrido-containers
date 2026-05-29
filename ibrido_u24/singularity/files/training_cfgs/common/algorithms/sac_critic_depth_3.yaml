@@ -1,0 +1,4 @@
+include:
+- sac_default.yaml
+vars:
+  CRITIC_DEPTH: 3

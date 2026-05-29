@@ -120,7 +120,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/pal_urdf_utils.git*ibrido_ros2"
     "git@github.com:AndrePatri/casadi.git*optional_float"
     "git@github.com:c-rizz/adarl.git*ibrido"
-    "git@github.com:ADVRHumanoids/xbot2_zmq.git*crzz-dev"
+    "git@github.com:AndrePatri/xbot2_zmq.git*ibrido"
     "git@github.com:AndrePatri/xbot2_mujoco.git*ibrido"
     "git@github.com:AndrePatri/mujoco_cmake.git*ibrido"
     "git@github.com:google/googletest.git*main"

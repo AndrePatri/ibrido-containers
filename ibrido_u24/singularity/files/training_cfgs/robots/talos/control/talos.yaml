@@ -1,0 +1,9 @@
+vars:
+  CLUSTER_CL_FNAME: taloshybridmpc.controllers.horizon_based.talos_rhc_cluster_client
+  CLUSTER_DT: 0.03
+  CODEGEN_OVERRIDE_BDIR: ${HOME}/aux_data/TalosRHCLusterClient_talos/CodeGen/talosRhc
+  IS_CLOSED_LOOP: 1
+  JNT_IMP_CONFIG_PATH: ${HOME}/ibrido_ws/src/TalosHybridMPC/taloshybridmpc/config/jnt_imp_config.yaml
+  N_CONTACTS: 2
+  N_NODES: 31
+  SRDF_PATH_ROSBAG: ${HOME}/aux_data/TalosRHCLusterClient_talos/talos.srdf

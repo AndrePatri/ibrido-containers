@@ -82,7 +82,7 @@ trap 'cleanup; exit 130' INT TERM
 
 usage() {
   echo "Usage: $0
-    [--cfg CFG] \
+    --cfg CFG \
     [--unique_id UNIQUE_ID] \
     [--set VAR=VALUE] \
     [--dry-run] \
@@ -92,8 +92,7 @@ usage() {
 
 cfg_file_basepath="${IBRIDO_CFG_BASEPATH:-/root/ibrido_files/training_cfgs}"
 
-# Default configuration file
-config_file="${cfg_file_basepath}/training_cfg.sh"
+config_file=""
 dry_run=0
 cfg_overrides=()
 
@@ -117,9 +116,15 @@ done
 
 unique_id="${unique_id:-$(date '+%Y_%m_%d__%H_%M_%S')}"
 
-# Source the configuration file
+if [ -z "$config_file" ]; then
+    echo "launch_training.sh: --cfg is required"
+    usage
+fi
+
+# Load the declarative configuration file.
 if [ -f "$config_file" ]; then
-    source "$config_file"
+    config_exports="$("${UTILS_DIR}/ibrido_config_loader.py" --shell "$config_file")" || exit 1
+    eval "$config_exports"
 else
     echo "Configuration file not found: $config_file"
     exit 1
@@ -181,7 +186,44 @@ echo "Will use shared memory namespace ${SHM_NS}"
 
 export IBRIDO_RUN_META_DIR="${IBRIDO_RUN_META_DIR:-${base_log_dir}/metadata}"
 
-ibrido_build_world_cmd "aug_mpc_envs.world_interfaces.isaac5x_world_interface" "$N_ENVS" 1 1 "$USE_GPU_SIM"
+world_iface_fname="${WORLD_INTERFACE:-}"
+world_headless="${WORLD_HEADLESS:-1}"
+world_use_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-1}"
+world_use_gpu="${USE_GPU_SIM:-1}"
+world_env_profile="isaac5x"
+
+if [ -z "$world_iface_fname" ]; then
+  echo "launch_training.sh: WORLD_INTERFACE is required by the selected cfg"
+  exit 1
+fi
+
+case "$world_iface_fname" in
+  *xmj_world_interface*)
+    world_headless="${XMJ_HEADLESS:-0}"
+    world_use_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-0}"
+    world_use_gpu=0
+    world_env_profile="xbot"
+    ;;
+  *rt_deploy_world_interface*)
+    world_headless="${RT_HEADLESS:-0}"
+    world_use_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-0}"
+    world_use_gpu=0
+    world_env_profile="xbot"
+    ;;
+  *isaac5x_world_interface*)
+    world_headless="${WORLD_HEADLESS:-1}"
+    world_use_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-1}"
+    world_use_gpu="${USE_GPU_SIM:-1}"
+    world_env_profile="isaac5x"
+    ;;
+  *)
+    echo "launch_training.sh: unsupported WORLD_INTERFACE: $world_iface_fname"
+    exit 1
+    ;;
+esac
+
+export WORLD_INTERFACE="$world_iface_fname"
+ibrido_build_world_cmd "$world_iface_fname" "$N_ENVS" "$world_headless" "$world_use_custom_jnt_imp" "$world_use_gpu"
 remote_env_cmd="$IBRIDO_WORLD_CMD"
 
 ibrido_build_cluster_cmd "$N_ENVS" 1 0
@@ -208,14 +250,21 @@ if (( dry_run )); then
   exit 0
 fi
 
-# remote env
-(
-  micromamba activate ${MAMBA_ENV_NAME_ISAAC}
-  source /isaac-sim/setup_conda_env.sh
-  source $HOME/ibrido_ws/setup.bash
-  export EXP_PATH="/isaac-sim/apps"
-  exec python $LRHC_DIR/launch_world_interface.py $remote_env_cmd
-) > "$log_world" 2>&1 &
+if [ "$world_env_profile" = "isaac5x" ]; then
+  (
+    micromamba activate "${MAMBA_ENV_NAME_ISAAC:-ibrido_isaac_py11}"
+    source /isaac-sim/setup_conda_env.sh
+    source "$HOME/ibrido_ws/setup.bash"
+    export EXP_PATH="/isaac-sim/apps"
+    exec python "$LRHC_DIR/launch_world_interface.py" $remote_env_cmd
+  ) > "$log_world" 2>&1 &
+else
+  (
+    micromamba activate "${MAMBA_ENV_NAME:-ibrido}"
+    source "$HOME/ibrido_ws/setup.bash"
+    exec python "$LRHC_DIR/launch_world_interface.py" $remote_env_cmd
+  ) > "$log_world" 2>&1 &
+fi
 world_pid=$!
 child_pids+=("$world_pid")
 

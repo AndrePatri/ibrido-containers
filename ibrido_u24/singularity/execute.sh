@@ -10,7 +10,7 @@ source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
 
 # Function to print usage
 usage() {
-    echo "Usage: $0 [--use_sudo|-s] [--cfg <config_file> | --bundle <bundle_dir_or_bundle_yaml>] [--intent <run_intent>] [--wdb_key <wandb_key>] [--ros_global] [--run_token <token>] [--set VAR=VALUE] [--allow_contract_override] [--dry-run]"
+    echo "Usage: $0 [--use_sudo|-s] (--cfg <run_cfg> | --bundle <bundle_dir_or_bundle_yaml> --cfg <transfer_cfg>) [--wdb_key <wandb_key>] [--ros_global] [--run_token <token>] [--set VAR=VALUE] [--allow_contract_override] [--dry-run]"
     exit 1
 }
 
@@ -41,7 +41,6 @@ ros_localhost_only=1
 run_token=""
 dry_run=0
 bundle_path=""
-run_intent=""
 allow_contract_override=0
 cfg_overrides=()
 
@@ -51,7 +50,6 @@ while [[ "$#" -gt 0 ]]; do
         -s|--use_sudo) use_sudo=true ;;
         -cfg|--cfg) config_file="$2"; shift ;; # Set custom config file if provided
         --bundle) bundle_path="$2"; shift ;;
-        --intent) run_intent="$2"; shift ;;
         -wdb_key|--wdb_key) wandb_key="$2"; shift ;; # Override WANDB_KEY if provided
         --ros_global) ros_localhost_only=0 ;;
         --run_token) run_token="$2"; shift ;; # optional unique token for process identification
@@ -76,9 +74,14 @@ unset IFS # Reset the internal field separator
 job_id=$(echo "$SCHED_JOBID" | cut -d'.' -f1)
 unique_id="_$(date +%Y_%m_%d_%H_%M_%S)_ID${job_id}" # just used to retrive process ID
 
-if [ -n "${bundle_path:-}" ] && [ -n "${config_file:-}" ]; then
-    echo "execute.sh: use either --cfg or --bundle, not both"
-    exit 1
+if [ -z "${bundle_path:-}" ] && [ -z "${config_file:-}" ]; then
+    echo "execute.sh: --cfg is required"
+    usage
+fi
+
+if [ -n "${bundle_path:-}" ] && [ -z "${config_file:-}" ]; then
+    echo "execute.sh: --cfg <transfer_cfg> is required with --bundle"
+    usage
 fi
 
 if [ -n "${bundle_path:-}" ]; then
@@ -88,11 +91,8 @@ if [ -n "${bundle_path:-}" ]; then
         container_bundle_path="/root/training_data${container_bundle_path#"${IBRIDO_TRAINING_DATA}"}"
     fi
     printf -v container_bundle_path_quoted '%q' "$container_bundle_path"
-    training_cmd="$training_script --unique_id ${unique_id} --bundle ${container_bundle_path_quoted}"
-    if [ -n "${run_intent:-}" ]; then
-        printf -v run_intent_quoted '%q' "$run_intent"
-        training_cmd+=" --intent ${run_intent_quoted}"
-    fi
+    printf -v config_file_quoted '%q' "$config_file"
+    training_cmd="$training_script --unique_id ${unique_id} --bundle ${container_bundle_path_quoted} --cfg ${config_file_quoted}"
     if (( allow_contract_override )); then
         training_cmd+=" --allow_contract_override"
     fi

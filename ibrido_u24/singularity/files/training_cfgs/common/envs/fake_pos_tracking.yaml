@@ -1,0 +1,3 @@
+vars:
+  TRAIN_ENV_FNAME: fake_pos_tracking_env
+  TRAIN_ENV_CNAME: FakePosTrackingEnv

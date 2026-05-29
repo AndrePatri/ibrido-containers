@@ -1,0 +1,8 @@
+vars:
+  CLUSTER_CL_FNAME: kyonrlstepping.controllers.horizon_based.b2w_rhc_cluster_client
+  CLUSTER_DT: 0.035
+  CODEGEN_OVERRIDE_BDIR: ${HOME}/aux_data/B2WRHCLusterClient_unitree_b2w/CodeGen/unitree_b2wRhc
+  IS_CLOSED_LOOP: 1
+  JNT_IMP_CONFIG_PATH: ${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_b2w.yaml
+  N_NODES: 31
+  SRDF_PATH_ROSBAG: ${HOME}/aux_data/B2WRHClusterClient_unitree_b2w/unitree_b2w.srdf

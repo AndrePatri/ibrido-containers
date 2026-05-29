@@ -1,0 +1,4 @@
+include:
+- sac_default.yaml
+vars:
+  DISCOUNT_FACTOR: 0.98

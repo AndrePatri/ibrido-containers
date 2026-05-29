@@ -166,78 +166,8 @@ ibrido_write_custom_args_mapping() {
     done
 }
 
-ibrido_resolve_intent_backend() {
-    local interface_key="${WORLD_INTERFACE:-${IBRIDO_WORLD_INTERFACE:-${REMOTE_ENV_FNAME:-}}}"
-    local inferred_intent=""
-    local inferred_backend=""
-
-    case "$interface_key" in
-        *isaac5x_world_interface*)
-            inferred_backend="isaac5x"
-            if ibrido_enabled "${EVAL:-0}"; then
-                inferred_intent="eval_same_domain"
-            else
-                inferred_intent="train"
-            fi
-            ;;
-        *xmj_world_interface*)
-            inferred_intent="eval_cross_sim"
-            inferred_backend="xmj"
-            ;;
-        *rt_deploy_world_interface*)
-            inferred_intent="rt_real"
-            inferred_backend="rt_xbot_zmq"
-            ;;
-    esac
-
-    if [ -n "${IBRIDO_WORLD_INTERFACE:-}" ] && [ -n "$inferred_backend" ]; then
-        WORLD_BACKEND="$inferred_backend"
-    fi
-
-    if [ -z "${RUN_INTENT:-}" ]; then
-        if [ -n "$inferred_intent" ]; then
-            RUN_INTENT="$inferred_intent"
-        else
-            case "${WORLD_BACKEND:-}" in
-                xmj) RUN_INTENT="eval_cross_sim" ;;
-                rt_xbot_zmq|rt_xbot_ros) RUN_INTENT="rt_real" ;;
-                *)
-                    if ibrido_enabled "${EVAL:-0}"; then
-                        RUN_INTENT="eval_same_domain"
-                    else
-                        RUN_INTENT="train"
-                    fi
-                    ;;
-            esac
-        fi
-    fi
-
-    if [ -z "${WORLD_BACKEND:-}" ]; then
-        if [ -n "$inferred_backend" ]; then
-            WORLD_BACKEND="$inferred_backend"
-        else
-            case "${RUN_INTENT:-}" in
-                eval_cross_sim) WORLD_BACKEND="xmj" ;;
-                rt_sim|rt_real) WORLD_BACKEND="rt_xbot_zmq" ;;
-                *) WORLD_BACKEND="isaac5x" ;;
-            esac
-        fi
-    fi
-}
-
 ibrido_resolve_time_source() {
-    if [ -n "${TIME_SOURCE:-}" ]; then
-        return 0
-    fi
-
-    case "${RUN_INTENT:-train}" in
-        rt_real)
-            TIME_SOURCE="wall"
-            ;;
-        *)
-            TIME_SOURCE="sim"
-            ;;
-    esac
+    TIME_SOURCE="${TIME_SOURCE:-sim}"
     export TIME_SOURCE
 }
 
@@ -258,7 +188,6 @@ ibrido_normalize_runtime_config() {
     export XBOT_CONFIG_PATH RT_XBOT_CONFIG_PATH SITE_PROFILE
     export ZMQ_BRIDGE_BIND_IP ZMQ_BRIDGE_SOURCE_IP ZMQ_BRIDGE_PORT_BASE ZMQ_BRIDGE_PORT_SPAN
 
-    ibrido_resolve_intent_backend
     ibrido_resolve_time_source
     ibrido_assert_custom_args_triplets
 }
@@ -292,9 +221,77 @@ ibrido_validate_runtime_config() {
 ibrido_write_filtered_env() {
     local path="$1"
 
-    export -p | grep -Ev \
-        '(^declare -x (WANDB_KEY|NGC_KEY|ISAAC_KEY|API_KEY|TOKEN|SECRET|PASSWORD)=|KEY=|TOKEN=|SECRET=|PASSWORD=)' \
-        > "$path"
+    export -p | grep -Ev         '(^declare -x (WANDB_KEY|NGC_KEY|ISAAC_KEY|API_KEY|TOKEN|SECRET|PASSWORD)=|KEY=|TOKEN=|SECRET=|PASSWORD=|^declare -x (HOME|PWD|OLDPWD|PATH|LD_LIBRARY_PATH|PYTHONPATH|SHELL|USER|USERNAME|LOGNAME)=|^declare -x (APPTAINER_|SINGULARITY_|BYOBU_|VSCODE_|GNOME_|GDM|XDG_|DBUS_|SSH_AUTH_SOCK|DISPLAY|XAUTHORITY|WINDOWPATH|SESSION_MANAGER))'         > "$path"
+}
+
+ibrido_snapshot_config_stack() {
+    local metadata_dir="$1"
+    local config_file="$2"
+    local cfg_root="${IBRIDO_CFG_BASEPATH:-${HOME}/ibrido_files/training_cfgs}"
+    local stack="${IBRIDO_CFG_STACK:-}"
+    local entry
+    local rel
+    local snapshot_rel
+    local first_snapshot=""
+    local old_ifs
+
+    mkdir -p "${metadata_dir}/configs" || return 1
+    : > "${metadata_dir}/cfg_stack.txt"
+    {
+        printf 'schema: ibrido_u24_config_stack_v1\n'
+        printf 'configs:\n'
+    } > "${metadata_dir}/configs/index.yaml"
+
+    if [ -n "$config_file" ]; then
+        if [ -z "$stack" ]; then
+            stack="$config_file"
+        elif [[ ":$stack:" != *":$config_file:"* ]]; then
+            stack="$config_file:$stack"
+        fi
+    fi
+
+    old_ifs="$IFS"
+    IFS=':'
+    for entry in $stack; do
+        IFS="$old_ifs"
+        [ -n "$entry" ] || continue
+        printf '%s\n' "$entry" >> "${metadata_dir}/cfg_stack.txt"
+        if [ ! -f "$entry" ]; then
+            {
+                printf '  - original: '
+                ibrido_yaml_quote "$entry"
+                printf '\n'
+                printf '    missing: true\n'
+            } >> "${metadata_dir}/configs/index.yaml"
+            IFS=':'
+            continue
+        fi
+
+        if [[ "$entry" == "$cfg_root"/* ]]; then
+            rel="${entry#${cfg_root}/}"
+        else
+            rel="external/$(basename "$entry")"
+        fi
+        snapshot_rel="configs/${rel}"
+        mkdir -p "${metadata_dir}/$(dirname "$snapshot_rel")" || return 1
+        cp "$entry" "${metadata_dir}/${snapshot_rel}" || return 1
+        if [ -z "$first_snapshot" ]; then
+            first_snapshot="$snapshot_rel"
+        fi
+        {
+            printf '  - original: '
+            ibrido_yaml_quote "$entry"
+            printf '\n'
+            printf '    snapshot: '
+            ibrido_yaml_quote "$snapshot_rel"
+            printf '\n'
+        } >> "${metadata_dir}/configs/index.yaml"
+        IFS=':'
+    done
+    IFS="$old_ifs"
+
+    IBRIDO_CONFIG_SNAPSHOT_REL="$first_snapshot"
+    export IBRIDO_CONFIG_SNAPSHOT_REL
 }
 
 ibrido_write_git_state() {
@@ -536,8 +533,6 @@ ibrido_prepare_run_metadata() {
     local training_launch_cmd="$4"
     local run_id="${5:-${unique_id:-manual}}"
     local run_label="${RUN_NAME:-${RNAME:-IbridoRun}}"
-    local resolved_intent
-    local resolved_backend
     local jnt_imp_config_path
     local xbot_config_path
     local rt_xbot_config_path
@@ -545,9 +540,6 @@ ibrido_prepare_run_metadata() {
     ibrido_normalize_runtime_config || return 1
     ibrido_validate_runtime_config || return 1
 
-    ibrido_resolve_intent_backend
-    resolved_intent="${RUN_INTENT:-train}"
-    resolved_backend="${WORLD_BACKEND:-isaac5x}"
     jnt_imp_config_path="${JNT_IMP_CONFIG_PATH:-}"
     xbot_config_path="${XBOT_CONFIG_PATH:-}"
     rt_xbot_config_path="${RT_XBOT_CONFIG_PATH:-${xbot_config_path:-}}"
@@ -555,11 +547,8 @@ ibrido_prepare_run_metadata() {
     export IBRIDO_RUN_META_DIR="${IBRIDO_RUN_META_DIR:-${HOME}/ibrido_logs/ibrido_run_${run_id}/metadata}"
     mkdir -p "${IBRIDO_RUN_META_DIR}/configs" "${IBRIDO_RUN_META_DIR}/launch" "${IBRIDO_RUN_META_DIR}/git" || return 1
 
-    local config_snapshot_rel=""
-    if [ -f "$config_file" ]; then
-        config_snapshot_rel="configs/$(basename "$config_file")"
-        cp "$config_file" "${IBRIDO_RUN_META_DIR}/${config_snapshot_rel}" || return 1
-    fi
+    ibrido_snapshot_config_stack "$IBRIDO_RUN_META_DIR" "$config_file" || return 1
+    local config_snapshot_rel="${IBRIDO_CONFIG_SNAPSHOT_REL:-}"
 
     {
         printf 'schema: ibrido_u24_run_manifest_v1\n'
@@ -602,6 +591,7 @@ ibrido_prepare_run_metadata() {
         printf 'resolved_config: "resolved_config.yaml"\n'
         printf 'resolved_env: "resolved_env.sh"\n'
         printf 'cfg_stack: "cfg_stack.txt"\n'
+        printf 'config_stack_index: "configs/index.yaml"\n'
         printf 'git_state: "git/repos.yaml"\n'
         printf 'launch_index: "launch/commands.yaml"\n'
         printf 'launch_commands:\n'
@@ -612,12 +602,6 @@ ibrido_prepare_run_metadata() {
 
     {
         printf 'schema: ibrido_u24_resolved_config_v1\n'
-        printf 'intent: '
-        ibrido_yaml_quote "$resolved_intent"
-        printf '\n'
-        printf 'backend: '
-        ibrido_yaml_quote "$resolved_backend"
-        printf '\n'
         if [ -n "${SOURCE_BUNDLE_PATH:-}" ]; then
             printf 'source:\n'
             printf '  bundle_path: '
@@ -672,14 +656,8 @@ ibrido_prepare_run_metadata() {
         ibrido_yaml_quote "${CUSTOM_ARGS_VALS:-}"
         printf '\n'
         printf 'world:\n'
-        printf '  backend: '
-        ibrido_yaml_quote "$resolved_backend"
-        printf '\n'
-        printf '  intent: '
-        ibrido_yaml_quote "$resolved_intent"
-        printf '\n'
         printf '  interface: '
-        ibrido_yaml_quote "${IBRIDO_WORLD_INTERFACE:-${WORLD_INTERFACE:-${REMOTE_ENV_FNAME:-}}}"
+        ibrido_yaml_quote "${IBRIDO_WORLD_INTERFACE:-${WORLD_INTERFACE:-}}"
         printf '\n'
         printf '  num_envs: %s\n' "${IBRIDO_WORLD_NUM_ENVS:-$N_ENVS}"
         printf '  headless: %s\n' "$(ibrido_bool_literal "${IBRIDO_WORLD_HEADLESS:-0}")"
@@ -777,12 +755,6 @@ ibrido_prepare_run_metadata() {
         printf '\n'
     } > "${IBRIDO_RUN_META_DIR}/resolved_config.yaml"
 
-    {
-        printf '%s\n' "$config_file"
-        if [ -n "$config_snapshot_rel" ]; then
-            printf '%s\n' "$config_snapshot_rel"
-        fi
-    } > "${IBRIDO_RUN_META_DIR}/cfg_stack.txt"
     ibrido_write_filtered_env "${IBRIDO_RUN_META_DIR}/resolved_env.sh"
     ibrido_write_git_state "${IBRIDO_RUN_META_DIR}"
 

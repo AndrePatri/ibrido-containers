@@ -1,0 +1,9 @@
+include:
+- ../common/runtime_defaults.yaml
+- ../common/algorithms/sac_discount_098.yaml
+- ../robots/centauro/base.yaml
+- ../robots/centauro/control/centauro_ub_open.yaml
+- ../robots/centauro/tasks/centauro_ub_open.yaml
+- ../robots/centauro/backends/isaac5x.yaml
+vars:
+  PHYSICS_DT: 0.0005

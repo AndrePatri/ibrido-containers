@@ -1,0 +1,104 @@
+vars:
+  ROBOT_FAMILY: centauro
+  ROBOT_VARIANT: ablation_centauro_wheels_closed_new_training_cfg_centauro_no_yaw_new
+  WORLD_INTERFACE: aug_mpc_envs.world_interfaces.isaac5x_world_interface
+  TIME_SOURCE: sim
+  ACTION_REPEAT: 3
+  ACTOR_DEPTH: 3
+  ACTOR_LWIDTH: 128
+  BAG_SDT: 90.0
+  BATCH_NORM: 0
+  BRIDGE_DT: 0.1
+  CLUSTER_CL_FNAME: centaurohybridmpc.controllers.horizon_based.centauro_rhc_cluster_client
+  CLUSTER_DB: 1
+  CLUSTER_DT: 0.035
+  CODEGEN_OVERRIDE_BDIR: ${HOME}/aux_data/CentauroRHCLusterClient_centauro_big_wheels_no_yaw/CodeGen/centauro_big_wheels_no_yawRhc
+  COMMENT: centauro big wheels (fixed ankle yaw) CLOOP partial, joint pof0 fix (5%),, UTD 8, action rep 3, fake pos track (action rate, CoT, dir track, max_vref 1.0 m/s, max omega 0.4 rad/s,), trgt entropy -0.5
+  COMPRESSION_RATIO: 0.6
+  CRITIC_ACTION_RESCALE: 1
+  CRITIC_DEPTH: 4
+  CRITIC_LWIDTH: 256
+  DEBUG: 1
+  DEMO_ENVS_PERC: 0.0
+  DEMO_STOP_THRESH: 10.0
+  DET_EVAL: 1
+  DISCOUNT_FACTOR: 0.99
+  DUMP_DT: 50.0
+  DUMP_ENV_CHECKPOINTS: 1
+  ENV_IDX_BAG: 4
+  ENV_IDX_BAG_DEMO: -1
+  ENV_IDX_BAG_EXPL: -1
+  EVAL: 0
+  EVAL_ON_CPU: 1
+  EXPL_ENVS_PERC: 0.0
+  IS_CLOSED_LOOP: 1
+  JNT_IMP_CONFIG_PATH: ${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_no_yaw.yaml
+  LAYER_NORM: 0
+  MNAME: ''
+  MPATH: /root/training_data/
+  N_ENVS: 800
+  N_NODES: 29
+  OBS_NORM: 1
+  OBS_RESCALING: 0
+  OVERRIDE_AGENT_REFS: 1
+  OVERRIDE_ENV: 1
+  PHYSICS_DT: 0.0005
+  PUB_HEIGHTMAP: 0
+  REMOTE_STEPPING: 1
+  RMDEBUG: 1
+  RNAME: CentauroCloopPartialNoYaw
+  SEED: 98
+  SET_ULIM: 1
+  SHM_NS: centauro_big_wheels_no_yaw
+  SRDF_PATH: ${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_srdf/srdf/centauro.srdf.xacro
+  SRDF_PATH_ROSBAG: ${HOME}/aux_data/CentauroRHClusterClient_centauro_big_wheels_no_yaw/centauro_big_wheels_no_yaw.srdf
+  TIMEOUT_MS: 120000
+  TOT_STEPS: 15000000
+  TRAIN_ENV_CNAME: FakePosTrackingEnv
+  TRAIN_ENV_FNAME: fake_pos_tracking_env
+  ULIM_N: 131072
+  URDF_PATH: ${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_urdf/urdf/centauro.urdf.xacro
+  USE_DUMMY: 0
+  USE_GPU_SIM: 1
+  USE_PERIOD_RESETS: 0
+  USE_RND: 0
+  USE_SAC: 1
+  WEIGHT_NORM: 1
+custom_args:
+  control:
+    use_jnt_v_feedback:
+      dtype: bool
+      value: false
+    control_wheels:
+      dtype: bool
+      value: true
+    fixed_flights:
+      dtype: bool
+      value: true
+    adaptive_is:
+      dtype: bool
+      value: true
+    lin_a_feedback:
+      dtype: bool
+      value: false
+    closed_partial:
+      dtype: bool
+      value: true
+    estimate_v_root:
+      dtype: bool
+      value: false
+  training:
+    step_height:
+      dtype: float
+      value: 0.1
+  robot_description:
+    fix_yaw:
+      dtype: bool
+      value: true
+    self_collide:
+      dtype: bool
+      value: false
+  world_interface:
+    use_flat_ground:
+      dtype: bool
+      value: true

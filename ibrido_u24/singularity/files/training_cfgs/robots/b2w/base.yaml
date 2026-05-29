@@ -1,0 +1,4 @@
+vars:
+  ROBOT_FAMILY: b2w
+  URDF_PATH: ${HOME}/ibrido_ws/src/unitree_ros/robots/b2w_description/xacro/robot.urdf.xacro
+  SRDF_PATH: ${HOME}/ibrido_ws/src/unitree_ros/robots/b2w_description/xacro/robot.srdf.xacro

@@ -1,0 +1,85 @@
+vars:
+  ROBOT_VARIANT: talos
+  ACTION_REPEAT: 4
+  COMMENT: talos scaffold, one env, no remote stepping
+  ENV_IDX_BAG: 0
+  N_ENVS: 1
+  REMOTE_STEPPING: 0
+  RNAME: TalosOpenDebug
+  SEED: 7383
+  SHM_NS: talos
+  TIMEOUT_MS: 300000
+  TOT_STEPS: 1000000
+  TRAIN_ENV_CNAME: FakePosTrackingEnv
+  TRAIN_ENV_FNAME: fake_pos_tracking_env
+custom_args:
+  robot_description:
+    foot_collision:
+      dtype: xacro
+      value: thinbox
+    head_type:
+      dtype: xacro
+      value: default
+    flexibility:
+      dtype: xacro
+      value: false
+    use_fixed_base:
+      dtype: xacro
+      value: false
+    use_sim:
+      dtype: xacro
+      value: true
+    enable_crane:
+      dtype: xacro
+      value: false
+    disable_gazebo_camera:
+      dtype: xacro
+      value: true
+    use_capsule_collision:
+      dtype: xacro
+      value: false
+    multiple:
+      dtype: xacro
+      value: false
+    gazebo_version:
+      dtype: xacro
+      value: classic
+    add_upper_body:
+      dtype: bool
+      value: true
+    spawning_height:
+      dtype: float
+      value: 0.95
+    self_collide:
+      dtype: bool
+      value: false
+  training:
+    step_height:
+      dtype: float
+      value: 0.08
+    initial_force_load_divisor:
+      dtype: float
+      value: 2.0
+  control:
+    adaptive_is:
+      dtype: bool
+      value: false
+    closed_partial:
+      dtype: bool
+      value: true
+    fully_closed:
+      dtype: bool
+      value: false
+    estimate_v_root:
+      dtype: bool
+      value: false
+    use_jnt_v_feedback:
+      dtype: bool
+      value: false
+  world_interface:
+    use_flat_ground:
+      dtype: bool
+      value: true
+    ground_type:
+      dtype: str
+      value: flat

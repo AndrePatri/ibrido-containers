@@ -1,0 +1,4 @@
+include:
+- sac_discount_098.yaml
+vars:
+  DEMO_STOP_THRESH: 2.0

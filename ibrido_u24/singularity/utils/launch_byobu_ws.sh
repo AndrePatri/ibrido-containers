@@ -2,7 +2,7 @@
 
 usage() {
   echo "Usage: $0
-    [--cfg CFG] \
+    --cfg CFG \
     [--set VAR=VALUE] \
     [--dry-run] \
     "
@@ -40,9 +40,8 @@ source "${UTILS_DIR}/ibrido_command_builder.sh"
 MAMBAENVNAME="${MAMBA_ENV_NAME}"
 MAMBAENVNAME_ISAAC="${MAMBA_ENV_NAME_ISAAC}"
 
-# Default configuration file
 cfg_file_basepath="${IBRIDO_CFG_BASEPATH:-$HOME/ibrido_files/training_cfgs}"
-config_file="${cfg_file_basepath}/training_cfg.sh"
+config_file=""
 dry_run=0
 cfg_overrides=()
 
@@ -173,7 +172,39 @@ prepare_primary_run_metadata() {
 
     export IBRIDO_RUN_META_DIR="${IBRIDO_RUN_META_DIR:-${HOME}/ibrido_logs/ibrido_run_${run_id}/metadata}"
 
-    ibrido_build_world_cmd "aug_mpc_envs.world_interfaces.isaac5x_world_interface" "$N_ENVS" 1 1 "$USE_GPU_SIM"
+    local metadata_world_iface="${WORLD_INTERFACE:-}"
+    local metadata_world_headless=1
+    local metadata_world_custom_jnt_imp=1
+    local metadata_world_use_gpu="${USE_GPU_SIM:-1}"
+
+    if [ -z "$metadata_world_iface" ]; then
+        echo "launch_byobu_ws.sh: WORLD_INTERFACE is required by the selected cfg"
+        exit 1
+    fi
+
+    case "$metadata_world_iface" in
+        *xmj_world_interface*)
+            metadata_world_headless="${XMJ_HEADLESS:-0}"
+            metadata_world_custom_jnt_imp=0
+            metadata_world_use_gpu=0
+            ;;
+        *rt_deploy_world_interface*)
+            metadata_world_headless="${RT_HEADLESS:-0}"
+            metadata_world_custom_jnt_imp=0
+            metadata_world_use_gpu=0
+            ;;
+        *isaac5x_world_interface*)
+            metadata_world_headless="${WORLD_HEADLESS:-1}"
+            metadata_world_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-1}"
+            metadata_world_use_gpu="${USE_GPU_SIM:-1}"
+            ;;
+        *)
+            echo "launch_byobu_ws.sh: unsupported WORLD_INTERFACE: $metadata_world_iface"
+            exit 1
+            ;;
+    esac
+
+    ibrido_build_world_cmd "$metadata_world_iface" "$N_ENVS" "$metadata_world_headless" "$metadata_world_custom_jnt_imp" "$metadata_world_use_gpu"
     metadata_world_cmd="python launch_world_interface.py $IBRIDO_WORLD_CMD"
     ibrido_build_cluster_cmd "$N_ENVS" 0 1
     metadata_cluster_cmd="python launch_control_cluster.py $IBRIDO_CLUSTER_CMD"
@@ -503,7 +534,7 @@ resolve_xbot_config() {
         return
     fi
 
-    cfg_key="${SHM_NS:-} ${RNAME:-} ${URDF_PATH:-} ${CLUSTER_CL_FNAME:-}"
+    cfg_key="${ROBOT_FAMILY:-} ${ROBOT_VARIANT:-} ${SHM_NS:-} ${RNAME:-} ${URDF_PATH:-} ${CLUSTER_CL_FNAME:-} ${CUSTOM_ARGS_VALS:-}"
     cfg_key="${cfg_key,,}"
 
     if [[ "$cfg_key" == *centauro* ]]; then
@@ -511,7 +542,13 @@ resolve_xbot_config() {
     elif [[ "$cfg_key" == *b2w* ]]; then
         RESOLVED_XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/b2w/xbot2_basic.yaml"
     elif [[ "$cfg_key" == *kyon* ]]; then
-        if [[ "$cfg_key" == *wheels_no_yaw* || "$cfg_key" == *no_yaw* ]]; then
+        if [[ "$cfg_key" == *iit-kyon-ros-pkg* || "$cfg_key" == *kyon_simple* ]]; then
+            if [[ "$cfg_key" == *wheels* && "$cfg_key" != *no_wheels* ]]; then
+                RESOLVED_XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic_wheels.yaml"
+            else
+                RESOLVED_XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/xbot2_basic.yaml"
+            fi
+        elif [[ "$cfg_key" == *wheels_no_yaw* || "$cfg_key" == *no_yaw* ]]; then
             RESOLVED_XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_wheels_no_yaw.yaml"
         elif [[ "$cfg_key" == *wheels* && "$cfg_key" != *no_wheels* ]]; then
             RESOLVED_XBOT_CONFIG="KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_wheels.yaml"
@@ -521,6 +558,52 @@ resolve_xbot_config() {
     elif [[ "$cfg_key" == *talos* ]]; then
         RESOLVED_XBOT_CONFIG="TalosHybridMPC/taloshybridmpc/config/xmj_env_files/xbot2_basic.yaml"
     fi
+}
+
+prepare_xbot2_gui_config() {
+    local gui_cfg_dir
+    local launcher_cfg
+    local server_cfg
+    local xbot_cfg_path
+
+    if [ -z "${RESOLVED_XBOT_CONFIG:-}" ]; then
+        RESOLVED_XBOT2_GUI_SERVER_CONFIG=""
+        RESOLVED_XBOT2_GUI_LAUNCHER_CONFIG=""
+        return
+    fi
+
+    gui_cfg_dir="${HOME}/.cache/ibrido/xbot2_gui"
+    launcher_cfg="${gui_cfg_dir}/launcher_config.yaml"
+    server_cfg="${gui_cfg_dir}/server_config.yaml"
+    xbot_cfg_path="${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}"
+
+    mkdir -p "${gui_cfg_dir}"
+
+    cat > "${launcher_cfg}" <<EOF
+context:
+  session: ibrido_xbot2
+
+xbot2_core:
+  cmd: source /opt/ros/jazzy/setup.bash && source /opt/xbot/setup.sh && source ${WS_ROOT}/setup.bash && xbot2-core -S -C ${xbot_cfg_path}
+  category: xbot2
+  show_ui: true
+EOF
+
+    cat > "${server_cfg}" <<EOF
+launcher:
+  type: launcher
+  launcher_config: launcher_config.yaml
+  cache_path: ${gui_cfg_dir}/launcher_cache.yaml
+
+joint_states:
+  rate: 30.0
+
+visual:
+  rate: 10.0
+EOF
+
+    RESOLVED_XBOT2_GUI_SERVER_CONFIG="${server_cfg}"
+    RESOLVED_XBOT2_GUI_LAUNCHER_CONFIG="${launcher_cfg}"
 }
 
 resolve_xmj_files_dir() {
@@ -552,7 +635,7 @@ resolve_rt_xmj_launcher() {
         return
     fi
 
-    cfg_key="${SHM_NS:-} ${RNAME:-} ${URDF_PATH:-} ${CLUSTER_CL_FNAME:-} ${CUSTOM_ARGS_VALS:-}"
+    cfg_key="${ROBOT_FAMILY:-} ${ROBOT_VARIANT:-} ${SHM_NS:-} ${RNAME:-} ${URDF_PATH:-} ${CLUSTER_CL_FNAME:-} ${CUSTOM_ARGS_VALS:-}"
     cfg_key="${cfg_key,,}"
 
     if [[ "$cfg_key" == *centauro* ]]; then
@@ -565,6 +648,9 @@ resolve_rt_xmj_launcher() {
         else
             RESOLVED_RT_XMJ_CMD="./launch_xmj_kyon_real_wheels.sh --rt_factor ${rt_factor}${rostime_args}"
         fi
+    elif [[ "$cfg_key" == *talos* ]]; then
+        RESOLVED_RT_XMJ_WORKDIR="$WORKING_DIR_TALOS"
+        RESOLVED_RT_XMJ_CMD="./launch_xmj_talos.sh --rt_factor ${rt_factor}${rostime_args}"
     else
         RESOLVED_RT_XMJ_WORKDIR="$WORKING_DIR"
         RESOLVED_RT_XMJ_CMD=""
@@ -650,6 +736,7 @@ add_rt_deployment_tab() {
 
 add_xbot2_tab() {
     resolve_xbot_config
+    prepare_xbot2_gui_config
 
     setup_main_env_pane "${WORKING_DIR}" \
         "source /opt/ros/jazzy/setup.bash" \
@@ -659,7 +746,7 @@ add_xbot2_tab() {
     if [ -z "${RESOLVED_XBOT_CONFIG:-}" ]; then
         prepare_command "reset && echo 'XBOT_CONFIG is not set in the selected cfg'"
     else
-        prepare_command "reset && xbot2-core -S -C ${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}"
+        prepare_command "reset && export CONCERT_LAUNCHER_DEFAULT_CONFIG=${RESOLVED_XBOT2_GUI_LAUNCHER_CONFIG}; concert_launcher run xbot2_core"
     fi
 
     split_h
@@ -667,7 +754,11 @@ add_xbot2_tab() {
         "source /opt/ros/jazzy/setup.bash" \
         "source /opt/xbot/setup.sh" \
         "source ${WS_ROOT}/setup.bash"
-    prepare_command "reset && xbot2-gui"
+    if [ -z "${RESOLVED_XBOT2_GUI_SERVER_CONFIG:-}" ]; then
+        prepare_command "reset && xbot2-gui"
+    else
+        prepare_command "reset && export XBOT2_GUI_SERVER_CONFIG=${RESOLVED_XBOT2_GUI_SERVER_CONFIG}; xbot2-gui"
+    fi
 }
 
 add_xmj_tab() {
@@ -803,8 +894,14 @@ while [[ "$#" -gt 0 ]]; do
   shift
 done
 
+if [ -z "$config_file" ]; then
+    echo "launch_byobu_ws.sh: --cfg is required"
+    usage
+fi
+
 if [ -f "$config_file" ]; then
-    source "$config_file"
+    config_exports="$("${UTILS_DIR}/ibrido_config_loader.py" --shell "$config_file")" || exit 1
+    eval "$config_exports"
 else
     echo "Configuration file not found: $config_file"
     exit 1

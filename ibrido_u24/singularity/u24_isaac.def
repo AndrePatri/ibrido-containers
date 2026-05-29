@@ -184,30 +184,59 @@ From:nvcr.io/nvidia/isaac-sim:5.1.0
     fi
     apt-get install -y --no-install-recommends xbot2_desktop_full && rm -rf /var/lib/apt/lists/*
 
-    # Robot Monitoring GUI setup. The release is distributed as a self-contained
-    # Qt bundle, not as a deb package, so keep it pinned and checksum-verified.
+    # Robot Monitoring GUI setup. Follow the xbot2 Docker workflow: install the
+    # Python launcher/server package, then preinstall the Qt client where the
+    # launcher expects it so startup does not need network access.
+    XBOT2_GUI_VENV='/opt/xbot2gui-venv'
+    XBOT2_GUI_SITE=''
+    XBOT2_GUI_CLIENT_HOME='/root/.xbot2_gui_client'
+    XBOT2_GUI_SERVER_REF='proto_ros2'
     ROBOT_MONITORING_VERSION='v2.7.5'
     ROBOT_MONITORING_SHA256='d689db57308bf866289b6639db7347d02f076319b350ff21eaa89fb3f4b67aeb'
     ROBOT_MONITORING_ARCHIVE='/tmp/xbot2_gui_client_x86_64.zip'
     ROBOT_MONITORING_URL="https://github.com/ADVRHumanoids/robot_monitoring/releases/download/${ROBOT_MONITORING_VERSION}/xbot2_gui_client_x86_64.zip"
-    ROBOT_MONITORING_INSTALL_DIR='/opt/robot_monitoring'
-    mkdir -p "${ROBOT_MONITORING_INSTALL_DIR}"
+
+    python3 -m venv --system-site-packages "${XBOT2_GUI_VENV}"
+    "${XBOT2_GUI_VENV}/bin/python" -m pip install --no-cache-dir --upgrade pip
+    "${XBOT2_GUI_VENV}/bin/python" -m pip install --no-cache-dir concert_launcher==0.1.1
+    "${XBOT2_GUI_VENV}/bin/python" -m pip install --no-cache-dir \
+        "git+https://github.com/ADVRHumanoids/robot_monitoring.git@${XBOT2_GUI_SERVER_REF}#egg=xbot2-gui-server&subdirectory=server"
+    XBOT2_GUI_SITE="$("${XBOT2_GUI_VENV}/bin/python" -c 'import site; print(site.getsitepackages()[0])')"
+    mkdir -p "${XBOT2_GUI_SITE}/xbot2_gui_server/webui"
+
+    rm -rf "${XBOT2_GUI_CLIENT_HOME}"
+    mkdir -p "${XBOT2_GUI_CLIENT_HOME}"
     curl --fail -L "${ROBOT_MONITORING_URL}" -o "${ROBOT_MONITORING_ARCHIVE}"
     echo "${ROBOT_MONITORING_SHA256}  ${ROBOT_MONITORING_ARCHIVE}" | sha256sum -c -
-    unzip -q "${ROBOT_MONITORING_ARCHIVE}" -d "${ROBOT_MONITORING_INSTALL_DIR}"
+    unzip -q "${ROBOT_MONITORING_ARCHIVE}" -d "${XBOT2_GUI_CLIENT_HOME}"
     rm -f "${ROBOT_MONITORING_ARCHIVE}"
-    chmod -R a+rX "${ROBOT_MONITORING_INSTALL_DIR}"
+    chmod -R a+rX "${XBOT2_GUI_VENV}" "${XBOT2_GUI_CLIENT_HOME}"
     cat > /usr/local/bin/xbot2-gui <<'EOF'
 #!/usr/bin/env bash
 set -e
-APP_DIR="/opt/robot_monitoring/xbot2_gui_client_x86_64"
+
+if [ -f /opt/ros/jazzy/setup.bash ]; then
+    source /opt/ros/jazzy/setup.bash
+fi
+if [ -f /opt/xbot/setup.sh ]; then
+    source /opt/xbot/setup.sh
+fi
+
+export PATH="/opt/xbot2gui-venv/bin:${PATH}"
+if [ -d /root/.xbot2_gui_client ]; then
+    export HOME="${IBRIDO_CONTAINER_HOME:-/root}"
+fi
+XBOT2_GUI_CLIENT_DIR="${HOME:-/root}/.xbot2_gui_client/xbot2_gui_client_x86_64"
+export LD_LIBRARY_PATH="${XBOT2_GUI_CLIENT_DIR}/lib:${LD_LIBRARY_PATH:-}"
 export QTWEBENGINE_DISABLE_SANDBOX="${QTWEBENGINE_DISABLE_SANDBOX:-1}"
 unset QT_PLUGIN_PATH
 unset QML2_IMPORT_PATH
-export LD_LIBRARY_PATH="${APP_DIR}/lib:${LD_LIBRARY_PATH:-}"
-exec "${APP_DIR}/bin/xbot2_gui" "$@"
+
+exec /opt/xbot2gui-venv/bin/xbot2_gui "$@"
 EOF
     chmod 755 /usr/local/bin/xbot2-gui
+    ln -sf /usr/local/bin/xbot2-gui /usr/local/bin/xbot2_gui
+    ln -sf "${XBOT2_GUI_VENV}/bin/concert_launcher" /usr/local/bin/concert_launcher
     
     # give access to /isaac-sim folder to anybody (root only by default)
     chmod --recursive 777 /isaac-sim
@@ -216,6 +245,12 @@ EOF
     echo 'Testing if MicroMamba is present...'
     ${MAMBA_EXE} --version
     test -x /usr/local/bin/xbot2-gui
+    test -x /usr/local/bin/xbot2_gui
+    test -x /opt/xbot2gui-venv/bin/xbot2_gui
+    test -x /opt/xbot2gui-venv/bin/xbot2_gui_server
+    test -x /opt/xbot2gui-venv/bin/concert_launcher
+    test -x /usr/local/bin/concert_launcher
+    test -x /root/.xbot2_gui_client/xbot2_gui_client_x86_64/bin/xbot2_gui
     # echo 'Testing byobu is installed...'
     # which byobu || { echo "byobu missing"; exit 1; }
 
