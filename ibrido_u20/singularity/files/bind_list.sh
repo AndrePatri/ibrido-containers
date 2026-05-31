@@ -85,7 +85,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/iit-dagana-ros-pkg.git*ibrido_ros1"
     "git@github.com:AndrePatri/PerfSleep.git*main"
     "git@github.com:AndrePatri/casadi.git*optional_float"
-    "git@github.com:c-rizz/adarl.git*ibrido-pre-u24"
+    "git@github.com:AndrePatri/adarl.git*ibrido-pre-u24"
     "git@github.com:c-rizz/adarl_ros.git*ibrido"
     "git@github.com:google/googletest.git*main"
     "git@github.com:ADVRHumanoids/robot_monitoring.git*v2.7.5"
