@@ -203,6 +203,43 @@ From:nvcr.io/nvidia/isaac-sim:5.1.0
         "git+https://github.com/ADVRHumanoids/robot_monitoring.git@${XBOT2_GUI_SERVER_REF}#egg=xbot2-gui-server&subdirectory=server"
     XBOT2_GUI_SITE="$("${XBOT2_GUI_VENV}/bin/python" -c 'import site; print(site.getsitepackages()[0])')"
     mkdir -p "${XBOT2_GUI_SITE}/xbot2_gui_server/webui"
+    "${XBOT2_GUI_VENV}/bin/python" - <<'PY'
+from pathlib import Path
+import re
+
+main_path = Path("/opt/xbot2gui-venv/lib/python3.12/site-packages/xbot2_gui_server/main.py")
+text = main_path.read_text()
+old = re.search(
+    r"        # define extensions \n        ext_list = \[\n(?:            .*\n)+?        \]\n",
+    text,
+)
+if old is None:
+    raise RuntimeError(f"Could not locate xbot2_gui_server extension list in {main_path}")
+
+new = """        # define extensions
+        configured_extensions = cfg.get('extensions')
+        if configured_extensions is None:
+            ext_list = [
+                ('xbot2_gui_server.joint_states', 'JointStateHandler'),
+                ('xbot2_gui_server.joint_device', 'JointDeviceHandler'),
+                ('xbot2_gui_server.plugin', 'PluginHandler'),
+                ('xbot2_gui_server.theora_video', 'TheoraVideoHandler'),
+                ('xbot2_gui_server.launcher', 'Launcher'),
+                ('xbot2_gui_server.cartesian', 'CartesianHandler'),
+                # ('xbot2_gui_server.speech', 'SpeechHandler'),
+                ('xbot2_gui_server.visual', 'VisualHandler'),
+                # ('xbot2_gui_server.concert', 'ConcertHandler'),
+                ('xbot2_gui_server.ecat', 'EcatHandler'),
+                ('xbot2_gui_server.horizon', 'HorizonHandler'),
+                ('xbot2_gui_server.dashboard', 'DashboardHandler'),
+                ('xbot2_gui_server.parameters', 'ParameterHandler'),
+                ('xbot2_gui_server.server_stats', 'ServerStatisticsHandler')
+            ]
+        else:
+            ext_list = [(item['module'], item['class']) for item in configured_extensions]
+"""
+main_path.write_text(text[:old.start()] + new + text[old.end():])
+PY
 
     rm -rf "${XBOT2_GUI_CLIENT_HOME}"
     mkdir -p "${XBOT2_GUI_CLIENT_HOME}"
@@ -232,6 +269,46 @@ export QTWEBENGINE_DISABLE_SANDBOX="${QTWEBENGINE_DISABLE_SANDBOX:-1}"
 unset QT_PLUGIN_PATH
 unset QML2_IMPORT_PATH
 
+gui_cfg_dir="${HOME:-/root}/.xbot/ibrido/xbot2_gui"
+gui_launcher_cfg="${gui_cfg_dir}/launcher_config.yaml"
+gui_server_cfg="${gui_cfg_dir}/server_config.yaml"
+mkdir -p "${gui_cfg_dir}"
+if [ ! -f "${gui_launcher_cfg}" ]; then
+    cat > "${gui_launcher_cfg}" <<LAUNCHER_EOF
+context:
+  session: ibrido_xbot2
+LAUNCHER_EOF
+fi
+if [ ! -f "${gui_server_cfg}" ]; then
+    cat > "${gui_server_cfg}" <<SERVER_EOF
+extensions:
+  - module: xbot2_gui_server.joint_states
+    class: JointStateHandler
+  - module: xbot2_gui_server.joint_device
+    class: JointDeviceHandler
+  - module: xbot2_gui_server.plugin
+    class: PluginHandler
+  - module: xbot2_gui_server.launcher
+    class: Launcher
+  - module: xbot2_gui_server.visual
+    class: VisualHandler
+  - module: xbot2_gui_server.server_stats
+    class: ServerStatisticsHandler
+
+launcher:
+  type: launcher
+  launcher_config: launcher_config.yaml
+  cache_path: ${gui_cfg_dir}/launcher_cache.yaml
+
+joint_states:
+  rate: 30.0
+
+visual:
+  rate: 10.0
+SERVER_EOF
+fi
+export XBOT2_GUI_SERVER_CONFIG="${XBOT2_GUI_SERVER_CONFIG:-${gui_server_cfg}}"
+
 exec /opt/xbot2gui-venv/bin/xbot2_gui "$@"
 EOF
     chmod 755 /usr/local/bin/xbot2-gui
@@ -251,6 +328,8 @@ EOF
     test -x /opt/xbot2gui-venv/bin/concert_launcher
     test -x /usr/local/bin/concert_launcher
     test -x /root/.xbot2_gui_client/xbot2_gui_client_x86_64/bin/xbot2_gui
+    /opt/xbot2gui-venv/bin/python -c 'import concert_launcher'
+    grep -q "cfg.get('extensions')" /opt/xbot2gui-venv/lib/python3.12/site-packages/xbot2_gui_server/main.py
     # echo 'Testing byobu is installed...'
     # which byobu || { echo "byobu missing"; exit 1; }
 

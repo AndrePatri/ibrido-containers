@@ -258,10 +258,65 @@ prepare_joy_zmq_pub_pane() {
     prepare_command "reset && $IBRIDO_JOY_ZMQ_PUB_CMD"
 }
 
+build_eval_training_cmd() {
+    local eval_n_envs="${1:-1}"
+    local eval_tot_steps="${2:-${EVAL_TOT_STEPS:-1000}}"
+    local saved_eval="${EVAL:-}"
+    local saved_resume="${RESUME:-}"
+    local saved_n_envs="${N_ENVS:-}"
+    local saved_tot_steps="${TOT_STEPS:-}"
+    local saved_override_env="${OVERRIDE_ENV:-}"
+    local saved_dump_env_checkpoints="${DUMP_ENV_CHECKPOINTS:-}"
+    local saved_cluster_db="${CLUSTER_DB:-}"
+    local saved_debug="${DEBUG:-}"
+    local saved_rmdebug="${RMDEBUG:-}"
+    local saved_env_idx_bag="${ENV_IDX_BAG:-}"
+    local saved_env_idx_bag_demo="${ENV_IDX_BAG_DEMO:-}"
+    local saved_env_idx_bag_expl="${ENV_IDX_BAG_EXPL:-}"
+
+    EVAL=1
+    RESUME=0
+    N_ENVS="$eval_n_envs"
+    TOT_STEPS="$eval_tot_steps"
+    OVERRIDE_ENV=1
+    DUMP_ENV_CHECKPOINTS=0
+    CLUSTER_DB=0
+    DEBUG=0
+    RMDEBUG=0
+    ENV_IDX_BAG=-1
+    ENV_IDX_BAG_DEMO=-1
+    ENV_IDX_BAG_EXPL=-1
+
+    ibrido_build_training_cmd
+    IBRIDO_EVAL_TRAINING_CMD="$IBRIDO_TRAINING_CMD"
+
+    EVAL="$saved_eval"
+    RESUME="$saved_resume"
+    N_ENVS="$saved_n_envs"
+    TOT_STEPS="$saved_tot_steps"
+    OVERRIDE_ENV="$saved_override_env"
+    DUMP_ENV_CHECKPOINTS="$saved_dump_env_checkpoints"
+    CLUSTER_DB="$saved_cluster_db"
+    DEBUG="$saved_debug"
+    RMDEBUG="$saved_rmdebug"
+    ENV_IDX_BAG="$saved_env_idx_bag"
+    ENV_IDX_BAG_DEMO="$saved_env_idx_bag_demo"
+    ENV_IDX_BAG_EXPL="$saved_env_idx_bag_expl"
+}
+
 prepare_training_pane() {
     setup_main_env_pane "${WORKING_DIR}"
     build_training_cmd
     prepare_command "reset && python launch_train_env.py $training_env_cmd --comment \"$COMMENT\""
+}
+
+prepare_eval_training_pane() {
+    local eval_n_envs="${1:-1}"
+    local eval_tot_steps="${2:-${EVAL_TOT_STEPS:-1000}}"
+
+    setup_main_env_pane "${WORKING_DIR}"
+    build_eval_training_cmd "$eval_n_envs" "$eval_tot_steps"
+    prepare_command "reset && python launch_train_env.py $IBRIDO_EVAL_TRAINING_CMD --comment \"$COMMENT\""
 }
 
 prepare_ros_bridge_pane() {
@@ -367,11 +422,11 @@ build_xmj_world_cmd_for_metadata() {
     local xmj_custom_args_dtype="$CUSTOM_ARGS_DTYPE"
     local xmj_custom_args_vals="$CUSTOM_ARGS_VALS"
 
-    resolve_xbot_config
+    prepare_resolved_xbot_runtime_config
     resolve_xmj_files_dir
 
-    if [ -n "${RESOLVED_XBOT_CONFIG:-}" ]; then
-        xmj_jnt_imp_config_path="${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}"
+    if [ -n "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
+        xmj_jnt_imp_config_path="${RESOLVED_XBOT_CONFIG_PATH}"
     fi
 
     if [ -n "${RESOLVED_XMJ_FILES_DIR:-}" ] && [[ " ${xmj_custom_args_names} " != *" xmj_files_dir "* ]]; then
@@ -383,6 +438,11 @@ build_xmj_world_cmd_for_metadata() {
         xmj_custom_args_names+=" xmj_timeout"
         xmj_custom_args_dtype+=" int"
         xmj_custom_args_vals+=" ${XMJ_TIMEOUT_MS:-30000}"
+    fi
+    if [[ " ${xmj_custom_args_names} " != *" xbot2_sense_timeout_s "* ]]; then
+        xmj_custom_args_names+=" xbot2_sense_timeout_s"
+        xmj_custom_args_dtype+=" float"
+        xmj_custom_args_vals+=" ${XMJ_SENSE_TIMEOUT_S:-2.0}"
     fi
     if [[ " ${xmj_custom_args_names} " != *" add_remote_exit_flag "* ]]; then
         xmj_custom_args_names+=" add_remote_exit_flag"
@@ -414,9 +474,9 @@ record_byobu_aux_metadata() {
         mpcviz_heightmap_arg=" --show_heightmap"
     fi
 
-    resolve_xbot_config
-    if [ -n "${RESOLVED_XBOT_CONFIG:-}" ]; then
-        rt_jnt_imp_config_path="${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}"
+    prepare_resolved_xbot_runtime_config
+    if [ -n "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
+        rt_jnt_imp_config_path="${RESOLVED_XBOT_CONFIG_PATH}"
     fi
     if [[ " ${rt_custom_args_names} " != *" is_sim "* ]]; then
         rt_custom_args_names+=" is_sim"
@@ -438,14 +498,14 @@ record_byobu_aux_metadata() {
     if [ -z "${RESOLVED_XBOT_CONFIG:-}" ]; then
         rt_world_cmd="echo 'XBOT_CONFIG is not set in the selected cfg'"
     else
-        rt_world_cmd="set_xbot2_config \"${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}\" && python launch_world_interface.py $world_cmd"
+        rt_world_cmd="set_xbot2_config \"${RESOLVED_XBOT_CONFIG_PATH}\" && python launch_world_interface.py $world_cmd"
     fi
     record_byobu_launch_command "rt_deploy_world_interface" "$WORKING_DIR" "$rt_world_cmd"
 
     if [ -z "${RESOLVED_XBOT_CONFIG:-}" ]; then
         record_byobu_launch_command "xbot2_core_simtime" "$WORKING_DIR" "echo 'XBOT_CONFIG is not set in the selected cfg'"
     else
-        record_byobu_launch_command "xbot2_core_simtime" "$WORKING_DIR" "source /opt/ros/jazzy/setup.bash && source /opt/xbot/setup.sh && xbot2-core -S -C ${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}"
+        record_byobu_launch_command "xbot2_core_simtime" "$WORKING_DIR" "source /opt/ros/jazzy/setup.bash && source /opt/xbot/setup.sh && xbot2-core -S -C ${RESOLVED_XBOT_CONFIG_PATH}"
     fi
 
     resolve_rt_xmj_launcher
@@ -460,8 +520,8 @@ record_byobu_aux_metadata() {
     rt_cluster_cmd="python launch_control_cluster.py $IBRIDO_CLUSTER_CMD"
     record_byobu_launch_command "rt_deploy_control_cluster" "$WORKING_DIR" "$rt_cluster_cmd"
 
-    ibrido_build_training_cmd
-    rt_training_cmd="python launch_train_env.py $IBRIDO_TRAINING_CMD --comment \"$COMMENT\""
+    build_eval_training_cmd "$rt_n_envs"
+    rt_training_cmd="python launch_train_env.py $IBRIDO_EVAL_TRAINING_CMD --comment \"$COMMENT\""
     record_byobu_launch_command "rt_deploy_train_env" "$WORKING_DIR" "$rt_training_cmd"
 
     build_xmj_world_cmd_for_metadata
@@ -471,8 +531,8 @@ record_byobu_aux_metadata() {
     xmj_cluster_cmd="python launch_control_cluster.py $IBRIDO_CLUSTER_CMD"
     record_byobu_launch_command "xmj_control_cluster" "$WORKING_DIR" "$xmj_cluster_cmd"
 
-    ibrido_build_training_cmd
-    xmj_training_cmd="python launch_train_env.py $IBRIDO_TRAINING_CMD --comment \"$COMMENT\""
+    build_eval_training_cmd "$xmj_n_envs"
+    xmj_training_cmd="python launch_train_env.py $IBRIDO_EVAL_TRAINING_CMD --comment \"$COMMENT\""
     record_byobu_launch_command "xmj_train_env" "$WORKING_DIR" "$xmj_training_cmd"
 
     build_gui_cmd
@@ -560,36 +620,70 @@ resolve_xbot_config() {
     fi
 }
 
+prepare_resolved_xbot_runtime_config() {
+    local saved_ws_src="${IBRIDO_WS_SRC:-}"
+
+    resolve_xbot_config
+    RESOLVED_XBOT_CONFIG_PATH=""
+    RESOLVED_XBOT_TEMPLATE_CONFIG_PATH=""
+    if [ -z "${RESOLVED_XBOT_CONFIG:-}" ]; then
+        return
+    fi
+
+    export IBRIDO_WS_SRC="${WS_ROOT}/src"
+    ibrido_prepare_xbot_runtime_config "$RESOLVED_XBOT_CONFIG" "$JNT_IMP_CONFIG_PATH" || exit 1
+    RESOLVED_XBOT_CONFIG_PATH="$IBRIDO_XBOT_RUNTIME_CONFIG_PATH"
+    RESOLVED_XBOT_TEMPLATE_CONFIG_PATH="$IBRIDO_XBOT_TEMPLATE_CONFIG_PATH"
+
+    if [ -n "$saved_ws_src" ]; then
+        export IBRIDO_WS_SRC="$saved_ws_src"
+    else
+        unset IBRIDO_WS_SRC
+    fi
+}
+
 prepare_xbot2_gui_config() {
     local gui_cfg_dir
     local launcher_cfg
     local server_cfg
-    local xbot_cfg_path
+    local runner
+    local gui_home
 
     if [ -z "${RESOLVED_XBOT_CONFIG:-}" ]; then
         RESOLVED_XBOT2_GUI_SERVER_CONFIG=""
         RESOLVED_XBOT2_GUI_LAUNCHER_CONFIG=""
+        RESOLVED_XBOT2_GUI_RUNNER=""
         return
     fi
 
-    gui_cfg_dir="${HOME}/.cache/ibrido/xbot2_gui"
+    gui_home="${CONTAINER_HOME:-${HOME}}"
+    gui_cfg_dir="${gui_home}/.xbot/ibrido/xbot2_gui"
     launcher_cfg="${gui_cfg_dir}/launcher_config.yaml"
     server_cfg="${gui_cfg_dir}/server_config.yaml"
-    xbot_cfg_path="${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}"
+    runner="${gui_cfg_dir}/run_xbot2_gui.sh"
 
     mkdir -p "${gui_cfg_dir}"
 
     cat > "${launcher_cfg}" <<EOF
 context:
   session: ibrido_xbot2
-
-xbot2_core:
-  cmd: source /opt/ros/jazzy/setup.bash && source /opt/xbot/setup.sh && source ${WS_ROOT}/setup.bash && xbot2-core -S -C ${xbot_cfg_path}
-  category: xbot2
-  show_ui: true
 EOF
 
-    cat > "${server_cfg}" <<EOF
+cat > "${server_cfg}" <<EOF
+extensions:
+  - module: xbot2_gui_server.joint_states
+    class: JointStateHandler
+  - module: xbot2_gui_server.joint_device
+    class: JointDeviceHandler
+  - module: xbot2_gui_server.plugin
+    class: PluginHandler
+  - module: xbot2_gui_server.launcher
+    class: Launcher
+  - module: xbot2_gui_server.visual
+    class: VisualHandler
+  - module: xbot2_gui_server.server_stats
+    class: ServerStatisticsHandler
+
 launcher:
   type: launcher
   launcher_config: launcher_config.yaml
@@ -602,8 +696,51 @@ visual:
   rate: 10.0
 EOF
 
+    cat > "${runner}" <<EOF
+#!/usr/bin/env bash
+set -e
+
+mkdir -p "${gui_cfg_dir}"
+cat > "${launcher_cfg}" <<'LAUNCHER_EOF'
+context:
+  session: ibrido_xbot2
+LAUNCHER_EOF
+
+cat > "${server_cfg}" <<'SERVER_EOF'
+extensions:
+  - module: xbot2_gui_server.joint_states
+    class: JointStateHandler
+  - module: xbot2_gui_server.joint_device
+    class: JointDeviceHandler
+  - module: xbot2_gui_server.plugin
+    class: PluginHandler
+  - module: xbot2_gui_server.launcher
+    class: Launcher
+  - module: xbot2_gui_server.visual
+    class: VisualHandler
+  - module: xbot2_gui_server.server_stats
+    class: ServerStatisticsHandler
+
+launcher:
+  type: launcher
+  launcher_config: launcher_config.yaml
+  cache_path: ${gui_cfg_dir}/launcher_cache.yaml
+
+joint_states:
+  rate: 30.0
+
+visual:
+  rate: 10.0
+SERVER_EOF
+
+export XBOT2_GUI_SERVER_CONFIG="${server_cfg}"
+exec xbot2-gui
+EOF
+    chmod +x "${runner}"
+
     RESOLVED_XBOT2_GUI_SERVER_CONFIG="${server_cfg}"
     RESOLVED_XBOT2_GUI_LAUNCHER_CONFIG="${launcher_cfg}"
+    RESOLVED_XBOT2_GUI_RUNNER="${runner}"
 }
 
 resolve_xmj_files_dir() {
@@ -695,9 +832,9 @@ add_rt_deployment_tab() {
     rt_sim_pane="$(current_pane_id)"
 
     go_to_pane "$rt_world_pane"
-    resolve_xbot_config
-    if [ -n "${RESOLVED_XBOT_CONFIG:-}" ]; then
-        rt_jnt_imp_config_path="${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}"
+    prepare_resolved_xbot_runtime_config
+    if [ -n "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
+        rt_jnt_imp_config_path="${RESOLVED_XBOT_CONFIG_PATH}"
     fi
     if [[ " ${rt_custom_args_names} " != *" is_sim "* ]]; then
         rt_custom_args_names+=" is_sim"
@@ -721,7 +858,7 @@ add_rt_deployment_tab() {
     if [ -z "${RESOLVED_XBOT_CONFIG:-}" ]; then
         prepare_command "reset && echo 'XBOT_CONFIG is not set in the selected cfg'"
     else
-        prepare_command "reset && set_xbot2_config \"${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}\" && python launch_world_interface.py $world_cmd"
+        prepare_command "reset && set_xbot2_config \"${RESOLVED_XBOT_CONFIG_PATH}\" && python launch_world_interface.py $world_cmd"
     fi
 
     go_to_pane "$rt_sim_pane"
@@ -731,11 +868,14 @@ add_rt_deployment_tab() {
     prepare_cluster_pane "$rt_n_envs"
 
     go_to_pane "$rt_training_pane"
-    prepare_training_pane
+    prepare_eval_training_pane "$rt_n_envs"
 }
 
 add_xbot2_tab() {
-    resolve_xbot_config
+    local xbot_cfg_path
+    local xbot_cfg_dir
+
+    prepare_resolved_xbot_runtime_config
     prepare_xbot2_gui_config
 
     setup_main_env_pane "${WORKING_DIR}" \
@@ -746,7 +886,9 @@ add_xbot2_tab() {
     if [ -z "${RESOLVED_XBOT_CONFIG:-}" ]; then
         prepare_command "reset && echo 'XBOT_CONFIG is not set in the selected cfg'"
     else
-        prepare_command "reset && export CONCERT_LAUNCHER_DEFAULT_CONFIG=${RESOLVED_XBOT2_GUI_LAUNCHER_CONFIG}; concert_launcher run xbot2_core"
+        xbot_cfg_path="${RESOLVED_XBOT_CONFIG_PATH}"
+        xbot_cfg_dir="$(dirname "${xbot_cfg_path}")"
+        prepare_command "reset && cd ${xbot_cfg_dir} && xbot2-core -S -C ${xbot_cfg_path}"
     fi
 
     split_h
@@ -754,10 +896,10 @@ add_xbot2_tab() {
         "source /opt/ros/jazzy/setup.bash" \
         "source /opt/xbot/setup.sh" \
         "source ${WS_ROOT}/setup.bash"
-    if [ -z "${RESOLVED_XBOT2_GUI_SERVER_CONFIG:-}" ]; then
+    if [ -z "${RESOLVED_XBOT2_GUI_RUNNER:-}" ]; then
         prepare_command "reset && xbot2-gui"
     else
-        prepare_command "reset && export XBOT2_GUI_SERVER_CONFIG=${RESOLVED_XBOT2_GUI_SERVER_CONFIG}; xbot2-gui"
+        prepare_command "reset && ${RESOLVED_XBOT2_GUI_RUNNER}"
     fi
 }
 
@@ -769,11 +911,11 @@ add_xmj_tab() {
     local xmj_custom_args_dtype="$CUSTOM_ARGS_DTYPE"
     local xmj_custom_args_vals="$CUSTOM_ARGS_VALS"
 
-    resolve_xbot_config
+    prepare_resolved_xbot_runtime_config
     resolve_xmj_files_dir
 
-    if [ -n "${RESOLVED_XBOT_CONFIG:-}" ]; then
-        xmj_jnt_imp_config_path="${WS_ROOT}/src/${RESOLVED_XBOT_CONFIG}"
+    if [ -n "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
+        xmj_jnt_imp_config_path="${RESOLVED_XBOT_CONFIG_PATH}"
     fi
 
     if [ -n "${RESOLVED_XMJ_FILES_DIR:-}" ] && [[ " ${xmj_custom_args_names} " != *" xmj_files_dir "* ]]; then
@@ -785,6 +927,11 @@ add_xmj_tab() {
         xmj_custom_args_names+=" xmj_timeout"
         xmj_custom_args_dtype+=" int"
         xmj_custom_args_vals+=" ${XMJ_TIMEOUT_MS:-30000}"
+    fi
+    if [[ " ${xmj_custom_args_names} " != *" xbot2_sense_timeout_s "* ]]; then
+        xmj_custom_args_names+=" xbot2_sense_timeout_s"
+        xmj_custom_args_dtype+=" float"
+        xmj_custom_args_vals+=" ${XMJ_SENSE_TIMEOUT_S:-2.0}"
     fi
     if [[ " ${xmj_custom_args_names} " != *" add_remote_exit_flag "* ]]; then
         xmj_custom_args_names+=" add_remote_exit_flag"
@@ -805,7 +952,7 @@ add_xmj_tab() {
     prepare_cluster_pane "$xmj_n_envs"
 
     go_to_pane 2
-    prepare_training_pane
+    prepare_eval_training_pane "$xmj_n_envs"
 }
 
 prepare_mpcviz_pane() {
