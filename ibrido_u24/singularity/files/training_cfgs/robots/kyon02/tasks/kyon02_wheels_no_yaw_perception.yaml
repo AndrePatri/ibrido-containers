@@ -48,7 +48,7 @@ custom_args:
       value: false
     use_jnt_v_feedback:
       dtype: bool
-      value: false
+      value: true
   world_interface:
     rendering_dt:
       dtype: float

@@ -1,9 +1,0 @@
-include:
-- ../common/runtime_defaults.yaml
-- ../common/algorithms/sac_default.yaml
-- ../robots/talos/base.yaml
-- ../robots/talos/control/talos.yaml
-- ../robots/talos/tasks/talos.yaml
-- ../robots/talos/backends/rt_xbot_zmq.yaml
-vars:
-  PHYSICS_DT: 0.001

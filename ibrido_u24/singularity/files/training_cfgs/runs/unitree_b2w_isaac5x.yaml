@@ -1,9 +1,0 @@
-include:
-- ../common/runtime_defaults.yaml
-- ../common/algorithms/sac_b2w.yaml
-- ../robots/b2w/base.yaml
-- ../robots/b2w/control/unitree_b2w.yaml
-- ../robots/b2w/tasks/unitree_b2w.yaml
-- ../robots/b2w/backends/isaac5x.yaml
-vars:
-  PHYSICS_DT: 0.001

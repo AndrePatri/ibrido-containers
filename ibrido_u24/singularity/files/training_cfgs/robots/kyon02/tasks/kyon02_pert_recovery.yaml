@@ -46,7 +46,7 @@ custom_args:
       value: false
     use_jnt_v_feedback:
       dtype: bool
-      value: false
+      value: true
   world_interface:
     use_flat_ground:
       dtype: bool

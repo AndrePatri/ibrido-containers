@@ -14,8 +14,11 @@ vars:
   USE_GPU_SIM: 0
   XBOT_CONFIG: TalosHybridMPC/taloshybridmpc/config/xmj_env_files/xbot2_basic.yaml
   XMJ_FILES_DIR: TalosHybridMPC/taloshybridmpc/config/xmj_env_files
-  JNT_IMP_CONFIG_PATH: ${HOME}/ibrido_ws/src/${XBOT_CONFIG}
 custom_args:
+  robot_description:
+    use_capsule_collision:
+      dtype: xacro
+      value: true
   world_interface:
     xmj_files_dir:
       dtype: str
@@ -23,6 +26,18 @@ custom_args:
     xmj_timeout:
       dtype: int
       value: ${XMJ_TIMEOUT_MS}
+    xbot2_sense_timeout_s:
+      dtype: float
+      value: 2.0
+    xbot2_filter_prof:
+      dtype: str
+      value: safe
+    state_from_xbot:
+      dtype: bool
+      value: true
     add_remote_exit_flag:
       dtype: bool
       value: true
+    root_spawn_height:
+      dtype: float
+      value: 0.9346

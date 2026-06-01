@@ -218,6 +218,26 @@ resolve_xbot_config() {
     fi
 }
 
+prepare_resolved_xbot_runtime_config() {
+    local saved_ws_src="${IBRIDO_WS_SRC:-}"
+
+    resolve_xbot_config
+    if [ -z "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
+        return
+    fi
+
+    export IBRIDO_WS_SRC="${HOME}/ibrido_ws/src"
+    ibrido_prepare_xbot_runtime_config "$RESOLVED_XBOT_CONFIG_PATH" "$JNT_IMP_CONFIG_PATH" || exit 1
+    RESOLVED_XBOT_TEMPLATE_CONFIG_PATH="$IBRIDO_XBOT_TEMPLATE_CONFIG_PATH"
+    RESOLVED_XBOT_CONFIG_PATH="$IBRIDO_XBOT_RUNTIME_CONFIG_PATH"
+
+    if [ -n "$saved_ws_src" ]; then
+        export IBRIDO_WS_SRC="$saved_ws_src"
+    else
+        unset IBRIDO_WS_SRC
+    fi
+}
+
 resolve_xmj_files_dir() {
     RESOLVED_XMJ_FILES_DIR_PATH="${XMJ_FILES_DIR_PATH:-}"
     if [ -n "$RESOLVED_XMJ_FILES_DIR_PATH" ]; then
@@ -417,7 +437,7 @@ case "$world_iface_fname" in
             echo "launch_bundle.sh: XMJ transfer supports only N_ENVS=1."
             exit 1
         fi
-        resolve_xbot_config
+        prepare_resolved_xbot_runtime_config
         resolve_xmj_files_dir
         if [ -z "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
             echo "launch_bundle.sh: could not resolve an XBot2 config. Set XBOT_CONFIG or XBOT_CONFIG_PATH."
@@ -444,7 +464,7 @@ case "$world_iface_fname" in
             echo "launch_bundle.sh: RT transfer supports only N_ENVS=1."
             exit 1
         fi
-        resolve_xbot_config
+        prepare_resolved_xbot_runtime_config
         if [ -z "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
             echo "launch_bundle.sh: could not resolve an XBot2 config. Set XBOT_CONFIG or XBOT_CONFIG_PATH."
             exit 1

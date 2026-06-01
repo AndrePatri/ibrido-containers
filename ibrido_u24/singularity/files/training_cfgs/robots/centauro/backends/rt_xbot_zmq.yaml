@@ -23,6 +23,9 @@ custom_args:
     time_source:
       dtype: str
       value: ${TIME_SOURCE}
+    state_from_xbot:
+      dtype: bool
+      value: true
     add_remote_exit_flag:
       dtype: bool
       value: true

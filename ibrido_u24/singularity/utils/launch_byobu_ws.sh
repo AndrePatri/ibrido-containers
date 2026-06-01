@@ -155,7 +155,7 @@ build_world_cmd() {
 }
 
 build_cluster_cmd() {
-    ibrido_build_cluster_cmd "$1" 0 1
+    ibrido_build_cluster_cmd "$1" 1 1
     cluster_cmd="$IBRIDO_CLUSTER_CMD"
 }
 
@@ -206,7 +206,7 @@ prepare_primary_run_metadata() {
 
     ibrido_build_world_cmd "$metadata_world_iface" "$N_ENVS" "$metadata_world_headless" "$metadata_world_custom_jnt_imp" "$metadata_world_use_gpu"
     metadata_world_cmd="python launch_world_interface.py $IBRIDO_WORLD_CMD"
-    ibrido_build_cluster_cmd "$N_ENVS" 0 1
+    ibrido_build_cluster_cmd "$N_ENVS" 1 1
     metadata_cluster_cmd="python launch_control_cluster.py $IBRIDO_CLUSTER_CMD"
     ibrido_build_training_cmd
     metadata_training_cmd="python launch_train_env.py $IBRIDO_TRAINING_CMD --comment \"$COMMENT\""
@@ -224,6 +224,23 @@ create_execution_layout() {
     split_h
     split_h
     byobu select-layout even-vertical
+}
+
+selected_world_interface_matches() {
+    [[ "${WORLD_INTERFACE:-}" == *"$1"* ]]
+}
+
+prepare_disabled_backend_tab() {
+    local backend_label="$1"
+    local hint="$2"
+    local pane
+
+    create_execution_layout
+    for pane in 0 1 2; do
+        go_to_pane "$pane"
+        setup_main_env_pane "${WORKING_DIR}"
+        execute_command "reset && printf '%s\n' \"${backend_label} tab is disabled for this cfg.\" \"cfg: ${config_file}\" \"WORLD_INTERFACE: ${WORLD_INTERFACE:-unset}\" \"${hint}\""
+    done
 }
 
 prepare_cluster_pane() {
@@ -516,7 +533,7 @@ record_byobu_aux_metadata() {
     fi
     record_byobu_launch_command "rt_deploy_xmj_sim" "$RESOLVED_RT_XMJ_WORKDIR" "$rt_sim_cmd"
 
-    ibrido_build_cluster_cmd "$rt_n_envs" 0 1
+    ibrido_build_cluster_cmd "$rt_n_envs" 1 1
     rt_cluster_cmd="python launch_control_cluster.py $IBRIDO_CLUSTER_CMD"
     record_byobu_launch_command "rt_deploy_control_cluster" "$WORKING_DIR" "$rt_cluster_cmd"
 
@@ -527,7 +544,7 @@ record_byobu_aux_metadata() {
     build_xmj_world_cmd_for_metadata
     record_byobu_launch_command "xmj_world_interface" "$WORKING_DIR" "$IBRIDO_XMJ_WORLD_CMD"
 
-    ibrido_build_cluster_cmd "$xmj_n_envs" 0 1
+    ibrido_build_cluster_cmd "$xmj_n_envs" 1 1
     xmj_cluster_cmd="python launch_control_cluster.py $IBRIDO_CLUSTER_CMD"
     record_byobu_launch_command "xmj_control_cluster" "$WORKING_DIR" "$xmj_cluster_cmd"
 
@@ -572,6 +589,11 @@ prepare_zmq_bridge_pane() {
 }
 
 add_isaac5x_tab() {
+    if ! selected_world_interface_matches "isaac5x_world_interface"; then
+        prepare_disabled_backend_tab "isaac5x" "Use an isaac5x run profile for this tab."
+        return
+    fi
+
     create_execution_layout
 
     go_to_pane 0
@@ -778,6 +800,11 @@ resolve_rt_xmj_launcher() {
     if [[ "$cfg_key" == *centauro* ]]; then
         RESOLVED_RT_XMJ_WORKDIR="$WORKING_DIR_CENTAURO"
         RESOLVED_RT_XMJ_CMD="./launch_xmj_centauro.sh --rt_factor ${rt_factor}${rostime_args}"
+    elif [[ "$cfg_key" == *b2w* || "$cfg_key" == *unitree* ]]; then
+        local b2w_xmj_dir="${WS_ROOT}/src/KyonRLStepping/kyonrlstepping/config/xmj_env_files/b2w"
+        local b2w_xbot_config="${RESOLVED_XBOT_CONFIG_PATH:-${WS_ROOT}/src/KyonRLStepping/kyonrlstepping/config/xmj_env_files/b2w/xbot2_basic.yaml}"
+        RESOLVED_RT_XMJ_WORKDIR="${WS_ROOT}/src/xbot2_mujoco/tests/PyXBotMjSim"
+        RESOLVED_RT_XMJ_CMD="python launch_simulator.py --files_dir ${b2w_xmj_dir} --urdf_path ${b2w_xmj_dir}/unitree_b2w.urdf --simopt_path ${b2w_xmj_dir}/sim_opt.xml --world_path ${b2w_xmj_dir}/world.xml --sites_path ${b2w_xmj_dir}/sites.xml --xbot_config_path ${b2w_xbot_config} --blink_name base --rt_factor ${rt_factor}${rostime_args}"
     elif [[ "$cfg_key" == *kyon* ]]; then
         RESOLVED_RT_XMJ_WORKDIR="$WORKING_DIR_QUAD"
         if [[ "$cfg_key" == *no_wheels* ]]; then
@@ -817,6 +844,11 @@ add_rt_deployment_tab() {
     local rt_sim_pane
     local rt_cluster_pane
     local rt_training_pane
+
+    if ! selected_world_interface_matches "rt_deploy_world_interface"; then
+        prepare_disabled_backend_tab "rt_deployment" "Use an rt_xbot_zmq run profile for this tab."
+        return
+    fi
 
     create_execution_layout
 
@@ -910,6 +942,11 @@ add_xmj_tab() {
     local xmj_custom_args_names="$CUSTOM_ARGS_NAMES"
     local xmj_custom_args_dtype="$CUSTOM_ARGS_DTYPE"
     local xmj_custom_args_vals="$CUSTOM_ARGS_VALS"
+
+    if ! selected_world_interface_matches "xmj_world_interface"; then
+        prepare_disabled_backend_tab "xmj" "Use an xmj run profile for this tab."
+        return
+    fi
 
     prepare_resolved_xbot_runtime_config
     resolve_xmj_files_dir

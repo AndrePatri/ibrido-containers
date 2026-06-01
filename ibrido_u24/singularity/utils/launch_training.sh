@@ -191,6 +191,7 @@ world_headless="${WORLD_HEADLESS:-1}"
 world_use_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-1}"
 world_use_gpu="${USE_GPU_SIM:-1}"
 world_env_profile="isaac5x"
+world_jnt_imp_config_path="${JNT_IMP_CONFIG_PATH:-}"
 
 if [ -z "$world_iface_fname" ]; then
   echo "launch_training.sh: WORLD_INTERFACE is required by the selected cfg"
@@ -203,12 +204,20 @@ case "$world_iface_fname" in
     world_use_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-0}"
     world_use_gpu=0
     world_env_profile="xbot"
+    if [ -z "${IBRIDO_XBOT_RUNTIME_CONFIG_PATH:-}" ]; then
+      ibrido_prepare_xbot_runtime_config "${XBOT_CONFIG_PATH:-${XBOT_CONFIG:-}}" "$JNT_IMP_CONFIG_PATH" || exit 1
+    fi
+    world_jnt_imp_config_path="$IBRIDO_XBOT_RUNTIME_CONFIG_PATH"
     ;;
   *rt_deploy_world_interface*)
     world_headless="${RT_HEADLESS:-0}"
     world_use_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-0}"
     world_use_gpu=0
     world_env_profile="xbot"
+    if [ -z "${IBRIDO_XBOT_RUNTIME_CONFIG_PATH:-}" ]; then
+      ibrido_prepare_xbot_runtime_config "${XBOT_CONFIG_PATH:-${XBOT_CONFIG:-}}" "$JNT_IMP_CONFIG_PATH" || exit 1
+    fi
+    world_jnt_imp_config_path="$IBRIDO_XBOT_RUNTIME_CONFIG_PATH"
     ;;
   *isaac5x_world_interface*)
     world_headless="${WORLD_HEADLESS:-1}"
@@ -223,7 +232,7 @@ case "$world_iface_fname" in
 esac
 
 export WORLD_INTERFACE="$world_iface_fname"
-ibrido_build_world_cmd "$world_iface_fname" "$N_ENVS" "$world_headless" "$world_use_custom_jnt_imp" "$world_use_gpu"
+ibrido_build_world_cmd "$world_iface_fname" "$N_ENVS" "$world_headless" "$world_use_custom_jnt_imp" "$world_use_gpu" "$world_jnt_imp_config_path"
 remote_env_cmd="$IBRIDO_WORLD_CMD"
 
 ibrido_build_cluster_cmd "$N_ENVS" 1 0

@@ -38,8 +38,6 @@ def merge_custom_arg(base, name, spec):
         raise ValueError(f"custom arg '{name}' must be a mapping")
     if "dtype" not in spec or "value" not in spec:
         raise ValueError(f"custom arg '{name}' requires dtype and value")
-    if name in base["custom_args"]:
-        raise ValueError(f"custom arg '{name}' is defined more than once")
     base["custom_args"][name] = {
         "dtype": scalar_to_string(spec["dtype"]),
         "value": scalar_to_string(spec["value"]),

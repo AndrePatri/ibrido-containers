@@ -80,6 +80,9 @@ custom_args:
     use_flat_ground:
       dtype: bool
       value: true
+    root_spawn_height:
+      dtype: float
+      value: 0.95
     ground_type:
       dtype: str
       value: flat

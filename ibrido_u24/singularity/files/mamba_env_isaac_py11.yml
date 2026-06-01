@@ -32,6 +32,7 @@ dependencies:
   - pyqtgraph
   - pyside2
   - catkin_pkg
+  - fabric
   - pip:
     - pyzmq
     - pyyaml

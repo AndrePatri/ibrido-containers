@@ -1,9 +1,0 @@
-include:
-- ../common/runtime_defaults.yaml
-- ../common/algorithms/sac_default.yaml
-- ../robots/centauro/base.yaml
-- ../robots/centauro/control/centauro_no_yaw_ub_cloop_perception.yaml
-- ../robots/centauro/tasks/centauro_no_yaw_ub_cloop_perception.yaml
-- ../robots/centauro/backends/isaac5x.yaml
-vars:
-  PHYSICS_DT: 0.0005

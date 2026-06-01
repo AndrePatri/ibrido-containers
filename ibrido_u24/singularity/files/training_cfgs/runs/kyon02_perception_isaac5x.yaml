@@ -1,9 +1,0 @@
-include:
-- ../common/runtime_defaults.yaml
-- ../common/algorithms/sac_default.yaml
-- ../robots/kyon02/base.yaml
-- ../robots/kyon02/control/kyon02_perception.yaml
-- ../robots/kyon02/tasks/kyon02_perception.yaml
-- ../robots/kyon02/backends/isaac5x.yaml
-vars:
-  PHYSICS_DT: 0.001

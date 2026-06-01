@@ -1,5 +1,7 @@
 #!/bin/bash
 
+IBRIDO_COMMAND_BUILDER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 ibrido_enabled() {
     case "${1:-0}" in
         1|true|True|TRUE|yes|Yes|YES|on|On|ON) return 0 ;;
@@ -18,6 +20,56 @@ ibrido_require_var() {
         ibrido_fail "required config variable ${name} is not set"
         return 1
     fi
+}
+
+ibrido_ws_src_path() {
+    local path="$1"
+    if [ -z "$path" ]; then
+        return 1
+    fi
+    if [[ "$path" = /* ]]; then
+        printf '%s\n' "$path"
+    else
+        printf '%s/%s\n' "${IBRIDO_WS_SRC:-${HOME}/ibrido_ws/src}" "$path"
+    fi
+}
+
+ibrido_prepare_xbot_runtime_config() {
+    local xbot_config="${1:-${XBOT_CONFIG_PATH:-${XBOT_CONFIG:-}}}"
+    local impedance_config="${2:-${JNT_IMP_CONFIG_PATH:-}}"
+    local token
+    local output_dir
+    local xbot_config_abs
+    local impedance_config_abs
+
+    if [ -z "$xbot_config" ]; then
+        ibrido_fail "cannot prepare XBot runtime config: XBOT_CONFIG is not set"
+        return 1
+    fi
+    if [ -z "$impedance_config" ]; then
+        ibrido_fail "cannot prepare XBot runtime config: JNT_IMP_CONFIG_PATH is not set"
+        return 1
+    fi
+
+    xbot_config_abs="$(ibrido_ws_src_path "$xbot_config")" || return 1
+    impedance_config_abs="$(ibrido_ws_src_path "$impedance_config")" || return 1
+
+    token="${SHM_NS:-${ROBOT_VARIANT:-xbot}}"
+    token="${token//[^A-Za-z0-9_.-]/_}"
+    output_dir="${IBRIDO_XBOT_RUNTIME_DIR:-/tmp/ibrido_xbot_configs/${token}}"
+
+    IBRIDO_XBOT_TEMPLATE_CONFIG_PATH="$xbot_config_abs"
+    IBRIDO_XBOT_RUNTIME_CONFIG_PATH="$(
+        python3 "${IBRIDO_COMMAND_BUILDER_DIR}/ibrido_xbot_config_builder.py" \
+            --xbot-config "$xbot_config_abs" \
+            --impedance-config "$impedance_config_abs" \
+            --output-dir "$output_dir"
+    )" || return 1
+
+    XBOT_CONFIG_PATH="$IBRIDO_XBOT_RUNTIME_CONFIG_PATH"
+    RT_XBOT_CONFIG_PATH="$IBRIDO_XBOT_RUNTIME_CONFIG_PATH"
+    export IBRIDO_XBOT_TEMPLATE_CONFIG_PATH IBRIDO_XBOT_RUNTIME_CONFIG_PATH
+    export XBOT_CONFIG_PATH RT_XBOT_CONFIG_PATH
 }
 
 ibrido_write_executable() {
@@ -178,6 +230,9 @@ ibrido_normalize_runtime_config() {
     fi
 
     XBOT_CONFIG_PATH="${XBOT_CONFIG_PATH:-${XBOT_CONFIG:-}}"
+    if [ -n "$XBOT_CONFIG_PATH" ] && [ -n "${JNT_IMP_CONFIG_PATH:-}" ] && [ "$XBOT_CONFIG_PATH" != "${IBRIDO_XBOT_RUNTIME_CONFIG_PATH:-}" ]; then
+        ibrido_prepare_xbot_runtime_config "$XBOT_CONFIG_PATH" "$JNT_IMP_CONFIG_PATH" || return 1
+    fi
     RT_XBOT_CONFIG_PATH="${RT_XBOT_CONFIG_PATH:-${XBOT_CONFIG_PATH:-}}"
     SITE_PROFILE="${SITE_PROFILE:-local_dev}"
     ZMQ_BRIDGE_BIND_IP="${ZMQ_BRIDGE_BIND_IP:-0.0.0.0}"
