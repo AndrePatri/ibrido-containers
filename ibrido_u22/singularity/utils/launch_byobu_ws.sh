@@ -12,24 +12,28 @@ export XMODIFIERS=@im=ibus
 export GTK_IM_MODULE=ibus
 export QT_IM_MODULE=ibus
 
-SLEEP_FOR=0.1
+SLEEP_FOR=0.02
 BYOBU_WS_NAME="ibrido_isaac"
 WS_ROOT="$HOME/ibrido_ws"
+DATA_ROOT="$HOME/training_data"
 WORKING_DIR="$WS_ROOT/src/AugMPC/aug_mpc/scripts"
-WORKING_DIR_OTHER="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
+WORKING_DIR_QUAD="$WS_ROOT/src/KyonRLStepping/kyonrlstepping/scripts"
+WORKING_DIR_CENTAURO="$WS_ROOT/src/CentauroHybridMPC/centaurohybridmpc/scripts"
 
 MAMBAENVNAME="${MAMBA_ENV_NAME}"
 
 # Default configuration file
 config_file="$HOME/ibrido_files/training_cfg.sh"
 
-# Array of directories
+# Main sources
 directories=(
-    "$WS_ROOT/src/KyonRLStepping"
     "$WS_ROOT/src/AugMPC"
-    "$WS_ROOT/src/MPCHive"
     "$WS_ROOT/src/AugMPCEnvs"
-    # Add more directories as needed
+    "$DATA_ROOT/AugMPCModels"
+    "$WS_ROOT/src/MPCHive"
+    "$WS_ROOT/src/KyonRLStepping"
+    "$WS_ROOT/src/CentauroHybridMPC"
+    "$WS_ROOT/src/MPCHive"
 )
 
 press_enter() {
@@ -161,6 +165,7 @@ remote_env_cmd="--headless --robot_name $SHM_NS \
 --use_custom_jnt_imp --jnt_imp_config_path $JNT_IMP_CF_PATH \
 --cluster_dt $CLUSTER_DT \
 --physics_dt $PHYSICS_DT \
+--n_contacts ${N_CONTACTS:-4} \
 --num_envs $N_ENVS --seed $SEED --timeout_ms $TIMEOUT_MS \
 --custom_args_names $CUSTOM_ARGS_NAMES \
 --custom_args_dtype $CUSTOM_ARGS_DTYPE \
@@ -324,32 +329,6 @@ prepare_command "reset && python utilities/launch_periodic_bag_dump.py --ros2 --
 --bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG \
 --srdf_path $SRDF_PATH_ROSBAG --with_agent_refs --no_rhc_internal $( (( PUB_HEIGHTMAP )) && echo --show_heightmap )"
 
-split_h
-execute_command "cd ${WORKING_DIR}"
-# execute_command "source /opt/ros/noetic/setup.bash"
-execute_command "source /opt/ros/humble/setup.bash"
-execute_command "source $WS_ROOT/setup.bash"
-activate_mamba_env
-increase_file_limits_locally
-prepare_command "reset && python utilities/launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir \
---ns $SHM_NS --remap_ns "${SHM_NS}_expl" \
---rhc_refs_in_h_frame \
---bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_EXPL \
---srdf_path $SRDF_PATH_ROSBAG --with_agent_refs --no_rhc_internal $( (( PUB_HEIGHTMAP )) && echo --show_heightmap )"
-
-split_v
-execute_command "cd ${WORKING_DIR}"
-# execute_command "source /opt/ros/noetic/setup.bash"
-execute_command "source /opt/ros/humble/setup.bash"
-execute_command "source $WS_ROOT/setup.bash"
-activate_mamba_env
-increase_file_limits_locally
-prepare_command "reset && python utilities/launch_periodic_bag_dump.py --ros2 --is_training --use_shared_drop_dir \
---ns $SHM_NS --remap_ns "${SHM_NS}_demo" \
---rhc_refs_in_h_frame \
---bag_sdt $BAG_SDT --ros_bridge_dt $BRIDGE_DT --dump_dt_min $DUMP_DT --env_idx $ENV_IDX_BAG_DEMO \
---srdf_path $SRDF_PATH_ROSBAG --with_agent_refs --no_rhc_internal $( (( PUB_HEIGHTMAP )) && echo --show_heightmap )"
-
 # tab 1
 new_tab
 execute_command "cd ${WORKING_DIR}"
@@ -358,14 +337,23 @@ execute_command "source /opt/ros/humble/setup.bash"
 prepare_command "reset && ./utilities/replay_bag.bash ~/training_data/{}"
 
 split_h
-execute_command "cd ${WORKING_DIR_OTHER}"
-# execute_command "source /opt/ros/noetic/setup.bash"
+execute_command "cd ${WORKING_DIR_QUAD}"
 activate_mamba_env
 execute_command "source /opt/ros/humble/setup.bash"
 if (( PUB_HEIGHTMAP )); then
-    prepare_command "reset && python utilities/launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --show_heightmap"
+    prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --show_heightmap --b2w"
 else
-    prepare_command "reset && python utilities/launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
+    prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --b2w"
+fi
+
+split_v
+execute_command "cd ${WORKING_DIR_CENTAURO}"
+activate_mamba_env
+execute_command "source /opt/ros/humble/setup.bash"
+if (( PUB_HEIGHTMAP )); then
+    prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --show_heightmap"
+else
+    prepare_command "reset && python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
 fi
 
 # tab2

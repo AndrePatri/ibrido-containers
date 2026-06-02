@@ -1,0 +1,8 @@
+vars:
+  CLUSTER_CL_FNAME: centaurohybridmpc.controllers.horizon_based.centauro_rhc_cluster_client
+  CLUSTER_DT: 0.035
+  CODEGEN_OVERRIDE_BDIR: ${HOME}/aux_data/CentauroRHCLusterClient_centauro_big_wheels_no_yaw_open/CodeGen/centauro_big_wheels_no_yaw_openRhc
+  IS_CLOSED_LOOP: 0
+  JNT_IMP_CONFIG_PATH: ${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config_open_with_ub.yaml
+  N_NODES: 29
+  SRDF_PATH_ROSBAG: ${HOME}/aux_data/CentauroRHClusterClient_centauro_big_wheels_no_yaw_open/centauro_big_wheels_no_yaw_open.srdf

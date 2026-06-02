@@ -1,15 +1,15 @@
 #!/bin/bash
-export EVAL=0
+export EVAL=1
 export DET_EVAL=1
 export EVAL_ON_CPU=1
-export OVERRIDE_ENV=1
+export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/"
-export MNAME=""
+export MPATH="/root/training_data/AugMPCModels/bundles/centauro/d2026_02_21_h14_m01_s10-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv"
+export MNAME="d2026_02_21_h14_m01_s10-CentauroCloopPartialUbNoWheels_FakePosTrackingEnv_model"
 
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
 export SHM_NS="centauro_big_wheels_ub" # shared mem namespace used for all shared data on CPU 
-export N_ENVS=800 # number of env to run in parallel
+export N_ENVS=1 # number of env to run in parallel
 export RNAME="CentauroCloopPartialUbNoWheels" # a descriptive base name for this run
 export SEED=383 # random n generator seed to be used for this run
 export REMOTE_STEPPING=1

@@ -1,0 +1,31 @@
+vars:
+  WORLD_INTERFACE: aug_mpc_envs.world_interfaces.rt_deploy_world_interface
+  TIME_SOURCE: sim
+  EVAL: 1
+  N_ENVS: 1
+  TOT_STEPS: 1000
+  DUMP_ENV_CHECKPOINTS: 0
+  CLUSTER_DB: 0
+  DEBUG: 0
+  RMDEBUG: 0
+  ENV_IDX_BAG: -1
+  ENV_IDX_BAG_DEMO: -1
+  ENV_IDX_BAG_EXPL: -1
+  USE_GPU_SIM: 0
+  XBOT_CONFIG: TalosHybridMPC/taloshybridmpc/config/xmj_env_files/xbot2_basic.yaml
+  XMJ_FILES_DIR: TalosHybridMPC/taloshybridmpc/config/xmj_env_files
+  RT_XBOT_CONFIG_PATH: ${HOME}/ibrido_ws/src/${XBOT_CONFIG}
+custom_args:
+  world_interface:
+    is_sim:
+      dtype: bool
+      value: true
+    time_source:
+      dtype: str
+      value: ${TIME_SOURCE}
+    state_from_xbot:
+      dtype: bool
+      value: true
+    add_remote_exit_flag:
+      dtype: bool
+      value: true

@@ -8,6 +8,20 @@ root_folder="$(dirname "$THIS_DIR")"
 
 source "${root_folder}/files/bind_list.sh"
 
+clone_git_repo() {
+    local src="$1"
+    local branch="$2"
+    local target_dir="$3"
+
+    if [ -n "$target_dir" ]; then
+        echo "--> $src # $branch -> $target_dir"
+        git clone -q -b "$branch" "$src" "$IBRIDO_WS_SRC/$target_dir"
+    else
+        echo "--> $src # $branch"
+        git clone -q -b "$branch" "$src"
+    fi
+}
+
 echo 'Creating all directories...'
 mkdir -p $IBRIDO_WS_SRC # to hold git repos
 for item in "${IBRIDO_BDIRS_SRC[@]}"; do
@@ -25,35 +39,74 @@ for item in "${IBRIDO_BFILES_SRC[@]}"; do
 done
 echo 'Done.'
 
-# echo 'Cloning repos...'
-# cd $IBRIDO_WS_SRC
-# for ((i = 0; i < ${#IBRIDO_GITDIRS[@]}; i++)); do
-#     src="${IBRIDO_GIT_SRC[$i]}"
-#     branch="${IBRIDO_GIT_BRCH[$i]}"
-#     echo "--> $src # $branch"
-#     git clone -q -b $branch $src &
-# done
-# wait
-
 echo 'Cloning repos...'
 cd "$IBRIDO_WS_SRC" || exit 1
 for ((i = 0; i < ${#IBRIDO_GITDIRS[@]}; i++)); do
-src="${IBRIDO_GIT_SRC[$i]}"
-branch="${IBRIDO_GIT_BRCH[$i]}"
-target_dir="${IBRIDO_GIT_DIR[$i]}"
+clone_git_repo "${IBRIDO_GIT_SRC[$i]}" "${IBRIDO_GIT_BRCH[$i]}" "${IBRIDO_GIT_DIR[$i]}" &
+done
+wait
 
+CLONE_PRIVATE_RAW="${IBRIDO_CLONE_PRIVATE_GITDIRS:-}"
+CLONE_PRIVATE="$(echo -n "$CLONE_PRIVATE_RAW" | tr '[:upper:]' '[:lower:]')"
+if [ "$CLONE_PRIVATE" = "true" ] || [ "$CLONE_PRIVATE" = "1" ]; then
+    echo 'Cloning private repositories...'
+    private_clone_failed=false
+    for ((i = 0; i < ${#IBRIDO_PRIV_GITDIRS[@]}; i++)); do
+        if ! clone_git_repo "${IBRIDO_PRIV_GIT_SRC[$i]}" "${IBRIDO_PRIV_GIT_BRCH[$i]}" "${IBRIDO_PRIV_GIT_DIR[$i]}"; then
+            private_clone_failed=true
+        fi
+    done
+
+    if [ "$private_clone_failed" = true ]; then
+        echo 'The following repositories are private:'
+        for entry in "${IBRIDO_PRIV_GITDIRS[@]}"; do
+            echo "  - $entry"
+        done
+    fi
+fi
+
+echo 'Cloning model repositories...'
+mkdir -p "$IBRIDO_TRAINING_DATA"
+cd "$IBRIDO_TRAINING_DATA" || exit 1
+for ((i = 0; i < ${#IBRIDO_MODELDIRS[@]}; i++)); do
+src="${IBRIDO_MODEL_SRC[$i]}"
+branch="${IBRIDO_MODEL_BRCH[$i]}"
+target_dir="${IBRIDO_MODEL_DIR[$i]}"
 
 if [ -n "$target_dir" ]; then
-# clone into the requested directory under IBRIDO_WS_SRC
 echo "--> $src # $branch -> $target_dir"
-git clone -q -b "$branch" "$src" "$IBRIDO_WS_SRC/$target_dir" &
+git clone -q -b "$branch" "$src" "$IBRIDO_TRAINING_DATA/$target_dir" &
 else
+repo_name="${src##*/}"
+repo_name="${repo_name%.git}"
 echo "--> $src # $branch"
-git clone -q -b "$branch" "$src" &
+git clone -q -b "$branch" "$src" "$IBRIDO_TRAINING_DATA/$repo_name" &
 fi
 done
 wait
 
+if git lfs version >/dev/null 2>&1; then
+    echo 'Fetching Git LFS objects for model repositories...'
+    for ((i = 0; i < ${#IBRIDO_MODELDIRS[@]}; i++)); do
+    src="${IBRIDO_MODEL_SRC[$i]}"
+    target_dir="${IBRIDO_MODEL_DIR[$i]}"
+
+    if [ -n "$target_dir" ]; then
+    repo_name="$target_dir"
+    else
+    repo_name="${src##*/}"
+    repo_name="${repo_name%.git}"
+    fi
+
+    repo_path="$IBRIDO_TRAINING_DATA/$repo_name"
+    if [ -d "$repo_path" ]; then
+    echo "--> git lfs pull $repo_name"
+    (cd "$repo_path" && git lfs pull)
+    fi
+    done
+else
+    echo 'git-lfs not available: model repositories may contain pointer files only.'
+fi
 # copying some utility files
 cp ${root_folder}/files/setup.bash $IBRIDO_WS_PREFIX/
 cp ${root_folder}/files/mamba_env.yml $IBRIDO_CONDA/

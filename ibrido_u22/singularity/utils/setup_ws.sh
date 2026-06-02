@@ -70,6 +70,7 @@ pip install -e AugMPCEnvs
 pip install -e AugMPC
 pip install -e CentauroHybridMPC
 pip install -e KyonRLStepping
+pip install -e TalosHybridMPC
 pip install -e MPCViz
 pip install -e adarl
 
@@ -87,8 +88,6 @@ micromamba install -y clang
 source /root/.bashrc
 
 echo 'setup completed.'
-
-
 
 
 

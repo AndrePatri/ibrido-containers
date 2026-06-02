@@ -1,0 +1,8 @@
+vars:
+  CLUSTER_CL_FNAME: kyonrlstepping.controllers.horizon_based.kyon_rhc_cluster_client
+  CLUSTER_DT: 0.03
+  CODEGEN_OVERRIDE_BDIR: ${HOME}/aux_data/KyonRHCLusterClient_kyon_simple_no_wheels/CodeGen/kyon_simple_no_wheelsRhc
+  IS_CLOSED_LOOP: 1
+  JNT_IMP_CONFIG_PATH: ${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config.yaml
+  N_NODES: 31
+  SRDF_PATH_ROSBAG: ${HOME}/aux_data/KyonRHClusterClient_kyon_simple_no_wheels/kyon_simple_no_wheels.srdf

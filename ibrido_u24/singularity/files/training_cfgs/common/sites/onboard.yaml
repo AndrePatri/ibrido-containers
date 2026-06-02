@@ -1,0 +1,3 @@
+vars:
+  SITE_PROFILE: onboard
+  RT_HEADLESS: 1

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$IBRIDO_CONTAINERS_PREFIX" ]; then
-    echo "IBRIDO_CONTAINERS_PREFIX variable has not been seen. Please set it to \${path_to_ibrido-containers}/ibrido_24/singularity."
+    echo "IBRIDO_CONTAINERS_PREFIX variable has not been seen. Please set it to \${path_to_ibrido-containers}/ibrido_u24/singularity."
     exit 1
 fi
 
@@ -45,6 +45,7 @@ IBRIDO_PREFIX=$BASE_FOLDER/containers/ibrido-singularity-u24
 IBRIDO_WS_PREFIX=${IBRIDO_PREFIX}/ibrido_ws/
 IBRIDO_WS_SRC=${IBRIDO_WS_PREFIX}/src
 IBRIDO_CONDA=${IBRIDO_PREFIX}/conda
+IBRIDO_TRAINING_DATA=${IBRIDO_PREFIX}/training_data
 
 # defining files to be binded at runtime
 IBRIDO_BFILES=(
@@ -58,22 +59,25 @@ IBRIDO_BDIRS=(
     "${IBRIDO_PREFIX}/ibrido_logs:/root/ibrido_logs"
     "${IBRIDO_PREFIX}/tmp:/tmp:rw"
     "${IBRIDO_PREFIX}/aux_data:/root/aux_data:rw"
-    "${IBRIDO_PREFIX}/training_data:/root/training_data:rw"
+    "${IBRIDO_TRAINING_DATA}:/root/training_data:rw"
     "${IBRIDO_WS_PREFIX}:/root/ibrido_ws:rw"
     "${IBRIDO_CONDA}:/opt/conda:rw"
     "${IBRIDO_PREFIX}/conda_hidden/.conda:/root/.conda:rw"
+    "${IBRIDO_PREFIX}/.cache/conda:/root/.cache/conda:rw"
     "${IBRIDO_PREFIX}/.cache/wandb:/root/.cache/wandb:rw"
     "${IBRIDO_PREFIX}/.byobu:/root/.byobu:rw"
+    "${IBRIDO_PREFIX}/.xbot:/root/.xbot:rw"
     "${IBRIDO_PREFIX}/.ros:/root/.ros:rw"
     "${IBRIDO_PREFIX}/.rviz2:/root/.rviz2:rw"
     "${IBRIDO_PREFIX}/.mamba:/root/.mamba:rw"
 )
 
-# Only add these bindings if PBS is NOT available (when runnin on cluster
+# Only add these bindings if PBS and SLURM are NOT available (when running on a cluster
 # we don't need user input)
-if [ "$IS_PBS_AVAILABLE" = false ]; then
+if [ "$IS_PBS_AVAILABLE" != true ] && [ "$IS_SLURM_AVAILABLE" != true ]; then
     IBRIDO_BDIRS+=(
-        "/dev/input:/dev/input:rw"
+        # "/dev/input:/dev/input:rw"
+        # "/run/udev:/run/udev:ro"
         "/tmp/.X11-unix:/tmp/.X11-unix"
         "/run/user:/run/user"
     )
@@ -104,19 +108,55 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/MPCViz.git*ros2_jazzy"
     "git@github.com:ADVRHumanoids/KyonRLStepping.git*ibrido"
     "git@github.com:ADVRHumanoids/CentauroHybridMPC.git*ibrido"
+    "git@github.com:ADVRHumanoids/TalosHybridMPC.git*main"
     "git@github.com:AndrePatri/horizon.git*ibrido"
-    "git@github.com:AndrePatri/casadi_kin_dyn.git*ibrido"
     "git@github.com:AndrePatri/phase_manager.git*ibrido"
+    "git@github.com:AndrePatri/horizon_rti.git*ibrido"
+    "git@github.com:AndrePatri/casadi_kin_dyn.git*ibrido"
     "git@github.com:AndrePatri/unitree_ros.git*ibrido"
     "git@github.com:AndrePatri/iit-centauro-ros-pkg.git*ibrido_ros2"
-    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros2_simple"
-    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros2&iit-kyon-description"
+    "git@github.com:AndrePatri/iit-dagana-ros-pkg.git*ibrido_ros2"
+    "git@github.com:AndrePatri/talos-description.git*ibrido_ros2"
+    "git@github.com:AndrePatri/pal_urdf_utils.git*ibrido_ros2"
     "git@github.com:AndrePatri/casadi.git*optional_float"
-    "git@gitlab.com:crzz/adarl.git*andrepatri_dev"
-    "git@github.com:AndrePatri/PerfSleep.git*main"
-    # "git@github.com:ros/xacro.git*ros2"
+    "git@github.com:AndrePatri/adarl.git*ibrido"
+    "git@github.com:AndrePatri/xbot2_zmq.git*ibrido"
+    "git@github.com:AndrePatri/xbot2_mujoco.git*ibrido"
+    "git@github.com:AndrePatri/mujoco_cmake.git*ibrido"
     "git@github.com:google/googletest.git*main"
 )
+
+IBRIDO_PRIV_GITDIRS=(
+    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros2_simple"
+    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros2&iit-kyon-description"
+)
+
+# model repositories stored under training_data
+IBRIDO_MODELDIRS=(
+    "https://huggingface.co/AndrePatri/AugMPCModels*main"
+)
+
+IBRIDO_MODEL_SRC=()
+IBRIDO_MODEL_BRCH=()
+IBRIDO_MODEL_DIR=()
+for entry in "${IBRIDO_MODELDIRS[@]}"; do
+IFS='*' read -r src rest <<< "$entry"
+
+branch_and_dir="$rest"
+branch="$branch_and_dir"
+dir=""
+
+if [[ "$branch_and_dir" == *'&'* ]]; then
+IFS='&' read -r branch dir <<< "$branch_and_dir"
+fi
+
+branch="$(echo -n "$branch" | xargs)"
+dir="$(echo -n "$dir" | xargs)"
+
+IBRIDO_MODEL_SRC+=("$src")
+IBRIDO_MODEL_BRCH+=("$branch")
+IBRIDO_MODEL_DIR+=("$dir")
+done
 
 # Concatenate
 IBRIDO_BDIRS=("${IBRIDO_BDIRS[@]}" "${ISAAC_BDIRS[@]}")
@@ -144,7 +184,7 @@ done
 # for entry in "${IBRIDO_GITDIRS[@]}"; do
 #     # Split entry based on colon
 #     IFS='*' read -r src branch <<< "$entry"
-    
+
 #     # Add to respective arrays
 #     IBRIDO_GIT_SRC+=("$src")
 #     IBRIDO_GIT_BRCH+=("$branch")
@@ -178,4 +218,30 @@ dir="$(echo -n "$dir" | xargs)"
 IBRIDO_GIT_SRC+=("$src")
 IBRIDO_GIT_BRCH+=("$branch")
 IBRIDO_GIT_DIR+=("$dir")
+done
+
+IBRIDO_PRIV_GIT_SRC=()
+IBRIDO_PRIV_GIT_BRCH=()
+IBRIDO_PRIV_GIT_DIR=()
+for entry in "${IBRIDO_PRIV_GITDIRS[@]}"; do
+IFS='*' read -r src rest <<< "$entry"
+
+
+branch_and_dir="$rest"
+branch="$branch_and_dir"
+dir=""
+
+
+if [[ "$branch_and_dir" == *'&'* ]]; then
+IFS='&' read -r branch dir <<< "$branch_and_dir"
+fi
+
+
+branch="$(echo -n "$branch" | xargs)"
+dir="$(echo -n "$dir" | xargs)"
+
+
+IBRIDO_PRIV_GIT_SRC+=("$src")
+IBRIDO_PRIV_GIT_BRCH+=("$branch")
+IBRIDO_PRIV_GIT_DIR+=("$dir")
 done

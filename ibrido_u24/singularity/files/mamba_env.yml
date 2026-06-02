@@ -24,6 +24,7 @@ dependencies:
   # - gtest
   - pybind11
   - eigen3
+  - numpy<2
   - poetry
   - python-devtools
   - casadi
@@ -35,12 +36,13 @@ dependencies:
   - pyqt
   - pyqtgraph
   - pyside2
-  # - perf_sleep
   # - catkin_pkg=1.0.0
   - catkin_pkg
   - scipy
   - pip:
+    - numpy<2
     - pyzmq
+    - pyyaml
     - pygame
     - xacro
     - flit

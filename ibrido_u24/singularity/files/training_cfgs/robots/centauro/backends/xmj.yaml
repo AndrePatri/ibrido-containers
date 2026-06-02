@@ -1,0 +1,33 @@
+vars:
+  WORLD_INTERFACE: aug_mpc_envs.world_interfaces.xmj_world_interface
+  TIME_SOURCE: sim
+  EVAL: 1
+  N_ENVS: 1
+  TOT_STEPS: 1000
+  DUMP_ENV_CHECKPOINTS: 0
+  CLUSTER_DB: 0
+  DEBUG: 0
+  RMDEBUG: 0
+  ENV_IDX_BAG: -1
+  ENV_IDX_BAG_DEMO: -1
+  ENV_IDX_BAG_EXPL: -1
+  USE_GPU_SIM: 0
+  XBOT_CONFIG: CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files/xbot2_basic.yaml
+  XMJ_FILES_DIR: CentauroHybridMPC/centaurohybridmpc/config/xmj_env_files
+custom_args:
+  world_interface:
+    xmj_files_dir:
+      dtype: str
+      value: ${HOME}/ibrido_ws/src/${XMJ_FILES_DIR}
+    xmj_timeout:
+      dtype: int
+      value: ${XMJ_TIMEOUT_MS}
+    xbot2_sense_timeout_s:
+      dtype: float
+      value: 2.0
+    state_from_xbot:
+      dtype: bool
+      value: true
+    add_remote_exit_flag:
+      dtype: bool
+      value: true

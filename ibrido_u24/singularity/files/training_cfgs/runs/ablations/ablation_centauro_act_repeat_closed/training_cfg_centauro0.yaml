@@ -1,0 +1,103 @@
+vars:
+  ROBOT_FAMILY: centauro
+  ROBOT_VARIANT: ablation_centauro_act_repeat_closed_training_cfg_centauro0
+  WORLD_INTERFACE: aug_mpc_envs.world_interfaces.isaac5x_world_interface
+  TIME_SOURCE: sim
+  ACTION_REPEAT: 5
+  ACTOR_DEPTH: 3
+  ACTOR_LWIDTH: 128
+  BAG_SDT: 90.0
+  BATCH_NORM: 0
+  BRIDGE_DT: 0.1
+  CLUSTER_CL_FNAME: centaurohybridmpc.controllers.horizon_based.centauro_rhc_cluster_client
+  CLUSTER_DB: 1
+  CLUSTER_DT: 0.05
+  CODEGEN_OVERRIDE_BDIR: ${HOME}/aux_data/CentauroRHCLusterClient_centauro_big_wheels/CodeGen/centauro_big_wheelsRhc
+  COMMENT: centauro big wheels CLOSED partial, action rep 5, gamma 0.99, UTD 16, huge bsize, fake pos env (linvel track DIR + more omega Z reg, CoT, action rate), 3 actor/critic depth 0.6 compression ratio, -0.5 target entropy
+  COMPRESSION_RATIO: 0.6
+  CRITIC_ACTION_RESCALE: 1
+  CRITIC_DEPTH: 3
+  CRITIC_LWIDTH: 256
+  DEBUG: 1
+  DEMO_ENVS_PERC: 0.0
+  DEMO_STOP_THRESH: 10.0
+  DET_EVAL: 1
+  DISCOUNT_FACTOR: 0.99
+  DUMP_DT: 50.0
+  DUMP_ENV_CHECKPOINTS: 1
+  ENV_IDX_BAG: -1
+  ENV_IDX_BAG_DEMO: -1
+  ENV_IDX_BAG_EXPL: -1
+  EVAL: 0
+  EVAL_ON_CPU: 0
+  EXPL_ENVS_PERC: 0.0
+  IS_CLOSED_LOOP: 1
+  JNT_IMP_CONFIG_PATH: ${HOME}/ibrido_ws/src/CentauroHybridMPC/centaurohybridmpc/config/jnt_imp_config.yaml
+  LAYER_NORM: 0
+  MNAME: ''
+  MPATH: /root/
+  N_ENVS: 800
+  N_NODES: 31
+  OBS_NORM: 1
+  OBS_RESCALING: 0
+  OVERRIDE_AGENT_REFS: 0
+  OVERRIDE_ENV: 1
+  PHYSICS_DT: 0.0005
+  PUB_HEIGHTMAP: 0
+  REMOTE_STEPPING: 1
+  RMDEBUG: 1
+  RNAME: CentauroCLoopPartialNoWheelsActRepAblation
+  SEED: 1
+  SET_ULIM: 1
+  SHM_NS: centauro_big_wheels
+  SRDF_PATH: ${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_srdf/srdf/centauro.srdf.xacro
+  SRDF_PATH_ROSBAG: ${HOME}/aux_data/CentauroRHClusterClient_centauro_big_wheels/centauro_big_wheels.srdf
+  TIMEOUT_MS: 120000
+  TOT_STEPS: 10000000
+  TRAIN_ENV_CNAME: FakePosTrackingEnv
+  TRAIN_ENV_FNAME: fake_pos_tracking_env
+  ULIM_N: 131072
+  URDF_PATH: ${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_urdf/urdf/centauro.urdf.xacro
+  USE_DUMMY: 0
+  USE_GPU_SIM: 1
+  USE_PERIOD_RESETS: 0
+  USE_RND: 0
+  USE_SAC: 1
+  WEIGHT_NORM: 1
+custom_args:
+  world_interface:
+    rendering_dt:
+      dtype: float
+      value: 0.1
+    use_flat_ground:
+      dtype: bool
+      value: true
+    ground_type:
+      dtype: str
+      value: random_patches
+    dh_ground:
+      dtype: float
+      value: 0.02
+  control:
+    control_wheels:
+      dtype: bool
+      value: false
+    fixed_flights:
+      dtype: bool
+      value: true
+    adaptive_is:
+      dtype: bool
+      value: true
+    lin_a_feedback:
+      dtype: bool
+      value: false
+    closed_partial:
+      dtype: bool
+      value: true
+    estimate_v_root:
+      dtype: bool
+      value: false
+  robot_description:
+    add_upper_body:
+      dtype: bool
+      value: false

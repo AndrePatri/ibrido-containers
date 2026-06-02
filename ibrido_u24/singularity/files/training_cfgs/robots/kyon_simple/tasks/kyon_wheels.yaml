@@ -1,0 +1,49 @@
+vars:
+  ROBOT_VARIANT: kyon_wheels
+  ACTION_REPEAT: 5
+  COMMENT: kyon wheels CLOSED partial, UTD 8, action rep 5, fake pos track (action rate, NO CoT, dir track, max_vref 1.0 m/s), trgt entropy -1.0
+  EVAL_ON_CPU: 0
+  MPATH: /root/IBRIDO/
+  N_ENVS: 800
+  OVERRIDE_AGENT_REFS: 0
+  OVERRIDE_ENV: 0
+  RNAME: KyonPartialCloopWheelsSeedAblation
+  SEED: 123
+  SHM_NS: kyon_wheels
+  TOT_STEPS: 5000000
+  TRAIN_ENV_CNAME: FakePosTrackingEnv
+  TRAIN_ENV_FNAME: fake_pos_tracking_env
+custom_args:
+  world_interface:
+    rendering_dt:
+      dtype: float
+      value: 0.1
+    use_flat_ground:
+      dtype: bool
+      value: true
+    use_gpu:
+      dtype: bool
+      value: false
+  robot_description:
+    wheels:
+      dtype: xacro
+      value: true
+  control:
+    fixed_flights:
+      dtype: bool
+      value: true
+    adaptive_is:
+      dtype: bool
+      value: true
+    lin_a_feedback:
+      dtype: bool
+      value: false
+    closed_partial:
+      dtype: bool
+      value: true
+    estimate_v_root:
+      dtype: bool
+      value: false
+    fully_closed:
+      dtype: bool
+      value: false

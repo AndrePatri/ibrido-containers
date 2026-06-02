@@ -7,4 +7,4 @@
 
 module load go-1.19.4/apptainer-1.1.8
 
-$IBRIDO_CONTAINERS_PREFIX/build_singularity_isaac.sh --init --do_setup
+$IBRIDO_CONTAINERS_PREFIX/setup.sh --init --do_setup

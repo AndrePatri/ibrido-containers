@@ -2,10 +2,10 @@
 export EVAL=0
 export DET_EVAL=1
 export EVAL_ON_CPU=1
-export OVERRIDE_ENV=1
+export OVERRIDE_ENV=0
 export OVERRIDE_AGENT_REFS=1
-export MPATH="/root/training_data/"
-export MNAME=""
+export MPATH="/root/training_data/AugMPCModels/bundles/centauro/d2026_03_07_h19_m22_s30-CentauroCloopPartialNoYawUb_FakePosTrackingEnv"
+export MNAME="d2026_03_07_h19_m22_s30-CentauroCloopPartialNoYawUb_FakePosTrackingEnv_model"
 
 export WANDB_KEY="25f235316292344cea6dfa68e7c95409b3374d03"
 export SHM_NS="centauro_big_wheels_no_yaw_ub" # shared mem namespace used for all shared data on CPU 

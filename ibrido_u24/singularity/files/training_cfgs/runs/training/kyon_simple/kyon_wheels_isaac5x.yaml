@@ -1,0 +1,10 @@
+include:
+- ../../../common/runtime_defaults.yaml
+- ../../../common/algorithms/sac_critic_depth_3.yaml
+- ../../../robots/kyon_simple/base.yaml
+- ../../../robots/kyon_simple/control/kyon_wheels.yaml
+- ../../../robots/kyon_simple/tasks/kyon_wheels.yaml
+- ../../../robots/kyon_simple/backends/isaac5x.yaml
+- ../../../robots/kyon02/backends/isaac5x.yaml
+vars:
+  PHYSICS_DT: 0.001

@@ -1,0 +1,4 @@
+vars:
+  WORLD_INTERFACE: aug_mpc_envs.world_interfaces.isaac5x_world_interface
+  TIME_SOURCE: sim
+  USE_GPU_SIM: 1

@@ -1,0 +1,105 @@
+vars:
+  ROBOT_FAMILY: kyon02
+  ROBOT_VARIANT: ablation_kyon_simple_act_repeat_kyon_real_training_cfg_kyon_real0_resume
+  WORLD_INTERFACE: aug_mpc_envs.world_interfaces.isaac5x_world_interface
+  TIME_SOURCE: sim
+  ACTION_REPEAT: 5
+  ACTOR_DEPTH: 3
+  ACTOR_LWIDTH: 128
+  BAG_SDT: 90.0
+  BATCH_NORM: 0
+  BRIDGE_DT: 0.1
+  CLUSTER_CL_FNAME: kyonrlstepping.controllers.horizon_based.kyon_real_rhc_cluster_client
+  CLUSTER_DB: 1
+  CLUSTER_DT: 0.035
+  CODEGEN_OVERRIDE_BDIR: ${HOME}/aux_data/KyonRHCLusterClient_kyon_real_no_wheels/CodeGen/kyon_real_no_wheelsRhc
+  COMMENT: kyon REAL no wheels CLOSED partiaL - TRAINING RESUME, UTD 8, action rep 5, target entropy -0.5, new MPC tuning, no jnt vel feedback, fake pos track max 1.0 m/s (action rate, CoT, dir track, 1.0 omega weight
+  COMPRESSION_RATIO: 0.6
+  CRITIC_ACTION_RESCALE: 1
+  CRITIC_DEPTH: 4
+  CRITIC_LWIDTH: 256
+  DEBUG: 1
+  DEMO_ENVS_PERC: 0.0
+  DEMO_STOP_THRESH: 10.0
+  DET_EVAL: 1
+  DISCOUNT_FACTOR: 0.99
+  DUMP_DT: 50.0
+  DUMP_ENV_CHECKPOINTS: 1
+  ENV_IDX_BAG: 5
+  ENV_IDX_BAG_DEMO: -1
+  ENV_IDX_BAG_EXPL: -1
+  EVAL: 0
+  EVAL_ON_CPU: 1
+  EXPL_ENVS_PERC: 0.0
+  IS_CLOSED_LOOP: 1
+  JNT_IMP_CONFIG_PATH: ${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_kyon_real.yaml
+  LAYER_NORM: 0
+  MNAME: d2025_10_29_h23_m12_s06-KyonRealPartialCloopNoWheels_FakePosTrackingEnv_model
+  MPATH: /root/training_data/d2025_10_29_h23_m12_s06-KyonRealPartialCloopNoWheels_FakePosTrackingEnv
+  N_ENVS: 800
+  N_NODES: 31
+  OBS_NORM: 1
+  OBS_RESCALING: 0
+  OVERRIDE_AGENT_REFS: 1
+  OVERRIDE_ENV: 0
+  PHYSICS_DT: 0.001
+  PUB_HEIGHTMAP: 0
+  REMOTE_STEPPING: 1
+  RESUME: 1
+  RMDEBUG: 1
+  RNAME: KyonRealPartialCloopNoWheels
+  SEED: 34
+  SET_ULIM: 1
+  SHM_NS: kyon_real_no_wheels
+  SRDF_PATH: ${HOME}/ibrido_ws/src/iit-kyon-description/kyon_srdf/srdf/kyon.srdf.xacro
+  SRDF_PATH_ROSBAG: ${HOME}/aux_data/KyonRHClusterClient_kyon_real_no_wheels/kyon_real_no_wheels.srdf
+  TIMEOUT_MS: 120000
+  TOT_STEPS: 6000000
+  TRAIN_ENV_CNAME: FakePosTrackingEnv
+  TRAIN_ENV_FNAME: fake_pos_tracking_env
+  ULIM_N: 131072
+  URDF_PATH: ${HOME}/ibrido_ws/src/iit-kyon-description/kyon_urdf/urdf/kyon.urdf.xacro
+  USE_DUMMY: 0
+  USE_GPU_SIM: 1
+  USE_PERIOD_RESETS: 0
+  USE_RND: 0
+  USE_SAC: 1
+  WEIGHT_NORM: 1
+custom_args:
+  training:
+    step_height:
+      dtype: float
+      value: 0.18
+  robot_description:
+    wheels:
+      dtype: xacro
+      value: false
+    base_linkname:
+      dtype: str
+      value: pelvis
+    self_collide:
+      dtype: bool
+      value: false
+  control:
+    fixed_flights:
+      dtype: bool
+      value: true
+    adaptive_is:
+      dtype: bool
+      value: true
+    lin_a_feedback:
+      dtype: bool
+      value: false
+    closed_partial:
+      dtype: bool
+      value: true
+    estimate_v_root:
+      dtype: bool
+      value: false
+    use_jnt_v_feedback:
+      dtype: bool
+      value: false
+  world_interface:
+    use_flat_ground:
+      dtype: bool
+      value: true

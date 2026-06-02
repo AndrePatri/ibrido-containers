@@ -1,0 +1,10 @@
+include:
+- ../../../../common/runtime_defaults.yaml
+- ../../../../common/algorithms/sac_discount_098.yaml
+- ../../../../robots/kyon02/base.yaml
+- ../../../../robots/kyon02/control/kyon02_wheels_no_yaw.yaml
+- ../../../../robots/kyon02/tasks/kyon02_wheels_no_yaw.yaml
+- ../../../../robots/kyon02/backends/rt_xbot_zmq.yaml
+vars:
+  PHYSICS_DT: 0.0005
+  XBOT_CONFIG: KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_wheels_no_yaw.yaml

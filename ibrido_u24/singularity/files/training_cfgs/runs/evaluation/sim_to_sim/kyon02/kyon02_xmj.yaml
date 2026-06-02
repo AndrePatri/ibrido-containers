@@ -1,0 +1,11 @@
+include:
+- ../../../../common/runtime_defaults.yaml
+- ../../../../common/algorithms/sac_default.yaml
+- ../../../../robots/kyon02/base.yaml
+- ../../../../robots/kyon02/control/kyon02.yaml
+- ../../../../robots/kyon02/tasks/kyon02.yaml
+- ../../../../robots/kyon02/backends/xmj.yaml
+vars:
+  PHYSICS_DT: 0.0005
+  USE_GPU_SIM: 1
+  XBOT_CONFIG: KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic.yaml

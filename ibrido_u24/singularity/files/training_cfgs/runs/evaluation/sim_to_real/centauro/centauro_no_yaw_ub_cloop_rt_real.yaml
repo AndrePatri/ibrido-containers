@@ -1,0 +1,25 @@
+include:
+- ../../../../common/runtime_defaults.yaml
+- ../../../../common/algorithms/sac_discount_098.yaml
+- ../../../../robots/centauro/base.yaml
+- ../../../../robots/centauro/control/centauro_no_yaw_ub_cloop.yaml
+- ../../../../robots/centauro/tasks/centauro_no_yaw_ub_cloop.yaml
+- ../../../../robots/centauro/backends/rt_xbot_zmq.yaml
+vars:
+  TIME_SOURCE: wall
+  RNAME_SUFFIX: RtReal
+  COMMENT_PREFIX: rt_real
+custom_args:
+  world_interface:
+    is_sim:
+      dtype: bool
+      value: false
+    time_source:
+      dtype: str
+      value: ${TIME_SOURCE}
+    state_from_xbot:
+      dtype: bool
+      value: true
+    add_remote_exit_flag:
+      dtype: bool
+      value: true

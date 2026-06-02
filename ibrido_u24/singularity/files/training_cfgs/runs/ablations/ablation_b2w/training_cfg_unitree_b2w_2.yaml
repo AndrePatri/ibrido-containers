@@ -1,0 +1,109 @@
+vars:
+  ROBOT_FAMILY: b2w
+  ROBOT_VARIANT: ablation_b2w_training_cfg_unitree_b2w_2
+  WORLD_INTERFACE: aug_mpc_envs.world_interfaces.isaac5x_world_interface
+  TIME_SOURCE: sim
+  ACTION_REPEAT: 5
+  ACTOR_DEPTH: 3
+  ACTOR_LWIDTH: 128
+  BAG_SDT: 90.0
+  BATCH_NORM: 0
+  BRIDGE_DT: 0.1
+  CLUSTER_CL_FNAME: kyonrlstepping.controllers.horizon_based.b2w_rhc_cluster_client
+  CLUSTER_DB: 1
+  CLUSTER_DT: 0.03
+  CODEGEN_OVERRIDE_BDIR: ${HOME}/aux_data/B2WRHCLusterClient_unitree_b2w/CodeGen/unitree_b2wRhc
+  COMMENT: unitree b2w, CLOSED partial, UTD 8, action rep 5, update_freq 16, fake pos track (action rate, NO CoT, dir track, max_vref 1.0 m/s), trgt entropy -0.5
+  COMPRESSION_RATIO: 0.6
+  CRITIC_ACTION_RESCALE: 1
+  CRITIC_DEPTH: 3
+  CRITIC_LWIDTH: 256
+  DEBUG: 1
+  DEMO_ENVS_PERC: 0.0
+  DEMO_STOP_THRESH: 2.0
+  DET_EVAL: 1
+  DISCOUNT_FACTOR: 0.99
+  DUMP_DT: 50.0
+  DUMP_ENV_CHECKPOINTS: 1
+  ENV_IDX_BAG: -1
+  ENV_IDX_BAG_DEMO: -1
+  ENV_IDX_BAG_EXPL: -1
+  EVAL: 0
+  EVAL_ON_CPU: 1
+  EXPL_ENVS_PERC: 0.0
+  IS_CLOSED_LOOP: 1
+  JNT_IMP_CONFIG_PATH: ${HOME}/ibrido_ws/src/KyonRLStepping/kyonrlstepping/config/jnt_imp_config_b2w.yaml
+  LAYER_NORM: 0
+  MNAME: ''
+  MPATH: /root/training_data/
+  N_ENVS: 800
+  N_NODES: 31
+  OBS_NORM: 1
+  OBS_RESCALING: 0
+  OVERRIDE_AGENT_REFS: 1
+  OVERRIDE_ENV: 1
+  PHYSICS_DT: 0.001
+  PUB_HEIGHTMAP: 0
+  REMOTE_STEPPING: 1
+  RMDEBUG: 1
+  RNAME: B2WPartialCloopWheelsActRepAblation
+  SEED: 85
+  SET_ULIM: 1
+  SHM_NS: unitree_b2w
+  SRDF_PATH: ${HOME}/ibrido_ws/src/unitree_ros/robots/b2w_description/xacro/robot.srdf.xacro
+  SRDF_PATH_ROSBAG: ${HOME}/aux_data/B2WRHClusterClient_unitree_b2w/unitree_b2w.srdf
+  TIMEOUT_MS: 120000
+  TOT_STEPS: 5000000
+  TRAIN_ENV_CNAME: FakePosTrackingEnv
+  TRAIN_ENV_FNAME: fake_pos_tracking_env
+  ULIM_N: 131072
+  URDF_PATH: ${HOME}/ibrido_ws/src/unitree_ros/robots/b2w_description/xacro/robot.urdf.xacro
+  USE_DUMMY: 0
+  USE_GPU_SIM: 1
+  USE_PERIOD_RESETS: 0
+  USE_RND: 0
+  USE_SAC: 1
+  WEIGHT_NORM: 1
+custom_args:
+  world_interface:
+    rendering_dt:
+      dtype: float
+      value: 0.1
+    use_flat_ground:
+      dtype: bool
+      value: true
+    use_gpu:
+      dtype: bool
+      value: true
+  robot_description:
+    wheels:
+      dtype: xacro
+      value: true
+    base_link_name:
+      dtype: str
+      value: base
+    deduce_base_link:
+      dtype: bool
+      value: true
+  control:
+    fixed_flights:
+      dtype: bool
+      value: true
+    adaptive_is:
+      dtype: bool
+      value: true
+    lin_a_feedback:
+      dtype: bool
+      value: false
+    closed_partial:
+      dtype: bool
+      value: true
+    estimate_v_root:
+      dtype: bool
+      value: false
+    fully_closed:
+      dtype: bool
+      value: false
+    control_wheels:
+      dtype: bool
+      value: true

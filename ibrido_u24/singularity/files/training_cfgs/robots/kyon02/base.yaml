@@ -1,0 +1,4 @@
+vars:
+  ROBOT_FAMILY: kyon02
+  URDF_PATH: ${HOME}/ibrido_ws/src/iit-kyon-description/kyon_urdf/urdf/kyon.urdf.xacro
+  SRDF_PATH: ${HOME}/ibrido_ws/src/iit-kyon-description/kyon_srdf/srdf/kyon.srdf.xacro

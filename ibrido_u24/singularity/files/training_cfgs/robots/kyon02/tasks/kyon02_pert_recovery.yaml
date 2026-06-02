@@ -1,0 +1,53 @@
+vars:
+  ROBOT_VARIANT: kyon02_pert_recovery
+  ACTION_REPEAT: 4
+  COMMENT: kyon02 no wheels CLOSED partial, action rep 4, strong perturbations with fixed freq, mostly omega tracking, full flight control (also neg), entropy annhealing, bsize 16394, utd 2
+  ENV_IDX_BAG: 5
+  N_ENVS: 800
+  RNAME: Kyon02PartialCloopNoWheels
+  SEED: 34
+  SHM_NS: kyon02_no_wheels
+  TOT_STEPS: 15000000
+  TRAIN_ENV_CNAME: StayingAliveEnv
+  TRAIN_ENV_FNAME: derived.staying_alive_env
+custom_args:
+  training:
+    use_random_pertub:
+      dtype: bool
+      value: true
+    step_height:
+      dtype: float
+      value: 0.15
+  robot_description:
+    wheels:
+      dtype: xacro
+      value: false
+    base_linkname:
+      dtype: str
+      value: pelvis
+    self_collide:
+      dtype: bool
+      value: false
+  control:
+    fixed_flights:
+      dtype: bool
+      value: true
+    adaptive_is:
+      dtype: bool
+      value: true
+    lin_a_feedback:
+      dtype: bool
+      value: false
+    closed_partial:
+      dtype: bool
+      value: true
+    estimate_v_root:
+      dtype: bool
+      value: false
+    use_jnt_v_feedback:
+      dtype: bool
+      value: true
+  world_interface:
+    use_flat_ground:
+      dtype: bool
+      value: true

@@ -10,7 +10,7 @@ source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
 
 # Function to print usage
 usage() {
-    echo "Usage: $0 [--build|-b] [--use_sudo|-s] [--init|-i] [--do_setup|-stp] [--update_ws|-uws] [--ngc_key|-ngc <key>]"
+    echo "Usage: $0 [--build|-b] [--use_sudo|-s] [--init|-i] [--do_setup|-stp] [--update_ws|-uws] [--ngc_key|-ngc <key>] [--with_private_gitdirs|-wpg]"
     exit 1
 }
 build_container=false
@@ -18,6 +18,7 @@ use_sudo=false # whether to use superuser privileges
 init=false # whether to initialize/create the workspace
 do_setup=false # whether to perform the post-build setup steps
 update_ws=false # whether to update workspace code
+with_private_gitdirs=false
 ngc_key=""
 
 # Parse command line options
@@ -28,6 +29,7 @@ while [[ "$#" -gt 0 ]]; do
         -i|--init) init=true ;;
         -stp|--do_setup) do_setup=true ;;
         -uws|--update_ws) update_ws=true ;;
+        -wpg|--with_private_gitdirs) with_private_gitdirs=true ;;
         -ngc|--ngc_key) 
             if [[ -n "$2" && "$2" != "-"* ]]; then
                 ngc_key=$2
@@ -61,7 +63,11 @@ fi
 
 # ws initialization
 if $init; then
-    ${IBRIDO_CONTAINERS_PREFIX}/utils/create_ws.sh
+    if $with_private_gitdirs; then
+        IBRIDO_CLONE_PRIVATE_GITDIRS=1 ${IBRIDO_CONTAINERS_PREFIX}/utils/create_ws.sh
+    else
+        ${IBRIDO_CONTAINERS_PREFIX}/utils/create_ws.sh
+    fi
 fi
 
 # ws update
@@ -82,5 +88,4 @@ if $do_setup; then
         --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif post_build_setup.sh
     echo 'Done. You can now either launch the container with run_interactive.sh or start the training with execute.sh'
 fi
-
 

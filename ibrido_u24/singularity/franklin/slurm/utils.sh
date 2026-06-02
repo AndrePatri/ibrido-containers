@@ -1,4 +1,4 @@
-# Utility helpers adapted from PBS-based helpers to Slurm equivalents.
+# Utility helpers adapted from PBS-based helpers to Slurm equivalent
 
 # Send a signal to a job (prefer scancel --signal if available)
 function send_signal() {
@@ -7,7 +7,7 @@ local script_pattern=$2
 local signal=${3:-SIGINT}
 
 
-if [ -z "$job_id" ]; then
+if [ -z "$job_id" ] || [ -z "$script_pattern" ]; then
 echo "Usage: send_signal <jobid> <script_pattern> [SIGNAL]"
 return 1
 fi
@@ -16,11 +16,23 @@ fi
 # Prefer Slurm's scancel --signal mechanism (requires slurm version with --signal support)
 if command -v scancel >/dev/null 2>&1; then
 # Try sending the signal to the job
-scancel --signal="$signal" "$job_id" 2>/dev/null || true
+if scancel --signal="$signal" "$job_id" 2>/dev/null; then
+echo "Sent $signal to job $job_id via scancel."
+return 0
+fi
 fi
 
 
-# If scancel didn't do it (or to act on processes directly), try SSH to node and kill matching procs
+# If scancel didn't do it (or to act on processes directly), try srun inside allocation
+if command -v srun >/dev/null 2>&1; then
+if srun --jobid="$job_id" --ntasks=1 bash -lc "pkill -$signal -f '$script_pattern'" 2>/dev/null; then
+echo "Sent $signal to processes matching '$script_pattern' inside job $job_id via srun."
+return 0
+fi
+fi
+
+
+# Fallback: SSH to node and kill matching procs
 local node=$(squeue -j "$job_id" -h -o "%N" | cut -d',' -f1)
 if [ -z "$node" ]; then
 echo "Could not determine the execution host for job $job_id."
@@ -33,7 +45,7 @@ ssh -t "$node" "
 pids=\$(pgrep -f '${script_pattern}')
 echo 'Matching PIDs:' \"\$pids\"
 if [ -z \"\$pids\" ]; then
-echo 'No processes found matching pattern "${script_pattern}"'
+echo 'No processes found matching pattern \"${script_pattern}\"'
 exit 1
 fi
 for pid in \$pids; do
@@ -44,6 +56,36 @@ done
 
 
 alias send_signal_outside=send_signal
+
+function send_signal_from_within() {
+local script_pattern=$1
+local signal=${2:-SIGINT}  # Default to SIGINT if no signal is provided
+local job_id="${SLURM_JOB_ID:-unknown}"
+
+if [ -z "$script_pattern" ]; then
+echo "Usage: send_signal_from_within <script_pattern> [SIGNAL]"
+return 1
+fi
+
+# Strip any step suffix from the job id for logging purposes
+job_id=$(echo "$job_id" | cut -d'.' -f1)
+echo "Preparing to send $signal from within job $job_id to processes matching '$script_pattern'"
+
+# Find the PIDs of the scripts matching the pattern
+local pids
+pids=$(pgrep -f "$script_pattern")
+echo "Matching PIDs: $pids"
+if [ -z "$pids" ]; then
+echo "No processes found matching pattern \"$script_pattern\""
+return 1
+fi
+
+# Send the signal to each PID's process group to propagate to children
+for pid in $pids; do
+kill -s "$signal" -"$pid" 2>/dev/null || kill -s "$signal" "$pid"
+done
+}
+alias send_signal_from_within=send_signal_from_within
 
 
 # Get walltime (TimeLimit) for the current Slurm job
@@ -63,10 +105,31 @@ alias get_walltime=get_walltime
 # Convert h:m:s to seconds
 function time_to_seconds() {
 local time=$1
-local h=$(echo $time | cut -d':' -f1)
-local m=$(echo $time | cut -d':' -f2)
-local s=$(echo $time | cut -d':' -f3)
+if [[ -z "$time" ]]; then
+return 1
+fi
+
+# Handle day format D-HH:MM:SS
+if [[ "$time" =~ ^([0-9]+)-([0-9]{2}):([0-9]{2}):([0-9]{2})$ ]]; then
+local d=${BASH_REMATCH[1]}
+local h=${BASH_REMATCH[2]}
+local m=${BASH_REMATCH[3]}
+local s=${BASH_REMATCH[4]}
+echo $((10#$d*86400 + 10#$h*3600 + 10#$m*60 + 10#$s))
+return 0
+fi
+
+# Handle HH:MM:SS
+if [[ "$time" =~ ^([0-9]{1,2}):([0-9]{2}):([0-9]{2})$ ]]; then
+local h=${BASH_REMATCH[1]}
+local m=${BASH_REMATCH[2]}
+local s=${BASH_REMATCH[3]}
 echo $((10#$h*3600 + 10#$m*60 + 10#$s))
+return 0
+fi
+
+# Unsupported or unlimited formats
+return 1
 }
 
 

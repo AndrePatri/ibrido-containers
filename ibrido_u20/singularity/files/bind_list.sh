@@ -28,6 +28,7 @@ IBRIDO_PREFIX=$BASE_FOLDER/containers/ibrido-singularity-xbot
 IBRIDO_WS_PREFIX=${IBRIDO_PREFIX}/ibrido_ws/
 IBRIDO_WS_SRC=${IBRIDO_WS_PREFIX}/src
 IBRIDO_CONDA=${IBRIDO_PREFIX}/conda
+IBRIDO_TRAINING_DATA=${IBRIDO_PREFIX}/training_data
 
 # defining files to be binded at runtime
 IBRIDO_BFILES=(
@@ -46,7 +47,7 @@ IBRIDO_BDIRS=(
     "${IBRIDO_PREFIX}/tmp:/tmp:rw"
     "${IBRIDO_PREFIX}/config:/.config:rw"
     "${IBRIDO_PREFIX}/aux_data:/root/aux_data:rw"
-    "${IBRIDO_PREFIX}/training_data:/root/training_data:rw"
+    "${IBRIDO_TRAINING_DATA}:/root/training_data:rw"
     "${IBRIDO_WS_PREFIX}:/root/ibrido_ws:rw"
     "${IBRIDO_CONDA}:/opt/conda:rw"
     "${IBRIDO_PREFIX}/conda_hidden/.conda:/root/.conda:rw"
@@ -68,29 +69,107 @@ OTHER_BDIRS=(
 # git directories and their branches
 IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/IBRIDO.git*main"
-    "git@github.com:AndrePatri/AugMPC.git*ibrido"
-    "git@github.com:AndrePatri/AugMPCEnvs.git*ibrido"
-    "git@github.com:AndrePatri/MPCHive.git*devel"
-    "git@github.com:AndrePatri/EigenIPC.git*devel"
+    "git@github.com:AndrePatri/AugMPC.git*ibrido-pre-u24"
+    "git@github.com:AndrePatri/AugMPCEnvs.git*ibrido-pre-u24"
+    "git@github.com:AndrePatri/MPCHive.git*ibrido-pre-u24"
+    "git@github.com:AndrePatri/EigenIPC.git*ibrido-pre-u24"
     "git@github.com:AndrePatri/MPCViz.git*ros1_noetic"
-    "git@github.com:ADVRHumanoids/KyonRLStepping.git*ibrido"
-    "git@github.com:ADVRHumanoids/CentauroHybridMPC.git*ibrido"
+    "git@github.com:ADVRHumanoids/KyonRLStepping.git*ibrido-pre-u24"
+    "git@github.com:ADVRHumanoids/CentauroHybridMPC.git*ibrido-pre-u24"
     "git@github.com:AndrePatri/horizon.git*ibrido"
     "git@github.com:AndrePatri/phase_manager.git*ibrido"
-    "git@github.com:AndrePatri/xbot2_mujoco.git*ibrido"
+    "git@github.com:AndrePatri/xbot2_mujoco.git*ibrido-pre-u24-ros1"
     "git@github.com:AndrePatri/mujoco_cmake.git*ibrido"
     "git@github.com:AndrePatri/unitree_ros.git*ibrido"
     "git@github.com:AndrePatri/iit-centauro-ros-pkg.git*ibrido_ros1"
     "git@github.com:AndrePatri/iit-dagana-ros-pkg.git*ibrido_ros1"
-    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros1_simple"
-    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros1&iit-kyon-description"
     "git@github.com:AndrePatri/PerfSleep.git*main"
     "git@github.com:AndrePatri/casadi.git*optional_float"
-    "git@github.com:c-rizz/adarl.git*ibrido"
+    "git@github.com:AndrePatri/adarl.git*ibrido-pre-u24"
     "git@github.com:c-rizz/adarl_ros.git*ibrido"
     "git@github.com:google/googletest.git*main"
     "git@github.com:ADVRHumanoids/robot_monitoring.git*v2.7.5"
 )
+
+IBRIDO_PRIV_GITDIRS=(
+    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros1_simple"
+    "git@github.com:ADVRHumanoids/iit-kyon-ros-pkg.git*ibrido_ros1&iit-kyon-description"
+)
+
+# model repositories stored under training_data
+IBRIDO_MODELDIRS=(
+    "https://huggingface.co/AndrePatri/AugMPCModels*main"
+)
+
+IBRIDO_MODEL_SRC=()
+IBRIDO_MODEL_BRCH=()
+IBRIDO_MODEL_DIR=()
+for entry in "${IBRIDO_MODELDIRS[@]}"; do
+IFS='*' read -r src rest <<< "$entry"
+
+branch_and_dir="$rest"
+branch="$branch_and_dir"
+dir=""
+
+if [[ "$branch_and_dir" == *'&'* ]]; then
+IFS='&' read -r branch dir <<< "$branch_and_dir"
+fi
+
+branch="$(echo -n "$branch" | xargs)"
+dir="$(echo -n "$dir" | xargs)"
+
+IBRIDO_MODEL_SRC+=("$src")
+IBRIDO_MODEL_BRCH+=("$branch")
+IBRIDO_MODEL_DIR+=("$dir")
+done
+
+IBRIDO_PRIV_GIT_SRC=()
+IBRIDO_PRIV_GIT_BRCH=()
+IBRIDO_PRIV_GIT_DIR=()
+for entry in "${IBRIDO_PRIV_GITDIRS[@]}"; do
+    IFS='*' read -r src rest <<< "$entry"
+
+    branch_and_dir="$rest"
+    branch="$branch_and_dir"
+    dir=""
+
+    if [[ "$branch_and_dir" == *'&'* ]]; then
+        IFS='&' read -r branch dir <<< "$branch_and_dir"
+    fi
+
+    branch="$(echo -n "$branch" | xargs)"
+    dir="$(echo -n "$dir" | xargs)"
+
+    if [ "$CONVERT_TO_HTTP" = true ]; then
+        converted="$src"
+        case "$src" in
+            git@github.com:*)
+                converted="https://github.com/${src#git@github.com:}"
+                ;;
+            git@gitlab.com:*)
+                converted="https://gitlab.com/${src#git@gitlab.com:}"
+                ;;
+            git@bitbucket.org:*)
+                converted="https://bitbucket.org/${src#git@bitbucket.org:}"
+                ;;
+            ssh://git@*)
+                host_and_path="${src#ssh://git@}"
+                converted="https://${host_and_path}"
+                ;;
+            http://*|https://*)
+                converted="$src"
+                ;;
+            *)
+                converted="$src"
+                ;;
+        esac
+        src="$converted"
+    fi
+
+    IBRIDO_PRIV_GIT_SRC+=("$src")
+    IBRIDO_PRIV_GIT_BRCH+=("$branch")
+    IBRIDO_PRIV_GIT_DIR+=("$dir")
+done
 
 # Concatenate
 IBRIDO_BDIRS=("${IBRIDO_BDIRS[@]}" "${ISAAC_BDIRS[@]}")

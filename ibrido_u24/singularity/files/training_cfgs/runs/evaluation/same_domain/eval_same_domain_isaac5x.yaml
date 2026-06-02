@@ -1,0 +1,26 @@
+include:
+- ../../../common/runtime_defaults.yaml
+vars:
+  EVAL: 1
+  RESUME: 0
+  REMOTE_STEPPING: 1
+  DET_EVAL: 1
+  EVAL_ON_CPU: 1
+  OVERRIDE_ENV: 0
+  OVERRIDE_AGENT_REFS: 0
+  DEBUG: 0
+  RMDEBUG: 0
+  DUMP_ENV_CHECKPOINTS: 0
+  CLUSTER_DB: 0
+  ENV_IDX_BAG: -1
+  ENV_IDX_BAG_DEMO: -1
+  ENV_IDX_BAG_EXPL: -1
+  TOT_STEPS: 1000
+  WORLD_INTERFACE: aug_mpc_envs.world_interfaces.isaac5x_world_interface
+  TIME_SOURCE: sim
+  N_ENVS: ${EVAL_N_ENVS}
+  WORLD_HEADLESS: 1
+  WORLD_USE_CUSTOM_JNT_IMP: 1
+  USE_GPU_SIM: 1
+  RNAME_SUFFIX: EvalSameDomain
+  COMMENT_PREFIX: eval_same_domain

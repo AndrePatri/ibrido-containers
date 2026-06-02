@@ -1,0 +1,4 @@
+vars:
+  ROBOT_FAMILY: centauro
+  URDF_PATH: ${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_urdf/urdf/centauro.urdf.xacro
+  SRDF_PATH: ${HOME}/ibrido_ws/src/iit-centauro-ros-pkg/centauro_srdf/srdf/centauro.srdf.xacro
