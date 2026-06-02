@@ -49,9 +49,6 @@ custom_args:
     use_flat_ground:
       dtype: bool
       value: true
-    use_gpu:
-      dtype: bool
-      value: true
   robot_description:
     wheels:
       dtype: xacro

@@ -7,4 +7,3 @@ include:
 - ../../../../robots/centauro/backends/xmj.yaml
 vars:
   PHYSICS_DT: 0.0005
-  USE_GPU_SIM: 1

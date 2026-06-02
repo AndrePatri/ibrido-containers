@@ -41,6 +41,11 @@ ibrido_prepare_xbot_runtime_config() {
     local output_dir
     local xbot_config_abs
     local impedance_config_abs
+    local urdf_path_abs=""
+    local srdf_path_abs=""
+    local xrdf_output_dir=""
+    local xrdf_paths=()
+    local model_args=()
 
     if [ -z "$xbot_config" ]; then
         ibrido_fail "cannot prepare XBot runtime config: XBOT_CONFIG is not set"
@@ -58,16 +63,47 @@ ibrido_prepare_xbot_runtime_config() {
     token="${token//[^A-Za-z0-9_.-]/_}"
     output_dir="${IBRIDO_XBOT_RUNTIME_DIR:-/tmp/ibrido_xbot_configs/${token}}"
 
+    if [ -n "${URDF_PATH:-}" ] || [ -n "${SRDF_PATH:-}" ]; then
+        if [ -z "${URDF_PATH:-}" ] || [ -z "${SRDF_PATH:-}" ]; then
+            ibrido_fail "cannot prepare XBot model paths: URDF_PATH and SRDF_PATH must both be set"
+            return 1
+        fi
+        urdf_path_abs="$(ibrido_ws_src_path "$URDF_PATH")" || return 1
+        srdf_path_abs="$(ibrido_ws_src_path "$SRDF_PATH")" || return 1
+        xrdf_output_dir="${output_dir}/model"
+        mapfile -t xrdf_paths < <(
+            python3 "${IBRIDO_COMMAND_BUILDER_DIR}/ibrido_xrdf_builder.py" \
+                --urdf-path "$urdf_path_abs" \
+                --srdf-path "$srdf_path_abs" \
+                --output-dir "$xrdf_output_dir" \
+                --robot-name "$token" \
+                --custom-args-names "${CUSTOM_ARGS_NAMES:-}" \
+                --custom-args-dtype "${CUSTOM_ARGS_DTYPE:-}" \
+                --custom-args-vals "${CUSTOM_ARGS_VALS:-}"
+        ) || return 1
+        if [ "${#xrdf_paths[@]}" -ne 2 ]; then
+            ibrido_fail "XRDF builder did not return URDF and SRDF paths"
+            return 1
+        fi
+        model_args+=(--urdf-path "${xrdf_paths[0]}" --srdf-path "${xrdf_paths[1]}")
+    fi
+
     IBRIDO_XBOT_TEMPLATE_CONFIG_PATH="$xbot_config_abs"
     IBRIDO_XBOT_RUNTIME_CONFIG_PATH="$(
         python3 "${IBRIDO_COMMAND_BUILDER_DIR}/ibrido_xbot_config_builder.py" \
             --xbot-config "$xbot_config_abs" \
             --impedance-config "$impedance_config_abs" \
+            "${model_args[@]}" \
             --output-dir "$output_dir"
     )" || return 1
 
     XBOT_CONFIG_PATH="$IBRIDO_XBOT_RUNTIME_CONFIG_PATH"
     RT_XBOT_CONFIG_PATH="$IBRIDO_XBOT_RUNTIME_CONFIG_PATH"
+    if [ "${#xrdf_paths[@]}" -eq 2 ]; then
+        IBRIDO_XBOT_RUNTIME_URDF_PATH="${xrdf_paths[0]}"
+        IBRIDO_XBOT_RUNTIME_SRDF_PATH="${xrdf_paths[1]}"
+        export IBRIDO_XBOT_RUNTIME_URDF_PATH IBRIDO_XBOT_RUNTIME_SRDF_PATH
+    fi
     export IBRIDO_XBOT_TEMPLATE_CONFIG_PATH IBRIDO_XBOT_RUNTIME_CONFIG_PATH
     export XBOT_CONFIG_PATH RT_XBOT_CONFIG_PATH
 }

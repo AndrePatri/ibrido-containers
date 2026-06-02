@@ -45,6 +45,23 @@ config_file=""
 dry_run=0
 cfg_overrides=()
 
+custom_arg_value() {
+    local arg_name="$1"
+    local names=()
+    local vals=()
+    local i
+
+    read -r -a names <<< "${CUSTOM_ARGS_NAMES:-}"
+    read -r -a vals <<< "${CUSTOM_ARGS_VALS:-}"
+    for i in "${!names[@]}"; do
+        if [ "${names[$i]}" = "$arg_name" ]; then
+            printf '%s\n' "${vals[$i]:-}"
+            return 0
+        fi
+    done
+    return 1
+}
+
 press_enter() {
     byobu send-keys Enter
     sleep $SLEEP_FOR
@@ -176,6 +193,7 @@ prepare_primary_run_metadata() {
     local metadata_world_headless=1
     local metadata_world_custom_jnt_imp=1
     local metadata_world_use_gpu="${USE_GPU_SIM:-1}"
+    local metadata_world_jnt_imp_config_path="${JNT_IMP_CONFIG_PATH}"
 
     if [ -z "$metadata_world_iface" ]; then
         echo "launch_byobu_ws.sh: WORLD_INTERFACE is required by the selected cfg"
@@ -187,11 +205,19 @@ prepare_primary_run_metadata() {
             metadata_world_headless="${XMJ_HEADLESS:-0}"
             metadata_world_custom_jnt_imp=0
             metadata_world_use_gpu=0
+            prepare_resolved_xbot_runtime_config
+            if [ -n "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
+                metadata_world_jnt_imp_config_path="${RESOLVED_XBOT_CONFIG_PATH}"
+            fi
             ;;
         *rt_deploy_world_interface*)
             metadata_world_headless="${RT_HEADLESS:-0}"
             metadata_world_custom_jnt_imp=0
             metadata_world_use_gpu=0
+            prepare_resolved_xbot_runtime_config
+            if [ -n "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
+                metadata_world_jnt_imp_config_path="${RESOLVED_XBOT_CONFIG_PATH}"
+            fi
             ;;
         *isaac5x_world_interface*)
             metadata_world_headless="${WORLD_HEADLESS:-1}"
@@ -204,7 +230,7 @@ prepare_primary_run_metadata() {
             ;;
     esac
 
-    ibrido_build_world_cmd "$metadata_world_iface" "$N_ENVS" "$metadata_world_headless" "$metadata_world_custom_jnt_imp" "$metadata_world_use_gpu"
+    ibrido_build_world_cmd "$metadata_world_iface" "$N_ENVS" "$metadata_world_headless" "$metadata_world_custom_jnt_imp" "$metadata_world_use_gpu" "$metadata_world_jnt_imp_config_path"
     metadata_world_cmd="python launch_world_interface.py $IBRIDO_WORLD_CMD"
     ibrido_build_cluster_cmd "$N_ENVS" 1 1
     metadata_cluster_cmd="python launch_control_cluster.py $IBRIDO_CLUSTER_CMD"
@@ -803,8 +829,14 @@ resolve_rt_xmj_launcher() {
     elif [[ "$cfg_key" == *b2w* || "$cfg_key" == *unitree* ]]; then
         local b2w_xmj_dir="${WS_ROOT}/src/KyonRLStepping/kyonrlstepping/config/xmj_env_files/b2w"
         local b2w_xbot_config="${RESOLVED_XBOT_CONFIG_PATH:-${WS_ROOT}/src/KyonRLStepping/kyonrlstepping/config/xmj_env_files/b2w/xbot2_basic.yaml}"
+        local b2w_urdf_path="${IBRIDO_XBOT_RUNTIME_URDF_PATH:-${b2w_xmj_dir}/unitree_b2w.urdf}"
+        local b2w_root_spawn_height="${RT_XMJ_ROOT_SPAWN_HEIGHT:-$(custom_arg_value root_spawn_height || true)}"
+        local b2w_root_spawn_args=""
+        if [ -n "${b2w_root_spawn_height:-}" ]; then
+            b2w_root_spawn_args=" --root_spawn_height ${b2w_root_spawn_height}"
+        fi
         RESOLVED_RT_XMJ_WORKDIR="${WS_ROOT}/src/xbot2_mujoco/tests/PyXBotMjSim"
-        RESOLVED_RT_XMJ_CMD="python launch_simulator.py --files_dir ${b2w_xmj_dir} --urdf_path ${b2w_xmj_dir}/unitree_b2w.urdf --simopt_path ${b2w_xmj_dir}/sim_opt.xml --world_path ${b2w_xmj_dir}/world.xml --sites_path ${b2w_xmj_dir}/sites.xml --xbot_config_path ${b2w_xbot_config} --blink_name base --rt_factor ${rt_factor}${rostime_args}"
+        RESOLVED_RT_XMJ_CMD="python launch_simulator.py --files_dir ${b2w_xmj_dir} --urdf_path ${b2w_urdf_path} --simopt_path ${b2w_xmj_dir}/sim_opt.xml --world_path ${b2w_xmj_dir}/world.xml --sites_path ${b2w_xmj_dir}/sites.xml --xbot_config_path ${b2w_xbot_config} --blink_name base --rt_factor ${rt_factor}${b2w_root_spawn_args}${rostime_args}"
     elif [[ "$cfg_key" == *kyon* ]]; then
         RESOLVED_RT_XMJ_WORKDIR="$WORKING_DIR_QUAD"
         if [[ "$cfg_key" == *no_wheels* ]]; then

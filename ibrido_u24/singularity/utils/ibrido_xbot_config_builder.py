@@ -27,17 +27,42 @@ def replace_pwd(value: Any, runtime_dir: Path) -> Any:
     return value
 
 
-def runtime_name(xbot_config: Path, impedance_config: Path) -> str:
+def runtime_name(
+    xbot_config: Path,
+    impedance_config: Path,
+    urdf_path: str | None = None,
+    srdf_path: str | None = None,
+) -> str:
     token = hashlib.sha1(
-        f"{xbot_config.resolve()}::{impedance_config.resolve()}".encode("utf-8")
+        f"{xbot_config.resolve()}::{impedance_config.resolve()}::{urdf_path or ''}::{srdf_path or ''}".encode("utf-8")
     ).hexdigest()[:10]
     return f"{xbot_config.stem}.{token}.runtime.yaml"
+
+
+def set_xbotinterface_paths(runtime: dict[str, Any], urdf_path: str | None, srdf_path: str | None) -> None:
+    xbotinterface = runtime.setdefault("XBotInterface", {})
+    if not isinstance(xbotinterface, dict):
+        raise SystemExit("XBotInterface section must be a YAML mapping")
+
+    if urdf_path:
+        xbotinterface["urdf_path"] = urdf_path
+    if srdf_path:
+        xbotinterface["srdf_path"] = srdf_path
+
+    for key in ("urdf_path", "srdf_path"):
+        value = xbotinterface.get(key)
+        if value in (None, "", "**"):
+            raise SystemExit(
+                f"XBotInterface.{key} is unresolved; pass --{key.replace('_', '-')}"
+            )
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--xbot-config", required=True)
     parser.add_argument("--impedance-config", required=True)
+    parser.add_argument("--urdf-path")
+    parser.add_argument("--srdf-path")
     parser.add_argument("--output-dir", default="/tmp/ibrido_xbot_configs")
     args = parser.parse_args()
 
@@ -61,8 +86,12 @@ def main() -> None:
     if "motor_vel" in impedance:
         runtime["motor_vel"] = impedance["motor_vel"]
 
+    set_xbotinterface_paths(runtime, args.urdf_path, args.srdf_path)
+
     output_dir.mkdir(parents=True, exist_ok=True)
-    output_path = output_dir / runtime_name(xbot_config, impedance_config)
+    output_path = output_dir / runtime_name(
+        xbot_config, impedance_config, args.urdf_path, args.srdf_path
+    )
     with output_path.open("w", encoding="utf-8") as stream:
         yaml.safe_dump(runtime, stream, sort_keys=False)
 
