@@ -28,6 +28,9 @@ custom_args:
     state_from_xbot:
       dtype: bool
       value: true
+    root_spawn_height:
+      dtype: float
+      value: 0.62
     add_remote_exit_flag:
       dtype: bool
       value: true

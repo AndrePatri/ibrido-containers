@@ -6,4 +6,4 @@ include:
 - ../../../../robots/talos/tasks/talos.yaml
 - ../../../../robots/talos/backends/xmj.yaml
 vars:
-  PHYSICS_DT: 0.0005
+  PHYSICS_DT: 0.0001

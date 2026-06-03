@@ -40,4 +40,4 @@ custom_args:
       value: true
     root_spawn_height:
       dtype: float
-      value: 0.9346
+      value: 1.12

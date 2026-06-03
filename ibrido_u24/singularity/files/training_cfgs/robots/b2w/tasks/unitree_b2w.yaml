@@ -49,14 +49,11 @@ custom_args:
     use_flat_ground:
       dtype: bool
       value: true
-    use_gpu:
-      dtype: bool
-      value: true
   robot_description:
     wheels:
       dtype: xacro
       value: true
-    base_link_name:
+    base_linkname:
       dtype: str
       value: base
     deduce_base_link:
