@@ -53,7 +53,7 @@ custom_args:
     wheels:
       dtype: xacro
       value: true
-    base_link_name:
+    base_linkname:
       dtype: str
       value: base
     deduce_base_link:
