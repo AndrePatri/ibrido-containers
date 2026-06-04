@@ -292,8 +292,13 @@ if (( $REMOTE_STEPPING )); then
 (
   micromamba activate ${MAMBA_ENV_NAME}
   source $HOME/ibrido_ws/setup.bash
-  if [ -n "$WANDB_KEY" ]; then
-    wandb login $WANDB_KEY
+  if [ -n "${WANDB_API_KEY:-}" ]; then
+    export WANDB_KEY="${WANDB_KEY:-$WANDB_API_KEY}"
+  elif [ -n "${WANDB_KEY:-}" ]; then
+    export WANDB_API_KEY="$WANDB_KEY"
+  fi
+  if [ -n "${WANDB_API_KEY:-}" ]; then
+    wandb login --relogin "$WANDB_API_KEY"
   fi
   exec python $LRHC_DIR/launch_train_env.py $training_env_cmd --comment "\"$COMMENT\""
 ) > "$log_train" 2>&1 &

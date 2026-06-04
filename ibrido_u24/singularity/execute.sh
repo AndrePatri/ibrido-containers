@@ -10,7 +10,7 @@ source "${IBRIDO_CONTAINERS_PREFIX}/files/bind_list.sh"
 
 # Function to print usage
 usage() {
-    echo "Usage: $0 [--use_sudo|-s] (--cfg <run_cfg> | --bundle <bundle_dir_or_bundle_yaml> --cfg <transfer_cfg>) [--wdb_key <wandb_key>] [--ros_global] [--run_token <token>] [--set VAR=VALUE] [--allow_contract_override] [--dry-run]"
+    echo "Usage: $0 [--use_sudo|-s] (--cfg <run_cfg> | --bundle <bundle_dir_or_bundle_yaml> --cfg <transfer_cfg>) [--wandb_key|--wdb_key|-w <wandb_key>] [--ros_global] [--run_token <token>] [--set VAR=VALUE] [--allow_contract_override] [--dry-run]"
     exit 1
 }
 
@@ -36,7 +36,7 @@ cleanup() {
 trap cleanup SIGINT SIGTERM
 
 use_sudo=false # whether to use superuser privileges
-wandb_key_default="$WANDB_KEY" # Use the existing WANDB_KEY by default
+wandb_key_default="${WANDB_KEY:-${WANDB_API_KEY:-}}" # Use the existing WANDB_KEY/WANDB_API_KEY by default
 ros_localhost_only=1
 run_token=""
 dry_run=0
@@ -50,7 +50,7 @@ while [[ "$#" -gt 0 ]]; do
         -s|--use_sudo) use_sudo=true ;;
         -cfg|--cfg) config_file="$2"; shift ;; # Set custom config file if provided
         --bundle) bundle_path="$2"; shift ;;
-        -wdb_key|--wdb_key) wandb_key="$2"; shift ;; # Override WANDB_KEY if provided
+        -w|--wandb_key|--wandb-key|-wdb_key|--wdb_key) wandb_key="$2"; shift ;; # Override WANDB_KEY if provided
         --ros_global) ros_localhost_only=0 ;;
         --run_token) run_token="$2"; shift ;; # optional unique token for process identification
         --set) cfg_overrides+=("$2"); shift ;;
@@ -62,8 +62,12 @@ while [[ "$#" -gt 0 ]]; do
     shift
 done
 
-# Use default WANDB_KEY if no --wdb_key argument was provided
+# Use default WANDB_KEY/WANDB_API_KEY if no explicit argument was provided
 wandb_key="${wandb_key:-$wandb_key_default}"
+if [ -n "$wandb_key" ] && [ "${#wandb_key}" -lt 40 ]; then
+    echo "execute.sh: WANDB key looks invalid: expected at least 40 characters, got ${#wandb_key}."
+    exit 1
+fi
 
 # convert bind dirs to comma-separated list
 IFS=',' # Set the internal field separator to a comma
@@ -120,6 +124,7 @@ fi
 
 singularity_cmd="singularity exec \
     --env \"WANDB_KEY=$wandb_key\"\
+    --env \"WANDB_API_KEY=$wandb_key\"\
     --env \"ROS_LOCALHOST_ONLY=$ros_localhost_only\"\
     --env \"BYOBU_CONFIG_DIR=/root/.byobu\"\
     --bind $binddirs\
