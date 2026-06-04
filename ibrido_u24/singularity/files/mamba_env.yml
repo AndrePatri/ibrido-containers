@@ -12,10 +12,8 @@ channels:
 
 dependencies: 
   - python=3.12
-  - pytorch>2.5=*cuda*
-  - torchvision
-  # - torchaudio
-  - pytorch-cuda=12.1
+  # PyTorch is installed from pip below so RTX 50xx/sm_120 can use cu128 wheels.
+  # Keep the Isaac Python 3.11 env separate; do not mirror this blindly there.
   # - cuda-toolkit
   - clang
   - compilers 
@@ -40,6 +38,9 @@ dependencies:
   - catkin_pkg
   - scipy
   - pip:
+    - --extra-index-url https://download.pytorch.org/whl/cu128
+    - torch==2.7.0+cu128
+    - torchvision==0.22.0+cu128
     - numpy<2
     - pyzmq
     - pyyaml
