@@ -47,9 +47,6 @@ custom_args:
     add_upper_body:
       dtype: bool
       value: true
-    spawning_height:
-      dtype: float
-      value: 1.12
     self_collide:
       dtype: bool
       value: true
@@ -77,12 +74,12 @@ custom_args:
       value: 0.08
     initial_force_load_divisor:
       dtype: float
-      value: 2.0
+      value: 1.12
   world_interface:
     use_flat_ground:
       dtype: bool
       value: true
-    root_spawn_height:
+    spawning_height:
       dtype: float
       value: 1.12
     ground_type:

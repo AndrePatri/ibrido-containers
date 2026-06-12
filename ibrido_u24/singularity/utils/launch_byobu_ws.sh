@@ -850,7 +850,7 @@ resolve_rt_xmj_launcher() {
         local b2w_xmj_dir="${WS_ROOT}/src/KyonRLStepping/kyonrlstepping/config/xmj_env_files/b2w"
         local b2w_xbot_config="${RESOLVED_XBOT_CONFIG_PATH:-${WS_ROOT}/src/KyonRLStepping/kyonrlstepping/config/xmj_env_files/b2w/xbot2_basic.yaml}"
         local b2w_urdf_path="${IBRIDO_XBOT_RUNTIME_URDF_PATH:-${b2w_xmj_dir}/unitree_b2w.urdf}"
-        local b2w_root_spawn_height="${RT_XMJ_ROOT_SPAWN_HEIGHT:-$(custom_arg_value root_spawn_height || true)}"
+        local b2w_root_spawn_height="${RT_XMJ_ROOT_SPAWN_HEIGHT:-$(custom_arg_value spawning_height || true)}"
         local b2w_root_spawn_args=""
         if [ -n "${b2w_root_spawn_height:-}" ]; then
             b2w_root_spawn_args=" --root_spawn_height ${b2w_root_spawn_height}"

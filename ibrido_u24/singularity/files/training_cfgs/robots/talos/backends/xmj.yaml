@@ -38,6 +38,3 @@ custom_args:
     add_remote_exit_flag:
       dtype: bool
       value: true
-    root_spawn_height:
-      dtype: float
-      value: 1.12
