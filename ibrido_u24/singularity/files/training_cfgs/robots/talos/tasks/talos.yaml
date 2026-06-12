@@ -52,16 +52,9 @@ custom_args:
       value: 1.12
     self_collide:
       dtype: bool
-      value: false
-  training:
-    step_height:
-      dtype: float
-      value: 0.08
-    initial_force_load_divisor:
-      dtype: float
-      value: 2.0
-    use_random_pertub:
-      dtype: bool
+      value: true
+    minimal_coll:
+      dtype: xacro
       value: true
   control:
     adaptive_is:
@@ -79,6 +72,12 @@ custom_args:
     use_jnt_v_feedback:
       dtype: bool
       value: false
+    step_height:
+      dtype: float
+      value: 0.08
+    initial_force_load_divisor:
+      dtype: float
+      value: 2.0
   world_interface:
     use_flat_ground:
       dtype: bool
@@ -89,3 +88,6 @@ custom_args:
     ground_type:
       dtype: str
       value: flat
+    use_random_pertub:
+      dtype: bool
+      value: true

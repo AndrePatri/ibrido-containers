@@ -14,13 +14,6 @@ vars:
   TRAIN_ENV_CNAME: FakePosTrackingEnv
   TRAIN_ENV_FNAME: fake_pos_tracking_env
 custom_args:
-  training:
-    use_random_pertub:
-      dtype: bool
-      value: true
-    step_height:
-      dtype: float
-      value: 0.1
   control:
     use_jnt_v_feedback:
       dtype: bool
@@ -43,6 +36,9 @@ custom_args:
     estimate_v_root:
       dtype: bool
       value: false
+    step_height:
+      dtype: float
+      value: 0.1
   robot_description:
     fix_yaw:
       dtype: bool
@@ -55,5 +51,8 @@ custom_args:
       value: true
   world_interface:
     use_flat_ground:
+      dtype: bool
+      value: true
+    use_random_pertub:
       dtype: bool
       value: true

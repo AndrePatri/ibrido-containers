@@ -13,10 +13,6 @@ vars:
   TRAIN_ENV_CNAME: FakePosTrackEnvPhaseControl
   TRAIN_ENV_FNAME: fake_pos_track_env_phase_control
 custom_args:
-  training:
-    step_height:
-      dtype: float
-      value: 0.12
   robot_description:
     fix_yaw:
       dtype: bool
@@ -49,6 +45,9 @@ custom_args:
     use_jnt_v_feedback:
       dtype: bool
       value: true
+    step_height:
+      dtype: float
+      value: 0.12
   world_interface:
     rendering_dt:
       dtype: float

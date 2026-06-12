@@ -131,6 +131,22 @@ enabled() {
     esac
 }
 
+mpcviz_custom_xacro_args_for() {
+    local family
+
+    IBRIDO_MPCVIZ_CUSTOM_XACRO_ARGS=""
+    if [ -z "${CUSTOM_ARGS_NAMES:-}" ]; then
+        return
+    fi
+
+    for family in "$@"; do
+        if [ "${ROBOT_FAMILY:-}" = "$family" ]; then
+            IBRIDO_MPCVIZ_CUSTOM_XACRO_ARGS=" --custom_args_names $CUSTOM_ARGS_NAMES --custom_args_dtype $CUSTOM_ARGS_DTYPE --custom_args_vals $CUSTOM_ARGS_VALS"
+            return
+        fi
+    done
+}
+
 install_byobu_helper_commands() {
     local kill_helper="${BYOBU_CONFIG_DIR}/bin/ibrido_kill_ws"
 
@@ -587,14 +603,18 @@ record_byobu_aux_metadata() {
     build_zmq_bridge_cmd
     record_byobu_launch_command "debug_zmq_bridge" "$WORKING_DIR" "$IBRIDO_ZMQ_BRIDGE_CMD"
 
+    mpcviz_custom_xacro_args_for centauro
     record_byobu_launch_command "mpcviz_centauro" "$WORKING_DIR_CENTAURO" \
-        "python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10${mpcviz_heightmap_arg}"
+        "python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10${IBRIDO_MPCVIZ_CUSTOM_XACRO_ARGS}${mpcviz_heightmap_arg}"
+    mpcviz_custom_xacro_args_for kyon02 kyon_simple
     record_byobu_launch_command "mpcviz_kyon02" "$WORKING_DIR_QUAD" \
-        "python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --kyon_real --wheels${mpcviz_heightmap_arg}"
+        "python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --kyon_real --wheels${IBRIDO_MPCVIZ_CUSTOM_XACRO_ARGS}${mpcviz_heightmap_arg}"
+    mpcviz_custom_xacro_args_for b2w
     record_byobu_launch_command "mpcviz_b2w" "$WORKING_DIR_QUAD" \
-        "python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --b2w${mpcviz_heightmap_arg}"
+        "python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --b2w${IBRIDO_MPCVIZ_CUSTOM_XACRO_ARGS}${mpcviz_heightmap_arg}"
+    mpcviz_custom_xacro_args_for talos
     record_byobu_launch_command "mpcviz_talos" "$WORKING_DIR_TALOS" \
-        "python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10${mpcviz_heightmap_arg}"
+        "python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10${IBRIDO_MPCVIZ_CUSTOM_XACRO_ARGS}${mpcviz_heightmap_arg}"
 
     build_joy_zmq_pub_cmd
     record_byobu_launch_command "teleop_joy_zmq_pub" "$WORKING_DIR_JOY" "$IBRIDO_JOY_ZMQ_PUB_CMD"
@@ -1040,20 +1060,24 @@ prepare_mpcviz_pane() {
 add_mpcviz_tab() {
     local mpcviz_cmd
 
-    mpcviz_cmd="python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
+    mpcviz_custom_xacro_args_for centauro
+    mpcviz_cmd="python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10${IBRIDO_MPCVIZ_CUSTOM_XACRO_ARGS}"
     prepare_mpcviz_pane "${WORKING_DIR_CENTAURO}" "$mpcviz_cmd"
 
     split_v
-    mpcviz_cmd="python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --kyon_real --wheels"
+    mpcviz_custom_xacro_args_for kyon02 kyon_simple
+    mpcviz_cmd="python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --kyon_real --wheels${IBRIDO_MPCVIZ_CUSTOM_XACRO_ARGS}"
     prepare_mpcviz_pane "${WORKING_DIR_QUAD}" "$mpcviz_cmd"
 
     split_h
-    mpcviz_cmd="python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --b2w"
+    mpcviz_custom_xacro_args_for b2w
+    mpcviz_cmd="python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10 --b2w${IBRIDO_MPCVIZ_CUSTOM_XACRO_ARGS}"
     prepare_mpcviz_pane "${WORKING_DIR_QUAD}" "$mpcviz_cmd"
 
     go_to_pane 0
     split_h
-    mpcviz_cmd="python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10"
+    mpcviz_custom_xacro_args_for talos
+    mpcviz_cmd="python launch_mpcviz.py --ns $SHM_NS --nodes_perc 10${IBRIDO_MPCVIZ_CUSTOM_XACRO_ARGS}"
     prepare_mpcviz_pane "${WORKING_DIR_TALOS}" "$mpcviz_cmd"
 }
 

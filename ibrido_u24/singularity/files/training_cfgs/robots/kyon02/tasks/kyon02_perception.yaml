@@ -42,10 +42,6 @@ custom_args:
     height_sensor_lateral_offset:
       dtype: float
       value: 0.0
-  training:
-    step_height:
-      dtype: float
-      value: 0.1
   robot_description:
     wheels:
       dtype: xacro
@@ -75,3 +71,6 @@ custom_args:
     use_jnt_v_feedback:
       dtype: bool
       value: true
+    step_height:
+      dtype: float
+      value: 0.1
