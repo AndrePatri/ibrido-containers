@@ -18,7 +18,7 @@ custom_args:
   robot_description:
     use_capsule_collision:
       dtype: xacro
-      value: true
+      value: false
   world_interface:
     xmj_files_dir:
       dtype: str
@@ -38,6 +38,3 @@ custom_args:
     add_remote_exit_flag:
       dtype: bool
       value: true
-    root_spawn_height:
-      dtype: float
-      value: 1.12

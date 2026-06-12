@@ -24,6 +24,9 @@ custom_args:
     ground_type:
       dtype: str
       value: stepup_prim
+    use_random_pertub:
+      dtype: bool
+      value: true
   perception:
     enable_height_sensor:
       dtype: bool
@@ -37,13 +40,6 @@ custom_args:
     enable_height_vis:
       dtype: bool
       value: false
-  training:
-    use_random_pertub:
-      dtype: bool
-      value: true
-    step_height:
-      dtype: float
-      value: 0.1
   control:
     use_jnt_v_feedback:
       dtype: bool
@@ -66,6 +62,9 @@ custom_args:
     estimate_v_root:
       dtype: bool
       value: false
+    step_height:
+      dtype: float
+      value: 0.1
   robot_description:
     fix_yaw:
       dtype: bool

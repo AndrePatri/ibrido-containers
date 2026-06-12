@@ -33,7 +33,6 @@ custom_args:
     estimate_v_root:
       dtype: bool
       value: false
-  training:
     step_height:
       dtype: float
       value: 0.1

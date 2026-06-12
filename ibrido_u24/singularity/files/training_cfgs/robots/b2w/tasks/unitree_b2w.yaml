@@ -38,7 +38,6 @@ custom_args:
     control_wheels:
       dtype: bool
       value: true
-  training:
     step_height:
       dtype: float
       value: 0.12
@@ -49,6 +48,9 @@ custom_args:
     use_flat_ground:
       dtype: bool
       value: true
+    spawning_height:
+      dtype: float
+      value: 0.62
   robot_description:
     wheels:
       dtype: xacro

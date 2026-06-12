@@ -11,13 +11,6 @@ vars:
   TRAIN_ENV_CNAME: StayingAliveEnv
   TRAIN_ENV_FNAME: derived.staying_alive_env
 custom_args:
-  training:
-    use_random_pertub:
-      dtype: bool
-      value: true
-    step_height:
-      dtype: float
-      value: 0.15
   robot_description:
     wheels:
       dtype: xacro
@@ -47,7 +40,13 @@ custom_args:
     use_jnt_v_feedback:
       dtype: bool
       value: true
+    step_height:
+      dtype: float
+      value: 0.15
   world_interface:
     use_flat_ground:
+      dtype: bool
+      value: true
+    use_random_pertub:
       dtype: bool
       value: true
