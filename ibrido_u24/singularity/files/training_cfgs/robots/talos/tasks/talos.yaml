@@ -60,6 +60,9 @@ custom_args:
     initial_force_load_divisor:
       dtype: float
       value: 2.0
+    use_random_pertub:
+      dtype: bool
+      value: true
   control:
     adaptive_is:
       dtype: bool
