@@ -204,20 +204,16 @@ case "$world_iface_fname" in
     world_use_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-0}"
     world_use_gpu=0
     world_env_profile="xbot"
-    if [ -z "${IBRIDO_XBOT_RUNTIME_CONFIG_PATH:-}" ]; then
-      ibrido_prepare_xbot_runtime_config "${XBOT_CONFIG_PATH:-${XBOT_CONFIG:-}}" "$JNT_IMP_CONFIG_PATH" || exit 1
-    fi
-    world_jnt_imp_config_path="$IBRIDO_XBOT_RUNTIME_CONFIG_PATH"
+    # the world interface generates URDF/SRDF and the runtime XBot config itself
+    # (from the template xbot config + template impedance); pass templates only
     ;;
   *rt_deploy_world_interface*)
     world_headless="${RT_HEADLESS:-0}"
     world_use_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-0}"
     world_use_gpu=0
     world_env_profile="xbot"
-    if [ -z "${IBRIDO_XBOT_RUNTIME_CONFIG_PATH:-}" ]; then
-      ibrido_prepare_xbot_runtime_config "${XBOT_CONFIG_PATH:-${XBOT_CONFIG:-}}" "$JNT_IMP_CONFIG_PATH" || exit 1
-    fi
-    world_jnt_imp_config_path="$IBRIDO_XBOT_RUNTIME_CONFIG_PATH"
+    # the world interface generates URDF/SRDF and the runtime XBot config itself
+    # (from the template xbot config + template impedance); pass templates only
     ;;
   *isaac5x_world_interface*)
     world_headless="${WORLD_HEADLESS:-1}"

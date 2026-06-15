@@ -265,10 +265,13 @@ ibrido_normalize_runtime_config() {
         return 1
     fi
 
+    # NOTE: the world interfaces (XMJ / RT deploy) now generate URDF/SRDF and the
+    # runtime XBot config themselves from the template xbot config + template
+    # impedance config (see ibrido_build_world_cmd / _prepare_xbot_runtime_config),
+    # so we no longer pre-generate a runtime XBot config here. XBOT_CONFIG_PATH stays
+    # the template; the external xbot2-core terminal (byobu RT sim) still prepares a
+    # runtime config via prepare_resolved_xbot_runtime_config.
     XBOT_CONFIG_PATH="${XBOT_CONFIG_PATH:-${XBOT_CONFIG:-}}"
-    if [ -n "$XBOT_CONFIG_PATH" ] && [ -n "${JNT_IMP_CONFIG_PATH:-}" ] && [ "$XBOT_CONFIG_PATH" != "${IBRIDO_XBOT_RUNTIME_CONFIG_PATH:-}" ]; then
-        ibrido_prepare_xbot_runtime_config "$XBOT_CONFIG_PATH" "$JNT_IMP_CONFIG_PATH" || return 1
-    fi
     RT_XBOT_CONFIG_PATH="${RT_XBOT_CONFIG_PATH:-${XBOT_CONFIG_PATH:-}}"
     SITE_PROFILE="${SITE_PROFILE:-local_dev}"
     ZMQ_BRIDGE_BIND_IP="${ZMQ_BRIDGE_BIND_IP:-0.0.0.0}"
@@ -475,6 +478,25 @@ ibrido_build_world_cmd() {
     local custom_args_names="${7:-${CUSTOM_ARGS_NAMES:-}}"
     local custom_args_dtype="${8:-${CUSTOM_ARGS_DTYPE:-}}"
     local custom_args_vals="${9:-${CUSTOM_ARGS_VALS:-}}"
+
+    # XBot-backed interfaces (XMJ / RT deploy) own their runtime model+config: the
+    # world interface generates URDF/SRDF and builds the runtime XBot config from the
+    # *template* xbot config + the *template* impedance config. So pass the template
+    # impedance via --jnt_imp_config_path and the template xbot config via the
+    # xbot_config_path custom arg, instead of a launcher-prepared runtime config.
+    case "$world_iface_fname" in
+        *xmj_world_interface*|*rt_deploy_world_interface*)
+            jnt_imp_config_path="${JNT_IMP_CONFIG_PATH:-$jnt_imp_config_path}"
+            local xbot_config_template="${IBRIDO_XBOT_TEMPLATE_CONFIG_PATH:-${RESOLVED_XBOT_CONFIG:-${XBOT_CONFIG:-}}}"
+            if [ -n "$xbot_config_template" ] && [[ " ${custom_args_names} " != *" xbot_config_path "* ]]; then
+                local xbot_config_template_abs
+                xbot_config_template_abs="$(ibrido_ws_src_path "$xbot_config_template")" || return 1
+                custom_args_names+=" xbot_config_path"
+                custom_args_dtype+=" str"
+                custom_args_vals+=" ${xbot_config_template_abs}"
+            fi
+            ;;
+    esac
 
     IBRIDO_WORLD_INTERFACE="$world_iface_fname"
     IBRIDO_WORLD_NUM_ENVS="$num_envs"

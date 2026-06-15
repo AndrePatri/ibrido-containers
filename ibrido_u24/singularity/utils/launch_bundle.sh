@@ -450,7 +450,6 @@ case "$world_iface_fname" in
         export XBOT_CONFIG_PATH="$RESOLVED_XBOT_CONFIG_PATH"
         export XMJ_FILES_DIR_PATH="$RESOLVED_XMJ_FILES_DIR_PATH"
         export USE_GPU_SIM="0"
-        world_jnt_imp_config_path="$RESOLVED_XBOT_CONFIG_PATH"
         world_headless="${XMJ_HEADLESS:-0}"
         world_use_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-0}"
         world_use_gpu=0
@@ -472,7 +471,6 @@ case "$world_iface_fname" in
         export XBOT_CONFIG_PATH="$RESOLVED_XBOT_CONFIG_PATH"
         export RT_XBOT_CONFIG_PATH="$RESOLVED_XBOT_CONFIG_PATH"
         export USE_GPU_SIM="0"
-        world_jnt_imp_config_path="$RESOLVED_XBOT_CONFIG_PATH"
         world_headless="${RT_HEADLESS:-0}"
         world_use_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-0}"
         world_use_gpu=0

@@ -221,19 +221,15 @@ prepare_primary_run_metadata() {
             metadata_world_headless="${XMJ_HEADLESS:-0}"
             metadata_world_custom_jnt_imp=0
             metadata_world_use_gpu=0
-            prepare_resolved_xbot_runtime_config
-            if [ -n "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
-                metadata_world_jnt_imp_config_path="${RESOLVED_XBOT_CONFIG_PATH}"
-            fi
+            # XMJ owns model+config generation; only resolve the template paths here
+            resolve_xbot_config
             ;;
         *rt_deploy_world_interface*)
             metadata_world_headless="${RT_HEADLESS:-0}"
             metadata_world_custom_jnt_imp=0
             metadata_world_use_gpu=0
+            # RT interface owns its model+config; prepare kept for the external xbot2-core
             prepare_resolved_xbot_runtime_config
-            if [ -n "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
-                metadata_world_jnt_imp_config_path="${RESOLVED_XBOT_CONFIG_PATH}"
-            fi
             ;;
         *isaac5x_world_interface*)
             metadata_world_headless="${WORLD_HEADLESS:-1}"
@@ -481,12 +477,10 @@ build_xmj_world_cmd_for_metadata() {
     local xmj_custom_args_dtype="$CUSTOM_ARGS_DTYPE"
     local xmj_custom_args_vals="$CUSTOM_ARGS_VALS"
 
-    prepare_resolved_xbot_runtime_config
+    # XMJ owns model+config generation (build_world_cmd injects the template
+    # xbot_config_path + template impedance); just resolve the template paths here
+    resolve_xbot_config
     resolve_xmj_files_dir
-
-    if [ -n "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
-        xmj_jnt_imp_config_path="${RESOLVED_XBOT_CONFIG_PATH}"
-    fi
 
     if [ -n "${RESOLVED_XMJ_FILES_DIR:-}" ] && [[ " ${xmj_custom_args_names} " != *" xmj_files_dir "* ]]; then
         xmj_custom_args_names+=" xmj_files_dir"
@@ -533,10 +527,9 @@ record_byobu_aux_metadata() {
         mpcviz_heightmap_arg=" --show_heightmap"
     fi
 
+    # RT interface owns its model+config; prepare kept so the external xbot2-core
+    # terminal has a runtime config (RESOLVED_XBOT_CONFIG_PATH)
     prepare_resolved_xbot_runtime_config
-    if [ -n "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
-        rt_jnt_imp_config_path="${RESOLVED_XBOT_CONFIG_PATH}"
-    fi
     if [[ " ${rt_custom_args_names} " != *" is_sim "* ]]; then
         rt_custom_args_names+=" is_sim"
         rt_custom_args_dtype+=" bool"
@@ -916,10 +909,9 @@ add_rt_deployment_tab() {
     rt_sim_pane="$(current_pane_id)"
 
     go_to_pane "$rt_world_pane"
+    # RT interface owns its model+config; prepare kept so the external xbot2-core
+    # terminal has a runtime config (RESOLVED_XBOT_CONFIG_PATH)
     prepare_resolved_xbot_runtime_config
-    if [ -n "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
-        rt_jnt_imp_config_path="${RESOLVED_XBOT_CONFIG_PATH}"
-    fi
     if [[ " ${rt_custom_args_names} " != *" is_sim "* ]]; then
         rt_custom_args_names+=" is_sim"
         rt_custom_args_dtype+=" bool"
@@ -1000,12 +992,9 @@ add_xmj_tab() {
         return
     fi
 
-    prepare_resolved_xbot_runtime_config
+    # XMJ owns model+config generation; just resolve the template paths here
+    resolve_xbot_config
     resolve_xmj_files_dir
-
-    if [ -n "${RESOLVED_XBOT_CONFIG_PATH:-}" ]; then
-        xmj_jnt_imp_config_path="${RESOLVED_XBOT_CONFIG_PATH}"
-    fi
 
     if [ -n "${RESOLVED_XMJ_FILES_DIR:-}" ] && [[ " ${xmj_custom_args_names} " != *" xmj_files_dir "* ]]; then
         xmj_custom_args_names+=" xmj_files_dir"

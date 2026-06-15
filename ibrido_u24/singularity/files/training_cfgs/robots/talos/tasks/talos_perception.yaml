@@ -1,17 +1,18 @@
 vars:
-  ROBOT_VARIANT: talos
+  ROBOT_VARIANT: talos_perception
   ACTION_REPEAT: 3
-  COMMENT: talos, one env, no remote stepping
+  COMMENT: talos closed-loop partial on non-flat terrain with heightmap observations
   ENV_IDX_BAG: 0
   N_ENVS: 1
+  PUB_HEIGHTMAP: 1
   REMOTE_STEPPING: 1
-  RNAME: TalosFlat
+  RNAME: TalosPerception
   SEED: 7383
   SHM_NS: talos
   TIMEOUT_MS: 300000
   TOT_STEPS: 15000000
-  TRAIN_ENV_CNAME: FakePosTrackingEnv
-  TRAIN_ENV_FNAME: fake_pos_tracking_env
+  TRAIN_ENV_CNAME: FakePosTrackEnvPhaseControl
+  TRAIN_ENV_FNAME: fake_pos_track_env_phase_control
 custom_args:
   robot_description:
     foot_collision:
@@ -56,8 +57,11 @@ custom_args:
   control:
     adaptive_is:
       dtype: bool
-      value: false
+      value: true
     closed_partial:
+      dtype: bool
+      value: true
+    fixed_flights:
       dtype: bool
       value: true
     fully_closed:
@@ -66,28 +70,50 @@ custom_args:
     estimate_v_root:
       dtype: bool
       value: false
+    lin_a_feedback:
+      dtype: bool
+      value: false
     use_jnt_v_feedback:
       dtype: bool
-      value: true
+      value: false
     step_height:
       dtype: float
-      value: 0.08
+      value: 0.1
     initial_force_load_divisor:
       dtype: float
       value: 1.12
   world_interface:
+    rendering_dt:
+      dtype: float
+      value: 0.1
     use_flat_ground:
       dtype: bool
-      value: true
+      value: false
     spawning_height:
       dtype: float
       value: 1.12
     ground_type:
       dtype: str
-      value: flat
+      value: stepup_prim
     use_random_pertub:
       dtype: bool
+      value: false
+  perception:
+    enable_height_sensor:
+      dtype: bool
       value: true
-    use_diff_vels:
+    height_sensor_pixels:
+      dtype: int
+      value: 10
+    height_sensor_resolution:
+      dtype: float
+      value: 0.16
+    enable_height_vis:
       dtype: bool
       value: false
+    height_sensor_forward_offset:
+      dtype: float
+      value: 0.0
+    height_sensor_lateral_offset:
+      dtype: float
+      value: 0.0
