@@ -83,6 +83,9 @@ custom_args:
       dtype: float
       value: 1.12
   world_interface:
+    base_linkname:
+      dtype: str
+      value: base_link
     rendering_dt:
       dtype: float
       value: 0.1

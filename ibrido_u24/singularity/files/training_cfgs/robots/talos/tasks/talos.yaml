@@ -76,6 +76,9 @@ custom_args:
       dtype: float
       value: 1.12
   world_interface:
+    base_linkname:
+      dtype: str
+      value: base_link
     use_flat_ground:
       dtype: bool
       value: true
