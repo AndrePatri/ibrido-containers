@@ -3,7 +3,7 @@ vars:
   ACTION_REPEAT: 3
   COMMENT: talos, one env, no remote stepping
   ENV_IDX_BAG: 0
-  N_ENVS: 1
+  N_ENVS: 800
   REMOTE_STEPPING: 1
   RNAME: TalosFlat
   SEED: 7383
@@ -76,6 +76,9 @@ custom_args:
       dtype: float
       value: 1.12
   world_interface:
+    base_linkname:
+      dtype: str
+      value: base_link
     use_flat_ground:
       dtype: bool
       value: true
