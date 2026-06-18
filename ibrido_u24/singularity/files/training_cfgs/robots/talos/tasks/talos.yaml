@@ -84,13 +84,13 @@ custom_args:
       value: true
     spawning_height:
       dtype: float
-      value: 1.12
+      value: 0.95
     ground_type:
       dtype: str
       value: flat
     use_random_pertub:
       dtype: bool
-      value: true
+      value: false
     use_diff_vels:
       dtype: bool
       value: false
