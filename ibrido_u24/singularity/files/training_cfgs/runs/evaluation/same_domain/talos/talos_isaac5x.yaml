@@ -1,0 +1,26 @@
+include:
+- ../../../../common/runtime_defaults.yaml
+- ../../../../common/algorithms/sac_default.yaml
+- ../../../../robots/talos/base.yaml
+- ../../../../robots/talos/control/talos.yaml
+- ../../../../robots/talos/tasks/talos.yaml
+- ../../../../robots/talos/backends/isaac5x.yaml
+vars:
+  EVAL: 1
+  RESUME: 0
+  DET_EVAL: 1
+  EVAL_ON_CPU: 1
+  OVERRIDE_ENV: 1
+  OVERRIDE_AGENT_REFS: 1
+  DEBUG: 0
+  RMDEBUG: 0
+  DUMP_ENV_CHECKPOINTS: 0
+  CLUSTER_DB: 0
+  PHYSICS_DT: 0.0001
+  EVAL_N_ENVS: 1
+  N_ENVS: ${EVAL_N_ENVS}
+  WORLD_HEADLESS: 1
+  EVAL_TOT_STEPS: 100000
+  MPATH: /root/training_data/d2026_06_18_h12_m11_s11-TalosFlat_FakePosTrackingEnv
+  MNAME: d2026_06_18_h12_m11_s11-TalosFlat_FakePosTrackingEnv_model_checkpoint1250
+  COMMENT_PREFIX: eval_same_domain_talos

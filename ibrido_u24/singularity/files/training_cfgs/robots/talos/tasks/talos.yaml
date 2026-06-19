@@ -94,3 +94,25 @@ custom_args:
     use_diff_vels:
       dtype: bool
       value: false
+  perception:
+    enable_height_sensor:
+      dtype: bool
+      value: false
+    add_heightmap_obs:
+      dtype: bool
+      value: false
+    height_sensor_pixels:
+      dtype: int
+      value: 10
+    height_sensor_resolution:
+      dtype: float
+      value: 0.16
+    enable_height_vis:
+      dtype: bool
+      value: false
+    height_sensor_forward_offset:
+      dtype: float
+      value: 0.0
+    height_sensor_lateral_offset:
+      dtype: float
+      value: 0.0
