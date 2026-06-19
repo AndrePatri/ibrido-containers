@@ -567,10 +567,16 @@ ibrido_build_training_cmd() {
 --expl_envs_perc $EXPL_ENVS_PERC \
 --action_repeat $ACTION_REPEAT \
 --compression_ratio $COMPRESSION_RATIO \
---discount_factor $DISCOUNT_FACTOR "
+--discount_factor $DISCOUNT_FACTOR \
+--custom_args_names $CUSTOM_ARGS_NAMES \
+--custom_args_dtype $CUSTOM_ARGS_DTYPE \
+--custom_args_vals $CUSTOM_ARGS_VALS "
 
     if ibrido_enabled "$DUMP_ENV_CHECKPOINTS"; then
         IBRIDO_TRAINING_CMD+="--dump_checkpoints "
+    fi
+    if ibrido_enabled "${STEP_WHILE_SETUP:-0}"; then
+        IBRIDO_TRAINING_CMD+="--step_while_setup "
     fi
     if ibrido_enabled "$USE_DUMMY"; then
         IBRIDO_TRAINING_CMD+="--dummy "

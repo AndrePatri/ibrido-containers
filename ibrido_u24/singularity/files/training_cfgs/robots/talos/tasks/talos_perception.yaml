@@ -120,3 +120,6 @@ custom_args:
     height_sensor_lateral_offset:
       dtype: float
       value: 0.0
+    add_heightmap_obs:
+      dtype: bool
+      value: true
