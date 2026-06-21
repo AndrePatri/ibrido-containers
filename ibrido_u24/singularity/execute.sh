@@ -14,26 +14,38 @@ usage() {
     exit 1
 }
 
-# Function to handle cleanup on exit
-cleanup() {
-    if [ -z "${training_script_pid:-}" ]; then
-        echo "execute.sh: No training PID recorded, nothing to clean up."
+# Forward the first Ctrl-C gracefully; later interrupts explicitly escalate.
+interrupt_count=0
+parent_pid=""
+
+handle_interrupt() {
+    if [ -z "$parent_pid" ] || ! kill -0 "$parent_pid" 2>/dev/null; then
         return
     fi
 
-    echo "execute.sh: Cleaning up and sending SIGINT to training process..."
-    # Send SIGINT to the process group to propagate to children; fall back to the PID
-    kill -SIGINT -"$training_script_pid" 2>/dev/null || kill -SIGINT "$training_script_pid" 2>/dev/null
-    # Loop until the process is no longer found in `ps` output
-    while ps -p "$training_script_pid" > /dev/null 2>&1; do
-        echo "execute.sh: training script still alive."
-        sleep 1  # Check every second
-    done
-    echo "execute.sh: training script exited."
+    interrupt_count=$((interrupt_count + 1))
+    if (( interrupt_count == 1 )); then
+        echo "execute.sh: requesting graceful shutdown; press Ctrl-C again to force it..."
+        kill -SIGINT "$parent_pid" 2>/dev/null || true
+    elif (( interrupt_count == 2 )); then
+        echo "execute.sh: forcing shutdown with SIGTERM..."
+        kill -SIGTERM -"$parent_pid" 2>/dev/null || kill -SIGTERM "$parent_pid" 2>/dev/null || true
+    else
+        echo "execute.sh: forcing shutdown with SIGKILL..."
+        kill -SIGKILL -"$parent_pid" 2>/dev/null || kill -SIGKILL "$parent_pid" 2>/dev/null || true
+    fi
 }
 
-# Trap and forward signals to singularity process for clean exit
-trap cleanup SIGINT SIGTERM
+handle_termination() {
+    if [ -n "$parent_pid" ] && kill -0 "$parent_pid" 2>/dev/null; then
+        interrupt_count=2
+        echo "execute.sh: received SIGTERM; forwarding it to the training process group..."
+        kill -SIGTERM -"$parent_pid" 2>/dev/null || kill -SIGTERM "$parent_pid" 2>/dev/null || true
+    fi
+}
+
+trap handle_interrupt SIGINT
+trap handle_termination SIGTERM
 
 use_sudo=false # whether to use superuser privileges
 wandb_key_default="${WANDB_KEY:-${WANDB_API_KEY:-}}" # Use the existing WANDB_KEY/WANDB_API_KEY by default
@@ -136,12 +148,12 @@ singularity_cmd="singularity exec \
 # Run the singularity command and get its PID
 # Launch the training inside its own session so we can signal the whole group
 if $use_sudo; then
-    sudo setsid bash -c "$singularity_cmd" &
+    setsid sudo bash -c "exec $singularity_cmd" &
 else
-    setsid bash -c "$singularity_cmd" &
+    setsid bash -c "exec $singularity_cmd" &
 fi
 
-# Capture the PID of the sudo or bash process
+# This PID is also the process-group ID because setsid starts a new session.
 parent_pid=$!
 
 if (( dry_run )); then
@@ -149,18 +161,12 @@ if (( dry_run )); then
     exit $?
 fi
 
-# Use pgrep to find the actual singularity process ID associated with the command
-# Give it a second to start to ensure the process is up and running
-sleep 3
-training_script_pid=$(pgrep -f "$training_cmd" | head -n 1)
+echo "execute.sh: Training process-group leader PID: $parent_pid"
+training_status=0
+while kill -0 "$parent_pid" 2>/dev/null; do
+    wait "$parent_pid"
+    training_status=$?
+done
 
-# Check if the singularity PID was found and print it for debugging or logging
-if [ -n "$training_script_pid" ]; then
-    echo "execute.sh: Training process PID: $training_script_pid"
-else
-    # Fallback to the parent pid so cleanup still works
-    training_script_pid=$parent_pid
-    echo "execute.sh: Failed to locate training process PID, falling back to parent pid ${parent_pid}."
-fi
-
-wait "$parent_pid"
+trap - SIGINT SIGTERM
+exit "$training_status"

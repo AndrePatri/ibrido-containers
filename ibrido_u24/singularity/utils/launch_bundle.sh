@@ -7,6 +7,9 @@ source "${UTILS_DIR}/ibrido_command_builder.sh"
 
 child_pids=()
 cleanup_started=0
+cleanup_completed=0
+shutdown_stage=0
+primary_pid=""
 
 signal_process_tree() {
     local signal="$1"
@@ -27,60 +30,73 @@ signal_process_tree() {
     done
 }
 
-wait_for_children_exit() {
-    local timeout_s="$1"
-    local elapsed_s=0
-    local child_pid any_alive
+wait_for_pid() {
+    local pid="$1"
+    local status=0
 
-    while (( elapsed_s < timeout_s )); do
-        any_alive=0
-        for child_pid in "${child_pids[@]}"; do
-            if kill -0 "$child_pid" 2>/dev/null; then
-                any_alive=1
-                break
-            fi
-        done
-        if (( ! any_alive )); then
-            return 0
-        fi
-        sleep 1
-        elapsed_s=$((elapsed_s + 1))
+    while kill -0 "$pid" 2>/dev/null; do
+        wait "$pid" 2>/dev/null
+        status=$?
     done
 
-    return 1
+    return "$status"
+}
+
+wait_for_children() {
+    local child_pid
+    for child_pid in "${child_pids[@]}"; do
+        wait_for_pid "$child_pid" || true
+    done
+}
+
+force_shutdown() {
+    if (( shutdown_stage < 2 )); then
+        shutdown_stage=2
+        echo "launch_bundle.sh: forcing shutdown with SIGTERM..."
+        signal_process_tree TERM "${child_pids[@]}"
+    else
+        shutdown_stage=3
+        echo "launch_bundle.sh: forcing shutdown with SIGKILL..."
+        signal_process_tree KILL "${child_pids[@]}"
+    fi
+}
+
+request_shutdown() {
+    if (( shutdown_stage == 0 )); then
+        shutdown_stage=1
+        if [ -n "$primary_pid" ] && kill -0 "$primary_pid" 2>/dev/null; then
+            echo "launch_bundle.sh: requesting graceful evaluation shutdown; press Ctrl-C again to force it..."
+            signal_process_tree INT "$primary_pid"
+        else
+            echo "launch_bundle.sh: requesting graceful shutdown; press Ctrl-C again to force it..."
+            signal_process_tree INT "${child_pids[@]}"
+        fi
+    else
+        force_shutdown
+    fi
 }
 
 cleanup() {
-    if (( cleanup_started )); then
-        return
-    fi
-    cleanup_started=1
-
-    if ((${#child_pids[@]} == 0)); then
+    if (( cleanup_completed )); then
         return
     fi
 
-    echo "launch_bundle.sh: sending SIGINT to all child processes..."
-    signal_process_tree INT "${child_pids[@]}"
-    if ! wait_for_children_exit 8; then
-        echo "launch_bundle.sh: children still alive, sending SIGTERM..."
-        signal_process_tree TERM "${child_pids[@]}"
-    fi
-    if ! wait_for_children_exit 8; then
-        echo "launch_bundle.sh: children still alive, sending SIGKILL..."
-        signal_process_tree KILL "${child_pids[@]}"
+    if (( ! cleanup_started )); then
+        cleanup_started=1
+        echo "launch_bundle.sh: evaluation stopped; sending SIGINT to remaining child processes..."
+        signal_process_tree INT "${child_pids[@]}"
     fi
 
     echo "launch_bundle.sh: waiting for child processes to exit..."
-    for child_pid in "${child_pids[@]}"; do
-        wait "$child_pid" 2>/dev/null
-    done
+    wait_for_children
 
+    cleanup_completed=1
     echo "launch_bundle.sh: all child processes have exited."
 }
 
 trap cleanup EXIT
-trap 'cleanup; exit 130' INT TERM
+trap request_shutdown INT
+trap force_shutdown TERM
 
 usage() {
     echo "Usage: $0
@@ -579,9 +595,10 @@ child_pids+=("$cluster_pid")
     exec python "$LRHC_DIR/launch_train_env.py" $eval_env_cmd --comment "\"$COMMENT\""
 ) > "$log_eval" 2>&1 &
 eval_env_pid=$!
+primary_pid=$eval_env_pid
 child_pids+=("$eval_env_pid")
 
-wait "$eval_env_pid"
+wait_for_pid "$eval_env_pid"
 eval_env_status=$?
 cleanup
 trap - EXIT INT TERM
