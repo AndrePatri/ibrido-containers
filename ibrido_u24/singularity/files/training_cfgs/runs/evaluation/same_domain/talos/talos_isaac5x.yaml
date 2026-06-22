@@ -21,6 +21,8 @@ vars:
   N_ENVS: ${EVAL_N_ENVS}
   WORLD_HEADLESS: 1
   EVAL_TOT_STEPS: 100000
-  MPATH: /root/training_data/d2026_06_18_h12_m11_s11-TalosFlat_FakePosTrackingEnv
-  MNAME: d2026_06_18_h12_m11_s11-TalosFlat_FakePosTrackingEnv_model_checkpoint1250
+  TRAIN_ENV_CNAME: 
+  TRAIN_ENV_FNAME: 
+  MPATH: 
+  MNAME: 
   COMMENT_PREFIX: eval_same_domain_talos
