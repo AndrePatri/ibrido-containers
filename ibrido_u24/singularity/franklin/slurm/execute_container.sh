@@ -18,4 +18,4 @@ export SCHED_JOBID="${SLURM_JOB_ID:-$PBS_JOBID}"
 RUN_TOKEN="run_$(date +%Y%m%d_%H%M%S)_${SCHED_JOBID}"
 
 $IBRIDO_CONTAINERS_PREFIX/franklin/slurm/prescia_script.sh "$1" "$RUN_TOKEN" &
-$IBRIDO_CONTAINERS_PREFIX/execute.sh --cfg "$1" --run_token "$RUN_TOKEN"
+$IBRIDO_CONTAINERS_PREFIX/execute.sh --cfg "$1" --run_token "$RUN_TOKEN" --wdb_key $WANDB_KEY
