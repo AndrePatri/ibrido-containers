@@ -1,17 +1,17 @@
 vars:
   ROBOT_VARIANT: talos
   ACTION_REPEAT: 3
-  COMMENT: talos, one env, no remote stepping
-  ENV_IDX_BAG: 0
+  COMMENT: talos, new mpc/imp config, 0.1ms dt, pert, no yaw rate tracking, entropy annheal, flight phase control
+  ENV_IDX_BAG: 334
   N_ENVS: 800
   REMOTE_STEPPING: 1
   RNAME: TalosFlat
-  SEED: 7383
+  SEED: 46538
   SHM_NS: talos
-  TIMEOUT_MS: 300000
-  TOT_STEPS: 15000000
-  TRAIN_ENV_CNAME: FakePosTrackingEnv
-  TRAIN_ENV_FNAME: fake_pos_tracking_env
+  TIMEOUT_MS: 480000
+  TOT_STEPS: 25000000
+  TRAIN_ENV_CNAME: FakePosTrackEnvPhaseControl
+  TRAIN_ENV_FNAME: fake_pos_track_env_phase_control
 custom_args:
   robot_description:
     foot_collision:
@@ -90,7 +90,7 @@ custom_args:
       value: flat
     use_random_pertub:
       dtype: bool
-      value: false
+      value: true
     use_diff_vels:
       dtype: bool
       value: false

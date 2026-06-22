@@ -2,15 +2,15 @@ vars:
   ROBOT_VARIANT: talos_perception
   ACTION_REPEAT: 3
   COMMENT: talos closed-loop partial on non-flat terrain with heightmap observations
-  ENV_IDX_BAG: 0
-  N_ENVS: 1
+  ENV_IDX_BAG: 56
+  N_ENVS: 800
   PUB_HEIGHTMAP: 1
   REMOTE_STEPPING: 1
   RNAME: TalosPerception
   SEED: 7383
   SHM_NS: talos
   TIMEOUT_MS: 300000
-  TOT_STEPS: 15000000
+  TOT_STEPS: 20000000
   TRAIN_ENV_CNAME: FakePosTrackEnvPhaseControl
   TRAIN_ENV_FNAME: fake_pos_track_env_phase_control
 custom_args:
