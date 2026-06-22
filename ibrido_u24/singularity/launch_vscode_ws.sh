@@ -204,7 +204,7 @@ if $use_sudo; then
         --bind "$binddirs" \
         --no-mount home,cwd \
         --pwd /root \
-        --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif" \
+        --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido.sif" \
         bash -lc "$container_cmd" bash "${tunnel_args[@]}"
 else
     cd /
@@ -212,6 +212,6 @@ else
         --bind "$binddirs" \
         --no-mount home,cwd \
         --pwd /root \
-        --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif" \
+        --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido.sif" \
         bash -lc "$container_cmd" bash "${tunnel_args[@]}"
 fi

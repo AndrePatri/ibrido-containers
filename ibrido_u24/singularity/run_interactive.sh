@@ -50,7 +50,7 @@ if $use_sudo; then
         --bind $binddirs\
         --no-mount home,cwd \
         --pwd /root \
-        --nv ibrido_isaac.sif bash
+        --nv ibrido.sif bash
 else
     singularity exec \
         --env "WANDB_KEY=$wandb_key"\
@@ -61,5 +61,5 @@ else
         --bind $binddirs\
         --no-mount home,cwd \
         --pwd /root \
-        --nv ibrido_isaac.sif bash
+        --nv ibrido.sif bash
 fi
