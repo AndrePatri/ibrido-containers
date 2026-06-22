@@ -65,6 +65,7 @@ IBRIDO_BDIRS=(
     "${IBRIDO_PREFIX}/conda_hidden/.conda:/root/.conda:rw"
     "${IBRIDO_PREFIX}/.cache/conda:/root/.cache/conda:rw"
     "${IBRIDO_PREFIX}/.cache/wandb:/root/.cache/wandb:rw"
+    "${IBRIDO_PREFIX}/.cache/quadrants:/root/.cache/quadrants:rw"
     "${IBRIDO_PREFIX}/.byobu:/root/.byobu:rw"
     "${IBRIDO_PREFIX}/.xbot:/root/.xbot:rw"
     "${IBRIDO_PREFIX}/.ros:/root/.ros:rw"
@@ -124,6 +125,7 @@ IBRIDO_GITDIRS=(
     "git@github.com:AndrePatri/xbot2_mujoco.git*ibrido"
     "git@github.com:AndrePatri/mujoco_cmake.git*ibrido"
     "git@github.com:google/googletest.git*main"
+    "git@github.com:AndrePatri/genesis-world.git*main"
 )
 
 IBRIDO_PRIV_GITDIRS=(

@@ -267,6 +267,9 @@ pip_install_if_present TalosHybridMPC
 pip install -e MPCViz
 pip install -e adarl
 pip install --no-deps -e horizon
+
+pip install -e "./genesys-world[dev]"
+
 micromamba install -y clang
 
 source /root/.bashrc

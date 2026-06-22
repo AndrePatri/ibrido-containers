@@ -500,6 +500,12 @@ case "$world_iface_fname" in
         world_use_gpu="${USE_GPU_SIM:-1}"
         world_env_profile="isaac5x"
         ;;
+    *genesis_world_interface*)
+        world_headless="${GENESIS_HEADLESS:-0}"
+        world_use_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-1}"
+        world_use_gpu="${USE_GPU_SIM:-1}"
+        world_env_profile="genesis"
+        ;;
     *)
         echo "launch_bundle.sh: unsupported WORLD_INTERFACE: $world_iface_fname"
         exit 1

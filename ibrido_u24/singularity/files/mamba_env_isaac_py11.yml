@@ -36,7 +36,7 @@ dependencies:
   - pip:
     - pyzmq
     - pyyaml
-    - xacro
+    - "xacro @ git+https://github.com/c-rizz/xacro_standalone@extra_find_pkg_path"
     - flit
     - h5py
     - protobuf

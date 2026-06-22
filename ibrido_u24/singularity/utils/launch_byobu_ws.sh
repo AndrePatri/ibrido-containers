@@ -236,6 +236,11 @@ prepare_primary_run_metadata() {
             metadata_world_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-1}"
             metadata_world_use_gpu="${USE_GPU_SIM:-1}"
             ;;
+        *genesis_world_interface*)
+            metadata_world_headless="${GENESIS_HEADLESS:-0}"
+            metadata_world_custom_jnt_imp="${WORLD_USE_CUSTOM_JNT_IMP:-1}"
+            metadata_world_use_gpu="${USE_GPU_SIM:-1}"
+            ;;
         *)
             echo "launch_byobu_ws.sh: unsupported WORLD_INTERFACE: $metadata_world_iface"
             exit 1
@@ -638,6 +643,28 @@ add_isaac5x_tab() {
     go_to_pane 0
     setup_isaac_env_pane
     build_world_cmd "aug_mpc_envs.world_interfaces.isaac5x_world_interface" "$N_ENVS" 1 1 "$USE_GPU_SIM"
+    prepare_command "reset && python launch_world_interface.py $world_cmd"
+
+    go_to_pane 1
+    prepare_cluster_pane "$N_ENVS"
+
+    go_to_pane 2
+    prepare_training_pane
+}
+
+add_genesis_tab() {
+    if ! selected_world_interface_matches "genesis_world_interface"; then
+        prepare_disabled_backend_tab "genesis" "Use a genesis run profile for this tab."
+        return
+    fi
+
+    create_execution_layout
+
+    go_to_pane 0
+    # Genesis runs in the base mamba env (not the isaac-sim env), like the xmj backend
+    setup_main_env_pane "${WORKING_DIR}" \
+        "source ${WS_ROOT}/setup.bash"
+    build_world_cmd "aug_mpc_envs.world_interfaces.genesis_world_interface" "$N_ENVS" "${GENESIS_HEADLESS:-0}" 1 "$USE_GPU_SIM"
     prepare_command "reset && python launch_world_interface.py $world_cmd"
 
     go_to_pane 1
@@ -1159,6 +1186,9 @@ byobu kill-session -t "${BYOBU_WS_NAME}" 2>/dev/null || true
 byobu new-session -d -s "${BYOBU_WS_NAME}" -c "${WORKING_DIR}" -n isaac5x
 
 add_isaac5x_tab
+
+new_tab genesis
+add_genesis_tab
 
 new_tab rt_deployment
 add_rt_deployment_tab
