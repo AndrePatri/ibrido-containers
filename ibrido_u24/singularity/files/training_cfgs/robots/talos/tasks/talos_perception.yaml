@@ -92,6 +92,34 @@ custom_args:
     ground_type:
       dtype: str
       value: stepup_prim
+    # stepup_prim terrain args (isaac5x defaults)
+    step_n:
+      dtype: int
+      value: 3
+    step_height_lb:
+      dtype: float
+      value: 0.08
+    step_height_ub:
+      dtype: float
+      value: 0.15
+    step_width_lb:
+      dtype: float
+      value: 1.5
+    step_width_ub:
+      dtype: float
+      value: 5.0
+    step_stairs_ratio:
+      dtype: float
+      value: 0.9
+    step_platform_size:
+      dtype: float
+      value: 50.0
+    step_area_factor:
+      dtype: float
+      value: 0.8
+    step_random_n_steps:
+      dtype: bool
+      value: false
     use_random_pertub:
       dtype: bool
       value: false
