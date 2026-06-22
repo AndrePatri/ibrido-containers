@@ -50,11 +50,11 @@ if $build_container; then
     if $use_sudo; then
         sudo singularity registry login --username \$oauthtoken --password "$ngc_key" docker://nvcr.io
         echo '--> Starting building of IBRIDO singularity container (sudo)...'
-        sudo singularity build "$IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif" "$IBRIDO_CONTAINERS_PREFIX/u24_isaac.def"
+        sudo singularity build "$IBRIDO_CONTAINERS_PREFIX/ibrido.sif" "$IBRIDO_CONTAINERS_PREFIX/u24_isaac.def"
     else
         singularity registry login --username \$oauthtoken --password "$ngc_key" docker://nvcr.io
         echo '--> Starting building of IBRIDO singularity container (fakeroot)...'
-        singularity build --fakeroot "$IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif" "$IBRIDO_CONTAINERS_PREFIX/u24_isaac.def"
+        singularity build --fakeroot "$IBRIDO_CONTAINERS_PREFIX/ibrido.sif" "$IBRIDO_CONTAINERS_PREFIX/u24_isaac.def"
     fi
     echo 'container was built.'
 fi
@@ -81,6 +81,6 @@ if $do_setup; then
         --bind "$binddirs" \
         --no-mount home,cwd \
         --pwd /root \
-        --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif" post_build_setup.sh
+        --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido.sif" post_build_setup.sh
     echo 'Done. You can now either launch the container with run_interactive.sh or start the training with execute.sh'
 fi

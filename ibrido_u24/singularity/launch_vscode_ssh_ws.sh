@@ -295,7 +295,7 @@ if [ "$check_only" = true ]; then
             --bind "$binddirs" \
             --no-mount home,cwd \
             --pwd /root \
-            --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif" \
+            --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido.sif" \
             bash -lc "/usr/sbin/sshd -t -f /root/.ssh/sshd_config"
     else
         cd /
@@ -303,7 +303,7 @@ if [ "$check_only" = true ]; then
             --bind "$binddirs" \
             --no-mount home,cwd \
             --pwd /root \
-            --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif" \
+            --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido.sif" \
             bash -lc "/usr/sbin/sshd -t -f /root/.ssh/sshd_config"
     fi
     echo "Container sshd configuration is valid."
@@ -382,7 +382,7 @@ if [ "$foreground" = true ]; then
             --bind "$binddirs" \
             --no-mount home,cwd \
             --pwd /root \
-            --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif" \
+            --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido.sif" \
             bash -lc "$container_cmd" 2>&1 | tee "$log_file"
     else
         cd /
@@ -390,7 +390,7 @@ if [ "$foreground" = true ]; then
             --bind "$binddirs" \
             --no-mount home,cwd \
             --pwd /root \
-            --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif" \
+            --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido.sif" \
             bash -lc "$container_cmd" 2>&1 | tee "$log_file"
     fi
     exit $?
@@ -402,7 +402,7 @@ fi
             --bind "$binddirs" \
             --no-mount home,cwd \
             --pwd /root \
-            --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif" \
+            --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido.sif" \
             bash -lc "$container_cmd" >"$log_file" 2>&1 &
     else
         cd /
@@ -410,7 +410,7 @@ fi
             --bind "$binddirs" \
             --no-mount home,cwd \
             --pwd /root \
-            --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif" \
+            --nv "$IBRIDO_CONTAINERS_PREFIX/ibrido.sif" \
             bash -lc "$container_cmd" >"$log_file" 2>&1 &
     fi
 

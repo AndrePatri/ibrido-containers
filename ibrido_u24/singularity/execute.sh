@@ -142,7 +142,7 @@ singularity_cmd="singularity exec \
     --bind $binddirs\
     --no-mount home,cwd \
     --pwd /root \
-    --nv $IBRIDO_CONTAINERS_PREFIX/ibrido_isaac.sif $training_cmd \
+    --nv $IBRIDO_CONTAINERS_PREFIX/ibrido.sif $training_cmd \
     "
 
 # Run the singularity command and get its PID
