@@ -268,7 +268,7 @@ pip install -e MPCViz
 pip install -e adarl
 pip install --no-deps -e horizon
 
-pip install -e "./genesys-world[dev]"
+pip install -e genesis-world[dev]
 
 micromamba install -y clang
 
