@@ -10,11 +10,15 @@ name: ibrido_genesis
 # ${HOME}/ibrido_ws/install/lib/python3.12/site-packages (added via the runtime hook) is importable.
 
 channels:
-  # genesis uses pip torch (no conda pytorch/nvidia), no ROS (no robostack), and no pinocchio,
-  # so it only needs conda-forge (+ defaults for the py3.12 pyside2). Fewer channels => less
-  # repodata to fetch and a faster solve.
-  - conda-forge
+  # Same channel set as the base env: some deps (e.g. eigen3) are not on conda-forge under that
+  # name, so the full set is required to resolve. Repodata for these is already cached by the base
+  # env build, so this adds little time vs. a trimmed set.
   - defaults
+  - pytorch
+  - nvidia
+  - conda-forge
+  - omnia
+  - robostack-staging
 
 dependencies:
   - python=3.12
