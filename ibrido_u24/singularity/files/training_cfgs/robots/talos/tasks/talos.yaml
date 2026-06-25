@@ -79,21 +79,36 @@ custom_args:
     base_linkname:
       dtype: str
       value: base_link
-    use_flat_ground:
-      dtype: bool
-      value: true
     spawning_height:
       dtype: float
       value: 0.95
-    ground_type:
-      dtype: str
-      value: flat
     use_random_pertub:
       dtype: bool
       value: true
     use_diff_vels:
       dtype: bool
       value: false
+    use_flat_ground:
+      dtype: bool
+      value: true
+    ground_type:
+      dtype: str
+      value: random_patches # random, random_patches, stepup, stepup_prim, 
+    dh_ground:
+      dtype: float
+      value: 0.05
+    static_friction:
+      dtype: float
+      value: 0.5
+    dynamic_friction:
+      dtype: float
+      value: 0.5
+    restitution:
+      dtype: float
+      value: 0.01
+    ground_size:
+      dtype: float
+      value: 50.0
   perception:
     enable_height_sensor:
       dtype: bool

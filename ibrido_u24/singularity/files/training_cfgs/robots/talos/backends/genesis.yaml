@@ -2,4 +2,4 @@ vars:
   WORLD_INTERFACE: aug_mpc_envs.world_interfaces.genesis_world_interface
   TIME_SOURCE: sim
   USE_GPU_SIM: 1
-  PHYSICS_DT: 0.0005
+  PHYSICS_DT: 0.0001
