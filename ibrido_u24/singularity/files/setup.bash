@@ -33,6 +33,6 @@ _ibrido_prepend_path PKG_CONFIG_PATH "${HOME}/ibrido_ws/install/lib/pkgconfig"
 unset -f _ibrido_prepend_path
 
 ibrido_kill_ws() {
-    local session_name="${IBRIDO_BYOBU_WS_NAME:-${BYOBU_WS_NAME:-ibrido_isaac_5x}}"
+    local session_name="${1:-${IBRIDO_BYOBU_WS_NAME:-${BYOBU_WS_NAME:-ibrido_isaac_5x}}}"
     byobu kill-session -t "${session_name}"
 }

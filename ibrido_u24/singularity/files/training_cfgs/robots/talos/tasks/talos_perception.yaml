@@ -89,10 +89,27 @@ custom_args:
     spawning_height:
       dtype: float
       value: 1.12
+    spawn_height_check_half_extent:
+      dtype: float
+      value: 0.45
+    spawn_height_cushion:
+      dtype: float
+      value: 0.06
+    static_friction:
+      dtype: float
+      value: 0.5
+    dynamic_friction:
+      dtype: float
+      value: 0.5
     ground_type:
       dtype: str
-      value: stepup_prim
-    # stepup_prim terrain args (isaac5x defaults)
+      value: random_tiles # random, random_patches, stepup, stepup_prim,
+    ground_size:
+      dtype: float
+      value: 800.0
+    dh_ground:
+      dtype: float
+      value: 0.05
     step_n:
       dtype: int
       value: 3

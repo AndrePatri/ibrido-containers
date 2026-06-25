@@ -4,6 +4,7 @@ usage() {
   echo "Usage: $0
     --cfg CFG \
     [--set VAR=VALUE] \
+    [--session-name NAME] \
     [--dry-run] \
     "
   exit 1
@@ -39,10 +40,13 @@ source "${UTILS_DIR}/ibrido_command_builder.sh"
 
 MAMBAENVNAME="${MAMBA_ENV_NAME}"
 MAMBAENVNAME_ISAAC="${MAMBA_ENV_NAME_ISAAC}"
+# fallback so the genesis tab works on images built before the genesis env var was added to the .def
+MAMBAENVNAME_GENESIS="${MAMBA_ENV_NAME_GENESIS:-ibrido_genesis}"
 
 cfg_file_basepath="${IBRIDO_CFG_BASEPATH:-$HOME/ibrido_files/training_cfgs}"
 config_file=""
 dry_run=0
+session_name_override=""
 cfg_overrides=()
 
 custom_arg_value() {
@@ -180,6 +184,22 @@ setup_main_env_pane() {
 
 setup_isaac_env_pane() {
     execute_command "export IBRIDO_BYOBU_WS_NAME=\"${IBRIDO_BYOBU_WS_NAME}\"; export BYOBU_WS_NAME=\"${BYOBU_WS_NAME}\"; export PATH=\"${BYOBU_CONFIG_DIR}/bin:\${PATH}\"; cd ${WORKING_DIR}; eval \"\$(micromamba shell hook --shell bash)\"; micromamba activate ${MAMBAENVNAME_ISAAC}; source /isaac-sim/setup_conda_env.sh; source ${WS_ROOT}/setup.bash; export EXP_PATH=/isaac-sim/apps; ulimit -n ${N_FILES}"
+}
+
+# Same as setup_main_env_pane but activates the isolated genesis env (numpy>=2, no pinocchio).
+# Used only for the genesis world-interface pane; the cluster/training panes stay on the base env.
+setup_genesis_env_pane() {
+    local workdir="$1"
+    local setup_cmd
+    local extra_cmd
+    shift
+
+    setup_cmd="export IBRIDO_BYOBU_WS_NAME=\"${IBRIDO_BYOBU_WS_NAME}\"; export BYOBU_WS_NAME=\"${BYOBU_WS_NAME}\"; export PATH=\"${BYOBU_CONFIG_DIR}/bin:\${PATH}\"; cd ${workdir}; eval \"\$(micromamba shell hook --shell bash)\"; micromamba activate ${MAMBAENVNAME_GENESIS}"
+    for extra_cmd in "$@"; do
+        setup_cmd+="; $extra_cmd"
+    done
+    setup_cmd+="; ulimit -n ${N_FILES}"
+    execute_command "$setup_cmd"
 }
 
 build_world_cmd() {
@@ -661,8 +681,9 @@ add_genesis_tab() {
     create_execution_layout
 
     go_to_pane 0
-    # Genesis runs in the base mamba env (not the isaac-sim env), like the xmj backend
-    setup_main_env_pane "${WORKING_DIR}" \
+    # Genesis runs in its own isolated mamba env (numpy>=2, no pinocchio); the cluster/training panes
+    # below stay on the base env (pinocchio 2.*). The two sides talk over EigenIPC shared memory.
+    setup_genesis_env_pane "${WORKING_DIR}" \
         "source ${WS_ROOT}/setup.bash"
     build_world_cmd "aug_mpc_envs.world_interfaces.genesis_world_interface" "$N_ENVS" "${GENESIS_HEADLESS:-0}" 1 "$USE_GPU_SIM"
     prepare_command "reset && python launch_world_interface.py $world_cmd"
@@ -1144,6 +1165,7 @@ while [[ "$#" -gt 0 ]]; do
       shift
       ;;
     --set) cfg_overrides+=("$2"); shift ;;
+    --session-name|--ws-name|--byobu-session) session_name_override="$2"; shift ;;
     --dry-run) dry_run=1 ;;
     *) echo "Unknown parameter passed: $1"; usage ;;
   esac
@@ -1171,6 +1193,14 @@ for cfg_override in "${cfg_overrides[@]}"; do
   fi
   export "$cfg_override"
 done
+
+if [ -n "$session_name_override" ]; then
+    export IBRIDO_BYOBU_WS_NAME="$session_name_override"
+    export BYOBU_WS_NAME="$session_name_override"
+else
+    export IBRIDO_BYOBU_WS_NAME="${IBRIDO_BYOBU_WS_NAME:-${BYOBU_WS_NAME:-ibrido_isaac_5x}}"
+    export BYOBU_WS_NAME="${BYOBU_WS_NAME:-$IBRIDO_BYOBU_WS_NAME}"
+fi
 
 ibrido_normalize_runtime_config || exit 1
 ibrido_validate_runtime_config || exit 1

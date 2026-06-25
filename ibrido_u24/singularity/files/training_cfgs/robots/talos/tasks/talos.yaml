@@ -93,10 +93,20 @@ custom_args:
       value: true
     ground_type:
       dtype: str
-      value: random_patches # random, random_patches, stepup, stepup_prim, 
+      value: random_tiles # random, random_patches, stepup, stepup_prim,
     dh_ground:
       dtype: float
       value: 0.05
+    # per-env spawn height on non-flat terrain: each env is raised by
+    # (max terrain height under a +-half_extent window) + cushion. For random_tiles, half_extent
+    # must cover the feet (>= ~tile_cell_size + foot reach) or a foot lands on a taller box than the
+    # base saw -> penetration -> the robot topples. cushion is the extra clearance on top.
+    spawn_height_check_half_extent:
+      dtype: float
+      value: 0.45
+    spawn_height_cushion:
+      dtype: float
+      value: 0.06
     static_friction:
       dtype: float
       value: 0.5
@@ -108,7 +118,7 @@ custom_args:
       value: 0.01
     ground_size:
       dtype: float
-      value: 50.0
+      value: 800.0
   perception:
     enable_height_sensor:
       dtype: bool

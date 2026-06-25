@@ -496,6 +496,28 @@ ibrido_build_world_cmd() {
                 custom_args_vals+=" ${xbot_config_template_abs}"
             fi
             ;;
+        *genesis_world_interface*)
+            if [ -n "${GENESIS_RENDER_ENV_IDX:-}" ] && [[ " ${custom_args_names} " != *" genesis_render_env_idx "* ]]; then
+                custom_args_names+=" genesis_render_env_idx"
+                custom_args_dtype+=" int"
+                custom_args_vals+=" ${GENESIS_RENDER_ENV_IDX}"
+            fi
+            if [ -n "${GENESIS_RENDER_ENV_KEYBOARD:-}" ] && [[ " ${custom_args_names} " != *" genesis_render_env_keyboard "* ]]; then
+                custom_args_names+=" genesis_render_env_keyboard"
+                custom_args_dtype+=" bool"
+                custom_args_vals+=" ${GENESIS_RENDER_ENV_KEYBOARD}"
+            fi
+            if [ -n "${GENESIS_ENABLE_CAMERA_RENDERING:-}" ] && [[ " ${custom_args_names} " != *" genesis_enable_camera_rendering "* ]]; then
+                custom_args_names+=" genesis_enable_camera_rendering"
+                custom_args_dtype+=" bool"
+                custom_args_vals+=" ${GENESIS_ENABLE_CAMERA_RENDERING}"
+            fi
+            if [ -n "${GENESIS_USE_BATCH_RENDERER:-}" ] && [[ " ${custom_args_names} " != *" genesis_use_batch_renderer "* ]]; then
+                custom_args_names+=" genesis_use_batch_renderer"
+                custom_args_dtype+=" bool"
+                custom_args_vals+=" ${GENESIS_USE_BATCH_RENDERER}"
+            fi
+            ;;
     esac
 
     IBRIDO_WORLD_INTERFACE="$world_iface_fname"

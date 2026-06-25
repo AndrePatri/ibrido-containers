@@ -1,12 +1,31 @@
 #!/bin/bash
 set -e # exiting if any cmd fails
 
-echo "Activating micromamba and creating ${MAMBA_ENV_NAME} environment..."
-
 source /root/ibrido_utils/mamba_utils/bin/_activate_current_env.sh # enable mamba for this shell
 
-micromamba env create -y --log-level error -f ${MAMBA_ENV_FPATH}
+# fallbacks so this works on images built before the genesis env vars were added to the .def
+# (the ymls are bind-mounted from files/, so they are current without a full .sif rebuild).
+MAMBA_ENV_NAME="${MAMBA_ENV_NAME:-ibrido}"
+MAMBA_ENV_NAME_ISAAC="${MAMBA_ENV_NAME_ISAAC:-ibrido_isaac_py11}"
+MAMBA_ENV_NAME_GENESIS="${MAMBA_ENV_NAME_GENESIS:-ibrido_genesis}"
+MAMBA_ENV_FPATH="${MAMBA_ENV_FPATH:-${HOME}/ibrido_files/mamba_env.yml}"
+MAMBA_ENV_FPATH_ISAAC="${MAMBA_ENV_FPATH_ISAAC:-${HOME}/ibrido_files/mamba_env_isaac_py11.yml}"
+MAMBA_ENV_FPATH_GENESIS="${MAMBA_ENV_FPATH_GENESIS:-${HOME}/ibrido_files/mamba_env_genesis.yml}"
 
-echo "Activating micromamba and creating auxiliary ${MAMBA_ENV_FPATH_ISAAC} environment..."
+# Re-create envs idempotently: remove only the env dir (envs/<name>) and recreate. This NEVER
+# touches the package cache (${MAMBA_ROOT_PREFIX}/pkgs), so re-setups reuse already-downloaded
+# packages/repodata instead of re-downloading everything, and a partial/previous setup does not
+# abort the run with "environment already exists".
+recreate_env() {
+    local env_name="$1"
+    local env_fpath="$2"
+    echo "Re-creating ${env_name} environment from ${env_fpath} (package cache preserved)..."
+    micromamba env remove -y -n "${env_name}" >/dev/null 2>&1 || true
+    # default log level (no --log-level error) so the solve + download/extract progress is visible
+    # instead of going silent during the long solve.
+    micromamba env create -y -f "${env_fpath}"
+}
 
-micromamba env create -y --log-level error -f ${MAMBA_ENV_FPATH_ISAAC}
+recreate_env "${MAMBA_ENV_NAME}"         "${MAMBA_ENV_FPATH}"
+recreate_env "${MAMBA_ENV_NAME_ISAAC}"   "${MAMBA_ENV_FPATH_ISAAC}"
+recreate_env "${MAMBA_ENV_NAME_GENESIS}" "${MAMBA_ENV_FPATH_GENESIS}"

@@ -577,6 +577,13 @@ if [ "$world_env_profile" = "isaac5x" ]; then
         export EXP_PATH="/isaac-sim/apps"
         exec python "$LRHC_DIR/launch_world_interface.py" $remote_env_cmd
     ) > "$log_world" 2>&1 &
+elif [ "$world_env_profile" = "genesis" ]; then
+    # genesis world interface runs in its own numpy>=2 env (no pinocchio); cluster/training stay on base.
+    (
+        micromamba activate "${MAMBA_ENV_NAME_GENESIS:-ibrido_genesis}"
+        source "$HOME/ibrido_ws/setup.bash" || exit 1
+        exec python "$LRHC_DIR/launch_world_interface.py" $remote_env_cmd
+    ) > "$log_world" 2>&1 &
 else
     (
         micromamba activate "${MAMBA_ENV_NAME:-ibrido}"

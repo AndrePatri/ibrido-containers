@@ -172,6 +172,9 @@ source /root/ibrido_utils/mamba_utils/bin/_activate_current_env.sh # enable mamb
 
 install_mamba_runtime_hook "$MAMBA_ENV_NAME"
 install_mamba_runtime_hook "$MAMBA_ENV_NAME_ISAAC"
+# fallback so this works on images built before the genesis env vars were added to the .def
+MAMBA_ENV_NAME_GENESIS="${MAMBA_ENV_NAME_GENESIS:-ibrido_genesis}"
+install_mamba_runtime_hook "$MAMBA_ENV_NAME_GENESIS"
 
 # due to Isaac 5.1 only supporting python 3.11, we use two separate mamba envs, one for isaac and one for the rest
 # which can also be used with prebuilt ros2 jazzy packages. This means we need to install the base ibrido packages
@@ -268,7 +271,22 @@ pip install -e MPCViz
 pip install -e adarl
 pip install --no-deps -e horizon
 
+# --- genesis world-interface env (numpy>=2, isolated from the base pinocchio/MPC stack) ---
+# genesis-world needs numpy>=2, which is incompatible with the base env's conda pinocchio 2.* (numpy<2).
+# The genesis world interface is pinocchio-free, so install it (and the pure-python ibrido packages it
+# imports) into the separate ${MAMBA_ENV_NAME_GENESIS} env. --no-deps on the ibrido packages keeps pip
+# from dragging pinocchio/numpy<2 into this numpy>=2 env; genesis-world[dev] brings its own numpy>=2 deps.
+# EigenIPC is provided at runtime via the activation hook (ws/install python3.12 site-packages).
+micromamba deactivate
+micromamba activate ${MAMBA_ENV_NAME_GENESIS}
+export LD_LIBRARY_PATH=$MAMBA_ROOT_PREFIX/envs/$MAMBA_ENV_NAME_GENESIS/lib:$LD_LIBRARY_PATH
+pip install --no-deps -e adarl
+pip install --no-deps -e MPCHive
+pip install --no-deps -e AugMPC
+pip install --no-deps -e AugMPCEnvs
 pip install -e genesis-world[dev]
+micromamba deactivate
+micromamba activate ${MAMBA_ENV_NAME}
 
 micromamba install -y clang
 

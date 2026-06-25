@@ -1,0 +1,62 @@
+name: ibrido_genesis
+
+# Isolated env for the Genesis world-interface PROCESS only.
+# Genesis (and its deps: opencv, scikit-image, tifffile, numba, mujoco, ...) require numpy>=2,
+# which is incompatible with the conda pinocchio 2.* (numpy<2 ABI) used by the MPC cluster / xmj
+# in the base "ibrido" env. The genesis world interface is pinocchio-free (GenesisAdapter +
+# ControlClusterServer use only EigenIPC/numpy/torch), so it lives here on numpy>=2 while the base
+# env stays untouched. The two processes talk over EigenIPC shared memory.
+# python is pinned to 3.12 to match the base env so the EigenIPC build under
+# ${HOME}/ibrido_ws/install/lib/python3.12/site-packages (added via the runtime hook) is importable.
+
+channels:
+  # genesis uses pip torch (no conda pytorch/nvidia), no ROS (no robostack), and no pinocchio,
+  # so it only needs conda-forge (+ defaults for the py3.12 pyside2). Fewer channels => less
+  # repodata to fetch and a faster solve.
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.12
+  # PyTorch from pip (cu130 wheels) like the base env.
+  - clang
+  - compilers
+  - cmake
+  - make
+  - pybind11
+  - eigen3
+  - numpy>=2,<3
+  - poetry
+  - python-devtools
+  - quaternion
+  - yaml-cpp
+  - empy
+  - pyqt
+  - pyqtgraph
+  - pyside2
+  - catkin_pkg
+  - scipy
+  # NOTE: no pinocchio / casadi / horizon here on purpose (numpy<2 ABI; they stay in the base env).
+  - pip:
+    - -f https://download.pytorch.org/whl/cu130
+    - torch
+    - torchvision
+    - pyzmq
+    - pyyaml
+    - pygame
+    - "xacro @ git+https://github.com/c-rizz/xacro_standalone@extra_find_pkg_path"
+    - flit
+    - h5py
+    - protobuf
+    - matplotlib
+    - urdf-parser-py
+    - multiprocess
+    - pynput==1.6.6
+    - urdf_parser_py
+    - psutil
+    - gymnasium
+    - gymnasium[mujoco]
+    - tensorboard
+    - wandb
+    # genesis-world itself is installed editable from src/ in setup_ws.sh (pip install -e genesis-world[dev]),
+    # which pulls its numpy>=2 deps (opencv-python, scikit-image, tifffile, numba, mujoco, trimesh, ...).
