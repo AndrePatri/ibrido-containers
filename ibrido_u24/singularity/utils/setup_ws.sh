@@ -184,6 +184,9 @@ export LD_LIBRARY_PATH=$MAMBA_ROOT_PREFIX/envs/$MAMBA_ENV_NAME_ISAAC/lib:$LD_LIB
 
 mkdir -p $WS_BASEDIR/build/EigenIPC
 cd $WS_BASEDIR/build/EigenIPC
+# NOTE: EigenIPC's CMake force-installs into the active conda env ($CONDA_PREFIX), ignoring any
+# -DCMAKE_INSTALL_PREFIX. So this installs it into the base env; the genesis env gets its own copy
+# built in the genesis block below (with that env active).
 cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON ../../src/EigenIPC/EigenIPC
 make -j8 install
 
@@ -211,6 +214,9 @@ make -j4 install
 
 mkdir -p $WS_BASEDIR/build/EigenIPC
 cd $WS_BASEDIR/build/EigenIPC
+# NOTE: EigenIPC's CMake force-installs into the active conda env ($CONDA_PREFIX), ignoring any
+# -DCMAKE_INSTALL_PREFIX. So this installs it into the base env; the genesis env gets its own copy
+# built in the genesis block below (with that env active).
 cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON ../../src/EigenIPC/EigenIPC
 make -j8 install
 
@@ -276,10 +282,18 @@ pip install --no-deps -e horizon
 # The genesis world interface is pinocchio-free, so install it (and the pure-python ibrido packages it
 # imports) into the separate ${MAMBA_ENV_NAME_GENESIS} env. --no-deps on the ibrido packages keeps pip
 # from dragging pinocchio/numpy<2 into this numpy>=2 env; genesis-world[dev] brings its own numpy>=2 deps.
-# EigenIPC is provided at runtime via the activation hook (ws/install python3.12 site-packages).
 micromamba deactivate
 micromamba activate ${MAMBA_ENV_NAME_GENESIS}
 export LD_LIBRARY_PATH=$MAMBA_ROOT_PREFIX/envs/$MAMBA_ENV_NAME_GENESIS/lib:$LD_LIBRARY_PATH
+# EigenIPC's CMake force-installs into the ACTIVE conda env ($CONDA_PREFIX), so the base build above
+# does not reach the genesis env. Build it again with the genesis env active (separate build dir) so
+# PyEigenIPC + libEigenIPC land in the genesis env. The genesis env yml carries the needed build
+# tools (cmake, compilers, pybind11, eigen3).
+mkdir -p $WS_BASEDIR/build/EigenIPC_genesis
+cd $WS_BASEDIR/build/EigenIPC_genesis
+cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PYTHON=ON $WS_BASEDIR/src/EigenIPC/EigenIPC
+make -j8 install
+cd $WS_BASEDIR/src
 pip install --no-deps -e adarl
 pip install --no-deps -e MPCHive
 pip install --no-deps -e AugMPC

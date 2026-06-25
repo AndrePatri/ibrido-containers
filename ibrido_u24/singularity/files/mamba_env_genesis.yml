@@ -29,6 +29,8 @@ dependencies:
   - make
   - pybind11
   - eigen3
+  - boost   # EigenIPC build dep (boost::interprocess); base gets it via pinocchio, here it's explicit
+  - gtest   # EigenIPC build dep (matches the isaac env's EigenIPC build toolchain)
   - numpy>=2,<3
   - poetry
   - python-devtools
