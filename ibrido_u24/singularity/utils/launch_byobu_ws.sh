@@ -685,7 +685,8 @@ add_genesis_tab() {
     # below stay on the base env (pinocchio 2.*). The two sides talk over EigenIPC shared memory.
     setup_genesis_env_pane "${WORKING_DIR}" \
         "source ${WS_ROOT}/setup.bash"
-    build_world_cmd "aug_mpc_envs.world_interfaces.genesis_world_interface" "$N_ENVS" "${GENESIS_HEADLESS:-0}" 1 "$USE_GPU_SIM"
+    build_world_cmd "aug_mpc_envs.world_interfaces.genesis_world_interface" "$N_ENVS" "${GENESIS_HEADLESS:-0}" 1 "$USE_GPU_SIM" \
+        "$JNT_IMP_CONFIG_PATH" "$CUSTOM_ARGS_NAMES" "$CUSTOM_ARGS_DTYPE" "$CUSTOM_ARGS_VALS"
     prepare_command "reset && python launch_world_interface.py $world_cmd"
 
     go_to_pane 1

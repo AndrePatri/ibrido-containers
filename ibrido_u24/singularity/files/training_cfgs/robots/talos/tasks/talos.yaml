@@ -53,6 +53,21 @@ custom_args:
     minimal_coll:
       dtype: xacro
       value: true
+    foot_corner_spheres:
+      dtype: xacro
+      value: true
+    foot_corner_sphere_radius:
+      dtype: xacro
+      value: 0.005
+    foot_corner_sphere_x:
+      dtype: xacro
+      value: 0.103
+    foot_corner_sphere_y:
+      dtype: xacro
+      value: 0.063
+    foot_corner_sphere_z:
+      dtype: xacro
+      value: -0.001
   control:
     adaptive_is:
       dtype: bool
@@ -113,6 +128,12 @@ custom_args:
     spawn_height_cushion:
       dtype: float
       value: 0.06
+    randomize_spawn_xy:
+      dtype: bool
+      value: false
+    spawn_xy_margin:
+      dtype: float
+      value: 1.0
     static_friction:
       dtype: float
       value: 0.5
@@ -125,6 +146,21 @@ custom_args:
     ground_size:
       dtype: float
       value: 800.0
+    enable_height_sensor:
+      dtype: bool
+      value: false
+    height_sensor_pixels:
+      dtype: int
+      value: 10
+    height_sensor_resolution:
+      dtype: float
+      value: 0.16
+    height_sensor_forward_offset:
+      dtype: float
+      value: 0.0
+    height_sensor_lateral_offset:
+      dtype: float
+      value: 0.0
   perception:
     enable_height_sensor:
       dtype: bool

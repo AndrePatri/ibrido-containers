@@ -160,13 +160,13 @@ custom_args:
       value: 0.9
     step_platform_size:
       dtype: float
-      value: 3.0
+      value: 10.0
     step_area_factor:
       dtype: float
-      value: 0.8
+      value: 0.3
     step_random_n_steps:
       dtype: bool
-      value: false
+      value: true
     # collider representation: random_tiles/stepup_prim are built from primitive BOX colliders (exact,
     # crisp contact, no SDF downsampling) when the box count <= terrain_max_boxes; otherwise (dense
     # terrain) the interface falls back to the heightfield + SDF path. The height sensor always uses
@@ -190,6 +190,12 @@ custom_args:
     spawn_height_cushion:
       dtype: float
       value: 0.06
+    randomize_spawn_xy:
+      dtype: bool
+      value: true
+    spawn_xy_margin:
+      dtype: float
+      value: 1.0
     use_random_pertub:
       dtype: bool
       value: false

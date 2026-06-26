@@ -34,7 +34,7 @@ custom_args:
       value: false
     genesis_render_env_keyboard:
       dtype: bool
-      value: false
+      value: true
     genesis_vis_mode:
       dtype: str
       value: collision
