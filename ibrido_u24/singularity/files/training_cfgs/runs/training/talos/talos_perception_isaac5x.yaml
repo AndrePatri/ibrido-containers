@@ -5,5 +5,3 @@ include:
 - ../../../robots/talos/control/talos.yaml
 - ../../../robots/talos/tasks/talos_perception.yaml
 - ../../../robots/talos/backends/isaac5x.yaml
-vars:
-  PHYSICS_DT: 0.0001

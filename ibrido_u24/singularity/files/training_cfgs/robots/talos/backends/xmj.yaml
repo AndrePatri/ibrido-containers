@@ -38,3 +38,12 @@ custom_args:
     add_remote_exit_flag:
       dtype: bool
       value: true
+    filter_jnt_vel:
+      dtype: bool
+      value: true
+    filter_cutoff_freq:
+      dtype: float
+      value: 20.0
+    filter_sampling_rate:
+      dtype: int
+      value: 200

@@ -2,3 +2,16 @@ vars:
   WORLD_INTERFACE: aug_mpc_envs.world_interfaces.isaac5x_world_interface
   TIME_SOURCE: sim
   USE_GPU_SIM: 1
+  PHYSICS_DT: 0.003
+
+custom_args:
+  world_interface:
+    filter_jnt_vel:
+      dtype: bool
+      value: true
+    filter_cutoff_freq:
+      dtype: float
+      value: 20.0
+    filter_sampling_rate:
+      dtype: int
+      value: 200
