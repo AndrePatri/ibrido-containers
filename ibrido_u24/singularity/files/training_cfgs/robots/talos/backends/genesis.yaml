@@ -19,9 +19,9 @@ custom_args:
     # frames), in the MPC contact order (left, right). The genesis interface reads each link's net contact
     # force (world frame) and writes it to the cluster contact_wrenches. The number of names should match
     # n_contacts (Talos: N_CONTACTS=2). Leave empty ("") to disable (use the MPC's own contact estimate).
-    contact_prims:
-      dtype: str
-      value: "leg_left_6_link,leg_right_6_link"
+    # contact_prims:
+    #   dtype: str
+    #   value: "leg_left_6_link,leg_right_6_link"
   genesis:
     genesis_render_env_idx:
       dtype: int

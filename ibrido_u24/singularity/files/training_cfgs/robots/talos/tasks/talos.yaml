@@ -87,7 +87,7 @@ custom_args:
       value: true
     pert_target_delta_v:
       dtype: float
-      value: 0.7
+      value: 0.4
     pert_wrenches_rate:
       dtype: float
       value: 10.0
