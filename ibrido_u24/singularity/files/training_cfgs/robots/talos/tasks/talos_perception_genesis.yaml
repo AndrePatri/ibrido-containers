@@ -1,0 +1,244 @@
+vars:
+  ROBOT_VARIANT: talos_perception
+  ACTION_REPEAT: 3
+  COMMENT: talos closed-loop partial on non-flat terrain with heightmap observations (genesis)
+  ENV_IDX_BAG: 56
+  N_ENVS: 800
+  PUB_HEIGHTMAP: 1
+  REMOTE_STEPPING: 1
+  RNAME: TalosPerceptionGenesis
+  SEED: 7383
+  SHM_NS: talos
+  TIMEOUT_MS: 480000
+  TOT_STEPS: 25000000
+  TRAIN_ENV_CNAME: FakePosTrackEnvPhaseControl
+  TRAIN_ENV_FNAME: fake_pos_track_env_phase_control
+custom_args:
+  robot_description:
+    foot_collision:
+      dtype: xacro
+      value: thinbox
+    head_type:
+      dtype: xacro
+      value: default
+    flexibility:
+      dtype: xacro
+      value: false
+    use_fixed_base:
+      dtype: xacro
+      value: false
+    use_sim:
+      dtype: xacro
+      value: true
+    enable_crane:
+      dtype: xacro
+      value: false
+    disable_gazebo_camera:
+      dtype: xacro
+      value: true
+    use_capsule_collision:
+      dtype: xacro
+      value: false
+    multiple:
+      dtype: xacro
+      value: false
+    gazebo_version:
+      dtype: xacro
+      value: classic
+    add_upper_body:
+      dtype: bool
+      value: true
+    self_collide:
+      dtype: bool
+      value: true
+    minimal_coll:
+      dtype: xacro
+      value: true
+    foot_corner_spheres:
+      dtype: xacro
+      value: true
+    foot_corner_sphere_radius:
+      dtype: xacro
+      value: 0.005
+    foot_corner_sphere_x:
+      dtype: xacro
+      value: 0.103
+    foot_corner_sphere_y:
+      dtype: xacro
+      value: 0.063
+    foot_corner_sphere_z:
+      dtype: xacro
+      value: -0.001
+  control:
+    adaptive_is:
+      dtype: bool
+      value: false
+    closed_partial:
+      dtype: bool
+      value: true
+    fully_closed:
+      dtype: bool
+      value: false
+    estimate_v_root:
+      dtype: bool
+      value: false
+    use_jnt_v_feedback:
+      dtype: bool
+      value: true
+    step_height:
+      dtype: float
+      value: 0.08
+    initial_force_load_divisor:
+      dtype: float
+      value: 1.12
+  world_interface:
+    base_linkname:
+      dtype: str
+      value: base_link
+    # ----------------------------------------------------------------- terrain
+    # genesis builds the terrain (visual mesh + SDF collision) straight from a heightfield, and its
+    # vectorized envs are overlaid in place (not tiled like isaac), so the terrain is SHARED by all
+    # envs and stays small (a few metres) instead of isaac's hundreds-of-metres ground.
+    use_flat_ground:
+      dtype: bool
+      value: false
+    ground_type:
+      dtype: str
+      value: stepup_prim   # flat | random | random_patches | slopes | stairs | stepup | stepup_prim | random_tiles
+    ground_size:
+      dtype: float
+      value: 50.0            # [m] square terrain side (small on purpose for genesis)
+    static_friction:
+      dtype: float
+      value: 0.5            # genesis uses a single friction coeff (dyn/restitution kept only for parity)
+    dynamic_friction:
+      dtype: float
+      value: 0.5
+    restitution:
+      dtype: float
+      value: 0.1
+    terrain_walls:
+      dtype: bool
+      value: true
+    wall_height:
+      dtype: float
+      value: 2.0
+    dh_ground:
+      dtype: float
+      value: 0.05           # +/- height range for "random"/"random_patches" [m]
+    # random_tiles params (dense grid of small flat-topped cells at random heights)
+    tile_cell_size:
+      dtype: float
+      value: 0.4
+    tile_height_lb:
+      dtype: float
+      value: 0.0
+    tile_height_ub:
+      dtype: float
+      value: 0.08
+    tile_patch_ratio:
+      dtype: float
+      value: 0.0
+    tile_patch_size:
+      dtype: float
+      value: 2.0
+    tile_min_height:
+      dtype: float
+      value: 0.01
+    # stepup / stepup_prim params (used when ground_type is stepup*)
+    step_n:
+      dtype: int
+      value: 3
+    step_height_lb:
+      dtype: float
+      value: 0.08
+    step_height_ub:
+      dtype: float
+      value: 0.15
+    step_stairs_ratio:
+      dtype: float
+      value: 0.9
+    step_platform_size:
+      dtype: float
+      value: 3.0
+    step_area_factor:
+      dtype: float
+      value: 0.8
+    step_random_n_steps:
+      dtype: bool
+      value: false
+    # collider representation: random_tiles/stepup_prim are built from primitive BOX colliders (exact,
+    # crisp contact, no SDF downsampling) when the box count <= terrain_max_boxes; otherwise (dense
+    # terrain) the interface falls back to the heightfield + SDF path. The height sensor always uses
+    # the heightfield. terrain_max_faces caps the SDF mesh resolution on the fallback path.
+    terrain_primitive_colliders:
+      dtype: bool
+      value: true
+    terrain_max_boxes:
+      dtype: int
+      value: 1500
+    terrain_max_faces:
+      dtype: int
+      value: 120000
+    # spawn-height adjustment: lift the robot by the max terrain height under it (+ cushion)
+    spawning_height:
+      dtype: float
+      value: 1.12
+    spawn_height_check_half_extent:
+      dtype: float
+      value: 0.45
+    spawn_height_cushion:
+      dtype: float
+      value: 0.06
+    use_random_pertub:
+      dtype: bool
+      value: false
+    # ----------------------------------------------------------- height sensor
+    # the world interface reads these from env_opts; the base class allocates the shared height buffer
+    # (enable_height_sensor + height_sensor_pixels) and publishes self._height_imgs to it every step.
+    enable_height_sensor:
+      dtype: bool
+      value: true
+    height_sensor_pixels:
+      dtype: int
+      value: 10
+    height_sensor_resolution:
+      dtype: float
+      value: 0.16
+    height_sensor_forward_offset:
+      dtype: float
+      value: 0.0
+    height_sensor_lateral_offset:
+      dtype: float
+      value: 0.0
+    # heightmap viz in the genesis viewer (rendered env): draws the sampled grid points as debug
+    # spheres. Needs a live visualizer (GENESIS_HEADLESS=0 or camera rendering). enable_height_vis is
+    # read from the perception group below (shared with isaac); these tune the genesis spheres.
+    height_vis_radius:
+      dtype: float
+      value: 0.03
+    height_vis_update_period:
+      dtype: int
+      value: 1
+  perception:
+    enable_height_sensor:
+      dtype: bool
+      value: true
+    height_sensor_pixels:
+      dtype: int
+      value: 10
+    height_sensor_resolution:
+      dtype: float
+      value: 0.16
+    enable_height_vis:
+      dtype: bool
+      value: true
+    height_sensor_forward_offset:
+      dtype: float
+      value: 0.0
+    height_sensor_lateral_offset:
+      dtype: float
+      value: 0.0
+    add_heightmap_obs:
+      dtype: bool
+      value: true

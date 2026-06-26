@@ -1,0 +1,9 @@
+include:
+- ../../../common/runtime_defaults.yaml
+- ../../../common/algorithms/sac_critic_depth_3.yaml
+- ../../../robots/talos/base.yaml
+- ../../../robots/talos/control/talos.yaml
+- ../../../robots/talos/tasks/talos_perception_genesis.yaml
+- ../../../robots/talos/backends/genesis.yaml
+vars:
+  PHYSICS_DT: 0.001 # a bit more accurate for complex terrains

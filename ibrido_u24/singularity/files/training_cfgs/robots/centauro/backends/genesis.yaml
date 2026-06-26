@@ -17,3 +17,15 @@ custom_args:
     genesis_render_env_keyboard:
       dtype: bool
       value: false
+    genesis_vis_mode:
+      dtype: str
+      value: visual
+    genesis_visualize_contact:
+      dtype: bool
+      value: true
+    genesis_contact_force_scale:
+      dtype: float
+      value: 0.001
+    terrain_vis_mode:
+      dtype: str
+      value: visual
