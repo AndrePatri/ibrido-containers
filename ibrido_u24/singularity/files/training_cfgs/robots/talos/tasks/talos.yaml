@@ -90,7 +90,7 @@ custom_args:
       value: 0.4
     pert_wrenches_rate:
       dtype: float
-      value: 10.0
+      value: 15.0
     use_diff_vels:
       dtype: bool
       value: false
