@@ -84,13 +84,13 @@ custom_args:
       value: 0.95
     use_random_pertub:
       dtype: bool
-      value: false
+      value: true
     pert_target_delta_v:
       dtype: float
-      value: 0.2
+      value: 0.7
     pert_wrenches_rate:
       dtype: float
-      value: 15.0
+      value: 10.0
     use_diff_vels:
       dtype: bool
       value: false
