@@ -12,8 +12,9 @@ u24 launchers use YAML configs. A config is required.
 - `robots/<robot>/tasks/`: task, run, training, perception, and xacro settings.
 - `robots/<robot>/backends/`: world interface settings.
 - `runs/training/<robot>/`: full training configs.
-- `runs/evaluation/same_domain/`: saved-model evaluation in the original simulator.
-- `runs/evaluation/sim_to_sim/`: saved-model evaluation in another simulator.
+- `runs/evaluation/sim_to_sim/`: saved-model evaluation in a simulator (isaac5x, genesis, or xmj). This
+  covers both validating in the training simulator and cross-engine transfer -- they only differ by the
+  `backends/*.yaml` you include (the `COMMENT_PREFIX`/`RNAME_SUFFIX` label the run).
 - `runs/evaluation/sim_to_real/`: saved-model deployment through XBot/ZMQ.
 - `runs/ablations/`: ablation configs.
 
@@ -43,20 +44,24 @@ launch_byobu_ws.sh --cfg runs/training/kyon02/kyon02_wheels_no_yaw_isaac5x.yaml 
 
 Saved-model evaluation uses `launch_bundle.sh`. The bundle provides the trained policy and saved training environment. The `--cfg` argument selects what should change for evaluation or deployment.
 
-Same simulator/domain:
+Sim-to-sim (any simulator). Validate in the training engine, or transfer to another one -- pick the
+target by the `backends/*.yaml` in the config. For example a Talos policy across the three engines:
 
 ```bash
-launch_bundle.sh --bundle /path/to/bundle.yaml --cfg runs/evaluation/same_domain/eval_same_domain_isaac5x.yaml
+launch_bundle.sh --bundle /path/to/bundle.yaml --cfg runs/evaluation/sim_to_sim/talos/talos_isaac5x.yaml
+launch_bundle.sh --bundle /path/to/bundle.yaml --cfg runs/evaluation/sim_to_sim/talos/talos_genesis.yaml
+launch_bundle.sh --bundle /path/to/bundle.yaml --cfg runs/evaluation/sim_to_sim/talos/talos_xmj.yaml
 ```
 
-Sim-to-sim, for example Isaac-trained Kyon evaluated in XMJ:
+A generic engine-agnostic override (keeps the bundle's task, only switches to eval) is also available:
 
 ```bash
-launch_bundle.sh --bundle /path/to/bundle.yaml --cfg runs/evaluation/sim_to_sim/kyon02/kyon02_wheels_no_yaw_xmj.yaml
+launch_bundle.sh --bundle /path/to/bundle.yaml --cfg runs/evaluation/sim_to_sim/eval_sim_to_sim_isaac5x.yaml
 ```
 
-Main XMJ profiles are under:
+Main profiles are under:
 
+- `runs/evaluation/sim_to_sim/talos/`
 - `runs/evaluation/sim_to_sim/kyon02/`
 - `runs/evaluation/sim_to_sim/centauro/`
 

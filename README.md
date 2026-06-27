@@ -26,10 +26,17 @@ IMPORTANT: On some systems, you may encounter errors or messages like "User not 
 
 ### 2) Build and setup container
 - Clone this repo and then navigate to the container of choice. All the setup helper scripts follow the same API.
-    As of now there are 3 different folders, each corresponding to a separated container:
-    - `./ibrido_u22/singularity`: this container ships with Ubuntu 22 + IsaacSim + the IBRIDO framework + ROS2. This should be used to run trainings/evaluations exploiting the vectorized simulator's parallelization capabilities. 
-    - `./ibrido_u20/singularity`: this is a lighter container with Ubuntu 20 + MuJoCo (CPU) + [XBot2](https://advrhumanoids.github.io/xbot2/v2.12.0/index.html) + the IBRIDO framework + ROS1. This is intended for sim-to-sim and sim-to-real evaluations through the XMjSimEnv and RtDeploymentEnv world interfaces, respectively, and does not currently support vectorized environments. 
-    - `./ibrido_u24/singularity`: same as `ibrido_u22`, but with Ubuntu 24 and the latest IsaacSim version (working, but integration with IBRIDO is WIP).
+    There are 3 containers; `ibrido_u24` is the current, mature one and the recommended default for all new work:
+    - `./ibrido_u24/singularity` (**preferred / default**): Ubuntu 24 + IsaacSim 5.1 + [Genesis](https://github.com/Genesis-Embodied-AI/Genesis) + MuJoCo (CPU) + [XBot2](https://advrhumanoids.github.io/xbot2/v2.12.0/index.html) + the IBRIDO framework + ROS2 (Jazzy). This is now the all-in-one container used for **all current trainings and evaluations**: it bundles every world interface (vectorized GPU training on IsaacSim 5.x and Genesis, MuJoCo sim-to-sim, and XBot/ZMQ sim-to-real) in a single image — see the interface list below. All active development targets this container.
+    - `./ibrido_u22/singularity` (**legacy — paper / AugMPCModels**): Ubuntu 22 + IsaacSim 4.2 + the IBRIDO framework + ROS2 (Humble). This is the container the published [AugMPCModels](https://huggingface.co/AndrePatri/AugMPCModels) bundles and the paper results were trained on. Use it to **reproduce those legacy trainings/evaluations** on IsaacSim 4.
+    - `./ibrido_u20/singularity` (**legacy — transfer of paper models**): a lighter Ubuntu 20 + MuJoCo (CPU) + [XBot2](https://advrhumanoids.github.io/xbot2/v2.12.0/index.html) + the IBRIDO framework + ROS1 (Noetic) container, intended for **sim-to-sim and sim-to-real transfer of the legacy paper models** (through the MuJoCo and XBot/ZMQ world interfaces, respectively). It does not support vectorized environments.
+
+    **World interfaces** (available in `ibrido_u24`). A run selects its simulator/target via the `backends/<name>.yaml` it includes (under `files/training_cfgs/robots/<robot>/backends/`):
+    - `isaac5x` — `isaac5x_world_interface`: IsaacSim 5.x, vectorized GPU simulation. Primary training backend.
+    - `genesis` — `genesis_world_interface`: [Genesis](https://github.com/Genesis-Embodied-AI/Genesis), vectorized GPU simulation. Training and sim-to-sim (runs in its own `ibrido_genesis` micromamba env).
+    - `xmj` — `xmj_world_interface`: MuJoCo (CPU), single environment. Sim-to-sim transfer evaluation.
+    - `rt_xbot_zmq` — `rt_deploy_ros_world_interface`: XBot2 / ZMQ. Sim-to-real deployment (and its rt-sim mirror).
+    - `isaac` — `isaac_world_interface`: legacy IsaacSim 4.x interface, kept for backward compatibility.
 - Navigate to `./ibrido_u*/singularity` and run `export IBRIDO_CONTAINERS_PREFIX=$PWD`
 - Run `setup.sh -i -b -stp`. The arguments will first clone all the framework repos on the host, build the container, and then set up the workspace together with a dedicated micromamba environment. Even though this process may take some time, it only needs to be run once. Additionally, all containers that use an IsaacSim image also need a `-ngc $MY_NGC_KEY` argument, where `MY_NGC_KEY` should be set to your [NVIDIA NGC API key](https://docs.nvidia.com/ngc/latest/ngc-user-guide.html#generating-api-key) to pull IsaacSim Docker images. The container will be dumped at `IBRIDO_CONTAINERS_PREFIX` with a `.sif` extension.
 
@@ -38,7 +45,7 @@ Private robot-description repositories for Kyon are skipped by default during wo
 Note that IBRIDO's workspace and code are cloned on the host, mounted within the container and setup from within it. The container also comes with a *ibrido* micromamba environment, shipped with all necessary dependencies, Torch included.
 
 ### 3) Run container and launch trainings/evaluations
-- Navigate to the root folder corresponding to your chosen container (e.g. `./ibrido_u22/singularity`) and then run `export IBRIDO_CONTAINERS_PREFIX=$PWD`, if not already done.
+- Navigate to the root folder corresponding to your chosen container (e.g. `./ibrido_u24/singularity`) and then run `export IBRIDO_CONTAINERS_PREFIX=$PWD`, if not already done.
 - There are two ways to run the containers, an *interactive* and a *detached* mode:
     - For the interactive mode run:
         - `./run_interactive.sh`: you're now inside the container
@@ -111,8 +118,8 @@ At the moment, Kyon visualization and Kyon evaluations still depend on private r
 
 To run an evaluation with a specific model:
 1. First make sure you have set up the container
-2. Pick the desired container : for instance, `ibrido-containers/ibrido_u22` to use IsaacSim (and potentially multiple environments), `ibrido-containers/ibrido_u20` for "cheap" single environment transfer evaluations on MujoCo. 
-3. Pick a matching configuration file associated with the target model and robot under `ibrido-containers/ibrido_u*/singularity/files/training_cfgs/<robot_name>/`; configs for the same robot may change crucial MPC parameters, so it's important that this matches the one used during training.
+2. Pick the desired container. For current models, use `ibrido_u24` — it covers vectorized IsaacSim 5.x / Genesis, MuJoCo sim-to-sim (`xmj`), and XBot/ZMQ sim-to-real in one image. To **reproduce the published AugMPCModels / paper** bundles, use the legacy stack instead: `ibrido_u22` (IsaacSim 4.x, the engine they were trained on) and `ibrido_u20` (MuJoCo + XBot, for "cheap" single-environment sim-to-sim / sim-to-real transfer of those models).
+3. Pick a matching configuration file associated with the target model and robot under `ibrido-containers/ibrido_u*/singularity/files/training_cfgs/`; configs for the same robot may change crucial MPC parameters, so it's important that this matches the one used during training.
 4. Configure the config to load the chosen model bundle by modifying these variables:
 
 ```bash

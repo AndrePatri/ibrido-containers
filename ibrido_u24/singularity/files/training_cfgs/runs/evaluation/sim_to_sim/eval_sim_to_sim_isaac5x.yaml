@@ -22,5 +22,5 @@ vars:
   WORLD_HEADLESS: 1
   WORLD_USE_CUSTOM_JNT_IMP: 1
   USE_GPU_SIM: 1
-  RNAME_SUFFIX: EvalSameDomain
-  COMMENT_PREFIX: eval_same_domain
+  RNAME_SUFFIX: EvalSimToSim
+  COMMENT_PREFIX: eval_sim2sim
