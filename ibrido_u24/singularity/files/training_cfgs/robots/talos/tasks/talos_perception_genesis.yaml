@@ -107,7 +107,7 @@ custom_args:
       value: stepup_prim   # flat | random | random_patches | slopes | stairs | stepup | stepup_prim | random_tiles
     ground_size:
       dtype: float
-      value: 50.0            # [m] square terrain side (small on purpose for genesis)
+      value: 150.0            # [m] square terrain side (small on purpose for genesis)
     static_friction:
       dtype: float
       value: 0.5            # genesis uses a single friction coeff (dyn/restitution kept only for parity)
@@ -148,7 +148,7 @@ custom_args:
     # stepup / stepup_prim params (used when ground_type is stepup*)
     step_n:
       dtype: int
-      value: 3
+      value: 5
     step_height_lb:
       dtype: float
       value: 0.08
@@ -160,10 +160,10 @@ custom_args:
       value: 0.9
     step_platform_size:
       dtype: float
-      value: 10.0
+      value: 25.0
     step_area_factor:
       dtype: float
-      value: 0.3
+      value: 0.4
     step_random_n_steps:
       dtype: bool
       value: true
