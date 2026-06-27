@@ -189,7 +189,7 @@ custom_args:
     # stepup / stepup_prim params (used when ground_type is stepup*)
     step_n:
       dtype: int
-      value: 10
+      value: 5
     step_height_lb:
       dtype: float
       value: 0.03
@@ -204,7 +204,7 @@ custom_args:
       value: 35.0
     step_area_factor:
       dtype: float
-      value: 0.4
+      value: 0.6
     step_random_n_steps:
       dtype: bool
       value: false
