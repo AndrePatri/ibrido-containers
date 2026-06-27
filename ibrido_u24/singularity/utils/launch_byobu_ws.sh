@@ -340,7 +340,7 @@ prepare_joy_zmq_pub_pane() {
 
 build_eval_training_cmd() {
     local eval_n_envs="${1:-1}"
-    local eval_tot_steps="${2:-${EVAL_TOT_STEPS:-1000}}"
+    local eval_tot_steps="${2:-${TOT_STEPS:-1000}}"
     local saved_eval="${EVAL:-}"
     local saved_resume="${RESUME:-}"
     local saved_n_envs="${N_ENVS:-}"
@@ -392,7 +392,7 @@ prepare_training_pane() {
 
 prepare_eval_training_pane() {
     local eval_n_envs="${1:-1}"
-    local eval_tot_steps="${2:-${EVAL_TOT_STEPS:-1000}}"
+    local eval_tot_steps="${2:-${TOT_STEPS:-1000}}"
 
     setup_main_env_pane "${WORKING_DIR}"
     build_eval_training_cmd "$eval_n_envs" "$eval_tot_steps"

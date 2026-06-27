@@ -6,5 +6,7 @@ include:
 - ../../../../robots/kyon02/tasks/kyon02_wheels_no_yaw.yaml
 - ../../../../robots/kyon02/backends/rt_xbot_zmq.yaml
 vars:
+  TOT_STEPS: 1000  # eval length (overrides the big training TOT_STEPS from the task include)
+  N_ENVS: 1
   PHYSICS_DT: 0.0005
   XBOT_CONFIG: KyonRLStepping/kyonrlstepping/config/xmj_env_files/kyon_real/xbot2_basic_wheels_no_yaw.yaml

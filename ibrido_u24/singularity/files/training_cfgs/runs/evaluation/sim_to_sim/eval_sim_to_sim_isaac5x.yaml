@@ -18,7 +18,7 @@ vars:
   TOT_STEPS: 1000
   WORLD_INTERFACE: aug_mpc_envs.world_interfaces.isaac5x_world_interface
   TIME_SOURCE: sim
-  N_ENVS: ${EVAL_N_ENVS}
+  N_ENVS: 1
   WORLD_HEADLESS: 1
   WORLD_USE_CUSTOM_JNT_IMP: 1
   USE_GPU_SIM: 1

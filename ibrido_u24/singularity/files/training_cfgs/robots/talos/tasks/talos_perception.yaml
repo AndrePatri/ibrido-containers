@@ -76,6 +76,47 @@ custom_args:
     initial_force_load_divisor:
       dtype: float
       value: 1.12
+  # swing/flight-phase action bounds: these are TRAINING-ENV (policy action-space) params, not MPC
+  # control params, so they live in their own group (the 'control' group above is the MPC's).
+  flight:
+    # ---- swing/flight-phase action bounds (per contact) ----
+    # The phase-control policy outputs swing-phase params; these set their min/max action bounds.
+    # len: flength_min..flength_max [substeps] (flength_max defaults to the RHC horizon when unset --
+    #   uncomment it to override). apex/end: [m] height deltas. landing dx/dy: [m] foothold offsets,
+    #   only active when control_flanding is true (xy stepping).
+    flength_min:
+      dtype: int
+      value: 8
+    # flength_max:
+    #   dtype: int
+    #   value: 24
+    fapex_min:
+      dtype: float
+      value: 0.05
+    fapex_max:
+      dtype: float
+      value: 0.35
+    fend_min:
+      dtype: float
+      value: 0.0
+    fend_max:
+      dtype: float
+      value: 0.2
+    control_flanding:
+      dtype: bool
+      value: false
+    fland_dx_min:
+      dtype: float
+      value: -0.5
+    fland_dx_max:
+      dtype: float
+      value: 0.5
+    fland_dy_min:
+      dtype: float
+      value: -0.5
+    fland_dy_max:
+      dtype: float
+      value: 0.5
   world_interface:
     base_linkname:
       dtype: str

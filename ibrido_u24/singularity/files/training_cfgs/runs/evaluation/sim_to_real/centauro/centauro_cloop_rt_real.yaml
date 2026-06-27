@@ -6,6 +6,8 @@ include:
 - ../../../../robots/centauro/tasks/centauro_cloop.yaml
 - ../../../../robots/centauro/backends/rt_xbot_zmq.yaml
 vars:
+  TOT_STEPS: 1000  # eval length (overrides the big training TOT_STEPS from the task include)
+  N_ENVS: 1
   TIME_SOURCE: wall
   RNAME_SUFFIX: RtReal
   COMMENT_PREFIX: rt_real

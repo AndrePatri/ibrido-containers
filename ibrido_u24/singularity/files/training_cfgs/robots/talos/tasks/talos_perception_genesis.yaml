@@ -91,6 +91,47 @@ custom_args:
     initial_force_load_divisor:
       dtype: float
       value: 1.12
+  # swing/flight-phase action bounds: these are TRAINING-ENV (policy action-space) params, not MPC
+  # control params, so they live in their own group (the 'control' group above is the MPC's).
+  flight:
+    # ---- swing/flight-phase action bounds (per contact) ----
+    # The phase-control policy outputs swing-phase params; these set their min/max action bounds.
+    # len: flength_min..flength_max [substeps] (flength_max defaults to the RHC horizon when unset --
+    #   uncomment it to override). apex/end: [m] height deltas. landing dx/dy: [m] foothold offsets,
+    #   only active when control_flanding is true (xy stepping).
+    flength_min:
+      dtype: int
+      value: 8
+    # flength_max:
+    #   dtype: int
+    #   value: 24
+    fapex_min:
+      dtype: float
+      value: 0.0
+    fapex_max:
+      dtype: float
+      value: 0.5
+    fend_min:
+      dtype: float
+      value: -0.5
+    fend_max:
+      dtype: float
+      value: 0.5
+    control_flanding:
+      dtype: bool
+      value: false
+    fland_dx_min:
+      dtype: float
+      value: -0.5
+    fland_dx_max:
+      dtype: float
+      value: 0.5
+    fland_dy_min:
+      dtype: float
+      value: -0.5
+    fland_dy_max:
+      dtype: float
+      value: 0.5
   world_interface:
     base_linkname:
       dtype: str
@@ -107,7 +148,7 @@ custom_args:
       value: stepup_prim   # flat | random | random_patches | slopes | stairs | stepup | stepup_prim | random_tiles
     ground_size:
       dtype: float
-      value: 150.0            # [m] square terrain side (small on purpose for genesis)
+      value: 200.0            # [m] square terrain side (small on purpose for genesis)
     static_friction:
       dtype: float
       value: 0.5            # genesis uses a single friction coeff (dyn/restitution kept only for parity)
@@ -148,25 +189,25 @@ custom_args:
     # stepup / stepup_prim params (used when ground_type is stepup*)
     step_n:
       dtype: int
-      value: 5
+      value: 10
     step_height_lb:
       dtype: float
-      value: 0.08
+      value: 0.03
     step_height_ub:
       dtype: float
-      value: 0.15
+      value: 0.1
     step_stairs_ratio:
       dtype: float
       value: 0.9
     step_platform_size:
       dtype: float
-      value: 25.0
+      value: 35.0
     step_area_factor:
       dtype: float
       value: 0.4
     step_random_n_steps:
       dtype: bool
-      value: true
+      value: false
     # collider representation: random_tiles/stepup_prim are built from primitive BOX colliders (exact,
     # crisp contact, no SDF downsampling) when the box count <= terrain_max_boxes; otherwise (dense
     # terrain) the interface falls back to the heightfield + SDF path. The height sensor always uses

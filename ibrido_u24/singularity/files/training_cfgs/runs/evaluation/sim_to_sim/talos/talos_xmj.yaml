@@ -9,9 +9,13 @@ vars:
   PHYSICS_DT: 0.0001
   MPATH: /root/training_data/d2026_06_26_h15_m17_s29-TalosFlat_FakePosTrackEnvPhaseControl
   MNAME: d2026_06_26_h15_m17_s29-TalosFlat_FakePosTrackEnvPhaseControl_model
-  EVAL_N_ENVS: 1
+  N_ENVS: 1
   XMJ_HEADLESS: 0
   OVERRIDE_ENV: 0
   OVERRIDE_AGENT_REFS: 1
-  EVAL_TOT_STEPS: 100000
-  N_PREINIT_STEPS: 1
+  TOT_STEPS: 100000  # eval length (overrides the training TOT_STEPS pulled in by tasks/talos.yaml)
+
+custom_args:
+  n_preinit_steps:
+    dtype: int
+    value: 10000

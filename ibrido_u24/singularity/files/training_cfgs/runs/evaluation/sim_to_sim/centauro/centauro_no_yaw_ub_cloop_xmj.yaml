@@ -6,4 +6,6 @@ include:
 - ../../../../robots/centauro/tasks/centauro_no_yaw_ub_cloop.yaml
 - ../../../../robots/centauro/backends/xmj.yaml
 vars:
+  TOT_STEPS: 1000  # eval length (overrides the big training TOT_STEPS from the task include)
+  N_ENVS: 1
   PHYSICS_DT: 0.0005

@@ -17,12 +17,11 @@ vars:
   DUMP_ENV_CHECKPOINTS: 0
   CLUSTER_DB: 0
   PHYSICS_DT: 0.0001
-  EVAL_N_ENVS: 1
-  N_ENVS: ${EVAL_N_ENVS}
+  N_ENVS: 1
   WORLD_HEADLESS: 1
-  EVAL_TOT_STEPS: 100000
-  TRAIN_ENV_CNAME: 
-  TRAIN_ENV_FNAME: 
+  TOT_STEPS: 100000  # eval length (overrides the training TOT_STEPS pulled in by tasks/talos.yaml)
+  # TRAIN_ENV_CNAME / TRAIN_ENV_FNAME come from the included tasks/talos.yaml (and, when launched via
+  # launch_bundle.sh, from the bundle's training contract). Do NOT blank them here or the env can't load.
   MPATH: /root/training_data/d2026_06_26_h15_m17_s29-TalosFlat_FakePosTrackEnvPhaseControl
   MNAME: d2026_06_26_h15_m17_s29-TalosFlat_FakePosTrackEnvPhaseControl_model
   COMMENT_PREFIX: eval_sim2sim_talos_isaac5x
