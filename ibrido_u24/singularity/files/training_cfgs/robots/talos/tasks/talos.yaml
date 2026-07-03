@@ -168,6 +168,11 @@ custom_args:
     add_heightmap_obs:
       dtype: bool
       value: false
+    # add MPC contact (feet) positions to the observation (base-link frame);
+    # requires write_contact_pos on the controller (see control/talos.yaml)
+    add_contact_pos_to_obs:
+      dtype: bool
+      value: true
     height_sensor_pixels:
       dtype: int
       value: 10
