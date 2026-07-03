@@ -1,0 +1,21 @@
+# Talos MPC control overlay: full state feedback ("best-possible" MPC in sim).
+# Include AFTER the task config so this `control` custom_args group overrides the task's feedback mode.
+# Enables fully-closed-loop MPC (base pose+twist and joint state fed back from the simulator);
+# no state estimation / adaptation is used since ground-truth state is available in sim.
+custom_args:
+  control:
+    fully_closed:
+      dtype: bool
+      value: true       # full feedback: base + joints from sim ground truth
+    closed_partial:
+      dtype: bool
+      value: false
+    adaptive_is:
+      dtype: bool
+      value: false      # no initial-state adaptation (we have full feedback)
+    estimate_v_root:
+      dtype: bool
+      value: false      # no base-twist estimation (fed back directly)
+    use_jnt_v_feedback:
+      dtype: bool
+      value: true       # feed back measured joint velocities

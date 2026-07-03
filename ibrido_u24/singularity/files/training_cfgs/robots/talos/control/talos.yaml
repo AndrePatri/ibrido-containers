@@ -7,3 +7,12 @@ vars:
   N_CONTACTS: 2
   N_NODES: 31
   SRDF_PATH_ROSBAG: ${HOME}/aux_data/TalosRHCLusterClient_talos/talos.srdf
+custom_args:
+  control:
+    # write MPC contact positions (base-link frame) into RhcCmds so envs can observe them
+    write_contact_pos:
+      dtype: bool
+      value: true
+    contact_pos_base_link:
+      dtype: str
+      value: base_link
