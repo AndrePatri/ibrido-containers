@@ -605,6 +605,18 @@ ibrido_build_training_cmd() {
     elif ibrido_enabled "$USE_SAC"; then
         IBRIDO_TRAINING_CMD+="--sac "
     fi
+    # SAC hyperparameters (exposed via common/algorithms/sac_*.yaml). Only passed for SAC runs so PPO
+    # runs need not define these vars.
+    if ibrido_enabled "$USE_SAC"; then
+        IBRIDO_TRAINING_CMD+="--collection_freq $COLLECTION_FREQ --update_freq $UPDATE_FREQ "
+        IBRIDO_TRAINING_CMD+="--replay_buffer_n_eps $REPLAY_BUFFER_N_EPS --batch_size $BATCH_SIZE "
+        IBRIDO_TRAINING_CMD+="--lr_policy $LR_POLICY --lr_q $LR_Q "
+        IBRIDO_TRAINING_CMD+="--entropy_disc_start $ENTROPY_DISC_START --entropy_disc_end $ENTROPY_DISC_END "
+        IBRIDO_TRAINING_CMD+="--entropy_cont_start $ENTROPY_CONT_START --entropy_cont_end $ENTROPY_CONT_END "
+        if ibrido_enabled "$ANNEAL_ENTROPY"; then
+            IBRIDO_TRAINING_CMD+="--anneal_entropy "
+        fi
+    fi
     if ibrido_enabled "$DEBUG"; then
         IBRIDO_TRAINING_CMD+="--db --env_db "
     fi

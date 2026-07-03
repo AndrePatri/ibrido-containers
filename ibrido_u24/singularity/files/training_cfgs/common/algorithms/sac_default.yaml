@@ -18,3 +18,15 @@ vars:
   USE_PERIOD_RESETS: 0
   DEMO_STOP_THRESH: 10.0
   DISCOUNT_FACTOR: 0.99
+  # ---- SAC algorithm hyperparameters ----
+  COLLECTION_FREQ: 1            # env steps collected per iteration
+  UPDATE_FREQ: 4               # gradient updates per iteration
+  REPLAY_BUFFER_N_EPS: 10      # replay buffer size, in episodes worth of (vectorized) transitions
+  BATCH_SIZE: 16394            # minibatch size
+  LR_POLICY: 0.001             # policy learning rate
+  LR_Q: 0.0005                 # Q-network learning rate
+  ANNEAL_ENTROPY: 0            # 1 -> anneal target entropy from *_START to *_END over training
+  ENTROPY_DISC_START: -0.2     # discrete-action target entropy (start)
+  ENTROPY_DISC_END: -0.2       # discrete-action target entropy (end)
+  ENTROPY_CONT_START: -0.5     # continuous-action target entropy (start)
+  ENTROPY_CONT_END: -0.5       # continuous-action target entropy (end)
