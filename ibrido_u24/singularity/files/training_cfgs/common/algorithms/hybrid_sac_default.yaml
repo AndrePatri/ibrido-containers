@@ -1,0 +1,119 @@
+# Hybrid SAC: tanh-squashed Gaussian on the continuous action dims, Bernoulli (straight-through
+# Gumbel-Sigmoid) on the binary contact/swing flags.
+#
+# The environment thresholds the flag dims at step_thresh=0, so the transition only depends on
+# sign(a_i). The legacy all-Gaussian actor therefore trains the critic on a coordinate the
+# environment discards, and regularizes a differential entropy that is not the knob governing
+# binary exploration. This profile fixes both: the flags are emitted as hard -1/+1, and their
+# entropy is the analytic Bernoulli entropy.
+#
+# Inherits the shared SAC hyperparameters (network sizes, replay, lrs, batch) from sac_default.yaml
+# and swaps the algorithm. The legacy ENTROPY_{DISC,CONT}_{START,END} vars it defines are ignored by
+# hybrid runs -- the builder does not forward them -- and are superseded by the TARGET_H_*_FRAC vars
+# below.
+include:
+- sac_default.yaml
+
+vars:
+  USE_SAC: 0
+  USE_HYBRID_SAC: 1
+  USE_DUMMY: 0
+
+  # ---- straight-through Gumbel-Sigmoid ----
+  # tau shapes ONLY the backward surrogate of the st_gumbel mode: the forward sample is an exact
+  # Bernoulli(sigmoid(logits)) draw for any tau > 0, since b_hard = 1[sigmoid((l+g)/tau) > 0.5] =
+  # 1[l+g > 0]. With DISC_GRAD_MODE=exact the backward surrogate is not used at all, so tau only
+  # affects the sampling of the ACTION sent to the env -- which it does not, being tau-independent.
+  # In other words: under 'exact', GUMBEL_TAU has no effect whatsoever.
+  #
+  # 0.3, not the literature's 0.7: measured against the real CriticQ, tau=0.3 maximizes the cosine
+  # between E[g_ST] and the exact gradient (0.89 vs 0.83 at tau=0.7, on a critic with genuine flag
+  # interactions). Only relevant in st_gumbel mode.
+  GUMBEL_TAU: 0.3
+  # exact:     marginalize the Q term over all 2^n_binary flag combinations. Because the continuous
+  #            and binary heads are conditionally independent given the observation,
+  #                E_{a_c,b}[Q] = E_{a_c}[ sum_b pi(b|s) Q(s, a_c, b) ]
+  #            so the inner sum can be enumerated. Unbiased in the logits and free of discrete
+  #            sampling variance. Costs 2^n_binary critic rows per update: Talos has n_binary=2
+  #            -> 4x (nearly free); a quadruped has n_binary=4 -> 16x.
+  # st_gumbel: straight-through Gumbel-Sigmoid. Cheap, but the gradient into the logits is BIASED,
+  #            and measurement against the real CriticQ shows the bias is NOT benign once the critic
+  #            learns genuine interactions between the flags:
+  #
+  #              critic state         cos(E[g_ST], g_exact)   sign agreement   per-sample noise
+  #              random init                    0.98               96%              2.8x
+  #              trained, Q nonlinear in b      0.83               77%              3.3x   (tau=0.7)
+  #
+  #            i.e. ~23% of gradient components point the WRONG WAY, with a 4x magnitude
+  #            underestimate. ST backprops the LOCAL slope dQ/db at the sampled corner, whereas the
+  #            true gradient needs the FINITE DIFFERENCE Q(b=1)-Q(b=0); these coincide only if Q is
+  #            additive in the flags. Biped contact coordination is inherently NOT additive (both
+  #            feet swinging is catastrophic, one-and-one is fine), so this is the operating regime,
+  #            not a corner case. Use st_gumbel only if 2^n_binary is genuinely prohibitive.
+  DISC_GRAD_MODE: exact
+
+  # ---- temperatures ----
+  ALPHA_CONT_INIT: 0.2
+  ALPHA_DISC_INIT: 1.0
+  LR_ALPHA: 0.003          # legacy SAC reuses LR_Q (5e-4) for alpha; this is deliberately faster
+  USE_LOG_ALPHA_LOSS: 1    # multiplier is log_alpha, not exp(log_alpha): the latter scales the
+                           # alpha gradient by alpha itself and lets it stall near zero
+
+  # ---- temperature bounds (ANTI-WINDUP) ----
+  # The alpha update is a pure integrator of the entropy error, with nothing restoring alpha itself.
+  # If the target is not reachable -- because the Q term pulls the policy away from it -- the error
+  # keeps its sign, and Adam (which normalizes the step, so even a tiny error moves log_alpha by
+  # ~LR_ALPHA) drives log_alpha linearly and hence alpha EXPONENTIALLY. Once alpha is large the
+  # entropy term swamps -min_q and the actor stops optimizing reward at all.
+  #
+  # Measured on Talos before this bound existed: alpha_disc 0.94 -> 132.6, alpha_cont 0.19 -> 15.0
+  # over 11k updates, with both entropies sitting AT target, reward flat and tracking error rising.
+  ALPHA_MIN: 0.0001
+  ALPHA_MAX: 1.0
+
+  # ---- entropy targets ----
+  # ONE convention for both branches: a SIGNED fraction of the attainable maximum.
+  # Both branches max out at N * log2 nats:
+  #   discrete   -> n_binary * log2  (each flag a fair coin, p = 0.5)
+  #   continuous -> n_cont   * log2  (uniform on the tanh-squashed support [-1, 1] per dim)
+  # frac = 1 is the maximally exploratory policy; frac = 0 is zero nats.
+  #
+  # THE SIGN MATTERS, and the two branches differ:
+  #
+  #   TARGET_H_DISC_FRAC is necessarily in [0, 1]. A Bernoulli entropy is a true discrete entropy
+  #   and cannot be negative. 0.7 -> 0.485 nats/flag -> p ~ 0.11 / 0.89 on average.
+  #
+  #   TARGET_H_CONT_FRAC MAY BE NEGATIVE, and here it is. H_cont is a *differential* entropy, which
+  #   is unbounded below; a negative target simply asks for a policy more peaked than uniform.
+  #   The legacy alpha loss equilibrates at H = ENTROPY_CONT_START, so ENTROPY_CONT_START = -0.5 is
+  #   a target of -0.5 nats/dim -- i.e. frac = -0.5/log2 = -0.72, NOT +0.72. Setting +0.72 asks for
+  #   a policy ~3x more exploratory than the baseline; on Talos that is at the edge of what is
+  #   reachable while still tracking the task, and an unreachable target is exactly what makes the
+  #   multiplier wind up (see ALPHA_MAX above).
+  #
+  # -0.72 therefore configures the continuous branch IDENTICALLY to the baseline, so that a
+  # hybrid-vs-legacy comparison isolates the discrete parametrization. Raising it is a legitimate
+  # separate experiment -- it should not ride along in the first one.
+  TARGET_H_CONT_FRAC: -0.72  # == the legacy ENTROPY_CONT_START of -0.5 nats/dim. Max attainable is
+                             # +0.986: a tanh-Gaussian can never actually be uniform.
+  TARGET_H_DISC_FRAC: 0.7    # genuinely new: a true Bernoulli entropy target. No legacy equivalent.
+
+  # ---- exploration on the binary dims ----
+  # Warmstart draws the flags from Bernoulli(0.5); the exploration envs flip them with this
+  # probability. Both keep the replay buffer's flag columns on {-1, +1}: if an intermediate value
+  # ever lands there, the critic is trained off the support the actor lives on, which is exactly the
+  # defect this algorithm removes.
+  # INERT unless EXPL_ENVS_PERC > 0. The Talos run profiles set EXPL_ENVS_PERC = 0.0: SAC is a
+  # max-entropy method and explores through the policy's own stochasticity, so we do not add
+  # extrinsic action noise on a subset of envs. Kept here for when someone does want it.
+  DISC_EXPL_FLIP_PROB: 0.25
+
+  # 'auto' derives the initial policy std from TARGET_H_CONT_FRAC, so the continuous branch starts
+  # AT its entropy target and alpha_cont has nothing to correct. At frac -0.72 this resolves to
+  # std = 0.1502. Pin a float to override, e.g. 0.0273 to reproduce the legacy actor's
+  # near-deterministic init (H_cont = -3.15 * max) exactly.
+  #
+  # Note this matters less than it looks: with an untrained critic the entropy term dominates the
+  # actor loss and the policy runs to its entropy target within ~40 updates regardless of where it
+  # started. The calibration removes an early transient, not a persistent bias.
+  ACTOR_INIT_STD: auto

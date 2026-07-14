@@ -1,7 +1,27 @@
 include:
 - ../../../common/runtime_defaults.yaml
-- ../../../common/algorithms/sac_critic_depth_3.yaml
+# ---- algorithm ----
+# Hybrid SAC: the contact/swing flags become a Bernoulli branch emitting hard -1/+1, the rest of the
+# action stays a tanh-squashed Gaussian. Swap the two lines below to fall back to the legacy all-
+# Gaussian SAC, which relaxes the flags into a continuous coordinate the environment then discards.
+- ../../../common/algorithms/hybrid_sac_critic_depth_3.yaml
+# - ../../../common/algorithms/sac_critic_depth_3.yaml
 - ../../../robots/talos/base.yaml
 - ../../../robots/talos/control/talos.yaml
 - ../../../robots/talos/tasks/talos.yaml
 - ../../../robots/talos/backends/isaac5x.yaml
+
+vars:
+  # No extrinsic exploration envs. SAC is a max-entropy method: it explores through the policy's own
+  # stochasticity, and bolting action noise onto a subset of envs is a separate mechanism we do not
+  # want here. This also makes DISC_EXPL_FLIP_PROB inert (_perturb_some_actions is never called).
+  EXPL_ENVS_PERC: 0.0
+
+custom_args:
+  training:
+    # Discrete action-rate penalty, disabled for hybrid runs. See runs/training/talos/talos_genesis.yaml
+    # for the full rationale: with hard +-1 flags the term becomes 4*w_d*(flips per flag per step),
+    # i.e. a penalty on stepping itself, and the anti-chatter guard already lives in the MPC.
+    action_rate_rew_d_weight:
+      dtype: float
+      value: 0.0

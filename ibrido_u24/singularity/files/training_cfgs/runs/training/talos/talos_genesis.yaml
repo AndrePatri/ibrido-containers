@@ -1,9 +1,44 @@
 include:
 - ../../../common/runtime_defaults.yaml
-- ../../../common/algorithms/sac_critic_depth_3.yaml
+# ---- algorithm ----
+# Hybrid SAC: the contact/swing flags become a Bernoulli branch emitting hard -1/+1, the rest of the
+# action stays a tanh-squashed Gaussian. Swap the two lines below to fall back to the legacy all-
+# Gaussian SAC, which relaxes the flags into a continuous coordinate the environment then discards.
+- ../../../common/algorithms/hybrid_sac_critic_depth_3.yaml
+# - ../../../common/algorithms/sac_critic_depth_3.yaml
 - ../../../robots/talos/base.yaml
 - ../../../robots/talos/control/talos.yaml
 - ../../../robots/talos/tasks/talos.yaml
 # full-feedback overlay AFTER the task so it overrides the task's feedback mode
 - ../../../robots/talos/control/talos_full_feedback.yaml
 - ../../../robots/talos/backends/genesis.yaml
+
+vars:
+  # No extrinsic exploration envs. SAC is a max-entropy method: it explores through the policy's own
+  # stochasticity, and bolting action noise onto a subset of envs is a separate mechanism we do not
+  # want here. This also makes DISC_EXPL_FLIP_PROB inert (_perturb_some_actions is never called).
+  EXPL_ENVS_PERC: 0.0
+
+custom_args:
+  training:
+    # Discrete action-rate penalty, disabled for hybrid runs.
+    #
+    # _action_rate() penalizes the squared change of the normalized commanded actions. With hard
+    # +-1 flags, (delta a)^2 is either 0 or 4, so the term becomes exactly
+    #     4 * w_d * (flips per flag per step)
+    # -- one to two orders of magnitude larger than under the legacy continuous relaxation, where
+    # delta a was a small drift and the default w_d = 0.1 was tuned against E[delta a^2] ~ 1e-2.
+    #
+    # It is zeroed rather than merely retuned because a flip penalty is a penalty on *stepping*,
+    # which is the behavior we are trying to produce, and standing still is this task's known
+    # failure mode. The anti-chatter guard already exists elsewhere: flength_min bounds the swing
+    # duration and the MPC rejects phase insertions overlapping an active phase, so a flip the MPC
+    # rejects is a no-op that this term would penalize for nothing.
+    #
+    # If chattering does appear (watch hybrid_binary_flip_rate), reintroduce it as a flip penalty:
+    # since (delta a)^2 / 4 IS the flip indicator, w_d = w_flip / 4 gives a reward term of exactly
+    # -w_flip * (flips per flag per step). Record the intended w_flip in COMMENT, since the stored
+    # value is w_flip/4 and will otherwise confuse the next reader.
+    action_rate_rew_d_weight:
+      dtype: float
+      value: 0.0

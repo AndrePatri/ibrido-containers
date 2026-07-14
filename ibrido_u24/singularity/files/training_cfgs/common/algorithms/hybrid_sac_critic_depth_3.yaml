@@ -1,0 +1,6 @@
+# Hybrid SAC with a depth-3 critic. Mirrors sac_critic_depth_3.yaml, so a hybrid run is a
+# like-for-like swap of the algorithm with the same network sizes.
+include:
+- hybrid_sac_default.yaml
+vars:
+  CRITIC_DEPTH: 3

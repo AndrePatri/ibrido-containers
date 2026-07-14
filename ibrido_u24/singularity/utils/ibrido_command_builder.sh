@@ -602,19 +602,40 @@ ibrido_build_training_cmd() {
     fi
     if ibrido_enabled "$USE_DUMMY"; then
         IBRIDO_TRAINING_CMD+="--dummy "
+    elif ibrido_enabled "${USE_HYBRID_SAC:-0}"; then
+        IBRIDO_TRAINING_CMD+="--hybrid_sac "
     elif ibrido_enabled "$USE_SAC"; then
         IBRIDO_TRAINING_CMD+="--sac "
     fi
-    # SAC hyperparameters (exposed via common/algorithms/sac_*.yaml). Only passed for SAC runs so PPO
-    # runs need not define these vars.
-    if ibrido_enabled "$USE_SAC"; then
+    # SAC hyperparameters (exposed via common/algorithms/sac_*.yaml). Shared by legacy SAC and
+    # hybrid SAC. Only passed for SAC runs so PPO runs need not define these vars.
+    if ibrido_enabled "$USE_SAC" || ibrido_enabled "${USE_HYBRID_SAC:-0}"; then
         IBRIDO_TRAINING_CMD+="--collection_freq $COLLECTION_FREQ --update_freq $UPDATE_FREQ "
         IBRIDO_TRAINING_CMD+="--replay_buffer_n_eps $REPLAY_BUFFER_N_EPS --batch_size $BATCH_SIZE "
         IBRIDO_TRAINING_CMD+="--lr_policy $LR_POLICY --lr_q $LR_Q "
-        IBRIDO_TRAINING_CMD+="--entropy_disc_start $ENTROPY_DISC_START --entropy_disc_end $ENTROPY_DISC_END "
-        IBRIDO_TRAINING_CMD+="--entropy_cont_start $ENTROPY_CONT_START --entropy_cont_end $ENTROPY_CONT_END "
         if ibrido_enabled "$ANNEAL_ENTROPY"; then
             IBRIDO_TRAINING_CMD+="--anneal_entropy "
+        fi
+    fi
+    # Legacy SAC only: entropy targets as NEGATIVE target log-probabilities.
+    if ibrido_enabled "$USE_SAC" && ! ibrido_enabled "${USE_HYBRID_SAC:-0}"; then
+        IBRIDO_TRAINING_CMD+="--entropy_disc_start $ENTROPY_DISC_START --entropy_disc_end $ENTROPY_DISC_END "
+        IBRIDO_TRAINING_CMD+="--entropy_cont_start $ENTROPY_CONT_START --entropy_cont_end $ENTROPY_CONT_END "
+    fi
+    # Hybrid SAC only (exposed via common/algorithms/hybrid_sac_*.yaml). Entropy targets here are
+    # POSITIVE and expressed as a fraction of the attainable maximum (N*log2 nats) for both the
+    # continuous and the binary branch. Deliberately different variable names from the legacy
+    # ENTROPY_* above, so the two conventions can never be silently confused.
+    if ibrido_enabled "${USE_HYBRID_SAC:-0}"; then
+        IBRIDO_TRAINING_CMD+="--gumbel_tau $GUMBEL_TAU --disc_grad_mode $DISC_GRAD_MODE "
+        IBRIDO_TRAINING_CMD+="--alpha_cont_init $ALPHA_CONT_INIT --alpha_disc_init $ALPHA_DISC_INIT "
+        IBRIDO_TRAINING_CMD+="--lr_alpha $LR_ALPHA "
+        IBRIDO_TRAINING_CMD+="--target_H_cont_frac $TARGET_H_CONT_FRAC --target_H_disc_frac $TARGET_H_DISC_FRAC "
+        IBRIDO_TRAINING_CMD+="--disc_expl_flip_prob $DISC_EXPL_FLIP_PROB "
+        IBRIDO_TRAINING_CMD+="--actor_init_std $ACTOR_INIT_STD "
+        IBRIDO_TRAINING_CMD+="--alpha_min ${ALPHA_MIN:-none} --alpha_max ${ALPHA_MAX:-none} "
+        if ibrido_enabled "$USE_LOG_ALPHA_LOSS"; then
+            IBRIDO_TRAINING_CMD+="--use_log_alpha_loss "
         fi
     fi
     if ibrido_enabled "$DEBUG"; then
@@ -877,6 +898,8 @@ ibrido_prepare_run_metadata() {
         printf '  algo: '
         if ibrido_enabled "${USE_DUMMY:-0}"; then
             ibrido_yaml_quote "dummy"
+        elif ibrido_enabled "${USE_HYBRID_SAC:-0}"; then
+            ibrido_yaml_quote "hybrid_sac"
         elif ibrido_enabled "${USE_SAC:-0}"; then
             ibrido_yaml_quote "sac"
         else
