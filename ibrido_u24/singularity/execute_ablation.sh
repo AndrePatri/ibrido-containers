@@ -60,6 +60,14 @@ for file in "${cfg_files[@]}"; do
 done
 
 for file in "${cfg_files[@]}"; do
+    # Stop sentinel, set by franklin/slurm/prescia_script.sh when the scheduler walltime is about to
+    # expire. The runs are sequential, so signalling the one in flight is not enough: without this
+    # guard the loop would start another training with minutes left on the clock, and that one would
+    # be hard-killed with no model and no debug dump. Unset outside a scheduler -> no-op.
+    if [ -n "${IBRIDO_STOP_FILE:-}" ] && [ -f "$IBRIDO_STOP_FILE" ]; then
+        echo "execute_ablation.sh: stop requested (walltime approaching); skipping the remaining configs."
+        break
+    fi
     rel="${file#${cfg_dir}/}"
     cmd=("$script_dir/execute.sh" --cfg "${cfg_prefix}/${rel}")
     if (( dry_run )); then
