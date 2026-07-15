@@ -26,6 +26,10 @@ recreate_env() {
     micromamba env create -y -f "${env_fpath}"
 }
 
+# Isaac is created LAST on purpose: it is the most fragile env (Isaac Sim 5.1 pins python 3.11 and
+# is picky about torch), and with `set -e` a failure here aborts the script. Building main and
+# genesis first means a partial/failed Isaac setup still leaves a usable container for the base and
+# genesis backends (genesis training does not touch the Isaac env at all).
 recreate_env "${MAMBA_ENV_NAME}"         "${MAMBA_ENV_FPATH}"
-recreate_env "${MAMBA_ENV_NAME_ISAAC}"   "${MAMBA_ENV_FPATH_ISAAC}"
 recreate_env "${MAMBA_ENV_NAME_GENESIS}" "${MAMBA_ENV_FPATH_GENESIS}"
+recreate_env "${MAMBA_ENV_NAME_ISAAC}"   "${MAMBA_ENV_FPATH_ISAAC}"
