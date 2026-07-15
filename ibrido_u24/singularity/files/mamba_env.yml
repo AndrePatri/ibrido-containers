@@ -10,10 +10,19 @@ channels:
   # - francesco_ruscelli
   # - AndrePatri
 
-dependencies: 
+dependencies:
   - python=3.12
-  # PyTorch is installed from pip below so RTX 50xx/sm_120 can use cu130 wheels.
-  # Keep the Isaac Python 3.11 env separate; do not mirror this blindly there.
+  # PyTorch is installed from pip below (cu128 wheels).
+  #
+  # cu128 (CUDA 12.8), NOT cu130: 12.8 is the first CUDA with Blackwell / sm_120 support, so it
+  # covers every GPU in the fleet (V100 sm_70, A100 sm_80, 4080S sm_89, 5090 sm_120). And because
+  # it is still CUDA 12.x, minor-version compatibility lets it run on any driver >= 525 -- including
+  # the 550 drivers on the older workstations. cu130 is CUDA *13* and requires a >= 580 driver
+  # everywhere for no benefit on this hardware; it made the genesis env fail to init torch on a
+  # 4080 SUPER box (driver 550, max CUDA 12.4). Do not "upgrade" this back to cu130.
+  #
+  # The Isaac py3.11 env now uses the same cu128 index; verify Isaac Sim 5.1 is happy with the
+  # resulting torch version (see the caveat in mamba_env_isaac_py11.yml).
   # - cuda-toolkit
   - clang
   - compilers 
@@ -38,7 +47,7 @@ dependencies:
   - catkin_pkg
   - scipy
   - pip:
-    - -f https://download.pytorch.org/whl/cu130
+    - -f https://download.pytorch.org/whl/cu128
     - torch
     - torchvision
     - numpy<2

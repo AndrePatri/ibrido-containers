@@ -22,7 +22,7 @@ channels:
 
 dependencies:
   - python=3.12
-  # PyTorch from pip (cu130 wheels) like the base env.
+  # PyTorch from pip (cu128 wheels) like the base env.
   - clang
   - compilers
   - cmake
@@ -44,7 +44,7 @@ dependencies:
   - scipy
   # NOTE: no pinocchio / casadi / horizon here on purpose (numpy<2 ABI; they stay in the base env).
   - pip:
-    - -f https://download.pytorch.org/whl/cu130
+    - -f https://download.pytorch.org/whl/cu128
     - torch
     - torchvision
     - pyzmq

@@ -17,7 +17,7 @@ dependencies:
   # no longer solves: pytorch-cuda=12.1 pulls cuda-libraries >=12.1,<12.2 from the nvidia channel,
   # which is no longer served in a satisfiable way (PyTorch deprecated conda packaging and the
   # nvidia channel drifted). The base "ibrido" and "ibrido_genesis" envs were already migrated to
-  # cu130 pip wheels (commits 16b86e5 / b673a74); this env was the last one left on the dead path.
+  # cu128 pip wheels (commits 16b86e5 / b673a74); this env was the last one left on the dead path.
   # - cuda-toolkit
   - clang
   - compilers 
@@ -38,14 +38,15 @@ dependencies:
   - catkin_pkg
   - fabric
   - pip:
-    # cu130 wheels, matching the base "ibrido" env so RTX 50xx / sm_120 works. torch is left
-    # unpinned = the newest build on the cu130 index.
+    # cu128 wheels, matching the base "ibrido" env (see mamba_env.yml for why cu128 and not cu130).
+    # cu128 covers sm_120 (5090) and runs on the older 550 drivers via CUDA 12.x minor-version
+    # compatibility. torch is left unpinned = the newest build on the cu128 index.
     #
     # CAVEAT to verify on the workstation: Isaac Sim 5.1 (python 3.11) is built against a specific
     # torch, and its omni.isaac.* extensions can break on a mismatched torch major.minor. If Isaac
     # complains after this migration, pin torch here to the version Isaac Sim 5.1 ships (e.g.
-    # `torch==<isaac_version>`) from the same cu130 index rather than reverting to the conda path.
-    - -f https://download.pytorch.org/whl/cu130
+    # `torch==<isaac_version>`) from the same cu128 index rather than reverting to the conda path.
+    - -f https://download.pytorch.org/whl/cu128
     - torch
     - torchvision
     - pyzmq
