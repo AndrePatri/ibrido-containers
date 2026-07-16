@@ -1,0 +1,42 @@
+vars:
+  WORLD_INTERFACE: aug_mpc_envs.world_interfaces.genesis_world_interface
+  TIME_SOURCE: sim
+  USE_GPU_SIM: 1
+  PHYSICS_DT: 0.001
+  GENESIS_HEADLESS: 1
+custom_args:
+  world_interface:
+    filter_jnt_vel:
+      dtype: bool
+      value: true
+    filter_cutoff_freq:
+      dtype: float
+      value: 20.0
+    filter_sampling_rate:
+      dtype: int
+      value: 200
+  genesis:
+    genesis_render_env_idx:
+      dtype: int
+      value: 0
+    genesis_enable_camera_rendering:
+      dtype: bool
+      value: false
+    genesis_use_batch_renderer:
+      dtype: bool
+      value: false
+    genesis_render_env_keyboard:
+      dtype: bool
+      value: true
+    genesis_vis_mode:
+      dtype: str
+      value: collision
+    genesis_visualize_contact:
+      dtype: bool
+      value: true
+    genesis_contact_force_scale:
+      dtype: float
+      value: 0.001
+    terrain_vis_mode:
+      dtype: str
+      value: visual
