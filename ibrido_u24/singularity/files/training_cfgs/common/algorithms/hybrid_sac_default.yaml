@@ -60,16 +60,20 @@ vars:
                            # alpha gradient by alpha itself and lets it stall near zero
 
   # ---- temperature bounds (ANTI-WINDUP) ----
-  # The alpha update is a pure integrator of the entropy error, with nothing restoring alpha itself.
-  # If the target is not reachable -- because the Q term pulls the policy away from it -- the error
-  # keeps its sign, and Adam (which normalizes the step, so even a tiny error moves log_alpha by
-  # ~LR_ALPHA) drives log_alpha linearly and hence alpha EXPONENTIALLY. Once alpha is large the
-  # entropy term swamps -min_q and the actor stops optimizing reward at all.
+  # FLOOR only. The ceiling is intentionally OFF (none).
   #
-  # Measured on Talos before this bound existed: alpha_disc 0.94 -> 132.6, alpha_cont 0.19 -> 15.0
-  # over 11k updates, with both entropies sitting AT target, reward flat and tracking error rising.
+  # History: a ceiling of 1.0 was added after an early run where alpha diverged to ~132. That
+  # divergence was caused by a SIGN BUG -- a positive (unreachable) continuous entropy target -- not
+  # by a missing ceiling. With the target signs corrected the entropy target is reachable, and alpha
+  # must be free to grow to the equilibrium that enforces it. The actor-loss Q term scales like
+  # 1/(1-gamma) (Q ~ 100 at gamma=0.99), while the entropy term is O(alpha), so that equilibrium is
+  # well above 1. A run WITH the 1.0 ceiling pinned alpha_disc at 1.0 from iter ~84 onward and left
+  # H_disc stuck ~30% below target for the whole run (the entropy target was silently never enforced).
+  #
+  # Deferred: a running Q-scale normalization in the actor loss would keep alpha O(1) independent of
+  # gamma and reward scale, removing the need to think about this bound at all.
   ALPHA_MIN: 0.0001
-  ALPHA_MAX: 1.0
+  ALPHA_MAX: none
 
   # ---- entropy targets ----
   # ONE convention for both branches: a SIGNED fraction of the attainable maximum.
@@ -96,7 +100,12 @@ vars:
   # separate experiment -- it should not ride along in the first one.
   TARGET_H_CONT_FRAC: -0.72  # == the legacy ENTROPY_CONT_START of -0.5 nats/dim. Max attainable is
                              # +0.986: a tanh-Gaussian can never actually be uniform.
-  TARGET_H_DISC_FRAC: 0.7    # genuinely new: a true Bernoulli entropy target. No legacy equivalent.
+  # Lowered 0.7 -> 0.6. In the first proper run the Q-greedy discrete policy naturally sat at
+  # H_disc ~ 0.50 of max (flags already chattering, flip-rate ~0.24); 0.70 asked for MORE
+  # stochasticity than the task wants and required a large alpha to enforce. 0.6 keeps it modestly
+  # above the greedy point (so entropy regularization still does something) without demanding a
+  # near-random contact schedule. Tune from flip-rate / task_error: if the gait chatters, go lower.
+  TARGET_H_DISC_FRAC: 0.6    # a true Bernoulli entropy target; no legacy equivalent
 
   # ---- exploration on the binary dims ----
   # Warmstart draws the flags from Bernoulli(0.5); the exploration envs flip them with this
