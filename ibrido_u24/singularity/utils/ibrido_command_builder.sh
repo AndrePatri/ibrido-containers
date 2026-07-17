@@ -613,6 +613,7 @@ ibrido_build_training_cmd() {
         IBRIDO_TRAINING_CMD+="--collection_freq $COLLECTION_FREQ --update_freq $UPDATE_FREQ "
         IBRIDO_TRAINING_CMD+="--replay_buffer_n_eps $REPLAY_BUFFER_N_EPS --batch_size $BATCH_SIZE "
         IBRIDO_TRAINING_CMD+="--lr_policy $LR_POLICY --lr_q $LR_Q "
+        IBRIDO_TRAINING_CMD+="--q_norm_mode ${Q_NORM_MODE:-none} --q_norm_beta ${Q_NORM_BETA:-0.005} "
         if ibrido_enabled "$ANNEAL_ENTROPY"; then
             IBRIDO_TRAINING_CMD+="--anneal_entropy "
         fi
@@ -631,6 +632,7 @@ ibrido_build_training_cmd() {
         IBRIDO_TRAINING_CMD+="--alpha_cont_init $ALPHA_CONT_INIT --alpha_disc_init $ALPHA_DISC_INIT "
         IBRIDO_TRAINING_CMD+="--lr_alpha $LR_ALPHA "
         IBRIDO_TRAINING_CMD+="--target_H_cont_frac $TARGET_H_CONT_FRAC --target_H_disc_frac $TARGET_H_DISC_FRAC "
+        IBRIDO_TRAINING_CMD+="--disc_entropy_mode ${DISC_ENTROPY_MODE:-off} "
         IBRIDO_TRAINING_CMD+="--disc_expl_flip_prob $DISC_EXPL_FLIP_PROB "
         IBRIDO_TRAINING_CMD+="--actor_init_std $ACTOR_INIT_STD "
         IBRIDO_TRAINING_CMD+="--alpha_min ${ALPHA_MIN:-none} --alpha_max ${ALPHA_MAX:-none} "

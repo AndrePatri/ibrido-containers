@@ -1,0 +1,21 @@
+include:
+- ../../../common/runtime_defaults.yaml
+- ../../../common/algorithms/hybrid_sac_critic_depth_3.yaml
+# - ../../../common/algorithms/sac_critic_depth_3.yaml
+- ../../../robots/kyon02/base.yaml
+- ../../../robots/kyon02/control/kyon02_wheels_no_yaw.yaml
+- ../../../robots/kyon02/tasks/kyon02_wheels_no_yaw.yaml
+- ../../../robots/kyon02/backends/genesis.yaml
+
+vars:
+  # Extrinsic flag exploration is REQUIRED with DISC_ENTROPY_MODE=off (the hybrid default): the
+  # discrete branch is deterministic, so the flip envs are the only source of the counterfactual
+  # flag values the exact-marginal Q gradient needs. Inherited from hybrid_sac_default.yaml (0.15);
+  # pinned here for visibility. Set to 0.0 only alongside DISC_ENTROPY_MODE=auto.
+  EXPL_ENVS_PERC: 0.15
+
+custom_args:
+  training:
+    action_rate_rew_d_weight:
+      dtype: float
+      value: 0.0

@@ -75,7 +75,24 @@ vars:
   ALPHA_MIN: 0.0001
   ALPHA_MAX: none
 
+  # ---- discrete-branch entropy handling ----
+  # The binary flag GATES its continuous swing params: if the flag is not triggered, those
+  # continuous dims have literally no effect on the transition. The flags are therefore the
+  # exploration bottleneck, and tying their entropy to an autotuned alpha_disc is what drove the
+  # hybrid divergence (an unreachable Bernoulli target winds alpha_disc up, the entropy bonus
+  # alpha_disc*H_disc inflates the soft-Q target, and Q/alpha co-diverge).
+  #   off   : alpha_disc == 0. No discrete entropy in the objective -- the discrete policy target is
+  #           effectively deterministic (MAP flags). The actor still learns WHICH flags maximize Q
+  #           (via the exact Q-marginalization), it just is not pushed to be stochastic about them.
+  #           Exploration on the flags is instead injected extrinsically by the flip envs below
+  #           (EXPL_ENVS_PERC / DISC_EXPL_FLIP_PROB), decoupled from the actor's decisiveness. Default.
+  #   auto  : autotune alpha_disc toward TARGET_H_DISC_FRAC (classic max-entropy SAC on the flags).
+  #   fixed : hold alpha_disc at ALPHA_DISC_INIT (constant, no autotuning).
+  DISC_ENTROPY_MODE: off
+
   # ---- entropy targets ----
+  # TARGET_H_DISC_FRAC below is USED ONLY when DISC_ENTROPY_MODE=auto; under 'off'/'fixed' it is
+  # inert (kept for telemetry / for switching modes).
   # ONE convention for both branches: a SIGNED fraction of the attainable maximum.
   # Both branches max out at N * log2 nats:
   #   discrete   -> n_binary * log2  (each flag a fair coin, p = 0.5)
@@ -112,9 +129,13 @@ vars:
   # probability. Both keep the replay buffer's flag columns on {-1, +1}: if an intermediate value
   # ever lands there, the critic is trained off the support the actor lives on, which is exactly the
   # defect this algorithm removes.
-  # INERT unless EXPL_ENVS_PERC > 0. The Talos run profiles set EXPL_ENVS_PERC = 0.0: SAC is a
-  # max-entropy method and explores through the policy's own stochasticity, so we do not add
-  # extrinsic action noise on a subset of envs. Kept here for when someone does want it.
+  #
+  # With DISC_ENTROPY_MODE=off the actor is deterministic on the flags, so this extrinsic flipping
+  # is the ONLY source of flag exploration -- and it is REQUIRED for correctness, not just coverage:
+  # the exact-marginal Q gradient needs both flag values (b=0 and b=1) represented in the replay
+  # buffer, else the critic never learns Q(s, b=1) - Q(s, b=0). 0.15 of the envs flip flags with
+  # prob DISC_EXPL_FLIP_PROB; the rest run the (near-)deterministic policy for clean returns.
+  EXPL_ENVS_PERC: 0.15
   DISC_EXPL_FLIP_PROB: 0.25
 
   # 'auto' derives the initial policy std from TARGET_H_CONT_FRAC, so the continuous branch starts

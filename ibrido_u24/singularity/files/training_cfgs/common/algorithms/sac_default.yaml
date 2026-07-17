@@ -30,3 +30,15 @@ vars:
   ENTROPY_DISC_END: -0.2       # discrete-action target entropy (end)
   ENTROPY_CONT_START: -0.5     # continuous-action target entropy (start)
   ENTROPY_CONT_END: -0.5       # continuous-action target entropy (end)
+
+  # ---- actor-loss Q normalization ----
+  # Decouples the entropy-vs-Q balance (hence alpha's equilibrium) from the Q scale, which grows
+  # with reward magnitude and ~1/(1-gamma). Default OFF so existing runs are unchanged.
+  #   none      : no normalization (legacy).
+  #   actor_rms : divide min_q in the ACTOR loss by an EMA of its RMS, so a moderate O(1) alpha
+  #               suffices regardless of discount factor / reward scale, and the entropy bonus
+  #               alpha*H cannot co-diverge with Q. The critic still learns true-scale Q.
+  #   [future] popart : normalize the critic targets themselves (running mean/std + output rescale);
+  #               more consistent but touches CriticQ. Not implemented.
+  Q_NORM_MODE: none
+  Q_NORM_BETA: 0.005           # EMA rate of the running Q scale (actor_rms only)

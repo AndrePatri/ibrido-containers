@@ -50,3 +50,29 @@ custom_args:
     use_flat_ground:
       dtype: bool
       value: true
+  training:
+    add_angvel_ref_rand:
+      dtype: bool
+      value: true
+    max_angvel_ref:
+      dtype: float
+      value: 0.4
+    task_track_front_weight:
+      dtype: float
+      value: 1.0
+    task_track_lat_weight:
+      dtype: float
+      value: 0.05
+    task_track_vert_weight:
+      dtype: float
+      value: 0.05
+    task_track_omega_x_weight:
+      dtype: float
+      value: 0.05
+    task_track_omega_y_weight:
+      dtype: float
+      value: 0.05
+    task_track_omega_z_weight:
+      dtype: float
+      value: 0.3
+    

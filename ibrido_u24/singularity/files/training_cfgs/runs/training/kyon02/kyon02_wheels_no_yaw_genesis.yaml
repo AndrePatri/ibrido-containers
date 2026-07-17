@@ -1,7 +1,6 @@
 include:
 - ../../../common/runtime_defaults.yaml
-- ../../../common/algorithms/hybrid_sac_critic_depth_3.yaml
-# - ../../../common/algorithms/sac_critic_depth_3.yaml
+- ../../../common/algorithms/sac_critic_depth_3.yaml
 - ../../../robots/kyon02/base.yaml
 - ../../../robots/kyon02/control/kyon02_wheels_no_yaw.yaml
 - ../../../robots/kyon02/tasks/kyon02_wheels_no_yaw.yaml
@@ -9,9 +8,3 @@ include:
 
 vars:
   EXPL_ENVS_PERC: 0.0
-
-custom_args:
-  training:
-    action_rate_rew_d_weight:
-      dtype: float
-      value: 0.0

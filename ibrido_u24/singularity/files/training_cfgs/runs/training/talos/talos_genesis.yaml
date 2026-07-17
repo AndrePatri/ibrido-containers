@@ -14,10 +14,13 @@ include:
 - ../../../robots/talos/backends/genesis.yaml
 
 vars:
-  # No extrinsic exploration envs. SAC is a max-entropy method: it explores through the policy's own
-  # stochasticity, and bolting action noise onto a subset of envs is a separate mechanism we do not
-  # want here. This also makes DISC_EXPL_FLIP_PROB inert (_perturb_some_actions is never called).
-  EXPL_ENVS_PERC: 0.0
+  # Extrinsic flag exploration is REQUIRED here, not optional. With DISC_ENTROPY_MODE=off (the
+  # hybrid default) the discrete branch is deterministic -- it does NOT explore through the policy's
+  # own stochasticity -- so the exact-marginal Q gradient would never see the counterfactual flag
+  # value and the critic could not learn Q(s, b=1) - Q(s, b=0). The flip envs supply that coverage.
+  # Inherited from hybrid_sac_default.yaml (0.15); pinned here for visibility. Set to 0.0 only in
+  # combination with DISC_ENTROPY_MODE=auto (max-entropy flags explore on their own).
+  EXPL_ENVS_PERC: 0.15
 
 custom_args:
   training:
