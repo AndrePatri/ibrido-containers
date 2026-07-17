@@ -40,6 +40,10 @@ echo "Node: $(hostname)"
 echo "CPUs: ${SLURM_CPUS_PER_TASK}  (OMP_NUM_THREADS=${OMP_NUM_THREADS})"
 nvidia-smi
 
+# The W&B key is taken from the environment: export WANDB_KEY in the submit shell (sbatch exports
+# it with the default --export=ALL) and execute.sh picks it up via its WANDB_KEY/WANDB_API_KEY
+# default. Deliberately NOT passed as a CLI arg -- that would expose the key in scontrol/sacct and
+# the recorded job script on a shared cluster.
 "${IBRIDO_CONTAINERS_PREFIX}/franklin/slurm/prescia_script.sh" "$1" "$RUN_TOKEN" &
-"${IBRIDO_CONTAINERS_PREFIX}/execute.sh" --cfg "$1" --run_token "$RUN_TOKEN" --wdb_key "${WANDB_KEY}"
+"${IBRIDO_CONTAINERS_PREFIX}/execute.sh" --cfg "$1" --run_token "$RUN_TOKEN"
 
